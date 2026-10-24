@@ -10,3 +10,16 @@
 .venv/
 __pycache__/
 *.pyc
+
+# Additional local credential formats
+.env.*
+!.env.example
+*.key
+*.pem
+credentials.json
+secrets.json
+*.sqlite3
+*.xlsx
+*.pkl
+*.joblib
+*.zip
