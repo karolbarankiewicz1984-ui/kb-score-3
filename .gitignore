@@ -1,0 +1,12 @@
+# Prywatne dane i lokalne pliki
+.env
+*.db
+*.sqlite
+*.parquet
+*.csv
+*.jsonl
+*.pdf
+*.cbm
+.venv/
+__pycache__/
+*.pyc
