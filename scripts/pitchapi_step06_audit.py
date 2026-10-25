@@ -237,7 +237,7 @@ def analyze(outdir: Path):
         return finish(outdir,result,pitch,football)
     result["catalog_league_count"]=len(leagues)
     for label,country,af_id in TOP5:
-        matches=[l for l in leagues if norm(l.get("name"))==norm(label) and
+        matches=[l for l in leagues if norm(l.get("name")).replace(" ", "")==norm(label).replace(" ", "") and
                  str(l.get("country_code") or "").upper()==country]
         if len(matches)!=1:
             matches=[l for l in leagues if norm(l.get("name"))==norm(label)]
