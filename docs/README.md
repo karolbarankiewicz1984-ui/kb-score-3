@@ -15,4 +15,7 @@
 
 [STEP_05_ACCEPTANCE.md](STEP_05_ACCEPTANCE.md) — protokół PASS: rzeczywisty audyt API-Football, 30/30 kombinacji, porównanie niezależnych testów. [Raport pokrycia](audits/API_FOOTBALL_STEP05_2026-10-25.md).
 
+
+[STEP_06_BLOCKER.md](STEP_06_BLOCKER.md) — **krok 06 BLOKADA**, PitchAPI HTTP 401 / SDK AuthError, brak odczytów historycznych xG; instrukcja przywrócenia dostępu. Pozostało **5/29 zaliczonych**.
+
 **Uwaga:** GitHub jest kopią operacyjną. W razie rozbieżności statusu decyduje najnowszy [dziennik na Dysku Google](https://docs.google.com/document/d/10wjHL3r3OAuxtezwcIeWztxS8lwjhYon5GM3BLhI0xE/edit). Nigdy nie deklarujemy ZALICZONO bez odczytanego testu i linku do dowodu. Żaden nowy silnik prognoz nie został jeszcze napisany.
