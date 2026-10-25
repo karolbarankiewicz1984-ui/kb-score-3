@@ -1,4 +1,5 @@
 name: "KB3 Step 07 - Cross-provider match identity"
+# Revalidation: quarantine 60-minute provider kickoff discrepancies.
 
 on:
   workflow_dispatch:
