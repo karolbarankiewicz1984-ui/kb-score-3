@@ -1,0 +1,56 @@
+name: "KB3 Step 07 - Archive verified audit artifact"
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/kb3-step07-archive.yml"
+  workflow_dispatch:
+
+permissions:
+  actions: read
+  contents: write
+
+jobs:
+  archive:
+    runs-on: ubuntu-latest
+    timeout-minutes: 4
+    steps:
+      - uses: actions/checkout@v4
+      - name: Download proven successful read-only audit #40236615477
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh run download 40236615477 --repo "${{ github.repository }}" --name kb3-step07-fixture-identity --dir .
+      - name: Verify exact archive contents and no non-reviewed merges
+        shell: bash
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          p=Path("data/audits/STEP07_MATCH_CROSSWALK_2026-10-25.json")
+          m=Path("docs/audits/STEP07_MATCH_CROSSWALK_2026-10-25.md")
+          assert p.is_file() and m.is_file(), "Missing audit files"
+          v=json.loads(p.read_text(encoding="utf-8"))
+          assert v["schema"]=="kb30-cross-provider-identity-v1"
+          assert len(v["mapping"])==60 and v["samples"]==60
+          assert v["strict_count"]==38 and v["review_count"]==22
+          assert len(v["review_queue"])==22
+          assert len(v["time_disagreement_review"])==1
+          assert v["crosscheck_conflicts"]==[]
+          assert v["duplicates_input"]==[]
+          assert v["duplicate_mapping"]==[]
+          assert len(set(x["football_id"] for x in v["mapping"] if x["state"]=="STRICT"))==38
+          assert all(x["football_id"] is None for x in v["review_queue"])
+          assert v["api_football_calls"]==30
+          assert "No API key" not in m.read_text(encoding="utf-8")
+          print("ARCHIVE_PASS: 60 frozen samples, 38 strict, 22 reviews, zero duplicates/conflicts")
+          PY
+      - name: Commit two evidence files only, not API secrets
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -- data/audits/STEP07_MATCH_CROSSWALK_2026-10-25.json docs/audits/STEP07_MATCH_CROSSWALK_2026-10-25.md
+          if git diff --cached --quiet; then echo "Audit files already archived"; exit 0; fi
+          git commit -m "audit: archive step07 60 cross-provider pairs and review queue"
+          git push origin HEAD:main
