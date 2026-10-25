@@ -6,7 +6,7 @@
 
 Każdy odbiór zawiera: identyfikator kroku, datę i godzinę (z podaną strefą lub UTC), stan przed/po, wynik PASS/FAIL, link do dowodu, metadane testu, znane ograniczenia, osobę/automat dokonujący weryfikacji oraz następny krok. Samo uruchomienie testu **nie oznacza** PASS. Przed wpisaniem ZALICZONO należy ponownie odczytać dowody. Nowa wersja modelu, nowa opłata lub uruchomienie produkcji wymaga osobnej zgody właściciela.
 
-**Stan po odbiorze kroku 07 (25.10.2026):** 7/29 odebranych (01–07); kroki 08–29 nieodebrane. W razie późniejszych zmian decyduje aktualny dziennik Google Docs. Dziennik Google Docs może zawierać późniejsze wpisy — w razie rozbieżności **odczytujemy oryginał Google Docs**.
+**Stan po odbiorze kroku 08 (25.10.2026):** 8/29 odebranych (01–08); kroki 09–29 nieodebrane. W razie późniejszych zmian decyduje aktualny dziennik Google Docs. Dziennik Google Docs może zawierać późniejsze wpisy — w razie rozbieżności **odczytujemy oryginał Google Docs**.
 
 ## Rejestr decyzji projektowych
 
@@ -115,3 +115,12 @@ Następny krok:
 - **Cechy przyszłej bazy:** jeden wewnętrzny fixture_id, zewnętrzne identyfikatory i status REVIEW; nieuprawnione dopasowanie blokować. Historię snapshotów przedmeczowych zachowywać oddzielnie.
 - **Koszty:** 0 zł nowych zakupów; w kroku 07 wykorzystano 60 zapytań API-Football w dwóch testach (30+30). Nie było nowego pobierania PitchAPI xG.
 - **Następny krok:** 08 — projekt bazy danych i archiwizacji, NIE ROZPOCZĘTY.
+
+## GATE 08 — PASS / ZALICZONO (25.10.2026)
+
+- Temat: migracje SQLite, mapowanie dostawców, unikalność meczów, prognozy immutable, backup+restore.
+- [Schemat v1](../migrations/001_initial_schema.sql), [silnik backup/restore](../src/kb3_storage.py), [protokół GATE 08](STEP_08_ACCEPTANCE.md).
+- Testy: [Actions 40241295913](https://github.com/karolbarankiewicz1984-ui/kb-score-3/actions/runs/40241295913) PASS 9/9; [Actions 40241611841](https://github.com/karolbarankiewicz1984-ui/kb-score-3/actions/runs/40241611841) PASS 9/9 po wymuszeniu syntetycznego trybu niezaszyfrowanego backupu.
+- Kopia w [Google Drive](https://drive.google.com/file/d/1DkaIfH24qf7z_KDuwbMzRuUd_iORbFxb/view), backup ID 20261025T224033196429Z-95353b524e, SHA-256 ae76048deebd45bc0d97f21b189859fec0ae42f5e69ca51eb197c7b0ad6fe80f. Po ponownym pobraniu z Drive: CRC OK, SHA OK, SQLite integrity ok, restore 1 syntetycznego meczu. [Manifest](../data/audits/STEP08_BACKUP_MANIFEST_2026-10-25.json).
+- Ograniczenia: backup zawiera wyłącznie fikcyjne dane. Szyfrowanie i automatyzacja produkcyjnej archiwizacji oraz retencja wymagają kolejnych odbiorów; 22 niepewne pary pozostają REVIEW.
+- Zero nowych opłat, bez importu realnych meczów i bez modelu ML. Plan główny [Google Docs](https://docs.google.com/document/d/10wjHL3r3OAuxtezwcIeWztxS8lwjhYon5GM3BLhI0xE/edit). Następny krok 09 — NIE ROZPOCZĘTO.
