@@ -94,3 +94,14 @@ Pola są **projektową listą logiczną**, nie deklaracją, że istnieją już t
 | 22 | wynik settlement WIN/LOSS/PUSH/VOID bez mutowania prognozy |
 
 **Następny audyt:** KROK 05 — API-Football, niezależny od odczytu aktywności sekretów z kroku 03.
+
+
+## 8. Wyniki rzeczywistego audytu źródła API-Football — GATE 05 PASS, 25.10.2026
+
+Pełne dane [liga×sezon](audits/API_FOOTBALL_STEP05_2026-10-25.md), [JSON z liczbami](../data/audits/API_FOOTBALL_STEP05_2026-10-25.json), [protokół GATE 05](STEP_05_ACCEPTANCE.md).
+
+**Potwierdzono bez nowych zakupów:** aktywny plan Pro, limit 7500/dzień i 300/min.; 30/30 kombinacji (5 lig × 2021–2026) udostępnia terminarze, 10 679 wpisów w terminarzach, 60/60 dwuzespołowych próbek statystyk zwróciło dane. Dwa niezależne przebiegi (112 + 131 zapytań) osiągnęły zgodność liczby meczów i statusów 25/25 wspólnych wierszy. Skład, wydarzenia i lista zawodników dostępne w pięciu przykładach 2025. Bieżący endpoint kursów działa, jednak jego archiwum przedmeczowe ma wąskie okno retencji; to nie są historyczne ceny z lat 2021–2025.
+
+**Jakość wymaga dalszego sprawdzenia:** w jednej z 60 próbek brak kompletnych żółtych kartek, Ligue 1/2025 ma 307 zakończonych z 308 wpisów; występują niestandardowe wielkości niektórych sezonów (np. Serie A 2022 — 381 meczów w API). Weryfikacja danych per każdy mecz, deduplikacja i analiza dokładnego pochodzenia odbędą się w krokach 09–10. **Nie mylić** poprawnych próbek 60/60 z pokryciem kompletnych statystyk wszystkich 10 679 wpisów.
+
+**Status:** KROK 05 ZALICZONY; KROK 06 PitchAPI pozostaje NIE ROZPOCZĘTY. Nie trenowano modelu.
