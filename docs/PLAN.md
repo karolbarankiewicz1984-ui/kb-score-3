@@ -1,6 +1,6 @@
 # KB Score 3.0 — PLAN GŁÓWNY (kopia operacyjna GitHub)
 
-**Wersja źródłowa:** v1.1, Google Docs (aktualizowane po odbiorach). **Stan ostatniej synchronizacji:** 2026-10-25, **4/29 kroków zaliczonych** (01–04), krok 05 NIE ROZPOCZĘTO. Statusy w tej kopii aktualizujemy po odbiorach, ale **źródłem prawdy pozostaje [oryginał na Dysku Google](https://docs.google.com/document/d/10wjHL3r3OAuxtezwcIeWztxS8lwjhYon5GM3BLhI0xE/edit)**.
+**Wersja źródłowa:** v1.1, Google Docs (aktualizowane po odbiorach). **Stan ostatniej synchronizacji:** 2026-10-25, **5/29 kroków zaliczonych** (01–05), krok 06 NIE ROZPOCZĘTO. Statusy w tej kopii aktualizujemy po odbiorach, ale **źródłem prawdy pozostaje [oryginał na Dysku Google](https://docs.google.com/document/d/10wjHL3r3OAuxtezwcIeWztxS8lwjhYon5GM3BLhI0xE/edit)**.
 
 **Pozostałe dokumenty:** [DANE.md](DANE.md), [MODEL.md](MODEL.md), [ZMIANY.md](ZMIANY.md), [instrukcja bezpieczeństwa kroku 03](STEP_03_SECURITY_CHECKLIST.md). **Repozytorium:** https://github.com/karolbarankiewicz1984-ui/kb-score-3.
 
@@ -68,7 +68,7 @@
 
 ### Etap B. Źródła i historia
 
-#### Krok 05 — Audyt API-Football  [NIE ROZPOCZĘTO]
+#### Krok 05 — Audyt API-Football  [ZALICZONO]
 
 - **CO ZROBIĘ:** Sprawdzić sezony, top 5 lig, terminarze, wyniki, statystyki, kursy, opóźnienia i limity.
 - **CO ROBISZ TY:** Potwierdzić aktywny plan API tylko jeśli nie da się odczytać go bezpiecznie.
@@ -76,7 +76,7 @@
 - **BRAMKA ODBIORU / TEST PASS:** Powstała tabela liga×sezon×typ danych z liczebnościami; próbka pobrań powtarzalna; żaden brak nie jest ukrywany jako zero.
 - **DOWÓD ZALICZENIA:** Raport pokrycia z datą, liczbami, odpowiedziami testowymi i kosztami zapytań.
 - **ZALEŻY OD:** Krok 3.
-- **STATUS:** NIE ROZPOCZĘTO | TEST: NIE URUCHOMIONO | LINK DOWODU: — | DATA ODBIORU: —
+- **STATUS:** ZALICZONO | TEST: PASS — 30/30 sezonów, próbki 60/60, 25/25 krzyżowych zgodności; 0 błędów API | DOWÓD: [STEP_05_ACCEPTANCE.md](STEP_05_ACCEPTANCE.md) i [raport liga×sezon](audits/API_FOOTBALL_STEP05_2026-10-25.md) | DATA ODBIORU: 25.10.2026
 
 #### Krok 06 — Audyt PitchAPI  [NIE ROZPOCZĘTO]
 
@@ -341,3 +341,4 @@ W nowej rozmowie wystarczy: „Otwórz plan KB Score 3.0 na Dysku Google; podaj 
 - **02 PASS (25.10.2026):** [prywatne repozytorium](https://github.com/karolbarankiewicz1984-ui/kb-score-3) i [commit struktury](https://github.com/karolbarankiewicz1984-ui/kb-score-3/commit/7c6cee2be18b3a771d0d94ccd3f6841f7f6d83a6).
 - **03 PASS (25.10.2026):** [odczyt API-Football i PitchAPI](https://github.com/karolbarankiewicz1984-ui/kb-score-3/actions/runs/40203074557) oraz [checklista bezpieczeństwa](STEP_03_SECURITY_CHECKLIST.md).
 - **04 PASS (25.10.2026):** cztery dokumenty, 29/29 bramek, poprawne linki i [protokół odbioru GATE 04](STEP_04_ACCEPTANCE.md).
+- **05 PASS (25.10.2026):** [GATE 05](STEP_05_ACCEPTANCE.md), [30-wierszowy audyt API-Football](audits/API_FOOTBALL_STEP05_2026-10-25.md) i dwa testy GitHub Actions.
