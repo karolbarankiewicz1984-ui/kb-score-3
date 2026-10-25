@@ -83,7 +83,29 @@ class Client:
                     return None
                 return {"data": to_plain(item)}
             except Exception as exc:
+                # The SDK may classify both invalid credentials and WAF 403
+                # as AuthError. Record only safe metadata; never print raw body.
                 self.errors.append({"endpoint": route, "type": "SDK_" + type(exc).__name__})
+                if route == "/v1/leagues" and self.calls < self.cap:
+                    self.calls += 1
+                    probe=urllib.request.Request(self.base+route,method="GET",headers={
+                        self.header:self.key, "User-Agent":UA, "Accept":"application/json"})
+                    try:
+                        with urllib.request.urlopen(probe,timeout=10) as response:
+                            j=json.loads(response.read(1_000_000))
+                            if isinstance(j,dict) and isinstance(j.get("data",{}).get("leagues"),list):
+                                self.errors.append({"endpoint":route,"type":"SDK_FAILED_HTTP_FALLBACK_SUCCEEDED"})
+                                return j
+                            self.errors.append({"endpoint":route,"type":"HTTP_FALLBACK_UNEXPECTED_SCHEMA"})
+                    except urllib.error.HTTPError as err:
+                        server=str(err.headers.get("server","")).lower()
+                        data=err.read(20_000).lower()
+                        code=("HTTP_"+str(err.code)+
+                              ("_CLOUDFLARE" if "cloudflare" in server else "")+
+                              ("_CF1010" if b"error 1010" in data or b"browser_signature_banned" in data else ""))
+                        self.errors.append({"endpoint":route,"type":code})
+                    except Exception as other:
+                        self.errors.append({"endpoint":route,"type":"HTTP_FALLBACK_"+type(other).__name__})
                 return None
         url = self.base + route
         if params:
