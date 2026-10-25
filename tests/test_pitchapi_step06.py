@@ -7,6 +7,11 @@ class Step06Tests(unittest.TestCase):
         self.assertEqual(norm("Łódź FC."), "odz fc")
         self.assertEqual(norm("Le Havre  AC"), "le havre ac")
 
+    def test_laliga_catalog_alias(self):
+        # PitchAPI lists LaLiga, while our report calls it La Liga.
+        self.assertEqual(norm("La Liga").replace(" ", ""), norm("LaLiga").replace(" ", ""))
+        self.assertNotEqual(norm("La Liga").replace(" ", ""), norm("LaLiga2").replace(" ", ""))
+
     def test_two_fixed_samples(self):
         arr=[{"id":"m_AAAAAA","status":"finished","time_utc":"2022-01-01T12:00:00Z"}]
         self.assertEqual([x["id"] for x in select_two(arr)[0]],["m_AAAAAA"])
