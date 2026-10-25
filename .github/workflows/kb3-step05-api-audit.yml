@@ -1,0 +1,84 @@
+name: "KB3 Step 05 - API-Football coverage audit"
+
+# Deliberately one-time on workflow creation; later runs are manual.
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/kb3-step05-api-audit.yml"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: kb3-step05-audit
+  cancel-in-progress: false
+
+jobs:
+  collect:
+    name: Audyt TOP5 2021-2026
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - name: Test repeatability, missing data semantics and request cap
+        run: python3 -m unittest tests.test_api_football_coverage_audit -v
+      - name: Request bounded source coverage (read-only, max 125 calls)
+        env:
+          API_FOOTBALL_KEY: ${{ secrets.API_FOOTBALL_KEY }}
+        run: python3 scripts/api_football_coverage_audit.py --out step05-output
+      - name: Preserve diagnostic summaries even on failures
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: kb3-step05-api-football-audit
+          path: step05-output/
+          if-no-files-found: warn
+          retention-days: 30
+
+  publish:
+    name: Commit sanitized report (no API secrets)
+    needs: collect
+    if: needs.collect.result == 'success'
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/download-artifact@v4
+        with:
+          name: kb3-step05-api-football-audit
+          path: step05-output
+      - name: Validate expected sanitized audit format
+        run: |
+          python3 - <<'PY'
+          import glob, json, pathlib, sys
+          paths = glob.glob("step05-output/API_FOOTBALL_STEP05_*.json")
+          if len(paths) != 1:
+              raise SystemExit("expected one coverage JSON")
+          data = json.loads(pathlib.Path(paths[0]).read_text(encoding="utf-8"))
+          if data.get("outcome") != "DATA_COLLECTED" or len(data.get("rows", [])) != 30:
+              raise SystemExit("incomplete audit / do not publish")
+          if data.get("requests_used_by_this_audit", 999) > 125:
+              raise SystemExit("call budget violated")
+          print("PASS: sanitized 30-row audit ready")
+          PY
+      - name: Save permanent audit evidence
+        run: |
+          set -euo pipefail
+          mkdir -p docs/audits data/audits
+          cp step05-output/API_FOOTBALL_STEP05_*.md docs/audits/
+          cp step05-output/API_FOOTBALL_STEP05_*.json data/audits/
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add docs/audits/API_FOOTBALL_STEP05_*.md data/audits/API_FOOTBALL_STEP05_*.json
+          if git diff --cached --quiet; then
+            echo "Audit already published."
+            exit 0
+          fi
+          git commit -m "audit: record API-Football five-league historical coverage"
+          git push origin HEAD:main
