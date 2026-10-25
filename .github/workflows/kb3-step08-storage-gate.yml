@@ -48,7 +48,7 @@ jobs:
               conn.execute("INSERT INTO teams(canonical_name) VALUES('Synthetic Team B')")
               conn.execute("""INSERT INTO fixtures(season_id,home_team_id,away_team_id,kickoff_utc,status,created_utc,updated_utc)
                           VALUES(1,1,2,?,'SCHEDULED',?,?)""",(kickoff,now_str,now_str))
-          manifest, copy = backup_database(db, root/"backup")
+          manifest, copy = backup_database(db, root/"backup", synthetic_test=True)
           result = restore_database(manifest,root/"backup",root/"synthetic-restored.sqlite3")
           manifest_data = json.loads(manifest.read_text())
           checks = {
