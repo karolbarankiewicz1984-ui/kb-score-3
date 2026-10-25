@@ -1,6 +1,6 @@
 name: "KB3 Step 06 - PitchAPI historical xG coverage"
 
-# Run once on workflow creation; later manually. No daily schedule.
+# Diagnostic rerun after SDK AuthError; one-time workflow-file push trigger, then manual only.
 on:
   workflow_dispatch:
   push:
