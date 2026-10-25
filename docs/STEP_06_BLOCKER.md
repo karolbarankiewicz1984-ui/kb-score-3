@@ -53,3 +53,11 @@ Oficjalna dokumentacja https://pitchapi.dev/ podaje: **401 UNAUTHORIZED = brak l
 **Praktyczny wniosek:** przed zakupami i przebudową skryptów należy porównać aktywność klucza w panelu PitchAPI i **przywrócić poprawną wartość `PITCHAPI_API_KEY` w nowym repozytorium**. Nie kopiować surowej wartości przez rozmowę. Jeśli tylko dotychczasowy sekret starego repo działa, a jego wartości nie zachowano, regeneracja może unieważnić klucz w starym repo; najpierw ustalić, czy PitchAPI pozwala dodać drugi klucz, a w razie wymuszonej rotacji zaktualizować obie integracje. Nie wykonywać kolejnych automatycznych prób HTTP 401 bez działań na koncie.
 
 **Stan odbioru niezmieniony:** GATE 06 = BLOKADA / NIEZALICZONY; ogółem 5/29. Historyczne pliki zostały **wyłącznie odczytane**; nie użyto ich do trenowania KB Score 3.0 ani nie zmieniano starego repo.
+
+---
+
+## ZAMKNIĘCIE BLOKADY — 25.10.2026 (NOWSZY WPIS, zachowano historię błędów)
+
+Po wymianie klucza `PITCHAPI_API_KEY` właściciel poprosił o ponowienie. Uruchomiono **attempt 2** [run #40220569321](https://github.com/karolbarankiewicz1984-ui/kb-score-3/actions/runs/40220569321). Część zbierania i walidacji danych przeszła SUCCESS: PitchAPI ponownie działa, katalog 24/30 sezonów, 48/48 kompletnych próbek xG, 14 ścisłych par API-Football, 7/7 testów offline; zero błędów dostawców. Pełny workflow ma status failure **z powodu konfliktu Git push podczas publikacji**, nie z powodu nieprawidłowego klucza. Oryginalny raport JSON+MD został trwale zarchiwizowany na [Google Drive](https://drive.google.com/file/d/1y3z4EdkkNJHb0oiuyFLU5elFVTiJoa_k/view).
+
+**Aktualne rozstrzygnięcie:** blokada autoryzacji ZAMKNIĘTA; **GATE 06 ZALICZONO — 6/29 kroków**. [Nowy protokół odbioru](STEP_06_ACCEPTANCE.md). Wszystkie wcześniejsze próby FAIL pozostają w historii. Następny krok 07 — nie rozpoczęto.
