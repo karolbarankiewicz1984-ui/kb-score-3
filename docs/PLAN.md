@@ -1,6 +1,6 @@
 # KB Score 3.0 — PLAN GŁÓWNY (kopia operacyjna GitHub)
 
-**Wersja źródłowa:** v1.1, Google Docs (aktualizowane po odbiorach). **Stan podczas sporządzania tej kopii:** 2026-10-25, **3/29 kroków zaliczonych** (01–03), krok 04 w opracowaniu. Statusy w tej kopii aktualizujemy po odbiorach, ale **źródłem prawdy pozostaje [oryginał na Dysku Google](https://docs.google.com/document/d/10wjHL3r3OAuxtezwcIeWztxS8lwjhYon5GM3BLhI0xE/edit)**.
+**Wersja źródłowa:** v1.1, Google Docs (aktualizowane po odbiorach). **Stan ostatniej synchronizacji:** 2026-10-25, **4/29 kroków zaliczonych** (01–04), krok 05 NIE ROZPOCZĘTO. Statusy w tej kopii aktualizujemy po odbiorach, ale **źródłem prawdy pozostaje [oryginał na Dysku Google](https://docs.google.com/document/d/10wjHL3r3OAuxtezwcIeWztxS8lwjhYon5GM3BLhI0xE/edit)**.
 
 **Pozostałe dokumenty:** [DANE.md](DANE.md), [MODEL.md](MODEL.md), [ZMIANY.md](ZMIANY.md), [instrukcja bezpieczeństwa kroku 03](STEP_03_SECURITY_CHECKLIST.md). **Repozytorium:** https://github.com/karolbarankiewicz1984-ui/kb-score-3.
 
@@ -56,7 +56,7 @@
 - **ZALEŻY OD:** Kroki 1–2.
 - **STATUS:** ZALICZONO | TEST: PASS — API-Football i PitchAPI HTTP 200; brak wskazań sekretów w kontrolowanym skanie; budżet Actions 0 USD i alerty włączone | DOWÓD: https://github.com/karolbarankiewicz1984-ui/kb-score-3/actions/runs/40203074557 | DATA ODBIORU: 25.10.2026
 
-#### Krok 04 — Dokumentacja projektu i repozytorium decyzji  [NIE ROZPOCZĘTO]
+#### Krok 04 — Dokumentacja projektu i repozytorium decyzji  [ZALICZONO]
 
 - **CO ZROBIĘ:** Przenieść ten plan do docs w NOWYM repo po jego utworzeniu; przygotować PLAN.md, DANE.md, MODEL.md i ZMIANY.md; linkować do tego dokumentu na Dysku.
 - **CO ROBISZ TY:** Zatwierdzić ogólne założenia przed pisaniem silnika.
@@ -64,7 +64,7 @@
 - **BRAMKA ODBIORU / TEST PASS:** Wszystkie cztery dokumenty są dostępne; każde określenie etapu ma warunki odbioru; plan GitHub i dokument główny odsyłają do siebie; żaden krok nie ma fałszywego DONE.
 - **DOWÓD ZALICZENIA:** Linki do dokumentów, commit i wynik kontroli kompletności 29 kroków.
 - **ZALEŻY OD:** Krok 2.
-- **STATUS:** NIE ROZPOCZĘTO | TEST: NIE URUCHOMIONO | LINK DOWODU: — | DATA ODBIORU: —
+- **STATUS:** ZALICZONO | TEST: PASS (4 dokumenty; 29/29 bramek, dowodów i zależności; 0 zerwanych linków i przedwczesnych DONE) | DOWÓD: [STEP_04_ACCEPTANCE.md](STEP_04_ACCEPTANCE.md) | DATA ODBIORU: 25.10.2026
 
 ### Etap B. Źródła i historia
 
@@ -340,4 +340,4 @@ W nowej rozmowie wystarczy: „Otwórz plan KB Score 3.0 na Dysku Google; podaj 
 - **01 PASS (24.10.2026):** audyt kont, limitów i budżetu — protokół w [Google Docs](https://docs.google.com/document/d/10wjHL3r3OAuxtezwcIeWztxS8lwjhYon5GM3BLhI0xE/edit).
 - **02 PASS (25.10.2026):** [prywatne repozytorium](https://github.com/karolbarankiewicz1984-ui/kb-score-3) i [commit struktury](https://github.com/karolbarankiewicz1984-ui/kb-score-3/commit/7c6cee2be18b3a771d0d94ccd3f6841f7f6d83a6).
 - **03 PASS (25.10.2026):** [odczyt API-Football i PitchAPI](https://github.com/karolbarankiewicz1984-ui/kb-score-3/actions/runs/40203074557) oraz [checklista bezpieczeństwa](STEP_03_SECURITY_CHECKLIST.md).
-- **04 w opracowaniu:** cztery dokumenty i powiązanie źródła prawdy; status PASS wymaga osobnego wpisu po weryfikacji.
+- **04 PASS (25.10.2026):** cztery dokumenty, 29/29 bramek, poprawne linki i [protokół odbioru GATE 04](STEP_04_ACCEPTANCE.md).
