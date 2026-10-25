@@ -1,6 +1,6 @@
 # KB Score 3.0 — PLAN GŁÓWNY (kopia operacyjna GitHub)
 
-**Wersja źródłowa:** v1.1, Google Docs (aktualizowane po odbiorach). **Stan ostatniej synchronizacji:** 2026-10-25, **5/29 kroków zaliczonych** (01–05), krok 06 NIE ROZPOCZĘTO. Statusy w tej kopii aktualizujemy po odbiorach, ale **źródłem prawdy pozostaje [oryginał na Dysku Google](https://docs.google.com/document/d/10wjHL3r3OAuxtezwcIeWztxS8lwjhYon5GM3BLhI0xE/edit)**.
+**Wersja źródłowa:** v1.1, Google Docs (aktualizowane po odbiorach). **Stan ostatniej synchronizacji:** 2026-10-25, **6/29 kroków zaliczonych** (01–06), krok 07 NIE ROZPOCZĘTO. Statusy w tej kopii aktualizujemy po odbiorach, ale **źródłem prawdy pozostaje [oryginał na Dysku Google](https://docs.google.com/document/d/10wjHL3r3OAuxtezwcIeWztxS8lwjhYon5GM3BLhI0xE/edit)**.
 
 **Pozostałe dokumenty:** [DANE.md](DANE.md), [MODEL.md](MODEL.md), [ZMIANY.md](ZMIANY.md), [instrukcja bezpieczeństwa kroku 03](STEP_03_SECURITY_CHECKLIST.md). **Repozytorium:** https://github.com/karolbarankiewicz1984-ui/kb-score-3.
 
@@ -78,7 +78,7 @@
 - **ZALEŻY OD:** Krok 3.
 - **STATUS:** ZALICZONO | TEST: PASS — 30/30 sezonów, próbki 60/60, 25/25 krzyżowych zgodności; 0 błędów API | DOWÓD: [STEP_05_ACCEPTANCE.md](STEP_05_ACCEPTANCE.md) i [raport liga×sezon](audits/API_FOOTBALL_STEP05_2026-10-25.md) | DATA ODBIORU: 25.10.2026
 
-#### Krok 06 — Audyt PitchAPI  [BLOKADA / DO POPRAWY]
+#### Krok 06 — Audyt PitchAPI  [ZALICZONO]
 
 - **CO ZROBIĘ:** Sprawdzić legalnie dostępne ligi, sezony, rzeczywiste xG, statystyki strzałów i zgodność czasową.
 - **CO ROBISZ TY:** W razie potrzeby potwierdzić konto/klucz w bezpieczny sposób.
@@ -86,7 +86,7 @@
 - **BRAMKA ODBIORU / TEST PASS:** Porównano minimum reprezentatywną próbkę meczów z API-Football; opisano zakres i brak xG oraz ograniczenia historyczne.
 - **DOWÓD ZALICZENIA:** Raport pokrycia xG z identyfikatorami przykładowych meczów i rezultatami zapytań.
 - **ZALEŻY OD:** Krok 3.
-- **STATUS:** BLOKADA / DO POPRAWY | TEST: FAIL — PitchAPI SDK_AuthError / HTTP 401; katalogu i próbek xG brak, nie zaliczono | DOWÓD: [STEP_06_BLOCKER.md](STEP_06_BLOCKER.md), [GitHub Actions #40220569321](https://github.com/karolbarankiewicz1984-ui/kb-score-3/actions/runs/40220569321) | DATA ODBIORU: —
+- **STATUS:** ZALICZONO | TEST: PASS — 24/30 liga×sezon z katalogu, 48/48 kompletnych xG w próbkach, 14 ścisłych par API-Football, 7/7 testów offline; La Liga nieodnaleziona | DOWÓD: [STEP_06_ACCEPTANCE.md](STEP_06_ACCEPTANCE.md), [Google Drive ZIP](https://drive.google.com/file/d/1y3z4EdkkNJHb0oiuyFLU5elFVTiJoa_k/view) | DATA ODBIORU: 25.10.2026
 
 #### Krok 07 — Dopasowanie identyfikatorów meczów  [NIE ROZPOCZĘTO]
 
@@ -342,3 +342,5 @@ W nowej rozmowie wystarczy: „Otwórz plan KB Score 3.0 na Dysku Google; podaj 
 - **03 PASS (25.10.2026):** [odczyt API-Football i PitchAPI](https://github.com/karolbarankiewicz1984-ui/kb-score-3/actions/runs/40203074557) oraz [checklista bezpieczeństwa](STEP_03_SECURITY_CHECKLIST.md).
 - **04 PASS (25.10.2026):** cztery dokumenty, 29/29 bramek, poprawne linki i [protokół odbioru GATE 04](STEP_04_ACCEPTANCE.md).
 - **05 PASS (25.10.2026):** [GATE 05](STEP_05_ACCEPTANCE.md), [30-wierszowy audyt API-Football](audits/API_FOOTBALL_STEP05_2026-10-25.md) i dwa testy GitHub Actions.
+
+- **06 PASS (25.10.2026):** [GATE 06 — dokumentacja](STEP_06_ACCEPTANCE.md), [pełny audyt PitchAPI i 48 próbek xG](https://drive.google.com/file/d/1y3z4EdkkNJHb0oiuyFLU5elFVTiJoa_k/view), [GitHub Actions próba 2](https://github.com/karolbarankiewicz1984-ui/kb-score-3/actions/runs/40220569321).
