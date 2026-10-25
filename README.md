@@ -1,17 +1,29 @@
 # KB Score 3.0
 
-Nowy, niezależny projekt modelu piłkarskiego. Aktualnie: wyłącznie szkielet repozytorium. Żaden nowy silnik, trening ML, harmonogram ani automatyczna wysyłka nie zostały uruchomione.
+**Nowy, prywatny i całkowicie niezależny projekt analizy piłkarskiej.** Nie kopiujemy silnika KB Score 2.1. Historyczne KB2.1, API Market i MultiModel pozostają wyłącznie punktami odniesienia.
 
-**Plan główny, kryteria odbioru i dziennik postępu (źródło prawdy):** https://docs.google.com/document/d/10wjHL3r3OAuxtezwcIeWztxS8lwjhYon5GM3BLhI0xE/edit
+## Dokumentacja i status projektu
 
-## Reguły
-- KB Score 2.1, API Market i MultiModel służą wyłącznie jako punkty odniesienia.
-- Każdy z 29 kroków wymaga testu PASS, weryfikowalnego dowodu i wpisu do dziennika.
-- Prognozy i dane historyczne będą chronione przed lookahead i nieuprawnionym nadpisaniem.
-- Nie umieszczamy sekretów ani baz danych w repozytorium.
-- Nie kupujemy usług ani nie uruchamiamy produkcji bez wymaganego zatwierdzenia.
+**ŹRÓDŁO PRAWDY:** [Plan główny, bramki odbioru i dziennik na Google Drive](https://docs.google.com/document/d/10wjHL3r3OAuxtezwcIeWztxS8lwjhYon5GM3BLhI0xE/edit).
 
-## Katalogi
-`docs/` — dokumentacja; `src/` — przyszły kod; `tests/` — testy; `config/` — ustawienia niesekretne; `data/` — manifesty danych; `models/` — manifesty wersji modeli; `reports/` — szablony; `scripts/` — narzędzia.
+- [PLAN — mapa wszystkich 29 kroków](docs/PLAN.md)
+- [DANE — projekt bazy i źródeł](docs/DANE.md)
+- [MODEL — metodologia i testy](docs/MODEL.md)
+- [ZMIANY — rejestr decyzji i PASS/FAIL](docs/ZMIANY.md)
+- [Lista kontrolna bezpieczeństwa kroku 03](docs/STEP_03_SECURITY_CHECKLIST.md)
 
-**Krok 02:** przygotowanie struktury. **Kod modelu:** NIE ROZPOCZĘTO.
+**Stan przy aktualizacji tego README (25.10.2026):** kroki 01–03 ZALICZONE, krok 04 w trakcie odbioru, kroki 05–29 niezaliczone. Dokładny stan na dany dzień należy zawsze sprawdzić w planie Google Docs. Żaden nowy model ani uczenie ML nie zostały uruchomione.
+
+## Co znajduje się w repo?
+
+- `docs/` — plan, decyzje, metodologie i dowody odbioru;
+- `src/` — przyszły kod modelu i pobierania danych;
+- `tests/` — przyszłe testy;
+- `config/` — konfiguracja niesekretna;
+- `data/` — manifesty danych (duże archiwa poza repo);
+- `models/` — manifesty wytrenowanych modeli;
+- `reports/` — szablony i raporty;
+- `scripts/` — przyszłe skrypty;
+- `.github/workflows/kb3-step03-secrets-smoke.yml` — ręczny, odczytowy test dwóch połączeń API wykonany w kroku 03.
+
+**Zasada bramki:** każdy z 29 kroków ma kryterium odbioru, test PASS i link do dowodu. Kod źródłowy lub sam opis nie zalicza kroku. Brak automatycznego obstawiania i nowych zakupów bez zgody właściciela; sekrety pozostają w GitHub Secrets, nigdy w repo.
