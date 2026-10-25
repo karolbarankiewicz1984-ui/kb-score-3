@@ -33,6 +33,20 @@ SEASONS = tuple(range(2021, 2027))
 UA = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36"
 VALID_ID = re.compile(r"^[a-z]_[A-Za-z0-9]{6}$")
 
+def to_plain(obj):
+    """Transform typed PitchAPI SDK objects into non-secret aggregate dictionaries."""
+    if obj is None or isinstance(obj, (str, int, float, bool)):
+        return obj
+    if isinstance(obj, dict):
+        return {str(k): to_plain(v) for k, v in obj.items()}
+    if isinstance(obj, (list, tuple)):
+        return [to_plain(x) for x in obj]
+    if hasattr(obj, "model_dump"):
+        return to_plain(obj.model_dump(mode="json"))
+    if hasattr(obj, "__dict__"):
+        return {k: to_plain(v) for k, v in vars(obj).items() if not k.startswith("_")}
+    return None
+
 class Client:
     def __init__(self, base, env_name, header, cap):
         self.base = base
@@ -43,11 +57,34 @@ class Client:
         self.errors = []
         if not self.key:
             raise RuntimeError("MISSING_SECRET_" + env_name)
+        self.sdk = None
+        if self.base == PITCH:
+            # The official SDK has successfully connected in the older isolated
+            # PitchAPI workflow, unlike the blocked urllib catalog request.
+            from pitchapi import PitchAPI
+            self.sdk = PitchAPI(api_key=self.key)
 
     def get(self, route, **params):
         if self.calls >= self.cap:
             raise RuntimeError("CALL_BUDGET_EXHAUSTED")
         self.calls += 1
+        if self.sdk:
+            try:
+                if route == "/v1/leagues":
+                    item = self.sdk.leagues.list()
+                elif route.startswith("/v1/leagues/") and route.endswith("/matches"):
+                    league_id = route.split("/")[3]
+                    item = self.sdk.leagues.matches(league_id, season=params.get("season"))
+                elif route.startswith("/v1/matches/") and route.endswith("/shots"):
+                    match_id = route.split("/")[3]
+                    item = self.sdk.matches.shots(match_id)
+                else:
+                    self.errors.append({"endpoint": route, "type": "UNSUPPORTED_SDK_ROUTE"})
+                    return None
+                return {"data": to_plain(item)}
+            except Exception as exc:
+                self.errors.append({"endpoint": route, "type": "SDK_" + type(exc).__name__})
+                return None
         url = self.base + route
         if params:
             url += "?" + urllib.parse.urlencode(params)
@@ -287,7 +324,7 @@ def finish(folder,result,pitch,football):
     lines+=["","**Brak danych to nie zero.** xG dotyczy zakończonych historycznych spotkań, do budowy cech dla późniejszych spotkań używać tylko wcześniejszej historii.","",
             "**GATE 06: DO ODBIORU / PENDING** do czasu niezależnego potwierdzenia wyników.",""]
     md_path.write_text("\n".join(lines),encoding="utf-8")
-    print("PITCHAPI_STEP06_SAFESUMMARY "+json.dumps({**s,"pitch_calls":pitch.calls,"football_calls":football.calls,"outcome":result["outcome"]}))
+    print("PITCHAPI_STEP06_SAFESUMMARY "+json.dumps({**s,"pitch_calls":pitch.calls,"football_calls":football.calls,"outcome":result["outcome"],"pitch_errors":pitch.errors[:5],"football_errors":football.errors[:5]}))
     if os.getenv("GITHUB_STEP_SUMMARY"):
         with open(os.environ["GITHUB_STEP_SUMMARY"],"a",encoding="utf-8") as fh:
             fh.write("\n".join(lines[:26])+"\n")
