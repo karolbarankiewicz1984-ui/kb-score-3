@@ -1,6 +1,6 @@
 name: "KB3 Step 06 - PitchAPI historical xG coverage"
 
-# Diagnostic rerun after SDK AuthError; one-time workflow-file push trigger, then manual only.
+# Explicit user-requested retry after PitchAPI credential rotation (2026-10-25 22:21 Europe/Warsaw).
 on:
   workflow_dispatch:
   push:
