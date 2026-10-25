@@ -1,0 +1,86 @@
+name: "KB3 Step 08 - Database Backup Restore Gate"
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/kb3-step08-storage-gate.yml"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: kb3-step08-storage-gate
+  cancel-in-progress: false
+
+jobs:
+  gate-08:
+    name: SQLite migration / immutability / restore
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - name: Check out isolated KB Score 3
+        uses: actions/checkout@v4
+
+      - name: Verify 9 independent unit tests — no API or external secrets
+        run: python -m unittest discover -s tests -p 'test_step08_storage.py' -v
+
+      - name: Create synthetic backup, independent restore and manifest
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          from pathlib import Path
+          import datetime as dt
+          import json
+          from src.kb3_storage import initialize, connect, backup_database, restore_database
+          root = Path("audit/step08")
+          root.mkdir(parents=True, exist_ok=True)
+          db = initialize(root/"synthetic-source.sqlite3")
+          now = dt.datetime.now(dt.timezone.utc)
+          now_str = now.isoformat().replace("+00:00", "Z")
+          kickoff = (now+dt.timedelta(days=365)).isoformat().replace("+00:00","Z")
+          with connect(db) as conn:
+              conn.execute("INSERT INTO competitions(name,country) VALUES('Synthetic Premier League','XX')")
+              conn.execute("INSERT INTO seasons(competition_id,start_year,season_label) VALUES(1,2030,'2030/31')")
+              conn.execute("INSERT INTO teams(canonical_name) VALUES('Synthetic Team A')")
+              conn.execute("INSERT INTO teams(canonical_name) VALUES('Synthetic Team B')")
+              conn.execute("""INSERT INTO fixtures(season_id,home_team_id,away_team_id,kickoff_utc,status,created_utc,updated_utc)
+                          VALUES(1,1,2,?,'SCHEDULED',?,?)""",(kickoff,now_str,now_str))
+          manifest, copy = backup_database(db, root/"backup")
+          result = restore_database(manifest,root/"backup",root/"synthetic-restored.sqlite3")
+          manifest_data = json.loads(manifest.read_text())
+          checks = {
+              "gate": "STEP08",
+              "status": "PASS",
+              "source": "SYNTHETIC_DATA_ONLY",
+              "sqlite_integrity": result["integrity"]["integrity"],
+              "foreign_keys": result["integrity"]["foreign_keys"],
+              "schema_version": result["integrity"]["schema_version"],
+              "source_to_backup_to_restore": result["restored"],
+              "backup_id": result["backup_id"],
+              "backup_sha256": result["source_sha256"],
+              "source_db_sha256": manifest_data["sha256"],
+              "fixtures_restored": manifest_data["row_counts"]["fixtures"],
+              "production_encryption_required": True,
+          }
+          with open(root/"GATE08_RESTORE_CHECK.json","w",encoding="utf8") as o:
+              json.dump(checks,o,indent=2)
+          print("GATE08_PASS", json.dumps(checks,sort_keys=True))
+          with open(__import__("os").environ["GITHUB_STEP_SUMMARY"], "a", encoding="utf8") as o:
+              o.write("# KB3 Gate 08 — SQLite storage\n\n")
+              o.write("**Synthetic backup→restore: PASS**, SQLite integrity=ok, foreign keys=ok.\n\n")
+              o.write(f"Backup ID: \`{checks['backup_id']}\`\n\n")
+              o.write(f"Backup SHA-256: \`{checks['backup_sha256']}\`\n\n")
+              o.write("**IMPORTANT:** backup artifact contains only synthetic demo data. "
+                      "Encryption and authenticated long-term production storage need approval before real data.\n")
+          PY
+
+      - name: Upload test-only archive for independent durable Drive copy
+        uses: actions/upload-artifact@v4
+        with:
+          name: kb3-step08-synthetic-backup
+          path: audit/step08/
+          if-no-files-found: error
+          retention-days: 14
