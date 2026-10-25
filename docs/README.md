@@ -22,4 +22,6 @@
 
 **Uwaga:** GitHub jest kopią operacyjną. W razie rozbieżności statusu decyduje najnowszy [dziennik na Dysku Google](https://docs.google.com/document/d/10wjHL3r3OAuxtezwcIeWztxS8lwjhYon5GM3BLhI0xE/edit). Nigdy nie deklarujemy ZALICZONO bez odczytanego testu i linku do dowodu. Żaden nowy silnik prognoz nie został jeszcze napisany.
 
-[STEP_07_ACCEPTANCE.md](STEP_07_ACCEPTANCE.md) — **krok 07 PASS**, 38 jednoznacznych przypisań, 22 niezatwierdzone do kontroli, wyniki 17 testów i [trwała mapa](../data/audits/STEP07_MATCH_CROSSWALK_2026-10-25.json). Stan **7/29**.
+[STEP_07_ACCEPTANCE.md](STEP_07_ACCEPTANCE.md) — **krok 07 PASS**, 38 jednoznacznych przypisań, 22 niezatwierdzone do kontroli, wyniki 17 testów i [trwała mapa](../data/audits/STEP07_MATCH_CROSSWALK_2026-10-25.json). Stan kroku 07: PASS.
+
+[STEP_08_ACCEPTANCE.md](STEP_08_ACCEPTANCE.md) — **krok 08 PASS**, schemat SQLite, 9 testów, SHA-256, backup→restore z Drive i instrukcja odzyskiwania. Stan projektu **8/29**. Kopia testowa zawiera wyłącznie fikcyjny mecz; szyfrowanie i backupy produkcyjne wymagają późniejszego wdrożenia.
