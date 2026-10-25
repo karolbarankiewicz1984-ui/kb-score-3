@@ -1,6 +1,6 @@
 name: "KB3 Step 06 - PitchAPI historical xG coverage"
 
-# Explicit user-requested retry after PitchAPI credential rotation (2026-10-25 22:21 Europe/Warsaw).
+# Coverage retry after successfully identifying LaLiga's no-space provider label (2026-10-25).
 on:
   workflow_dispatch:
   push:
