@@ -1,0 +1,87 @@
+name: "KB3 Step 06 - PitchAPI historical xG coverage"
+
+# Run once on workflow creation; later manually. No daily schedule.
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/kb3-step06-pitchapi-audit.yml"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: kb3-step06-audit
+  cancel-in-progress: false
+
+jobs:
+  collect:
+    name: Five-league xG samples and fixture crosscheck
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate missing data semantics and match identity offline
+        run: python3 -m unittest tests.test_pitchapi_step06 -v
+      - name: Read-only source audit - max 110 PitchAPI + 45 API-Football
+        env:
+          PITCHAPI_API_KEY: ${{ secrets.PITCHAPI_API_KEY }}
+          API_FOOTBALL_KEY: ${{ secrets.API_FOOTBALL_KEY }}
+        run: python3 scripts/pitchapi_step06_audit.py
+      - name: Preserve sanitized report even when audit fails
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: kb3-step06-pitchapi-audit
+          path: step06-output/
+          if-no-files-found: warn
+          retention-days: 30
+
+  publish:
+    name: Archive audit report without API secrets
+    needs: collect
+    if: needs.collect.result == 'success'
+    runs-on: ubuntu-latest
+    timeout-minutes: 4
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/download-artifact@v4
+        with:
+          name: kb3-step06-pitchapi-audit
+          path: step06-output
+      - name: Validate report schema and bounded requests
+        run: |
+          python3 - <<'PY'
+          import glob,json
+          from pathlib import Path
+          paths=glob.glob("step06-output/PITCHAPI_STEP06_*.json")
+          assert len(paths)==1, "exactly one aggregate JSON required"
+          d=json.loads(Path(paths[0]).read_text(encoding="utf-8"))
+          assert d.get("schema")=="kb30-pitchapi-audit-v1"
+          assert len(d.get("rows",[]))==30
+          assert d["requests"]["pitchapi"]<=110
+          assert d["requests"]["api_football"]<=45
+          assert len(d.get("samples",[]))>=15
+          assert d.get("outcome")=="AUDIT_COLLECTED"
+          print("PASS: step 06 bounded nonsecret audit payload")
+          PY
+      - name: Commit aggregate evidence (not provider raw responses)
+        run: |
+          set -euo pipefail
+          mkdir -p docs/audits data/audits
+          cp step06-output/PITCHAPI_STEP06_*.md docs/audits/
+          cp step06-output/PITCHAPI_STEP06_*.json data/audits/
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add docs/audits/PITCHAPI_STEP06_*.md data/audits/PITCHAPI_STEP06_*.json
+          if git diff --cached --quiet; then
+            echo "No new audit evidence."
+            exit 0
+          fi
+          git commit -m "audit: archive independent PitchAPI coverage and xG crosscheck"
+          git push origin HEAD:main
