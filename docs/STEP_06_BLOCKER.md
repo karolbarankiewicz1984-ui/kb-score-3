@@ -15,6 +15,13 @@ Szczegół błędu pierwszej próby pochodzi z archiwum artefaktu ID `1260905682
 
 Oficjalna dokumentacja https://pitchapi.dev/ podaje: **401 UNAUTHORIZED = brak lub nieprawidłowy klucz w nagłówku `X-API-KEY`**. Jest to inny stan niż HTTP 429 (ograniczenie częstości) i niż problem Cloudflare 403. Dostawca opisuje plan bez opłat, ale aktualnego pokrycia z konta nie można potwierdzić bez działającej autoryzacji.
 
+
+## Dodatkowy test rozróżniający błąd SDK i HTTP
+
+- [Run #40220569321](https://github.com/karolbarankiewicz1984-ui/kb-score-3/actions/runs/40220569321), 25.10.2026: **7/7 testów offline PASS; PitchAPI katalog FAIL**. Oficjalny SDK: `SDK_AuthError`, niezależna próba HTTPS: `HTTP_401_CLOUDFLARE`, bez wykrytego kodu blokady CF 1010.
+- Oba odczyty używały prywatnego sekretu `PITCHAPI_API_KEY` z NOWEGO repozytorium; żaden klucz nie został ujawniony w logu. Nagłówek serwera Cloudflare jest informacją o obsłudze żądania, a nie samodzielnym dowodem blokady WAF.
+- PitchAPI dokumentuje HTTP 401 jako brak lub nieważność klucza. Dalszych automatycznych prób **nie uruchamiać przed weryfikacją/aktualizacją sekretu**. Dodatkowy audyt nie pobrał żadnego meczu ani xG.
+
 ## Bezpieczne działania właściciela
 
 1. Otworzyć panel kluczy na oficjalnej stronie [PitchAPI](https://pitchapi.dev/) i sprawdzić aktywność klucza; w razie potrzeby wygenerować/odświeżyć klucz, bez zakupu abonamentu.
