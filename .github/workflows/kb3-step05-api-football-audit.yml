@@ -1,0 +1,45 @@
+name: "KB3 Step 05 - API-Football Coverage Audit"
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/kb3-step05-api-football-audit.yml"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: kb3-step05-api-football-coverage
+  cancel-in-progress: false
+
+jobs:
+  coverage:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    env:
+      API_FOOTBALL_KEY: ${{ secrets.API_FOOTBALL_KEY }}
+      PYTHONDONTWRITEBYTECODE: "1"
+    steps:
+      - name: Checkout isolated KB Score 3 repository
+        uses: actions/checkout@v4
+
+      - name: Check offline contracts before spending API quota
+        run: python -m unittest discover -s tests -p 'test_step05_api_audit.py' -v
+
+      - name: Audit top five leagues and five season starts with capped calls
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -n "$API_FOOTBALL_KEY" || { echo "MISSING_SECRET: API_FOOTBALL_KEY"; exit 1; }
+          python -m scripts.step05_api_football_audit
+
+      - name: Save nonsecret aggregate findings
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: kb3-step05-api-football-audit
+          path: audit/step05/
+          if-no-files-found: warn
+          retention-days: 14
