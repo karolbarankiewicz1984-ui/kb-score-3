@@ -176,7 +176,9 @@ class StorageGateTests(unittest.TestCase):
         fid=self.add_reference_fixture()
         self.insert_prediction(fid)
         folder=self.root/"safe-copy"
-        manifest, snapshot=backup_database(self.database,folder)
+        with self.assertRaisesRegex(RuntimeError,'PRODUCTION_BACKUP_REQUIRES_ENCRYPTION'):
+            backup_database(self.database,folder)
+        manifest, snapshot=backup_database(self.database,folder,synthetic_test=True)
         m=json.loads(manifest.read_text())
         self.assertEqual(m["row_counts"]["predictions"],1)
         self.assertTrue(m["production_encryption_required"])
