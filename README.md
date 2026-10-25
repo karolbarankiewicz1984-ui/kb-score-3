@@ -12,8 +12,10 @@
 - [ZMIANY — rejestr decyzji i PASS/FAIL](docs/ZMIANY.md)
 - [Lista kontrolna bezpieczeństwa kroku 03](docs/STEP_03_SECURITY_CHECKLIST.md)
 - [Protokół odbioru kroku 04 — PASS](docs/STEP_04_ACCEPTANCE.md)
+- [Audyt API-Football i protokół kroku 05 — PASS](docs/STEP_05_ACCEPTANCE.md)
+- [Raport pokrycia ligi × sezon](docs/audits/API_FOOTBALL_STEP05_2026-10-25.md)
 
-**Stan przy aktualizacji tego README (25.10.2026):** kroki 01–04 ZALICZONE, krok 05 i kolejne jeszcze niezaliczone. Dokładny stan na dany dzień należy zawsze sprawdzić w planie Google Docs. Żaden nowy model ani uczenie ML nie zostały uruchomione.
+**Stan przy aktualizacji tego README (25.10.2026):** kroki 01–05 ZALICZONE, krok 06 i kolejne jeszcze niezaliczone. Dokładny stan na dany dzień należy zawsze sprawdzić w planie Google Docs. Żaden nowy model ani uczenie ML nie zostały uruchomione.
 
 ## Co znajduje się w repo?
 
