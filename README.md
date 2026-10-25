@@ -11,8 +11,9 @@
 - [MODEL — metodologia i testy](docs/MODEL.md)
 - [ZMIANY — rejestr decyzji i PASS/FAIL](docs/ZMIANY.md)
 - [Lista kontrolna bezpieczeństwa kroku 03](docs/STEP_03_SECURITY_CHECKLIST.md)
+- [Protokół odbioru kroku 04 — PASS](docs/STEP_04_ACCEPTANCE.md)
 
-**Stan przy aktualizacji tego README (25.10.2026):** kroki 01–03 ZALICZONE, krok 04 w trakcie odbioru, kroki 05–29 niezaliczone. Dokładny stan na dany dzień należy zawsze sprawdzić w planie Google Docs. Żaden nowy model ani uczenie ML nie zostały uruchomione.
+**Stan przy aktualizacji tego README (25.10.2026):** kroki 01–04 ZALICZONE, krok 05 i kolejne jeszcze niezaliczone. Dokładny stan na dany dzień należy zawsze sprawdzić w planie Google Docs. Żaden nowy model ani uczenie ML nie zostały uruchomione.
 
 ## Co znajduje się w repo?
 
