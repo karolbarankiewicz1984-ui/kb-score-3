@@ -1,6 +1,6 @@
 # KB Score 3.0 — PLAN GŁÓWNY (kopia operacyjna GitHub)
 
-**Wersja źródłowa:** v1.1, Google Docs (aktualizowane po odbiorach). **Stan ostatniej synchronizacji:** 2026-10-25, **6/29 kroków zaliczonych** (01–06), krok 07 NIE ROZPOCZĘTO. Statusy w tej kopii aktualizujemy po odbiorach, ale **źródłem prawdy pozostaje [oryginał na Dysku Google](https://docs.google.com/document/d/10wjHL3r3OAuxtezwcIeWztxS8lwjhYon5GM3BLhI0xE/edit)**.
+**Wersja źródłowa:** v1.1, Google Docs (aktualizowane po odbiorach). **Stan ostatniej synchronizacji:** 2026-10-25, **7/29 kroków zaliczonych** (01–07), krok 08 NIE ROZPOCZĘTO. Statusy w tej kopii aktualizujemy po odbiorach, ale **źródłem prawdy pozostaje [oryginał na Dysku Google](https://docs.google.com/document/d/10wjHL3r3OAuxtezwcIeWztxS8lwjhYon5GM3BLhI0xE/edit)**.
 
 **Pozostałe dokumenty:** [DANE.md](DANE.md), [MODEL.md](MODEL.md), [ZMIANY.md](ZMIANY.md), [instrukcja bezpieczeństwa kroku 03](STEP_03_SECURITY_CHECKLIST.md). **Repozytorium:** https://github.com/karolbarankiewicz1984-ui/kb-score-3.
 
@@ -88,7 +88,7 @@
 - **ZALEŻY OD:** Krok 3.
 - **STATUS:** ZALICZONO | TEST: PASS — 30/30 liga×sezon, 60/60 kompletnych próbek xG, 20 ścisłych par API-Football, 8/8 testów offline; LaLiga zidentyfikowana po korekcie nazwy | DOWÓD: [STEP_06_ACCEPTANCE.md](STEP_06_ACCEPTANCE.md), [pełny raport](audits/PITCHAPI_STEP06_2026-10-25.md), [test SUCCESS](https://github.com/karolbarankiewicz1984-ui/kb-score-3/actions/runs/40235545588) | DATA ODBIORU: 25.10.2026
 
-#### Krok 07 — Dopasowanie identyfikatorów meczów  [NIE ROZPOCZĘTO]
+#### Krok 07 — Dopasowanie identyfikatorów meczów  [ZALICZONO]
 
 - **CO ZROBIĘ:** Połączyć drużyny i mecze obu dostawców, obsłużyć zmiany nazw, przełożenia, strefy czasowe i duble.
 - **CO ROBISZ TY:** Brak działań technicznych.
@@ -96,7 +96,7 @@
 - **BRAMKA ODBIORU / TEST PASS:** Na ręcznie skontrolowanej próbie dopasowania są prawidłowe; przypadki niejednoznaczne trafiają do kolejki, a nie są zgadywane; brak duplikatów klucza wydarzenia.
 - **DOWÓD ZALICZENIA:** Raport zgodności, liczba dopasowanych/niepewnych i wynik testów.
 - **ZALEŻY OD:** Kroki 5–6.
-- **STATUS:** NIE ROZPOCZĘTO | TEST: NIE URUCHOMIONO | LINK DOWODU: — | DATA ODBIORU: —
+- **STATUS:** ZALICZONO | TEST: PASS (38 STRICT, 22 REVIEW, 17/17 testów, 0 duplikatów, 0 faktycznych konfliktów ID; Lyon–Auxerre 60 min w kolejce) | DOWÓD: [STEP_07_ACCEPTANCE.md](STEP_07_ACCEPTANCE.md), [crosswalk JSON](../data/audits/STEP07_MATCH_CROSSWALK_2026-10-25.json), [Actions PASS](https://github.com/karolbarankiewicz1984-ui/kb-score-3/actions/runs/40236615477) | DATA ODBIORU: 25.10.2026
 
 #### Krok 08 — Projekt bazy danych i archiwizacji  [NIE ROZPOCZĘTO]
 
@@ -344,3 +344,5 @@ W nowej rozmowie wystarczy: „Otwórz plan KB Score 3.0 na Dysku Google; podaj 
 - **05 PASS (25.10.2026):** [GATE 05](STEP_05_ACCEPTANCE.md), [30-wierszowy audyt API-Football](audits/API_FOOTBALL_STEP05_2026-10-25.md) i dwa testy GitHub Actions.
 
 - **06 PASS (25.10.2026):** [GATE 06 — protokół po korekcie LaLiga](STEP_06_ACCEPTANCE.md), [30 sezonów i 60 kompletnych próbek xG](audits/PITCHAPI_STEP06_2026-10-25.md), [GitHub Actions SUCCESS](https://github.com/karolbarankiewicz1984-ui/kb-score-3/actions/runs/40235545588).
+
+- **07 PASS (25.10.2026):** [GATE07 — protokół](STEP_07_ACCEPTANCE.md), [38 ścisłych i kolejka 22](audits/STEP07_MATCH_CROSSWALK_2026-10-25.md), [uruchomienie SUCCESS](https://github.com/karolbarankiewicz1984-ui/kb-score-3/actions/runs/40236615477). Kolejka pozostaje nierozstrzygnięta; nie traktować jako mapy całej historii.
