@@ -70,6 +70,15 @@ Każdy odbiór zawiera: identyfikator kroku, datę i godzinę (z podaną strefą
 - **Nie stwierdzono pełnego pokrycia wszystkich meczów:** pojedyncze braki danych, ograniczona dostępność historycznych kursów, brak pomiaru rzeczywistych opóźnień. Przenieść do 09–10 i 19.
 - **Status:** PASS; nie rozpoczęto nowego modelu ML ani kroku 06. Bez nowych opłat.
 
+
+## GATE 06 — BLOKADA / DO POPRAWY (25.10.2026)
+
+- **Cel:** sprawdzenie zakresu historycznych xG strzałów w PitchAPI i próbek dopasowań do API-Football.
+- **Wykonano:** przygotowano [audyt](../scripts/pitchapi_step06_audit.py), [testy](../tests/test_pitchapi_step06.py) i [workflow](../.github/workflows/kb3-step06-pitchapi-audit.yml). Testy offline **7/7 PASS**.
+- **Dowody FAIL:** [uruchomienie HTTPS #40220277718](https://github.com/karolbarankiewicz1984-ui/kb-score-3/actions/runs/40220277718), [SDK #40220451559](https://github.com/karolbarankiewicz1984-ui/kb-score-3/actions/runs/40220451559), [rozróżnienie HTTP #40220569321](https://github.com/karolbarankiewicz1984-ui/kb-score-3/actions/runs/40220569321). PitchAPI `SDK_AuthError`, HTTP 401, zero katalogów/meczów/xG, bez ujawnienia klucza.
+- **Wynik GATE:** **NIEZALICZONY**, wymagane sprawdzenie aktywności i ewentualna aktualizacja `PITCHAPI_API_KEY` w nowym repo. [Pełny raport blokady](STEP_06_BLOCKER.md).
+- **Postęp:** nadal **5/29**. Bez nowych zakupów; bez zmian w historycznym KB2.1. Krok 07 jeszcze nierozpoczęty.
+
 ## Szablon następnego wpisu
 
 ```text
