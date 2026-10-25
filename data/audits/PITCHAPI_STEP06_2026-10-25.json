@@ -1,0 +1,1756 @@
+{
+  "schema": "kb30-pitchapi-audit-v1",
+  "run_utc": "2026-10-25T21:23:31.948304+00:00",
+  "source": "PitchAPI",
+  "sample_policy": "two deterministic finished matches (25%, 75%) per available league-season",
+  "rows": [
+    {
+      "league": "Premier League",
+      "pitch_league_id": "l_4WFCIZ",
+      "api_football_league_id": 39,
+      "season": "2021/2022",
+      "in_catalog": true,
+      "list_state": "OK",
+      "played_count": 380,
+      "sample_count": 2,
+      "complete_xg_count": 2,
+      "partial_xg_count": 0,
+      "strict_pair_count": 1,
+      "alias_candidates": 0,
+      "unmatched_pair_count": 0
+    },
+    {
+      "league": "Premier League",
+      "pitch_league_id": "l_4WFCIZ",
+      "api_football_league_id": 39,
+      "season": "2022/2023",
+      "in_catalog": true,
+      "list_state": "OK",
+      "played_count": 380,
+      "sample_count": 2,
+      "complete_xg_count": 2,
+      "partial_xg_count": 0,
+      "strict_pair_count": 1,
+      "alias_candidates": 0,
+      "unmatched_pair_count": 0
+    },
+    {
+      "league": "Premier League",
+      "pitch_league_id": "l_4WFCIZ",
+      "api_football_league_id": 39,
+      "season": "2023/2024",
+      "in_catalog": true,
+      "list_state": "OK",
+      "played_count": 380,
+      "sample_count": 2,
+      "complete_xg_count": 2,
+      "partial_xg_count": 0,
+      "strict_pair_count": 0,
+      "alias_candidates": 0,
+      "unmatched_pair_count": 1
+    },
+    {
+      "league": "Premier League",
+      "pitch_league_id": "l_4WFCIZ",
+      "api_football_league_id": 39,
+      "season": "2024/2025",
+      "in_catalog": true,
+      "list_state": "OK",
+      "played_count": 380,
+      "sample_count": 2,
+      "complete_xg_count": 2,
+      "partial_xg_count": 0,
+      "strict_pair_count": 0,
+      "alias_candidates": 0,
+      "unmatched_pair_count": 1
+    },
+    {
+      "league": "Premier League",
+      "pitch_league_id": "l_4WFCIZ",
+      "api_football_league_id": 39,
+      "season": "2025/2026",
+      "in_catalog": true,
+      "list_state": "OK",
+      "played_count": 380,
+      "sample_count": 2,
+      "complete_xg_count": 2,
+      "partial_xg_count": 0,
+      "strict_pair_count": 0,
+      "alias_candidates": 0,
+      "unmatched_pair_count": 1
+    },
+    {
+      "league": "Premier League",
+      "pitch_league_id": "l_4WFCIZ",
+      "api_football_league_id": 39,
+      "season": "2026/2027",
+      "in_catalog": true,
+      "list_state": "OK",
+      "played_count": 80,
+      "sample_count": 2,
+      "complete_xg_count": 2,
+      "partial_xg_count": 0,
+      "strict_pair_count": 0,
+      "alias_candidates": 1,
+      "unmatched_pair_count": 0
+    },
+    {
+      "league": "La Liga",
+      "pitch_league_id": null,
+      "api_football_league_id": 140,
+      "season": "2021/2022",
+      "in_catalog": false,
+      "list_state": "NOT_IN_CATALOG",
+      "played_count": null,
+      "sample_count": 0,
+      "complete_xg_count": 0,
+      "partial_xg_count": 0,
+      "strict_pair_count": 0,
+      "alias_candidates": 0,
+      "unmatched_pair_count": 0
+    },
+    {
+      "league": "La Liga",
+      "pitch_league_id": null,
+      "api_football_league_id": 140,
+      "season": "2022/2023",
+      "in_catalog": false,
+      "list_state": "NOT_IN_CATALOG",
+      "played_count": null,
+      "sample_count": 0,
+      "complete_xg_count": 0,
+      "partial_xg_count": 0,
+      "strict_pair_count": 0,
+      "alias_candidates": 0,
+      "unmatched_pair_count": 0
+    },
+    {
+      "league": "La Liga",
+      "pitch_league_id": null,
+      "api_football_league_id": 140,
+      "season": "2023/2024",
+      "in_catalog": false,
+      "list_state": "NOT_IN_CATALOG",
+      "played_count": null,
+      "sample_count": 0,
+      "complete_xg_count": 0,
+      "partial_xg_count": 0,
+      "strict_pair_count": 0,
+      "alias_candidates": 0,
+      "unmatched_pair_count": 0
+    },
+    {
+      "league": "La Liga",
+      "pitch_league_id": null,
+      "api_football_league_id": 140,
+      "season": "2024/2025",
+      "in_catalog": false,
+      "list_state": "NOT_IN_CATALOG",
+      "played_count": null,
+      "sample_count": 0,
+      "complete_xg_count": 0,
+      "partial_xg_count": 0,
+      "strict_pair_count": 0,
+      "alias_candidates": 0,
+      "unmatched_pair_count": 0
+    },
+    {
+      "league": "La Liga",
+      "pitch_league_id": null,
+      "api_football_league_id": 140,
+      "season": "2025/2026",
+      "in_catalog": false,
+      "list_state": "NOT_IN_CATALOG",
+      "played_count": null,
+      "sample_count": 0,
+      "complete_xg_count": 0,
+      "partial_xg_count": 0,
+      "strict_pair_count": 0,
+      "alias_candidates": 0,
+      "unmatched_pair_count": 0
+    },
+    {
+      "league": "La Liga",
+      "pitch_league_id": null,
+      "api_football_league_id": 140,
+      "season": "2026/2027",
+      "in_catalog": false,
+      "list_state": "NOT_IN_CATALOG",
+      "played_count": null,
+      "sample_count": 0,
+      "complete_xg_count": 0,
+      "partial_xg_count": 0,
+      "strict_pair_count": 0,
+      "alias_candidates": 0,
+      "unmatched_pair_count": 0
+    },
+    {
+      "league": "Serie A",
+      "pitch_league_id": "l_0ALvwF",
+      "api_football_league_id": 135,
+      "season": "2021/2022",
+      "in_catalog": true,
+      "list_state": "OK",
+      "played_count": 380,
+      "sample_count": 2,
+      "complete_xg_count": 2,
+      "partial_xg_count": 0,
+      "strict_pair_count": 1,
+      "alias_candidates": 0,
+      "unmatched_pair_count": 0
+    },
+    {
+      "league": "Serie A",
+      "pitch_league_id": "l_0ALvwF",
+      "api_football_league_id": 135,
+      "season": "2022/2023",
+      "in_catalog": true,
+      "list_state": "OK",
+      "played_count": 381,
+      "sample_count": 2,
+      "complete_xg_count": 2,
+      "partial_xg_count": 0,
+      "strict_pair_count": 1,
+      "alias_candidates": 0,
+      "unmatched_pair_count": 0
+    },
+    {
+      "league": "Serie A",
+      "pitch_league_id": "l_0ALvwF",
+      "api_football_league_id": 135,
+      "season": "2023/2024",
+      "in_catalog": true,
+      "list_state": "OK",
+      "played_count": 380,
+      "sample_count": 2,
+      "complete_xg_count": 2,
+      "partial_xg_count": 0,
+      "strict_pair_count": 1,
+      "alias_candidates": 0,
+      "unmatched_pair_count": 0
+    },
+    {
+      "league": "Serie A",
+      "pitch_league_id": "l_0ALvwF",
+      "api_football_league_id": 135,
+      "season": "2024/2025",
+      "in_catalog": true,
+      "list_state": "OK",
+      "played_count": 380,
+      "sample_count": 2,
+      "complete_xg_count": 2,
+      "partial_xg_count": 0,
+      "strict_pair_count": 1,
+      "alias_candidates": 0,
+      "unmatched_pair_count": 0
+    },
+    {
+      "league": "Serie A",
+      "pitch_league_id": "l_0ALvwF",
+      "api_football_league_id": 135,
+      "season": "2025/2026",
+      "in_catalog": true,
+      "list_state": "OK",
+      "played_count": 380,
+      "sample_count": 2,
+      "complete_xg_count": 2,
+      "partial_xg_count": 0,
+      "strict_pair_count": 1,
+      "alias_candidates": 0,
+      "unmatched_pair_count": 0
+    },
+    {
+      "league": "Serie A",
+      "pitch_league_id": "l_0ALvwF",
+      "api_football_league_id": 135,
+      "season": "2026/2027",
+      "in_catalog": true,
+      "list_state": "OK",
+      "played_count": 79,
+      "sample_count": 2,
+      "complete_xg_count": 2,
+      "partial_xg_count": 0,
+      "strict_pair_count": 1,
+      "alias_candidates": 0,
+      "unmatched_pair_count": 0
+    },
+    {
+      "league": "Bundesliga",
+      "pitch_league_id": "l_1Isor4",
+      "api_football_league_id": 78,
+      "season": "2021/2022",
+      "in_catalog": true,
+      "list_state": "OK",
+      "played_count": 306,
+      "sample_count": 2,
+      "complete_xg_count": 2,
+      "partial_xg_count": 0,
+      "strict_pair_count": 0,
+      "alias_candidates": 1,
+      "unmatched_pair_count": 0
+    },
+    {
+      "league": "Bundesliga",
+      "pitch_league_id": "l_1Isor4",
+      "api_football_league_id": 78,
+      "season": "2022/2023",
+      "in_catalog": true,
+      "list_state": "OK",
+      "played_count": 306,
+      "sample_count": 2,
+      "complete_xg_count": 2,
+      "partial_xg_count": 0,
+      "strict_pair_count": 0,
+      "alias_candidates": 1,
+      "unmatched_pair_count": 0
+    },
+    {
+      "league": "Bundesliga",
+      "pitch_league_id": "l_1Isor4",
+      "api_football_league_id": 78,
+      "season": "2023/2024",
+      "in_catalog": true,
+      "list_state": "OK",
+      "played_count": 306,
+      "sample_count": 2,
+      "complete_xg_count": 2,
+      "partial_xg_count": 0,
+      "strict_pair_count": 1,
+      "alias_candidates": 0,
+      "unmatched_pair_count": 0
+    },
+    {
+      "league": "Bundesliga",
+      "pitch_league_id": "l_1Isor4",
+      "api_football_league_id": 78,
+      "season": "2024/2025",
+      "in_catalog": true,
+      "list_state": "OK",
+      "played_count": 305,
+      "sample_count": 2,
+      "complete_xg_count": 2,
+      "partial_xg_count": 0,
+      "strict_pair_count": 0,
+      "alias_candidates": 1,
+      "unmatched_pair_count": 0
+    },
+    {
+      "league": "Bundesliga",
+      "pitch_league_id": "l_1Isor4",
+      "api_football_league_id": 78,
+      "season": "2025/2026",
+      "in_catalog": true,
+      "list_state": "OK",
+      "played_count": 306,
+      "sample_count": 2,
+      "complete_xg_count": 2,
+      "partial_xg_count": 0,
+      "strict_pair_count": 0,
+      "alias_candidates": 1,
+      "unmatched_pair_count": 0
+    },
+    {
+      "league": "Bundesliga",
+      "pitch_league_id": "l_1Isor4",
+      "api_football_league_id": 78,
+      "season": "2026/2027",
+      "in_catalog": true,
+      "list_state": "OK",
+      "played_count": 63,
+      "sample_count": 2,
+      "complete_xg_count": 2,
+      "partial_xg_count": 0,
+      "strict_pair_count": 0,
+      "alias_candidates": 1,
+      "unmatched_pair_count": 0
+    },
+    {
+      "league": "Ligue 1",
+      "pitch_league_id": "l_3FJFUl",
+      "api_football_league_id": 61,
+      "season": "2021/2022",
+      "in_catalog": true,
+      "list_state": "OK",
+      "played_count": 380,
+      "sample_count": 2,
+      "complete_xg_count": 2,
+      "partial_xg_count": 0,
+      "strict_pair_count": 1,
+      "alias_candidates": 0,
+      "unmatched_pair_count": 0
+    },
+    {
+      "league": "Ligue 1",
+      "pitch_league_id": "l_3FJFUl",
+      "api_football_league_id": 61,
+      "season": "2022/2023",
+      "in_catalog": true,
+      "list_state": "OK",
+      "played_count": 380,
+      "sample_count": 2,
+      "complete_xg_count": 2,
+      "partial_xg_count": 0,
+      "strict_pair_count": 0,
+      "alias_candidates": 0,
+      "unmatched_pair_count": 1
+    },
+    {
+      "league": "Ligue 1",
+      "pitch_league_id": "l_3FJFUl",
+      "api_football_league_id": 61,
+      "season": "2023/2024",
+      "in_catalog": true,
+      "list_state": "OK",
+      "played_count": 306,
+      "sample_count": 2,
+      "complete_xg_count": 2,
+      "partial_xg_count": 0,
+      "strict_pair_count": 1,
+      "alias_candidates": 0,
+      "unmatched_pair_count": 0
+    },
+    {
+      "league": "Ligue 1",
+      "pitch_league_id": "l_3FJFUl",
+      "api_football_league_id": 61,
+      "season": "2024/2025",
+      "in_catalog": true,
+      "list_state": "OK",
+      "played_count": 306,
+      "sample_count": 2,
+      "complete_xg_count": 2,
+      "partial_xg_count": 0,
+      "strict_pair_count": 1,
+      "alias_candidates": 0,
+      "unmatched_pair_count": 0
+    },
+    {
+      "league": "Ligue 1",
+      "pitch_league_id": "l_3FJFUl",
+      "api_football_league_id": 61,
+      "season": "2025/2026",
+      "in_catalog": true,
+      "list_state": "OK",
+      "played_count": 306,
+      "sample_count": 2,
+      "complete_xg_count": 2,
+      "partial_xg_count": 0,
+      "strict_pair_count": 1,
+      "alias_candidates": 0,
+      "unmatched_pair_count": 0
+    },
+    {
+      "league": "Ligue 1",
+      "pitch_league_id": "l_3FJFUl",
+      "api_football_league_id": 61,
+      "season": "2026/2027",
+      "in_catalog": true,
+      "list_state": "OK",
+      "played_count": 71,
+      "sample_count": 2,
+      "complete_xg_count": 2,
+      "partial_xg_count": 0,
+      "strict_pair_count": 1,
+      "alias_candidates": 0,
+      "unmatched_pair_count": 0
+    }
+  ],
+  "samples": [
+    {
+      "league": "Premier League",
+      "season": "2021/2022",
+      "pitch_match_id": "m_3nXDAl",
+      "kickoff_utc": "2021-10-30T14:00:00Z",
+      "home_team": "Watford",
+      "away_team": "Southampton",
+      "score_home": 0,
+      "score_away": 1,
+      "shot_xg": {
+        "state": "COMPLETE_SHOT_XG",
+        "shots": 22,
+        "missing_xg": 0,
+        "invalid_xg": 0,
+        "unknown_team": 0,
+        "home_shots": 10,
+        "away_shots": 12,
+        "home_xg_sum": 1.05,
+        "away_xg_sum": 1.75
+      },
+      "api_football_pair": {
+        "state": "EXACT_NAMES_DATE_SCORE",
+        "api_football_fixture_id": 710654
+      }
+    },
+    {
+      "league": "Premier League",
+      "season": "2021/2022",
+      "pitch_match_id": "m_1LLkxq",
+      "kickoff_utc": "2022-03-19T12:30:00Z",
+      "home_team": "Aston Villa",
+      "away_team": "Arsenal",
+      "score_home": 0,
+      "score_away": 1,
+      "shot_xg": {
+        "state": "COMPLETE_SHOT_XG",
+        "shots": 18,
+        "missing_xg": 0,
+        "invalid_xg": 0,
+        "unknown_team": 0,
+        "home_shots": 8,
+        "away_shots": 10,
+        "home_xg_sum": 0.45,
+        "away_xg_sum": 1.35
+      },
+      "api_football_pair": {
+        "state": "NOT_CHECKED",
+        "api_football_fixture_id": null
+      }
+    },
+    {
+      "league": "Premier League",
+      "season": "2022/2023",
+      "pitch_match_id": "m_2mXJPL",
+      "kickoff_utc": "2022-10-16T13:00:00Z",
+      "home_team": "Aston Villa",
+      "away_team": "Chelsea",
+      "score_home": 0,
+      "score_away": 2,
+      "shot_xg": {
+        "state": "COMPLETE_SHOT_XG",
+        "shots": 26,
+        "missing_xg": 0,
+        "invalid_xg": 0,
+        "unknown_team": 0,
+        "home_shots": 18,
+        "away_shots": 8,
+        "home_xg_sum": 1.83,
+        "away_xg_sum": 0.87
+      },
+      "api_football_pair": {
+        "state": "EXACT_NAMES_DATE_SCORE",
+        "api_football_fixture_id": 868046
+      }
+    },
+    {
+      "league": "Premier League",
+      "season": "2022/2023",
+      "pitch_match_id": "m_2vZSJE",
+      "kickoff_utc": "2023-04-05T19:00:00Z",
+      "home_team": "West Ham United",
+      "away_team": "Newcastle United",
+      "score_home": 1,
+      "score_away": 5,
+      "shot_xg": {
+        "state": "COMPLETE_SHOT_XG",
+        "shots": 22,
+        "missing_xg": 0,
+        "invalid_xg": 0,
+        "unknown_team": 0,
+        "home_shots": 7,
+        "away_shots": 15,
+        "home_xg_sum": 0.98,
+        "away_xg_sum": 3.28
+      },
+      "api_football_pair": {
+        "state": "NOT_CHECKED",
+        "api_football_fixture_id": null
+      }
+    },
+    {
+      "league": "Premier League",
+      "season": "2023/2024",
+      "pitch_match_id": "m_1tklpw",
+      "kickoff_utc": "2023-10-29T13:00:00Z",
+      "home_team": "West Ham United",
+      "away_team": "Everton",
+      "score_home": 0,
+      "score_away": 1,
+      "shot_xg": {
+        "state": "COMPLETE_SHOT_XG",
+        "shots": 22,
+        "missing_xg": 0,
+        "invalid_xg": 0,
+        "unknown_team": 0,
+        "home_shots": 12,
+        "away_shots": 10,
+        "home_xg_sum": 0.68,
+        "away_xg_sum": 0.81
+      },
+      "api_football_pair": {
+        "state": "AMBIGUOUS_OR_UNMATCHED",
+        "api_football_fixture_id": null
+      }
+    },
+    {
+      "league": "Premier League",
+      "season": "2023/2024",
+      "pitch_match_id": "m_2CzI3M",
+      "kickoff_utc": "2024-03-30T15:00:00Z",
+      "home_team": "Chelsea",
+      "away_team": "Burnley",
+      "score_home": 2,
+      "score_away": 2,
+      "shot_xg": {
+        "state": "COMPLETE_SHOT_XG",
+        "shots": 51,
+        "missing_xg": 0,
+        "invalid_xg": 0,
+        "unknown_team": 0,
+        "home_shots": 33,
+        "away_shots": 18,
+        "home_xg_sum": 4.12,
+        "away_xg_sum": 1.66
+      },
+      "api_football_pair": {
+        "state": "NOT_CHECKED",
+        "api_football_fixture_id": null
+      }
+    },
+    {
+      "league": "Premier League",
+      "season": "2024/2025",
+      "pitch_match_id": "m_4YzxPS",
+      "kickoff_utc": "2024-11-02T15:00:00Z",
+      "home_team": "Liverpool",
+      "away_team": "Brighton & Hove Albion",
+      "score_home": 2,
+      "score_away": 1,
+      "shot_xg": {
+        "state": "COMPLETE_SHOT_XG",
+        "shots": 29,
+        "missing_xg": 0,
+        "invalid_xg": 0,
+        "unknown_team": 0,
+        "home_shots": 16,
+        "away_shots": 13,
+        "home_xg_sum": 1.66,
+        "away_xg_sum": 1.0
+      },
+      "api_football_pair": {
+        "state": "AMBIGUOUS_OR_UNMATCHED",
+        "api_football_fixture_id": null
+      }
+    },
+    {
+      "league": "Premier League",
+      "season": "2024/2025",
+      "pitch_match_id": "m_1bWubG",
+      "kickoff_utc": "2025-03-15T17:30:00Z",
+      "home_team": "AFC Bournemouth",
+      "away_team": "Brentford",
+      "score_home": 1,
+      "score_away": 2,
+      "shot_xg": {
+        "state": "COMPLETE_SHOT_XG",
+        "shots": 28,
+        "missing_xg": 0,
+        "invalid_xg": 0,
+        "unknown_team": 0,
+        "home_shots": 17,
+        "away_shots": 11,
+        "home_xg_sum": 1.66,
+        "away_xg_sum": 0.83
+      },
+      "api_football_pair": {
+        "state": "NOT_CHECKED",
+        "api_football_fixture_id": null
+      }
+    },
+    {
+      "league": "Premier League",
+      "season": "2025/2026",
+      "pitch_match_id": "m_27nHGA",
+      "kickoff_utc": "2025-11-01T17:30:00Z",
+      "home_team": "Tottenham Hotspur",
+      "away_team": "Chelsea",
+      "score_home": 0,
+      "score_away": 1,
+      "shot_xg": {
+        "state": "COMPLETE_SHOT_XG",
+        "shots": 18,
+        "missing_xg": 0,
+        "invalid_xg": 0,
+        "unknown_team": 0,
+        "home_shots": 3,
+        "away_shots": 15,
+        "home_xg_sum": 0.11,
+        "away_xg_sum": 3.69
+      },
+      "api_football_pair": {
+        "state": "AMBIGUOUS_OR_UNMATCHED",
+        "api_football_fixture_id": null
+      }
+    },
+    {
+      "league": "Premier League",
+      "season": "2025/2026",
+      "pitch_match_id": "m_0Z4lMM",
+      "kickoff_utc": "2026-03-04T19:30:00Z",
+      "home_team": "Brighton & Hove Albion",
+      "away_team": "Arsenal",
+      "score_home": 0,
+      "score_away": 1,
+      "shot_xg": {
+        "state": "COMPLETE_SHOT_XG",
+        "shots": 18,
+        "missing_xg": 0,
+        "invalid_xg": 0,
+        "unknown_team": 0,
+        "home_shots": 11,
+        "away_shots": 7,
+        "home_xg_sum": 0.82,
+        "away_xg_sum": 0.46
+      },
+      "api_football_pair": {
+        "state": "NOT_CHECKED",
+        "api_football_fixture_id": null
+      }
+    },
+    {
+      "league": "Premier League",
+      "season": "2026/2027",
+      "pitch_match_id": "m_1rqNHl",
+      "kickoff_utc": "2026-09-04T19:00:00Z",
+      "home_team": "Ipswich Town",
+      "away_team": "Liverpool",
+      "score_home": 0,
+      "score_away": 2,
+      "shot_xg": {
+        "state": "COMPLETE_SHOT_XG",
+        "shots": 24,
+        "missing_xg": 0,
+        "invalid_xg": 0,
+        "unknown_team": 0,
+        "home_shots": 14,
+        "away_shots": 10,
+        "home_xg_sum": 0.73,
+        "away_xg_sum": 0.66
+      },
+      "api_football_pair": {
+        "state": "ALIAS_CANDIDATE_UNVERIFIED",
+        "api_football_fixture_id": 1557393
+      }
+    },
+    {
+      "league": "Premier League",
+      "season": "2026/2027",
+      "pitch_match_id": "m_3fEVzy",
+      "kickoff_utc": "2026-10-17T11:30:00Z",
+      "home_team": "Everton",
+      "away_team": "Chelsea",
+      "score_home": 0,
+      "score_away": 2,
+      "shot_xg": {
+        "state": "COMPLETE_SHOT_XG",
+        "shots": 24,
+        "missing_xg": 0,
+        "invalid_xg": 0,
+        "unknown_team": 0,
+        "home_shots": 6,
+        "away_shots": 18,
+        "home_xg_sum": 0.42,
+        "away_xg_sum": 1.47
+      },
+      "api_football_pair": {
+        "state": "NOT_CHECKED",
+        "api_football_fixture_id": null
+      }
+    },
+    {
+      "league": "Serie A",
+      "season": "2021/2022",
+      "pitch_match_id": "m_2VVIN1",
+      "kickoff_utc": "2021-10-27T16:35:00Z",
+      "home_team": "Sampdoria",
+      "away_team": "Atalanta",
+      "score_home": 1,
+      "score_away": 3,
+      "shot_xg": {
+        "state": "COMPLETE_SHOT_XG",
+        "shots": 22,
+        "missing_xg": 0,
+        "invalid_xg": 0,
+        "unknown_team": 0,
+        "home_shots": 9,
+        "away_shots": 13,
+        "home_xg_sum": 1.36,
+        "away_xg_sum": 1.32
+      },
+      "api_football_pair": {
+        "state": "EXACT_NAMES_DATE_SCORE",
+        "api_football_fixture_id": 731680
+      }
+    },
+    {
+      "league": "Serie A",
+      "season": "2021/2022",
+      "pitch_match_id": "m_4VGhNd",
+      "kickoff_utc": "2022-03-18T17:45:00Z",
+      "home_team": "Sassuolo",
+      "away_team": "Spezia",
+      "score_home": 4,
+      "score_away": 1,
+      "shot_xg": {
+        "state": "COMPLETE_SHOT_XG",
+        "shots": 21,
+        "missing_xg": 0,
+        "invalid_xg": 0,
+        "unknown_team": 0,
+        "home_shots": 16,
+        "away_shots": 5,
+        "home_xg_sum": 1.94,
+        "away_xg_sum": 0.3
+      },
+      "api_football_pair": {
+        "state": "NOT_CHECKED",
+        "api_football_fixture_id": null
+      }
+    },
+    {
+      "league": "Serie A",
+      "season": "2022/2023",
+      "pitch_match_id": "m_3cPC20",
+      "kickoff_utc": "2022-10-16T13:00:00Z",
+      "home_team": "Lazio",
+      "away_team": "Udinese",
+      "score_home": 0,
+      "score_away": 0,
+      "shot_xg": {
+        "state": "COMPLETE_SHOT_XG",
+        "shots": 20,
+        "missing_xg": 0,
+        "invalid_xg": 0,
+        "unknown_team": 0,
+        "home_shots": 8,
+        "away_shots": 12,
+        "home_xg_sum": 0.8,
+        "away_xg_sum": 0.86
+      },
+      "api_football_pair": {
+        "state": "EXACT_NAMES_DATE_SCORE",
+        "api_football_fixture_id": 881874
+      }
+    },
+    {
+      "league": "Serie A",
+      "season": "2022/2023",
+      "pitch_match_id": "m_3tptad",
+      "kickoff_utc": "2023-04-08T14:30:00Z",
+      "home_team": "Sampdoria",
+      "away_team": "Cremonese",
+      "score_home": 2,
+      "score_away": 3,
+      "shot_xg": {
+        "state": "COMPLETE_SHOT_XG",
+        "shots": 30,
+        "missing_xg": 0,
+        "invalid_xg": 0,
+        "unknown_team": 0,
+        "home_shots": 13,
+        "away_shots": 17,
+        "home_xg_sum": 2.08,
+        "away_xg_sum": 1.3
+      },
+      "api_football_pair": {
+        "state": "NOT_CHECKED",
+        "api_football_fixture_id": null
+      }
+    },
+    {
+      "league": "Serie A",
+      "season": "2023/2024",
+      "pitch_match_id": "m_23sPne",
+      "kickoff_utc": "2023-10-29T14:00:00Z",
+      "home_team": "Monza",
+      "away_team": "Udinese",
+      "score_home": 1,
+      "score_away": 1,
+      "shot_xg": {
+        "state": "COMPLETE_SHOT_XG",
+        "shots": 20,
+        "missing_xg": 0,
+        "invalid_xg": 0,
+        "unknown_team": 0,
+        "home_shots": 10,
+        "away_shots": 10,
+        "home_xg_sum": 0.53,
+        "away_xg_sum": 1.11
+      },
+      "api_football_pair": {
+        "state": "EXACT_NAMES_DATE_SCORE",
+        "api_football_fixture_id": 1052350
+      }
+    },
+    {
+      "league": "Serie A",
+      "season": "2023/2024",
+      "pitch_match_id": "m_1FJzB3",
+      "kickoff_utc": "2024-03-17T11:30:00Z",
+      "home_team": "Juventus",
+      "away_team": "Genoa",
+      "score_home": 0,
+      "score_away": 0,
+      "shot_xg": {
+        "state": "COMPLETE_SHOT_XG",
+        "shots": 22,
+        "missing_xg": 0,
+        "invalid_xg": 0,
+        "unknown_team": 0,
+        "home_shots": 17,
+        "away_shots": 5,
+        "home_xg_sum": 1.03,
+        "away_xg_sum": 0.18
+      },
+      "api_football_pair": {
+        "state": "NOT_CHECKED",
+        "api_football_fixture_id": null
+      }
+    },
+    {
+      "league": "Serie A",
+      "season": "2024/2025",
+      "pitch_match_id": "m_4XSCYv",
+      "kickoff_utc": "2024-10-30T19:45:00Z",
+      "home_team": "Atalanta",
+      "away_team": "Monza",
+      "score_home": 2,
+      "score_away": 0,
+      "shot_xg": {
+        "state": "COMPLETE_SHOT_XG",
+        "shots": 20,
+        "missing_xg": 0,
+        "invalid_xg": 0,
+        "unknown_team": 0,
+        "home_shots": 16,
+        "away_shots": 4,
+        "home_xg_sum": 1.24,
+        "away_xg_sum": 0.1
+      },
+      "api_football_pair": {
+        "state": "EXACT_NAMES_DATE_SCORE",
+        "api_football_fixture_id": 1223685
+      }
+    },
+    {
+      "league": "Serie A",
+      "season": "2024/2025",
+      "pitch_match_id": "m_0vKJRS",
+      "kickoff_utc": "2025-03-16T11:30:00Z",
+      "home_team": "Venezia",
+      "away_team": "Napoli",
+      "score_home": 0,
+      "score_away": 0,
+      "shot_xg": {
+        "state": "COMPLETE_SHOT_XG",
+        "shots": 27,
+        "missing_xg": 0,
+        "invalid_xg": 0,
+        "unknown_team": 0,
+        "home_shots": 12,
+        "away_shots": 15,
+        "home_xg_sum": 0.73,
+        "away_xg_sum": 1.68
+      },
+      "api_football_pair": {
+        "state": "NOT_CHECKED",
+        "api_football_fixture_id": null
+      }
+    },
+    {
+      "league": "Serie A",
+      "season": "2025/2026",
+      "pitch_match_id": "m_3yTSEh",
+      "kickoff_utc": "2025-11-02T14:00:00Z",
+      "home_team": "Torino",
+      "away_team": "Pisa",
+      "score_home": 2,
+      "score_away": 2,
+      "shot_xg": {
+        "state": "COMPLETE_SHOT_XG",
+        "shots": 26,
+        "missing_xg": 0,
+        "invalid_xg": 0,
+        "unknown_team": 0,
+        "home_shots": 15,
+        "away_shots": 11,
+        "home_xg_sum": 0.92,
+        "away_xg_sum": 1.54
+      },
+      "api_football_pair": {
+        "state": "EXACT_NAMES_DATE_SCORE",
+        "api_football_fixture_id": 1377961
+      }
+    },
+    {
+      "league": "Serie A",
+      "season": "2025/2026",
+      "pitch_match_id": "m_1Uoard",
+      "kickoff_utc": "2026-03-15T14:00:00Z",
+      "home_team": "Pisa",
+      "away_team": "Cagliari",
+      "score_home": 3,
+      "score_away": 1,
+      "shot_xg": {
+        "state": "COMPLETE_SHOT_XG",
+        "shots": 24,
+        "missing_xg": 0,
+        "invalid_xg": 0,
+        "unknown_team": 0,
+        "home_shots": 10,
+        "away_shots": 14,
+        "home_xg_sum": 2.49,
+        "away_xg_sum": 1.22
+      },
+      "api_football_pair": {
+        "state": "NOT_CHECKED",
+        "api_football_fixture_id": null
+      }
+    },
+    {
+      "league": "Serie A",
+      "season": "2026/2027",
+      "pitch_match_id": "m_2We4l6",
+      "kickoff_utc": "2026-08-31T18:45:00Z",
+      "home_team": "Atalanta",
+      "away_team": "Bologna",
+      "score_home": 1,
+      "score_away": 0,
+      "shot_xg": {
+        "state": "COMPLETE_SHOT_XG",
+        "shots": 22,
+        "missing_xg": 0,
+        "invalid_xg": 0,
+        "unknown_team": 0,
+        "home_shots": 6,
+        "away_shots": 16,
+        "home_xg_sum": 0.17,
+        "away_xg_sum": 1.34
+      },
+      "api_football_pair": {
+        "state": "EXACT_NAMES_DATE_SCORE",
+        "api_football_fixture_id": 1550098
+      }
+    },
+    {
+      "league": "Serie A",
+      "season": "2026/2027",
+      "pitch_match_id": "m_0dRaIx",
+      "kickoff_utc": "2026-10-12T18:45:00Z",
+      "home_team": "Torino",
+      "away_team": "Udinese",
+      "score_home": 2,
+      "score_away": 1,
+      "shot_xg": {
+        "state": "COMPLETE_SHOT_XG",
+        "shots": 27,
+        "missing_xg": 0,
+        "invalid_xg": 0,
+        "unknown_team": 0,
+        "home_shots": 12,
+        "away_shots": 15,
+        "home_xg_sum": 2.51,
+        "away_xg_sum": 0.71
+      },
+      "api_football_pair": {
+        "state": "NOT_CHECKED",
+        "api_football_fixture_id": null
+      }
+    },
+    {
+      "league": "Bundesliga",
+      "season": "2021/2022",
+      "pitch_match_id": "m_4cygKg",
+      "kickoff_utc": "2021-10-23T13:30:00Z",
+      "home_team": "RB Leipzig",
+      "away_team": "Greuther Fürth",
+      "score_home": 4,
+      "score_away": 1,
+      "shot_xg": {
+        "state": "COMPLETE_SHOT_XG",
+        "shots": 22,
+        "missing_xg": 0,
+        "invalid_xg": 0,
+        "unknown_team": 0,
+        "home_shots": 13,
+        "away_shots": 9,
+        "home_xg_sum": 2.34,
+        "away_xg_sum": 1.43
+      },
+      "api_football_pair": {
+        "state": "ALIAS_CANDIDATE_UNVERIFIED",
+        "api_football_fixture_id": 719422
+      }
+    },
+    {
+      "league": "Bundesliga",
+      "season": "2021/2022",
+      "pitch_match_id": "m_0m6qWu",
+      "kickoff_utc": "2022-03-13T16:30:00Z",
+      "home_team": "Eintracht Frankfurt",
+      "away_team": "Bochum",
+      "score_home": 2,
+      "score_away": 1,
+      "shot_xg": {
+        "state": "COMPLETE_SHOT_XG",
+        "shots": 22,
+        "missing_xg": 0,
+        "invalid_xg": 0,
+        "unknown_team": 0,
+        "home_shots": 14,
+        "away_shots": 8,
+        "home_xg_sum": 1.89,
+        "away_xg_sum": 1.09
+      },
+      "api_football_pair": {
+        "state": "NOT_CHECKED",
+        "api_football_fixture_id": null
+      }
+    },
+    {
+      "league": "Bundesliga",
+      "season": "2022/2023",
+      "pitch_match_id": "m_4dPD7D",
+      "kickoff_utc": "2022-10-08T13:30:00Z",
+      "home_team": "Bochum",
+      "away_team": "Eintracht Frankfurt",
+      "score_home": 3,
+      "score_away": 0,
+      "shot_xg": {
+        "state": "COMPLETE_SHOT_XG",
+        "shots": 24,
+        "missing_xg": 0,
+        "invalid_xg": 0,
+        "unknown_team": 0,
+        "home_shots": 11,
+        "away_shots": 13,
+        "home_xg_sum": 0.61,
+        "away_xg_sum": 0.88
+      },
+      "api_football_pair": {
+        "state": "ALIAS_CANDIDATE_UNVERIFIED",
+        "api_football_fixture_id": 871241
+      }
+    },
+    {
+      "league": "Bundesliga",
+      "season": "2022/2023",
+      "pitch_match_id": "m_3xeXZs",
+      "kickoff_utc": "2023-04-01T13:30:00Z",
+      "home_team": "Schalke 04",
+      "away_team": "Bayer Leverkusen",
+      "score_home": 0,
+      "score_away": 3,
+      "shot_xg": {
+        "state": "COMPLETE_SHOT_XG",
+        "shots": 30,
+        "missing_xg": 0,
+        "invalid_xg": 0,
+        "unknown_team": 0,
+        "home_shots": 12,
+        "away_shots": 18,
+        "home_xg_sum": 1.13,
+        "away_xg_sum": 2.75
+      },
+      "api_football_pair": {
+        "state": "NOT_CHECKED",
+        "api_football_fixture_id": null
+      }
+    },
+    {
+      "league": "Bundesliga",
+      "season": "2023/2024",
+      "pitch_match_id": "m_3qHADt",
+      "kickoff_utc": "2023-10-28T13:30:00Z",
+      "home_team": "Werder Bremen",
+      "away_team": "Union Berlin",
+      "score_home": 2,
+      "score_away": 0,
+      "shot_xg": {
+        "state": "COMPLETE_SHOT_XG",
+        "shots": 18,
+        "missing_xg": 0,
+        "invalid_xg": 0,
+        "unknown_team": 0,
+        "home_shots": 10,
+        "away_shots": 8,
+        "home_xg_sum": 0.79,
+        "away_xg_sum": 0.58
+      },
+      "api_football_pair": {
+        "state": "EXACT_NAMES_DATE_SCORE",
+        "api_football_fixture_id": 1048958
+      }
+    },
+    {
+      "league": "Bundesliga",
+      "season": "2023/2024",
+      "pitch_match_id": "m_25Maiy",
+      "kickoff_utc": "2024-03-16T14:30:00Z",
+      "home_team": "Mainz 05",
+      "away_team": "Bochum",
+      "score_home": 2,
+      "score_away": 0,
+      "shot_xg": {
+        "state": "COMPLETE_SHOT_XG",
+        "shots": 26,
+        "missing_xg": 0,
+        "invalid_xg": 0,
+        "unknown_team": 0,
+        "home_shots": 15,
+        "away_shots": 11,
+        "home_xg_sum": 2.47,
+        "away_xg_sum": 0.8
+      },
+      "api_football_pair": {
+        "state": "NOT_CHECKED",
+        "api_football_fixture_id": null
+      }
+    },
+    {
+      "league": "Bundesliga",
+      "season": "2024/2025",
+      "pitch_match_id": "m_4NVq7V",
+      "kickoff_utc": "2024-11-02T14:30:00Z",
+      "home_team": "Holstein Kiel",
+      "away_team": "FC Heidenheim",
+      "score_home": 1,
+      "score_away": 0,
+      "shot_xg": {
+        "state": "COMPLETE_SHOT_XG",
+        "shots": 28,
+        "missing_xg": 0,
+        "invalid_xg": 0,
+        "unknown_team": 0,
+        "home_shots": 11,
+        "away_shots": 17,
+        "home_xg_sum": 1.1,
+        "away_xg_sum": 1.28
+      },
+      "api_football_pair": {
+        "state": "ALIAS_CANDIDATE_UNVERIFIED",
+        "api_football_fixture_id": 1224055
+      }
+    },
+    {
+      "league": "Bundesliga",
+      "season": "2024/2025",
+      "pitch_match_id": "m_3s7rsD",
+      "kickoff_utc": "2025-03-15T14:30:00Z",
+      "home_team": "Augsburg",
+      "away_team": "Wolfsburg",
+      "score_home": 1,
+      "score_away": 0,
+      "shot_xg": {
+        "state": "COMPLETE_SHOT_XG",
+        "shots": 23,
+        "missing_xg": 0,
+        "invalid_xg": 0,
+        "unknown_team": 0,
+        "home_shots": 10,
+        "away_shots": 13,
+        "home_xg_sum": 0.74,
+        "away_xg_sum": 0.78
+      },
+      "api_football_pair": {
+        "state": "NOT_CHECKED",
+        "api_football_fixture_id": null
+      }
+    },
+    {
+      "league": "Bundesliga",
+      "season": "2025/2026",
+      "pitch_match_id": "m_3GpAxp",
+      "kickoff_utc": "2025-11-01T14:30:00Z",
+      "home_team": "Union Berlin",
+      "away_team": "Freiburg",
+      "score_home": 0,
+      "score_away": 0,
+      "shot_xg": {
+        "state": "COMPLETE_SHOT_XG",
+        "shots": 24,
+        "missing_xg": 0,
+        "invalid_xg": 0,
+        "unknown_team": 0,
+        "home_shots": 11,
+        "away_shots": 13,
+        "home_xg_sum": 1.01,
+        "away_xg_sum": 1.18
+      },
+      "api_football_pair": {
+        "state": "ALIAS_CANDIDATE_UNVERIFIED",
+        "api_football_fixture_id": 1388387
+      }
+    },
+    {
+      "league": "Bundesliga",
+      "season": "2025/2026",
+      "pitch_match_id": "m_4R8veJ",
+      "kickoff_utc": "2026-03-14T14:30:00Z",
+      "home_team": "Borussia Dortmund",
+      "away_team": "Augsburg",
+      "score_home": 2,
+      "score_away": 0,
+      "shot_xg": {
+        "state": "COMPLETE_SHOT_XG",
+        "shots": 23,
+        "missing_xg": 0,
+        "invalid_xg": 0,
+        "unknown_team": 0,
+        "home_shots": 16,
+        "away_shots": 7,
+        "home_xg_sum": 2.57,
+        "away_xg_sum": 0.84
+      },
+      "api_football_pair": {
+        "state": "NOT_CHECKED",
+        "api_football_fixture_id": null
+      }
+    },
+    {
+      "league": "Bundesliga",
+      "season": "2026/2027",
+      "pitch_match_id": "m_1GBuep",
+      "kickoff_utc": "2026-09-05T16:30:00Z",
+      "home_team": "Schalke 04",
+      "away_team": "Bayern München",
+      "score_home": 0,
+      "score_away": 0,
+      "shot_xg": {
+        "state": "COMPLETE_SHOT_XG",
+        "shots": 19,
+        "missing_xg": 0,
+        "invalid_xg": 0,
+        "unknown_team": 0,
+        "home_shots": 4,
+        "away_shots": 15,
+        "home_xg_sum": 0.21,
+        "away_xg_sum": 2.1
+      },
+      "api_football_pair": {
+        "state": "ALIAS_CANDIDATE_UNVERIFIED",
+        "api_football_fixture_id": 1575156
+      }
+    },
+    {
+      "league": "Bundesliga",
+      "season": "2026/2027",
+      "pitch_match_id": "m_23lRyI",
+      "kickoff_utc": "2026-10-17T13:30:00Z",
+      "home_team": "Schalke 04",
+      "away_team": "Mainz 05",
+      "score_home": 0,
+      "score_away": 1,
+      "shot_xg": {
+        "state": "COMPLETE_SHOT_XG",
+        "shots": 19,
+        "missing_xg": 0,
+        "invalid_xg": 0,
+        "unknown_team": 0,
+        "home_shots": 9,
+        "away_shots": 10,
+        "home_xg_sum": 0.44,
+        "away_xg_sum": 2.03
+      },
+      "api_football_pair": {
+        "state": "NOT_CHECKED",
+        "api_football_fixture_id": null
+      }
+    },
+    {
+      "league": "Ligue 1",
+      "season": "2021/2022",
+      "pitch_match_id": "m_2GU8Gn",
+      "kickoff_utc": "2021-10-17T13:00:00Z",
+      "home_team": "Strasbourg",
+      "away_team": "Saint-Étienne",
+      "score_home": 5,
+      "score_away": 1,
+      "shot_xg": {
+        "state": "COMPLETE_SHOT_XG",
+        "shots": 17,
+        "missing_xg": 0,
+        "invalid_xg": 0,
+        "unknown_team": 0,
+        "home_shots": 12,
+        "away_shots": 5,
+        "home_xg_sum": 2.09,
+        "away_xg_sum": 0.99
+      },
+      "api_football_pair": {
+        "state": "EXACT_NAMES_DATE_SCORE",
+        "api_football_fixture_id": 718449
+      }
+    },
+    {
+      "league": "Ligue 1",
+      "season": "2021/2022",
+      "pitch_match_id": "m_1zILYV",
+      "kickoff_utc": "2022-03-20T14:00:00Z",
+      "home_team": "Rennes",
+      "away_team": "Metz",
+      "score_home": 6,
+      "score_away": 1,
+      "shot_xg": {
+        "state": "COMPLETE_SHOT_XG",
+        "shots": 23,
+        "missing_xg": 0,
+        "invalid_xg": 0,
+        "unknown_team": 0,
+        "home_shots": 21,
+        "away_shots": 2,
+        "home_xg_sum": 3.75,
+        "away_xg_sum": 0.7
+      },
+      "api_football_pair": {
+        "state": "NOT_CHECKED",
+        "api_football_fixture_id": null
+      }
+    },
+    {
+      "league": "Ligue 1",
+      "season": "2022/2023",
+      "pitch_match_id": "m_3M6KxB",
+      "kickoff_utc": "2022-10-09T13:00:00Z",
+      "home_team": "Nice",
+      "away_team": "Troyes",
+      "score_home": 3,
+      "score_away": 2,
+      "shot_xg": {
+        "state": "COMPLETE_SHOT_XG",
+        "shots": 31,
+        "missing_xg": 0,
+        "invalid_xg": 0,
+        "unknown_team": 0,
+        "home_shots": 14,
+        "away_shots": 17,
+        "home_xg_sum": 2.64,
+        "away_xg_sum": 1.48
+      },
+      "api_football_pair": {
+        "state": "AMBIGUOUS_OR_UNMATCHED",
+        "api_football_fixture_id": null
+      }
+    },
+    {
+      "league": "Ligue 1",
+      "season": "2022/2023",
+      "pitch_match_id": "m_2dxUUK",
+      "kickoff_utc": "2023-04-02T13:00:00Z",
+      "home_team": "Brest",
+      "away_team": "Toulouse",
+      "score_home": 3,
+      "score_away": 1,
+      "shot_xg": {
+        "state": "COMPLETE_SHOT_XG",
+        "shots": 26,
+        "missing_xg": 0,
+        "invalid_xg": 0,
+        "unknown_team": 0,
+        "home_shots": 17,
+        "away_shots": 9,
+        "home_xg_sum": 1.8,
+        "away_xg_sum": 1.24
+      },
+      "api_football_pair": {
+        "state": "NOT_CHECKED",
+        "api_football_fixture_id": null
+      }
+    },
+    {
+      "league": "Ligue 1",
+      "season": "2023/2024",
+      "pitch_match_id": "m_2X67AH",
+      "kickoff_utc": "2023-10-22T13:00:00Z",
+      "home_team": "Toulouse",
+      "away_team": "Reims",
+      "score_home": 1,
+      "score_away": 1,
+      "shot_xg": {
+        "state": "COMPLETE_SHOT_XG",
+        "shots": 26,
+        "missing_xg": 0,
+        "invalid_xg": 0,
+        "unknown_team": 0,
+        "home_shots": 11,
+        "away_shots": 15,
+        "home_xg_sum": 0.81,
+        "away_xg_sum": 1.35
+      },
+      "api_football_pair": {
+        "state": "EXACT_NAMES_DATE_SCORE",
+        "api_football_fixture_id": 1044954
+      }
+    },
+    {
+      "league": "Ligue 1",
+      "season": "2023/2024",
+      "pitch_match_id": "m_2PnPiH",
+      "kickoff_utc": "2024-03-17T14:00:00Z",
+      "home_team": "Monaco",
+      "away_team": "Lorient",
+      "score_home": 2,
+      "score_away": 2,
+      "shot_xg": {
+        "state": "COMPLETE_SHOT_XG",
+        "shots": 35,
+        "missing_xg": 0,
+        "invalid_xg": 0,
+        "unknown_team": 0,
+        "home_shots": 23,
+        "away_shots": 12,
+        "home_xg_sum": 2.65,
+        "away_xg_sum": 0.78
+      },
+      "api_football_pair": {
+        "state": "NOT_CHECKED",
+        "api_football_fixture_id": null
+      }
+    },
+    {
+      "league": "Ligue 1",
+      "season": "2024/2025",
+      "pitch_match_id": "m_49yzrC",
+      "kickoff_utc": "2024-10-27T14:00:00Z",
+      "home_team": "Lyon",
+      "away_team": "Auxerre",
+      "score_home": 2,
+      "score_away": 2,
+      "shot_xg": {
+        "state": "COMPLETE_SHOT_XG",
+        "shots": 31,
+        "missing_xg": 0,
+        "invalid_xg": 0,
+        "unknown_team": 0,
+        "home_shots": 12,
+        "away_shots": 19,
+        "home_xg_sum": 2.02,
+        "away_xg_sum": 1.54
+      },
+      "api_football_pair": {
+        "state": "EXACT_NAMES_DATE_SCORE",
+        "api_football_fixture_id": 1213822
+      }
+    },
+    {
+      "league": "Ligue 1",
+      "season": "2024/2025",
+      "pitch_match_id": "m_206Gsw",
+      "kickoff_utc": "2025-03-16T14:00:00Z",
+      "home_team": "Lyon",
+      "away_team": "Le Havre",
+      "score_home": 4,
+      "score_away": 2,
+      "shot_xg": {
+        "state": "COMPLETE_SHOT_XG",
+        "shots": 30,
+        "missing_xg": 0,
+        "invalid_xg": 0,
+        "unknown_team": 0,
+        "home_shots": 16,
+        "away_shots": 14,
+        "home_xg_sum": 3.98,
+        "away_xg_sum": 1.68
+      },
+      "api_football_pair": {
+        "state": "NOT_CHECKED",
+        "api_football_fixture_id": null
+      }
+    },
+    {
+      "league": "Ligue 1",
+      "season": "2025/2026",
+      "pitch_match_id": "m_16dPEj",
+      "kickoff_utc": "2025-10-26T14:00:00Z",
+      "home_team": "Lille",
+      "away_team": "Metz",
+      "score_home": 6,
+      "score_away": 1,
+      "shot_xg": {
+        "state": "COMPLETE_SHOT_XG",
+        "shots": 33,
+        "missing_xg": 0,
+        "invalid_xg": 0,
+        "unknown_team": 0,
+        "home_shots": 23,
+        "away_shots": 10,
+        "home_xg_sum": 2.91,
+        "away_xg_sum": 1.31
+      },
+      "api_football_pair": {
+        "state": "EXACT_NAMES_DATE_SCORE",
+        "api_football_fixture_id": 1387774
+      }
+    },
+    {
+      "league": "Ligue 1",
+      "season": "2025/2026",
+      "pitch_match_id": "m_1RwY2t",
+      "kickoff_utc": "2026-03-15T14:00:00Z",
+      "home_team": "Strasbourg",
+      "away_team": "Paris FC",
+      "score_home": 0,
+      "score_away": 0,
+      "shot_xg": {
+        "state": "COMPLETE_SHOT_XG",
+        "shots": 23,
+        "missing_xg": 0,
+        "invalid_xg": 0,
+        "unknown_team": 0,
+        "home_shots": 12,
+        "away_shots": 11,
+        "home_xg_sum": 1.14,
+        "away_xg_sum": 0.5
+      },
+      "api_football_pair": {
+        "state": "NOT_CHECKED",
+        "api_football_fixture_id": null
+      }
+    },
+    {
+      "league": "Ligue 1",
+      "season": "2026/2027",
+      "pitch_match_id": "m_1WMWmb",
+      "kickoff_utc": "2026-08-30T18:45:00Z",
+      "home_team": "Monaco",
+      "away_team": "Marseille",
+      "score_home": 2,
+      "score_away": 0,
+      "shot_xg": {
+        "state": "COMPLETE_SHOT_XG",
+        "shots": 24,
+        "missing_xg": 0,
+        "invalid_xg": 0,
+        "unknown_team": 0,
+        "home_shots": 11,
+        "away_shots": 13,
+        "home_xg_sum": 1.49,
+        "away_xg_sum": 1.22
+      },
+      "api_football_pair": {
+        "state": "EXACT_NAMES_DATE_SCORE",
+        "api_football_fixture_id": 1552742
+      }
+    },
+    {
+      "league": "Ligue 1",
+      "season": "2026/2027",
+      "pitch_match_id": "m_2U09kV",
+      "kickoff_utc": "2026-10-11T18:45:00Z",
+      "home_team": "Troyes",
+      "away_team": "Marseille",
+      "score_home": 0,
+      "score_away": 2,
+      "shot_xg": {
+        "state": "COMPLETE_SHOT_XG",
+        "shots": 20,
+        "missing_xg": 0,
+        "invalid_xg": 0,
+        "unknown_team": 0,
+        "home_shots": 15,
+        "away_shots": 5,
+        "home_xg_sum": 1.14,
+        "away_xg_sum": 1.27
+      },
+      "api_football_pair": {
+        "state": "NOT_CHECKED",
+        "api_football_fixture_id": null
+      }
+    }
+  ],
+  "league_catalog": [
+    {
+      "expected_league": "Premier League",
+      "expected_country": "ENG",
+      "found": true,
+      "pitch_id": "l_4WFCIZ",
+      "declared_seasons": [
+        "2021/2022",
+        "2022/2023",
+        "2023/2024",
+        "2024/2025",
+        "2025/2026",
+        "2026/2027"
+      ]
+    },
+    {
+      "expected_league": "La Liga",
+      "expected_country": "ESP",
+      "found": false,
+      "pitch_id": null,
+      "declared_seasons": []
+    },
+    {
+      "expected_league": "Serie A",
+      "expected_country": "ITA",
+      "found": true,
+      "pitch_id": "l_0ALvwF",
+      "declared_seasons": [
+        "2021/2022",
+        "2022/2023",
+        "2023/2024",
+        "2024/2025",
+        "2025/2026",
+        "2026/2027"
+      ]
+    },
+    {
+      "expected_league": "Bundesliga",
+      "expected_country": "GER",
+      "found": true,
+      "pitch_id": "l_1Isor4",
+      "declared_seasons": [
+        "2021/2022",
+        "2022/2023",
+        "2023/2024",
+        "2024/2025",
+        "2025/2026",
+        "2026/2027"
+      ]
+    },
+    {
+      "expected_league": "Ligue 1",
+      "expected_country": "FRA",
+      "found": true,
+      "pitch_id": "l_3FJFUl",
+      "declared_seasons": [
+        "2021/2022",
+        "2022/2023",
+        "2023/2024",
+        "2024/2025",
+        "2025/2026",
+        "2026/2027"
+      ]
+    }
+  ],
+  "limitations": [
+    "League catalog seasons and played match counts do not prove shot-xG availability for every fixture.",
+    "Shot xG is a post-match label/history input for LATER matches only, not a prematch snapshot.",
+    "Missing/null shot xG is never a legitimate numeric zero.",
+    "Score/date and fuzzy team matches are suggestions, not verified one-to-one linkage.",
+    "Historical fixture lists queried today do not prove data was available prematch.",
+    "This is source audit, NOT a trained predictive model."
+  ],
+  "provider_errors": {
+    "pitchapi": [],
+    "api_football": []
+  },
+  "catalog_league_count": 77,
+  "outcome": "AUDIT_COLLECTED",
+  "requests": {
+    "pitchapi": 73,
+    "api_football": 24,
+    "pitch_limit": 110,
+    "football_limit": 45
+  },
+  "summary": {
+    "target_rows": 30,
+    "listed_rows": 24,
+    "played_matches_sum": 7301,
+    "shots_examined": 48,
+    "complete_xg_samples": 48,
+    "partial_or_missing_xg_samples": 0,
+    "strict_verified_api_football_matches": 14,
+    "candidate_alias_matches": 6,
+    "provider_errors_total": 0
+  }
+}
