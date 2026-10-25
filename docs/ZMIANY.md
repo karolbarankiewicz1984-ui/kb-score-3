@@ -6,7 +6,7 @@
 
 Każdy odbiór zawiera: identyfikator kroku, datę i godzinę (z podaną strefą lub UTC), stan przed/po, wynik PASS/FAIL, link do dowodu, metadane testu, znane ograniczenia, osobę/automat dokonujący weryfikacji oraz następny krok. Samo uruchomienie testu **nie oznacza** PASS. Przed wpisaniem ZALICZONO należy ponownie odczytać dowody. Nowa wersja modelu, nowa opłata lub uruchomienie produkcji wymaga osobnej zgody właściciela.
 
-**Stan po odbiorze kroku 04 (25.10.2026):** 4/29 odebranych (01–04); kroki 05–29 nieodebrane. W razie późniejszych zmian decyduje aktualny dziennik Google Docs. Dziennik Google Docs może zawierać późniejsze wpisy — w razie rozbieżności **odczytujemy oryginał Google Docs**.
+**Stan po odbiorze kroku 05 (25.10.2026):** 5/29 odebranych (01–05); kroki 06–29 nieodebrane. W razie późniejszych zmian decyduje aktualny dziennik Google Docs. Dziennik Google Docs może zawierać późniejsze wpisy — w razie rozbieżności **odczytujemy oryginał Google Docs**.
 
 ## Rejestr decyzji projektowych
 
@@ -59,6 +59,16 @@ Każdy odbiór zawiera: identyfikator kroku, datę i godzinę (z podaną strefą
 - **Wynik:** PASS; [raport techniczny](STEP_04_ACCEPTANCE.md); [commit synchronizacji PLAN](https://github.com/karolbarankiewicz1984-ui/kb-score-3/commit/c0dcac77b32dacc20afe1723660dc4187347723d).
 - **Ryzyka:** brak jeszcze audytu danych/pełnej metodologii produkcyjnej; nie uruchomiono ML.
 - **Następny krok:** KROK 05 — API-Football.
+
+
+## GATE 05 — PASS / ZALICZONO (25.10.2026)
+
+- **Cel:** udokumentować realne pokrycie API-Football dla 5 lig i 2021–2026; liczebności, limity, statystyki i braki danych.
+- **Raport:** [GATE 05 — protokół odbioru](STEP_05_ACCEPTANCE.md), [audyt liga×sezon](audits/API_FOOTBALL_STEP05_2026-10-25.md), [zagregowane dane](../data/audits/API_FOOTBALL_STEP05_2026-10-25.json).
+- **Test główny:** [GitHub Actions #40218310521](https://github.com/karolbarankiewicz1984-ui/kb-score-3/actions/runs/40218310521); 30/30 kombinacji, 10 679 rekordów terminarza, 60/60 próbek statystyk, 112 zapytań, 0 błędów, 6 testów PASS.
+- **Niezależna kontrola:** [GitHub Actions #40218180472](https://github.com/karolbarankiewicz1984-ui/kb-score-3/actions/runs/40218180472); 25/25 liczebności zgodnych, 131 zapytań, 0 błędów, 5 testów PASS.
+- **Nie stwierdzono pełnego pokrycia wszystkich meczów:** pojedyncze braki danych, ograniczona dostępność historycznych kursów, brak pomiaru rzeczywistych opóźnień. Przenieść do 09–10 i 19.
+- **Status:** PASS; nie rozpoczęto nowego modelu ML ani kroku 06. Bez nowych opłat.
 
 ## Szablon następnego wpisu
 
