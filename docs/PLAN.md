@@ -86,7 +86,7 @@
 - **BRAMKA ODBIORU / TEST PASS:** Porównano minimum reprezentatywną próbkę meczów z API-Football; opisano zakres i brak xG oraz ograniczenia historyczne.
 - **DOWÓD ZALICZENIA:** Raport pokrycia xG z identyfikatorami przykładowych meczów i rezultatami zapytań.
 - **ZALEŻY OD:** Krok 3.
-- **STATUS:** ZALICZONO | TEST: PASS — 24/30 liga×sezon z katalogu, 48/48 kompletnych xG w próbkach, 14 ścisłych par API-Football, 7/7 testów offline; La Liga nieodnaleziona | DOWÓD: [STEP_06_ACCEPTANCE.md](STEP_06_ACCEPTANCE.md), [Google Drive ZIP](https://drive.google.com/file/d/1y3z4EdkkNJHb0oiuyFLU5elFVTiJoa_k/view) | DATA ODBIORU: 25.10.2026
+- **STATUS:** ZALICZONO | TEST: PASS — 30/30 liga×sezon, 60/60 kompletnych próbek xG, 20 ścisłych par API-Football, 8/8 testów offline; LaLiga zidentyfikowana po korekcie nazwy | DOWÓD: [STEP_06_ACCEPTANCE.md](STEP_06_ACCEPTANCE.md), [pełny raport](audits/PITCHAPI_STEP06_2026-10-25.md), [test SUCCESS](https://github.com/karolbarankiewicz1984-ui/kb-score-3/actions/runs/40235545588) | DATA ODBIORU: 25.10.2026
 
 #### Krok 07 — Dopasowanie identyfikatorów meczów  [NIE ROZPOCZĘTO]
 
@@ -343,4 +343,4 @@ W nowej rozmowie wystarczy: „Otwórz plan KB Score 3.0 na Dysku Google; podaj 
 - **04 PASS (25.10.2026):** cztery dokumenty, 29/29 bramek, poprawne linki i [protokół odbioru GATE 04](STEP_04_ACCEPTANCE.md).
 - **05 PASS (25.10.2026):** [GATE 05](STEP_05_ACCEPTANCE.md), [30-wierszowy audyt API-Football](audits/API_FOOTBALL_STEP05_2026-10-25.md) i dwa testy GitHub Actions.
 
-- **06 PASS (25.10.2026):** [GATE 06 — dokumentacja](STEP_06_ACCEPTANCE.md), [pełny audyt PitchAPI i 48 próbek xG](https://drive.google.com/file/d/1y3z4EdkkNJHb0oiuyFLU5elFVTiJoa_k/view), [GitHub Actions próba 2](https://github.com/karolbarankiewicz1984-ui/kb-score-3/actions/runs/40220569321).
+- **06 PASS (25.10.2026):** [GATE 06 — protokół po korekcie LaLiga](STEP_06_ACCEPTANCE.md), [30 sezonów i 60 kompletnych próbek xG](audits/PITCHAPI_STEP06_2026-10-25.md), [GitHub Actions SUCCESS](https://github.com/karolbarankiewicz1984-ui/kb-score-3/actions/runs/40235545588).
