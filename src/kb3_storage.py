@@ -48,12 +48,14 @@ def file_hash(path):
             h.update(block)
     return h.hexdigest()
 
-def backup_database(source, output_dir):
+def backup_database(source, output_dir, *, synthetic_test=False):
     """SQLite atomic online backup to separate .sqlite3; SHA256 external manifest.
 
     IMPORTANT: resulting files are unencrypted. Only upload fully synthetic
     test backups or use dedicated encrypted storage in later production steps.
     """
+    if not synthetic_test:
+        raise RuntimeError('PRODUCTION_BACKUP_REQUIRES_ENCRYPTION')
     source = Path(source)
     dest = Path(output_dir)
     dest.mkdir(parents=True, exist_ok=True)
@@ -139,6 +141,7 @@ def main():
     parser.add_argument("--folder", type=Path)
     parser.add_argument("--manifest", type=Path)
     parser.add_argument("--target", type=Path)
+    parser.add_argument("--synthetic-test-only", action="store_true")
     args = parser.parse_args()
     if args.operation == "init":
         print(json.dumps({"initialized": str(initialize(args.db))}))
@@ -146,7 +149,8 @@ def main():
         with connect(args.db) as conn:
             print(json.dumps(verify_database(conn)))
     elif args.operation == "backup":
-        mf, db = backup_database(args.db, args.folder)
+        mf, db = backup_database(args.db, args.folder,
+                                 synthetic_test=args.synthetic_test_only)
         meta = json.loads(mf.read_text())
         print(json.dumps({"backup_id": meta["backup_id"], "db": str(db),
                           "manifest": str(mf), "sha256": meta["sha256"]}))
