@@ -13,4 +13,6 @@
 
 [STEP_04_ACCEPTANCE.md](STEP_04_ACCEPTANCE.md) — protokół PASS: 4 dokumenty, 29/29 bramek, poprawne linki, postęp 4/29.
 
+[STEP_05_ACCEPTANCE.md](STEP_05_ACCEPTANCE.md) — protokół PASS: rzeczywisty audyt API-Football, 30/30 kombinacji, porównanie niezależnych testów. [Raport pokrycia](audits/API_FOOTBALL_STEP05_2026-10-25.md).
+
 **Uwaga:** GitHub jest kopią operacyjną. W razie rozbieżności statusu decyduje najnowszy [dziennik na Dysku Google](https://docs.google.com/document/d/10wjHL3r3OAuxtezwcIeWztxS8lwjhYon5GM3BLhI0xE/edit). Nigdy nie deklarujemy ZALICZONO bez odczytanego testu i linku do dowodu. Żaden nowy silnik prognoz nie został jeszcze napisany.
