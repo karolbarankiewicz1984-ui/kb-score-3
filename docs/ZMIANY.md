@@ -6,7 +6,7 @@
 
 Każdy odbiór zawiera: identyfikator kroku, datę i godzinę (z podaną strefą lub UTC), stan przed/po, wynik PASS/FAIL, link do dowodu, metadane testu, znane ograniczenia, osobę/automat dokonujący weryfikacji oraz następny krok. Samo uruchomienie testu **nie oznacza** PASS. Przed wpisaniem ZALICZONO należy ponownie odczytać dowody. Nowa wersja modelu, nowa opłata lub uruchomienie produkcji wymaga osobnej zgody właściciela.
 
-**Stan po odbiorze kroku 05 (25.10.2026):** 5/29 odebranych (01–05); kroki 06–29 nieodebrane. W razie późniejszych zmian decyduje aktualny dziennik Google Docs. Dziennik Google Docs może zawierać późniejsze wpisy — w razie rozbieżności **odczytujemy oryginał Google Docs**.
+**Stan po odbiorze kroku 06 (25.10.2026):** 6/29 odebranych (01–06); kroki 07–29 nieodebrane. W razie późniejszych zmian decyduje aktualny dziennik Google Docs. Dziennik Google Docs może zawierać późniejsze wpisy — w razie rozbieżności **odczytujemy oryginał Google Docs**.
 
 ## Rejestr decyzji projektowych
 
@@ -96,3 +96,11 @@ Następny krok:
 ```
 
 **Przypomnienie:** jeśli w kolejnym wątku brakuje kontekstu, najpierw przeczytać Google Docs i ostatnie dowody GitHub, nie zgadywać aktualnego stanu projektu.
+
+## GATE 06 — rozwiązanie blokady i PASS / ZALICZONO (25.10.2026)
+
+- Po zmianie klucza w GitHub Secrets ponowiono run #40220569321 (attempt 2). Job collect SUCCESS, 7/7 testów offline PASS, 0 błędów dostawców.
+- Z 30 kombinacji liga×sezon 24 są dostępne, 6 (La Liga) nie zostały odnalezione w katalogu. Z 7301 rozegranych meczów wybrano 48 próbek; **48/48 z pełnym xG**. 14 dopasowań API-Football jednoznacznych, 6 jedynie kandydatów aliasowych.
+- 73 wywołania PitchAPI, 24 API-Football; nowe zakupy 0 zł. Braki nie były zastępowane zerami. Odczyty xG po meczu nie są prognozami przedmeczowymi.
+- Całe Actions run zakończyło się failure **wyłącznie z powodu odrzuconego git push non-fast-forward w jobie publikacji**, a nie z powodu błędu API lub testu danych. Oryginalne ZIP danych i Markdown zapisano na [Google Drive](https://drive.google.com/file/d/1y3z4EdkkNJHb0oiuyFLU5elFVTiJoa_k/view).
+- [Protokół GATE 06](STEP_06_ACCEPTANCE.md), [run testów](https://github.com/karolbarankiewicz1984-ui/kb-score-3/actions/runs/40220569321), [poprzednia blokada](STEP_06_BLOCKER.md). Krok 07 — niezależne mapowanie ID jeszcze nie rozpoczęte.
