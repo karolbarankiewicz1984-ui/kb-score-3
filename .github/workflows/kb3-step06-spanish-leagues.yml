@@ -1,0 +1,48 @@
+name: "KB3 Step 06 - PitchAPI Spain catalog diagnostic"
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/kb3-step06-spanish-leagues.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  inspect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    env:
+      PITCHAPI_API_KEY: ${{ secrets.PITCHAPI_API_KEY }}
+    steps:
+      - name: Inspect Spanish league names (no secrets)
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import os, json, urllib.request, urllib.error
+          key=os.environ.get("PITCHAPI_API_KEY", "").strip()
+          if not key: raise SystemExit("FAIL: missing secret")
+          q=urllib.request.Request("https://api.pitchapi.dev/v1/leagues",
+             headers={"X-API-KEY":key, "Accept":"application/json",
+             "User-Agent":"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 Chrome/129.0.0.0 Safari/537.36"},
+             method="GET")
+          try:
+              with urllib.request.urlopen(q,timeout=15) as r:
+                  payload=json.loads(r.read(500000))
+              catalog=payload["data"]["leagues"]
+              spanish=[{"name":x.get("name"),"id":x.get("id"),
+                        "country":x.get("country_code"),
+                        "seasons":len(x.get("seasons",[]))}
+                       for x in catalog
+                       if (x.get("country_code") or "").upper()=="ESP"
+                       or "liga" in (x.get("name") or "").lower()]
+              print("PASS: catalog size",len(catalog))
+              print("SPANISH_LEAGUE_NAMES:",json.dumps(spanish,ensure_ascii=False))
+              if not spanish: print("NO_SPANISH_LEAGUE_FOUND")
+          except urllib.error.HTTPError as e:
+              raise SystemExit("FAIL_HTTP_"+str(e.code))
+          except Exception as e:
+              raise SystemExit("FAIL_"+type(e).__name__)
+          PY
