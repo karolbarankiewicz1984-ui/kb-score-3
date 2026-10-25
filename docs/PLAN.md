@@ -1,6 +1,6 @@
 # KB Score 3.0 — PLAN GŁÓWNY (kopia operacyjna GitHub)
 
-**Wersja źródłowa:** v1.1, Google Docs (aktualizowane po odbiorach). **Stan ostatniej synchronizacji:** 2026-10-25, **7/29 kroków zaliczonych** (01–07), krok 08 NIE ROZPOCZĘTO. Statusy w tej kopii aktualizujemy po odbiorach, ale **źródłem prawdy pozostaje [oryginał na Dysku Google](https://docs.google.com/document/d/10wjHL3r3OAuxtezwcIeWztxS8lwjhYon5GM3BLhI0xE/edit)**.
+**Wersja źródłowa:** v1.1, Google Docs (aktualizowane po odbiorach). **Stan ostatniej synchronizacji:** 2026-10-25, **8/29 kroków zaliczonych** (01–08), krok 09 NIE ROZPOCZĘTO. Statusy w tej kopii aktualizujemy po odbiorach, ale **źródłem prawdy pozostaje [oryginał na Dysku Google](https://docs.google.com/document/d/10wjHL3r3OAuxtezwcIeWztxS8lwjhYon5GM3BLhI0xE/edit)**.
 
 **Pozostałe dokumenty:** [DANE.md](DANE.md), [MODEL.md](MODEL.md), [ZMIANY.md](ZMIANY.md), [instrukcja bezpieczeństwa kroku 03](STEP_03_SECURITY_CHECKLIST.md). **Repozytorium:** https://github.com/karolbarankiewicz1984-ui/kb-score-3.
 
@@ -98,7 +98,7 @@
 - **ZALEŻY OD:** Kroki 5–6.
 - **STATUS:** ZALICZONO | TEST: PASS (38 STRICT, 22 REVIEW, 17/17 testów, 0 duplikatów, 0 faktycznych konfliktów ID; Lyon–Auxerre 60 min w kolejce) | DOWÓD: [STEP_07_ACCEPTANCE.md](STEP_07_ACCEPTANCE.md), [crosswalk JSON](../data/audits/STEP07_MATCH_CROSSWALK_2026-10-25.json), [Actions PASS](https://github.com/karolbarankiewicz1984-ui/kb-score-3/actions/runs/40236615477) | DATA ODBIORU: 25.10.2026
 
-#### Krok 08 — Projekt bazy danych i archiwizacji  [NIE ROZPOCZĘTO]
+#### Krok 08 — Projekt bazy danych i archiwizacji  [ZALICZONO]
 
 - **CO ZROBIĘ:** Zdefiniować mecze, drużyny, sezony, źródła, statystyki, kursy, prognozy, N, treningi, wersje i rozliczenia.
 - **CO ROBISZ TY:** Zatwierdzić lokalizację trwałego magazynu, jeżeli jest potrzebna płatna przestrzeń.
@@ -106,7 +106,7 @@
 - **BRAMKA ODBIORU / TEST PASS:** Test zapis→odczyt→odtworzenie backupu przechodzi; baza wymusza unikalność meczów i niezmienność prognoz; wskazano sposób odzyskiwania po awarii.
 - **DOWÓD ZALICZENIA:** Schemat bazy, migracje, test przywrócenia backupu i jego identyfikator.
 - **ZALEŻY OD:** Krok 7.
-- **STATUS:** NIE ROZPOCZĘTO | TEST: NIE URUCHOMIONO | LINK DOWODU: — | DATA ODBIORU: —
+- **STATUS:** ZALICZONO | TEST: PASS — 9/9 testów SQLite, UNIQUE, immutability i backup→restore + niezależny restore z Google Drive | DOWÓD: [protokół GATE08](STEP_08_ACCEPTANCE.md), [Actions 40241611841](https://github.com/karolbarankiewicz1984-ui/kb-score-3/actions/runs/40241611841), [manifest Drive](../data/audits/STEP08_BACKUP_MANIFEST_2026-10-25.json) | DATA ODBIORU: 25.10.2026
 
 #### Krok 09 — Pobranie pierwszej historii, potem rozszerzenie  [NIE ROZPOCZĘTO]
 
@@ -330,6 +330,10 @@
 - **ZALEŻY OD:** Krok 24, opcjonalny.
 - **STATUS:** NIE ROZPOCZĘTO | TEST: NIE URUCHOMIONO | LINK DOWODU: — | DATA ODBIORU: —
 
+
+## Krok 08 — dodatkowy dowód odbioru
+
+**08 PASS (25.10.2026):** [schemat SQLite](../migrations/001_initial_schema.sql), [testy backupu i blokady prognoz](../tests/test_step08_storage.py), [protokół](STEP_08_ACCEPTANCE.md). Google Drive zawiera wyłącznie niezaszyfrowany backup **syntetyczny**. Produkcyjne backupy wymagają szyfrowania i automatyzacji przed przyjęciem prawdziwych danych.
 
 ## Jak wznowić pracę
 
