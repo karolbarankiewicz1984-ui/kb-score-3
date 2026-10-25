@@ -1,0 +1,40 @@
+name: "KB3 Step 07 - Cross-provider match identity"
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/kb3-step07-identity.yml"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: kb3-step07-identity
+  cancel-in-progress: false
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      API_FOOTBALL_KEY: ${{ secrets.API_FOOTBALL_KEY }}
+      PYTHONDONTWRITEBYTECODE: "1"
+    steps:
+      - name: Checkout isolated KB Score 3.0 repository
+        uses: actions/checkout@v4
+      - name: Test matcher safety (no API)
+        run: python -m unittest discover -s tests -p 'test_step07_identity_audit.py' -v
+      - name: Match 60 frozen PitchAPI samples against 30 API-Football league-seasons
+        run: python -m scripts.step07_identity_audit
+      - name: Publish non-secret crosswalk and manual review queue as artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: kb3-step07-fixture-identity
+          path: |
+            data/audits/STEP07_MATCH_CROSSWALK_2026-10-25.json
+            docs/audits/STEP07_MATCH_CROSSWALK_2026-10-25.md
+          if-no-files-found: warn
+          retention-days: 14
