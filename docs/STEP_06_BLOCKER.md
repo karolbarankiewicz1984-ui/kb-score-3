@@ -39,3 +39,17 @@ Oficjalna dokumentacja https://pitchapi.dev/ podaje: **401 UNAUTHORIZED = brak l
 - [ ] Zarchiwizowany raport, identyfikatory próbek, wynik testów PASS oraz protokół odbioru w Google Docs.
 
 **Nie kupowano nowych usług i nie trenowano modelu.** Krok 07 nie jest jeszcze rozpoczęty. Źródło prawdy: [Plan główny KB Score 3.0](https://docs.google.com/document/d/10wjHL3r3OAuxtezwcIeWztxS8lwjhYon5GM3BLhI0xE/edit).
+
+## Porównanie ze starym repozytorium — diagnostyka klucza, nie dane treningowe
+
+**Kontrola odczytów 25.10.2026: stare repo `kb-score-model` nadal pobiera dane PitchAPI prawidłowo.** Jest to mocna wskazówka, że źródło działa, a usterka dotyczy autoryzacji używanej z nowego `kb-score-3`, lecz nie jest to dowód konkretnej przyczyny.
+
+| Dowód w STARYM projekcie (tylko odczyt) | Zweryfikowane dane | Uwagi |
+|---|---|---|
+| [Prematch PitchAPI, run 40217313687](https://github.com/karolbarankiewicz1984-ui/kb-score-model/actions/runs/40217313687) | Workflow SUCCESS; etap pobrania z SDK również SUCCESS | [Snapshot 26.10](https://github.com/karolbarankiewicz1984-ui/kb-score-model/blob/main/data/pitchapi/prematch/2026-10-26.json): 38 przyszłych meczów zebranych, 37 z wystarczającą przeszłą historią obu drużyn |
+| [Historyczny xG, run 40164885481](https://github.com/karolbarankiewicz1984-ui/kb-score-model/actions/runs/40164885481) | Workflow SUCCESS; 75 meczów zebranych, 67 z kompletnym xG | [Dane 24.10](https://github.com/karolbarankiewicz1984-ui/kb-score-model/blob/main/data/pitchapi/daily/2026-10-24.json). To dane **postmatch**, nie wolno podawać ich jako prematch do tego samego meczu |
+| [Porównanie źródeł 24.10](https://github.com/karolbarankiewicz1984-ui/kb-score-model/blob/main/reports/pitchapi/2026-10-24.json) | 21 dopasowanych spotkań do API-Football, 0 rozbieżności wyniku dla dopasowanych | Próbka jednego dnia, nie dowodzi pokrycia pięciu lig × sześciu sezonów |
+
+**Praktyczny wniosek:** przed zakupami i przebudową skryptów należy porównać aktywność klucza w panelu PitchAPI i **przywrócić poprawną wartość `PITCHAPI_API_KEY` w nowym repozytorium**. Nie kopiować surowej wartości przez rozmowę. Jeśli tylko dotychczasowy sekret starego repo działa, a jego wartości nie zachowano, regeneracja może unieważnić klucz w starym repo; najpierw ustalić, czy PitchAPI pozwala dodać drugi klucz, a w razie wymuszonej rotacji zaktualizować obie integracje. Nie wykonywać kolejnych automatycznych prób HTTP 401 bez działań na koncie.
+
+**Stan odbioru niezmieniony:** GATE 06 = BLOKADA / NIEZALICZONY; ogółem 5/29. Historyczne pliki zostały **wyłącznie odczytane**; nie użyto ich do trenowania KB Score 3.0 ani nie zmieniano starego repo.
