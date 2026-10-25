@@ -15,9 +15,10 @@
 - [Audyt API-Football i protokół kroku 05 — PASS](docs/STEP_05_ACCEPTANCE.md)
 - [Raport pokrycia ligi × sezon](docs/audits/API_FOOTBALL_STEP05_2026-10-25.md)
 - [Krok 06 — audyt PitchAPI PASS i wyniki](docs/STEP_06_ACCEPTANCE.md)
+- [Krok 07 — parowanie identyfikatorów, GATE PASS i kolejka REVIEW](docs/STEP_07_ACCEPTANCE.md)
 - [Historia blokady PitchAPI HTTP 401 (rozwiązana)](docs/STEP_06_BLOCKER.md)
 
-**Stan przy aktualizacji tego README (25.10.2026):** kroki 01–06 ZALICZONE, kroki 07–29 jeszcze niezaliczone. Dokładny stan na dany dzień należy zawsze sprawdzić w planie Google Docs. Żaden nowy model ani uczenie ML nie zostały uruchomione.
+**Stan przy aktualizacji tego README (25.10.2026):** kroki 01–07 ZALICZONE, kroki 08–29 jeszcze niezaliczone. Dokładny stan na dany dzień należy zawsze sprawdzić w planie Google Docs. Żaden nowy model ani uczenie ML nie zostały uruchomione.
 
 ## Co znajduje się w repo?
 
