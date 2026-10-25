@@ -6,7 +6,7 @@
 
 Każdy odbiór zawiera: identyfikator kroku, datę i godzinę (z podaną strefą lub UTC), stan przed/po, wynik PASS/FAIL, link do dowodu, metadane testu, znane ograniczenia, osobę/automat dokonujący weryfikacji oraz następny krok. Samo uruchomienie testu **nie oznacza** PASS. Przed wpisaniem ZALICZONO należy ponownie odczytać dowody. Nowa wersja modelu, nowa opłata lub uruchomienie produkcji wymaga osobnej zgody właściciela.
 
-**Stan po odbiorze kroku 06 (25.10.2026):** 6/29 odebranych (01–06); kroki 07–29 nieodebrane. W razie późniejszych zmian decyduje aktualny dziennik Google Docs. Dziennik Google Docs może zawierać późniejsze wpisy — w razie rozbieżności **odczytujemy oryginał Google Docs**.
+**Stan po odbiorze kroku 07 (25.10.2026):** 7/29 odebranych (01–07); kroki 08–29 nieodebrane. W razie późniejszych zmian decyduje aktualny dziennik Google Docs. Dziennik Google Docs może zawierać późniejsze wpisy — w razie rozbieżności **odczytujemy oryginał Google Docs**.
 
 ## Rejestr decyzji projektowych
 
@@ -104,3 +104,14 @@ Następny krok:
 - 73 wywołania PitchAPI, 24 API-Football; nowe zakupy 0 zł. Braki nie były zastępowane zerami. Odczyty xG po meczu nie są prognozami przedmeczowymi.
 - Całe Actions run zakończyło się failure **wyłącznie z powodu odrzuconego git push non-fast-forward w jobie publikacji**, a nie z powodu błędu API lub testu danych. Oryginalne ZIP danych i Markdown zapisano na [Google Drive](https://drive.google.com/file/d/1y3z4EdkkNJHb0oiuyFLU5elFVTiJoa_k/view).
 - [Protokół GATE 06](STEP_06_ACCEPTANCE.md), [run testów](https://github.com/karolbarankiewicz1984-ui/kb-score-3/actions/runs/40220569321), [poprzednia blokada](STEP_06_BLOCKER.md). Krok 07 — niezależne mapowanie ID jeszcze nie rozpoczęte.
+
+## GATE 07 — PASS / ZALICZONO (25.10.2026)
+
+- **Zakres:** identyfikacja par tego samego meczu w API-Football i PitchAPI; walidacja próbki 60 spotkań/30 sezonów na podstawie danych obu źródeł, brak automatycznego dopasowywania niepewnych aliasów.
+- **Pierwsza próba:** [Actions #40236350417](https://github.com/karolbarankiewicz1984-ui/kb-score-3/actions/runs/40236350417) — FAIL celowo wykrywający godzinne przesunięcie przy Lyon–Auxerre, które wcześniejsza kontrola uznała za EXACT. Nie usuwano nieudanego testu.
+- **Poprawiona wersja:** [Actions #40236615477](https://github.com/karolbarankiewicz1984-ui/kb-score-3/actions/runs/40236615477) — SUCCESS, 17/17 testów, 30 odczytów, 38 STRICT, 22 REVIEW, 0 duplikatów, 0 realnych sprzeczności z poprzednimi ID.
+- **Trwałe archiwum:** [Actions #40236771701](https://github.com/karolbarankiewicz1984-ui/kb-score-3/actions/runs/40236771701) — PASS; [crosswalk JSON](../data/audits/STEP07_MATCH_CROSSWALK_2026-10-25.json) i [raport z kolejką 22](audits/STEP07_MATCH_CROSSWALK_2026-10-25.md) w `main`.
+- **Odbiór:** [STEP_07_ACCEPTANCE.md](STEP_07_ACCEPTANCE.md) + [Plan i dziennik Google Docs](https://docs.google.com/document/d/10wjHL3r3OAuxtezwcIeWztxS8lwjhYon5GM3BLhI0xE/edit). GATE07 PASS oznacza bezpieczny mechanizm i audyt próbki, **nie 100% sparowania całej historii**.
+- **Cechy przyszłej bazy:** jeden wewnętrzny fixture_id, zewnętrzne identyfikatory i status REVIEW; nieuprawnione dopasowanie blokować. Historię snapshotów przedmeczowych zachowywać oddzielnie.
+- **Koszty:** 0 zł nowych zakupów; w kroku 07 wykorzystano 60 zapytań API-Football w dwóch testach (30+30). Nie było nowego pobierania PitchAPI xG.
+- **Następny krok:** 08 — projekt bazy danych i archiwizacji, NIE ROZPOCZĘTY.
