@@ -1,6 +1,6 @@
 # KB Score 3.0 — DANE (specyfikacja źródeł i rejestrów)
 
-**Status:** projekt dokumentacyjny / krok 04. **Nie jest to raport z zakończonego importu.** Historyczne pokrycie i limity operacyjne zostaną niezależnie potwierdzone w krokach 05–10.
+**Status 25.10.2026:** audyty źródeł 05–06, mapowanie 07 i infrastruktura bazy 08 ZALICZONE. Import prawdziwej historii i analiza jakości każdego spotkania nadal należą do kroków 09–10.
 
 **Źródło prawdy projektu:** [Plan Google Docs](https://docs.google.com/document/d/10wjHL3r3OAuxtezwcIeWztxS8lwjhYon5GM3BLhI0xE/edit) · [29 bramek odbioru](PLAN.md) · [metodologia](MODEL.md) · [dziennik](ZMIANY.md)
 
@@ -93,7 +93,7 @@ Pola są **projektową listą logiczną**, nie deklaracją, że istnieją już t
 | 21 | przedmeczowy freeze ID, niezmienność P, odmowa zapisu po kickoff |
 | 22 | wynik settlement WIN/LOSS/PUSH/VOID bez mutowania prognozy |
 
-**Następny audyt:** KROK 05 — API-Football, niezależny od odczytu aktywności sekretów z kroku 03.
+**Następny etap:** KROK 09 — import pierwszej ligi i sezonu, test idempotencji i wznawiania.
 
 
 ## 8. Wyniki rzeczywistego audytu źródła API-Football — GATE 05 PASS, 25.10.2026
@@ -105,3 +105,10 @@ Pełne dane [liga×sezon](audits/API_FOOTBALL_STEP05_2026-10-25.md), [JSON z lic
 **Jakość wymaga dalszego sprawdzenia:** w jednej z 60 próbek brak kompletnych żółtych kartek, Ligue 1/2025 ma 307 zakończonych z 308 wpisów; występują niestandardowe wielkości niektórych sezonów (np. Serie A 2022 — 381 meczów w API). Weryfikacja danych per każdy mecz, deduplikacja i analiza dokładnego pochodzenia odbędą się w krokach 09–10. **Nie mylić** poprawnych próbek 60/60 z pokryciem kompletnych statystyk wszystkich 10 679 wpisów.
 
 **Status:** KROK 05 ZALICZONY; KROK 06 PitchAPI pozostaje NIE ROZPOCZĘTY. Nie trenowano modelu.
+
+## 11. Stan fizycznej bazy po GATE 08 PASS (25.10.2026)
+
+- [Migracja SQLite v1](../migrations/001_initial_schema.sql) istnieje, tworzy transakcyjny schemat. [Protokół odbioru](STEP_08_ACCEPTANCE.md) zawiera mapę tabel i ograniczenia.
+- [Narzędzie](../src/kb3_storage.py) uruchamia migrację, sprawdza integralność, tworzy kontrolowany syntetyczny backup i weryfikuje restore. Niezmienność prognoz sprawdzono 9 testami.
+- [Trwała kopia testowa w Drive](https://drive.google.com/file/d/1DkaIfH24qf7z_KDuwbMzRuUd_iORbFxb/view) zawiera tylko fikcyjne dane. Zweryfikowano ją po ponownym pobraniu; [manifest SHA i ID](../data/audits/STEP08_BACKUP_MANIFEST_2026-10-25.json).
+- **UWAGA:** to nie jest ani wypełniona baza historyczna, ani bezpieczny produkcyjny system kopii. Przed zapisaniem prawdziwych danych na Drive potrzebne są szyfrowanie i kontrola zasad dostawców; automatyczna retencja jeszcze nie powstała.
