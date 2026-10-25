@@ -1,0 +1,343 @@
+# KB Score 3.0 — PLAN GŁÓWNY (kopia operacyjna GitHub)
+
+**Wersja źródłowa:** v1.1, Google Docs (aktualizowane po odbiorach). **Stan podczas sporządzania tej kopii:** 2026-10-25, **3/29 kroków zaliczonych** (01–03), krok 04 w opracowaniu. Statusy w tej kopii aktualizujemy po odbiorach, ale **źródłem prawdy pozostaje [oryginał na Dysku Google](https://docs.google.com/document/d/10wjHL3r3OAuxtezwcIeWztxS8lwjhYon5GM3BLhI0xE/edit)**.
+
+**Pozostałe dokumenty:** [DANE.md](DANE.md), [MODEL.md](MODEL.md), [ZMIANY.md](ZMIANY.md), [instrukcja bezpieczeństwa kroku 03](STEP_03_SECURITY_CHECKLIST.md). **Repozytorium:** https://github.com/karolbarankiewicz1984-ui/kb-score-3.
+
+## Zasady projektu
+
+- Całkowicie niezależny KB Score 3.0; KB2.1, API Market i MultiModel tylko jako historyczne benchmarki, nie silnik treningowy ani podstawowy model.
+- Nie piszemy ani nie uruchamiamy silnika prognoz w kroku 04 — to **dokumentacja**. Kod modelu powstaje dopiero w jego zaplanowanych etapach.
+- Bez nowych zakupów bez wyraźnej zgody właściciela. Dodatkowy budżet API: do 100 zł/mies. jako pułap rozmowy, nie upoważnienie do zakupu.
+- Klucze wyłącznie w GitHub Secrets; prognozy tworzone przed startem, nienadpisywalne; brak lookahead; oddzielne dane TRAIN/VALIDATION/TEST.
+- Cel: wiarygodne prawdopodobieństwa 1X2, gole, BTTS, następnie kartki/rożne/faule po audycie; baseline ELO+Poisson, niezależny CatBoost; walk-forward, Brier, log loss, kalibracja, Champion–Challenger.
+- Docelowa dostawa trzech PDF dzisiaj/jutro/pojutrze o 09:30 Europe/Warsaw **dopiero po odbiorze kroku 24**. Bez automatycznego obstawiania.
+
+## Reguła bramki odbioru GATE
+
+1. Każdy krok musi mieć **mierzalny rezultat i test PASS** (automatyczny lub kontrola ręczna), nie tylko kod lub deklarację.
+2. Niezbędny jest **dowód**: link do commitu/testu, raport audytu, freeze ID lub plik rezultatów.
+3. Zapisujemy datę, odpowiedzialność, wynik, URL, ryzyka i następny krok w [dzienniku Google Docs](https://docs.google.com/document/d/10wjHL3r3OAuxtezwcIeWztxS8lwjhYon5GM3BLhI0xE/edit) oraz [ZMIANY.md](ZMIANY.md).
+4. Statusy: **NIE ROZPOCZĘTO → W REALIZACJI → DO ODBIORU → ZALICZONO**; awarie: **BLOKADA / DO POPRAWY**.
+5. Zakupy, promocja nowego Championa, uruchomienie raportów produkcyjnych i potrzebne konta wymagają osobnej zgody użytkownika. Niezaliczone zależności blokują przejście do produkcji.
+6. **Zapis `ZALICZONO` można wprowadzić dopiero po niezależnej kontroli dowodów.** Zmiana kryteriów wymaga wersji i wpisu z uzasadnieniem.
+
+## Pełna mapa 29 etapów z kryteriami odbioru
+
+### Etap A. Środowisko, dostęp i dokumentacja
+
+#### Krok 01 — Kontrola posiadanych kont i uprawnień  [ZALICZONO]
+
+- **CO ZROBIĘ:** Sprawdzić dostęp do GitHub, API-Football, PitchAPI, Dysku Google oraz usług wysyłkowych; nie odczytywać ani ujawniać sekretów.
+- **CO ROBISZ TY:** Potwierdzić konta tylko gdy wymagają Twojego logowania; nie wysyłać haseł.
+- **NARZĘDZIA I KOSZT:** GitHub, panele dostawców, Google Drive; 0 zł nowych zakupów.
+- **BRAMKA ODBIORU / TEST PASS:** Odnotowano dla każdej usługi: dostęp TAK/NIE, plan, dostępny zakres, znane limity i brakujące uprawnienia. Wszystkie pozycje mają źródło lub wyraźny znak „niezweryfikowane”.
+- **DOWÓD ZALICZENIA:** Karta dostępu z datą audytu i linkami do paneli, bez sekretów.
+- **ZALEŻY OD:** Brak.
+- **STATUS:** ZALICZONO | TEST: PASS — konto, usługi, koszty, limity, miejsce, ryzyka | DOWÓD: raport audytu 24.10.2026 na końcu dokumentu | DATA ODBIORU: 24.10.2026
+
+#### Krok 02 — Nowe prywatne repozytorium kb-score-3  [ZALICZONO]
+
+- **CO ZROBIĘ:** Utworzyć niezależne repozytorium, gałąź główną i katalogi projektu; nie kopiować silnika KB2.1 jako KB3.0.
+- **CO ROBISZ TY:** Potwierdzić utworzenie repo i uprawnienia, jeżeli GitHub wymaga działania właściciela.
+- **NARZĘDZIA I KOSZT:** GitHub; bez dodatkowych zakupów.
+- **BRAMKA ODBIORU / TEST PASS:** Nowy adres repo działa; ustawienie private potwierdzone przez metadane; istnieje README; pliki starszego projektu nie zostały zmodyfikowane.
+- **DOWÓD ZALICZENIA:** URL nowego repo, identyfikator pierwszego commitu i wynik kontroli widoczności.
+- **ZALEŻY OD:** Krok 1.
+- **STATUS:** ZALICZONO | TEST: PASS (repo private, README, pierwszy commit, 8 katalogów, niezmieniony stary projekt) | DOWÓD: https://github.com/karolbarankiewicz1984-ui/kb-score-3/commit/7c6cee2be18b3a771d0d94ccd3f6841f7f6d83a6 | DATA ODBIORU: 25.10.2026
+
+#### Krok 03 — Sekrety, limity i budżet  [ZALICZONO]
+
+- **CO ZROBIĘ:** Dodać klucze usług jako GitHub Secrets, sprawdzić ustawienia wydatków i minimalne uprawnienia workflow.
+- **CO ROBISZ TY:** Gdy niezbędne, wkleić klucze wyłącznie do formularza GitHub Secrets; zatwierdzić ewentualne opłaty.
+- **NARZĘDZIA I KOSZT:** GitHub Secrets/Billing; bez zakupów.
+- **BRAMKA ODBIORU / TEST PASS:** Testowe wywołania API działają bez wypisywania klucza; skan repo i logów nie znajduje sekretów; udokumentowano limity i kontrolę kosztów.
+- **DOWÓD ZALICZENIA:** Wynik zanonimizowanego testu API, stan zabezpieczeń i link do testu w Actions.
+- **ZALEŻY OD:** Kroki 1–2.
+- **STATUS:** ZALICZONO | TEST: PASS — API-Football i PitchAPI HTTP 200; brak wskazań sekretów w kontrolowanym skanie; budżet Actions 0 USD i alerty włączone | DOWÓD: https://github.com/karolbarankiewicz1984-ui/kb-score-3/actions/runs/40203074557 | DATA ODBIORU: 25.10.2026
+
+#### Krok 04 — Dokumentacja projektu i repozytorium decyzji  [NIE ROZPOCZĘTO]
+
+- **CO ZROBIĘ:** Przenieść ten plan do docs w NOWYM repo po jego utworzeniu; przygotować PLAN.md, DANE.md, MODEL.md i ZMIANY.md; linkować do tego dokumentu na Dysku.
+- **CO ROBISZ TY:** Zatwierdzić ogólne założenia przed pisaniem silnika.
+- **NARZĘDZIA I KOSZT:** Google Docs oraz GitHub; 0 zł.
+- **BRAMKA ODBIORU / TEST PASS:** Wszystkie cztery dokumenty są dostępne; każde określenie etapu ma warunki odbioru; plan GitHub i dokument główny odsyłają do siebie; żaden krok nie ma fałszywego DONE.
+- **DOWÓD ZALICZENIA:** Linki do dokumentów, commit i wynik kontroli kompletności 29 kroków.
+- **ZALEŻY OD:** Krok 2.
+- **STATUS:** NIE ROZPOCZĘTO | TEST: NIE URUCHOMIONO | LINK DOWODU: — | DATA ODBIORU: —
+
+### Etap B. Źródła i historia
+
+#### Krok 05 — Audyt API-Football  [NIE ROZPOCZĘTO]
+
+- **CO ZROBIĘ:** Sprawdzić sezony, top 5 lig, terminarze, wyniki, statystyki, kursy, opóźnienia i limity.
+- **CO ROBISZ TY:** Potwierdzić aktywny plan API tylko jeśli nie da się odczytać go bezpiecznie.
+- **NARZĘDZIA I KOSZT:** API-Football; obecny abonament, bez nowego zakupu.
+- **BRAMKA ODBIORU / TEST PASS:** Powstała tabela liga×sezon×typ danych z liczebnościami; próbka pobrań powtarzalna; żaden brak nie jest ukrywany jako zero.
+- **DOWÓD ZALICZENIA:** Raport pokrycia z datą, liczbami, odpowiedziami testowymi i kosztami zapytań.
+- **ZALEŻY OD:** Krok 3.
+- **STATUS:** NIE ROZPOCZĘTO | TEST: NIE URUCHOMIONO | LINK DOWODU: — | DATA ODBIORU: —
+
+#### Krok 06 — Audyt PitchAPI  [NIE ROZPOCZĘTO]
+
+- **CO ZROBIĘ:** Sprawdzić legalnie dostępne ligi, sezony, rzeczywiste xG, statystyki strzałów i zgodność czasową.
+- **CO ROBISZ TY:** W razie potrzeby potwierdzić konto/klucz w bezpieczny sposób.
+- **NARZĘDZIA I KOSZT:** PitchAPI; bez nowego zakupu przed analizą.
+- **BRAMKA ODBIORU / TEST PASS:** Porównano minimum reprezentatywną próbkę meczów z API-Football; opisano zakres i brak xG oraz ograniczenia historyczne.
+- **DOWÓD ZALICZENIA:** Raport pokrycia xG z identyfikatorami przykładowych meczów i rezultatami zapytań.
+- **ZALEŻY OD:** Krok 3.
+- **STATUS:** NIE ROZPOCZĘTO | TEST: NIE URUCHOMIONO | LINK DOWODU: — | DATA ODBIORU: —
+
+#### Krok 07 — Dopasowanie identyfikatorów meczów  [NIE ROZPOCZĘTO]
+
+- **CO ZROBIĘ:** Połączyć drużyny i mecze obu dostawców, obsłużyć zmiany nazw, przełożenia, strefy czasowe i duble.
+- **CO ROBISZ TY:** Brak działań technicznych.
+- **NARZĘDZIA I KOSZT:** Python, dane API, testy jednostkowe; 0 zł.
+- **BRAMKA ODBIORU / TEST PASS:** Na ręcznie skontrolowanej próbie dopasowania są prawidłowe; przypadki niejednoznaczne trafiają do kolejki, a nie są zgadywane; brak duplikatów klucza wydarzenia.
+- **DOWÓD ZALICZENIA:** Raport zgodności, liczba dopasowanych/niepewnych i wynik testów.
+- **ZALEŻY OD:** Kroki 5–6.
+- **STATUS:** NIE ROZPOCZĘTO | TEST: NIE URUCHOMIONO | LINK DOWODU: — | DATA ODBIORU: —
+
+#### Krok 08 — Projekt bazy danych i archiwizacji  [NIE ROZPOCZĘTO]
+
+- **CO ZROBIĘ:** Zdefiniować mecze, drużyny, sezony, źródła, statystyki, kursy, prognozy, N, treningi, wersje i rozliczenia.
+- **CO ROBISZ TY:** Zatwierdzić lokalizację trwałego magazynu, jeżeli jest potrzebna płatna przestrzeń.
+- **NARZĘDZIA I KOSZT:** SQLite, Parquet, trwały backup; na start 0 zł.
+- **BRAMKA ODBIORU / TEST PASS:** Test zapis→odczyt→odtworzenie backupu przechodzi; baza wymusza unikalność meczów i niezmienność prognoz; wskazano sposób odzyskiwania po awarii.
+- **DOWÓD ZALICZENIA:** Schemat bazy, migracje, test przywrócenia backupu i jego identyfikator.
+- **ZALEŻY OD:** Krok 7.
+- **STATUS:** NIE ROZPOCZĘTO | TEST: NIE URUCHOMIONO | LINK DOWODU: — | DATA ODBIORU: —
+
+#### Krok 09 — Pobranie pierwszej historii, potem rozszerzenie  [NIE ROZPOCZĘTO]
+
+- **CO ZROBIĘ:** Pobrać kontrolnie 1 ligę/1 sezon, zweryfikować import i rozszerzać na sezony/ligi mające dane.
+- **CO ROBISZ TY:** Nie trzeba nic robić, chyba że plan API limituje import.
+- **NARZĘDZIA I KOSZT:** API-Football, PitchAPI, GitHub Actions; bez nowych zakupów.
+- **BRAMKA ODBIORU / TEST PASS:** Liczba importowanych meczów uzgodniona z kontrolnym terminarzem; powtórny import nie powiela danych; skrypt potrafi bezpiecznie wznowić przerwany import.
+- **DOWÓD ZALICZENIA:** Plik manifestu z ligami, sezonami, liczebnościami, checksumami i logiem kontrolnym.
+- **ZALEŻY OD:** Kroki 5–8.
+- **STATUS:** NIE ROZPOCZĘTO | TEST: NIE URUCHOMIONO | LINK DOWODU: — | DATA ODBIORU: —
+
+#### Krok 10 — Weryfikacja jakości i chronologii danych  [NIE ROZPOCZĘTO]
+
+- **CO ZROBIĘ:** Zidentyfikować braki, powielone wydarzenia, niemożliwe daty, błędy źródeł i przyszłą wiedzę.
+- **CO ROBISZ TY:** Przejrzeć podsumowanie jakości, jeśli potrzebna decyzja o wyłączeniu ligi.
+- **NARZĘDZIA I KOSZT:** Python, testy jakości danych; 0 zł.
+- **BRAMKA ODBIORU / TEST PASS:** Testy poprawności i no-lookahead przechodzą na przykładach pozytywnych i celowo błędnych; każda liga ma raport jakości; błędy krytyczne blokują trening.
+- **DOWÓD ZALICZENIA:** Raport QA, wykaz odrzuconych rekordów i wynik testu negatywnego.
+- **ZALEŻY OD:** Krok 9.
+- **STATUS:** NIE ROZPOCZĘTO | TEST: NIE URUCHOMIONO | LINK DOWODU: — | DATA ODBIORU: —
+
+### Etap C. Cechy i chronologia
+
+#### Krok 11 — Cechy przedmeczowe  [NIE ROZPOCZĘTO]
+
+- **CO ZROBIĘ:** Wyliczać ELO, formę 5/10/15, siłę przeciwników, dom/wyjazd, gole, xG gdy dostępne i kontekst potwierdzony przed meczem.
+- **CO ROBISZ TY:** Nie musisz liczyć wskaźników.
+- **NARZĘDZIA I KOSZT:** Python, SQL/Parquet, testy; 0 zł.
+- **BRAMKA ODBIORU / TEST PASS:** Każda cecha ma opis i znacznik daty dostępności; test odcina przyszły mecz i pokazuje brak przecieku; brak xG nie jest zamieniany na fikcyjną wartość.
+- **DOWÓD ZALICZENIA:** Katalog cech z źródłem, datą i wynikiem testów no-lookahead.
+- **ZALEŻY OD:** Krok 10.
+- **STATUS:** NIE ROZPOCZĘTO | TEST: NIE URUCHOMIONO | LINK DOWODU: — | DATA ODBIORU: —
+
+#### Krok 12 — Podział TRAIN / VALIDATION / TEST  [NIE ROZPOCZĘTO]
+
+- **CO ZROBIĘ:** Stworzyć chronologiczny podział i walk-forward; oddzielić drużyny/spotkania i daty informacji od wyników.
+- **CO ROBISZ TY:** Akceptacja metodologii testów przed treningiem.
+- **NARZĘDZIA I KOSZT:** Python/scikit-learn; 0 zł.
+- **BRAMKA ODBIORU / TEST PASS:** Czas trenowania jest wcześniejszy od czasu testu, brak przekroczeń granic i przecieków; podział zapisany i niezmienny dla danej wersji eksperymentu.
+- **DOWÓD ZALICZENIA:** Plik manifestu splitu, liczby prób i test niezmienności.
+- **ZALEŻY OD:** Krok 11.
+- **STATUS:** NIE ROZPOCZĘTO | TEST: NIE URUCHOMIONO | LINK DOWODU: — | DATA ODBIORU: —
+
+### Etap D. Modele i testy
+
+#### Krok 13 — Baseline ELO i Poisson  [NIE ROZPOCZĘTO]
+
+- **CO ZROBIĘ:** Zbudować prosty silnik prognoz 1X2 oraz goli, z odrębnym testem na historii.
+- **CO ROBISZ TY:** Przejrzeć pierwsze wyniki referencyjne.
+- **NARZĘDZIA I KOSZT:** Python, biblioteki matematyczne; 0 zł.
+- **BRAMKA ODBIORU / TEST PASS:** P(1)+P(X)+P(2) sumują się do 1; prognozy nie korzystają z kursów; wzorcowe przykłady i testy historyczne przechodzą.
+- **DOWÓD ZALICZENIA:** Raport baseline z Brier, log loss, kalibracją, wersją danych i uruchomieniem testów.
+- **ZALEŻY OD:** Krok 12.
+- **STATUS:** NIE ROZPOCZĘTO | TEST: NIE URUCHOMIONO | LINK DOWODU: — | DATA ODBIORU: —
+
+#### Krok 14 — Pierwszy CatBoost 1X2  [NIE ROZPOCZĘTO]
+
+- **CO ZROBIĘ:** Wytrenować niezależny ML dla 1/X/2 na cechach przedmeczowych.
+- **CO ROBISZ TY:** Brak programowania; ocenić czy rozumiesz sposób raportowania.
+- **NARZĘDZIA I KOSZT:** Python, CatBoost, CPU GitHub/alternatywny runner; bez kosztu na start.
+- **BRAMKA ODBIORU / TEST PASS:** Trening jest odtwarzalny (wersja danych, seed, parametry); eksport modelu działa; P sumuje się do 1; test bez przyszłych danych przechodzi.
+- **DOWÓD ZALICZENIA:** Plik modelu z hashem, metryki TEST, log uruchomienia.
+- **ZALEŻY OD:** Krok 13.
+- **STATUS:** NIE ROZPOCZĘTO | TEST: NIE URUCHOMIONO | LINK DOWODU: — | DATA ODBIORU: —
+
+#### Krok 15 — Modele goli i spójność rynków  [NIE ROZPOCZĘTO]
+
+- **CO ZROBIĘ:** Obliczać O/U 1,5/2,5/3,5, BTTS, team totals; porównać model bramkowy i warianty ML.
+- **CO ROBISZ TY:** Przejrzeć sposób prezentacji rynków.
+- **NARZĘDZIA I KOSZT:** Python, Poisson/CatBoost; 0 zł.
+- **BRAMKA ODBIORU / TEST PASS:** Over 3,5 nie większy niż Over 2,5; wyniki wszystkich rynków zgodne z definicją 90 minut; testy znanych rozkładów przechodzą.
+- **DOWÓD ZALICZENIA:** Testy własności matematycznych i raport prób na spotkaniach testowych.
+- **ZALEŻY OD:** Kroki 13–14.
+- **STATUS:** NIE ROZPOCZĘTO | TEST: NIE URUCHOMIONO | LINK DOWODU: — | DATA ODBIORU: —
+
+#### Krok 16 — Kalibracja prawdopodobieństw  [NIE ROZPOCZĘTO]
+
+- **CO ZROBIĘ:** Sprawdzić reliability bins, Brier/log loss; dobrać kalibrację bez trenowania na TEST.
+- **CO ROBISZ TY:** Ocenić, czy raport wyjaśnia działanie P.
+- **NARZĘDZIA I KOSZT:** scikit-learn / biblioteki; 0 zł.
+- **BRAMKA ODBIORU / TEST PASS:** Kalibracja uczona wyłącznie na wydzielonych danych; metryki TEST liczone raz według zaplanowanej procedury; brak nieuprawnionego użycia oryginalnego P(cal).
+- **DOWÓD ZALICZENIA:** Wykres/raport kalibracji, protokół podziału i wyniki przed/po.
+- **ZALEŻY OD:** Kroki 14–15.
+- **STATUS:** NIE ROZPOCZĘTO | TEST: NIE URUCHOMIONO | LINK DOWODU: — | DATA ODBIORU: —
+
+#### Krok 17 — Porównanie silników  [NIE ROZPOCZĘTO]
+
+- **CO ZROBIĘ:** Porównać ELO, Poisson, CatBoost bez xG, CatBoost z xG i ewentualny ensemble.
+- **CO ROBISZ TY:** Przejrzeć czy wnioski są zrozumiałe i uczciwe.
+- **NARZĘDZIA I KOSZT:** Python, testy statystyczne, tabele wyników; 0 zł.
+- **BRAMKA ODBIORU / TEST PASS:** Wspólne spotkania/rynki, te same horyzonty czasowe, przedziały niepewności i koszt braków danych; brak wyboru zwycięzcy wyłącznie na podstawie jednej serii.
+- **DOWÓD ZALICZENIA:** Macierz wyników, liczebności, metryki i test uczciwego porównania.
+- **ZALEŻY OD:** Krok 16.
+- **STATUS:** NIE ROZPOCZĘTO | TEST: NIE URUCHOMIONO | LINK DOWODU: — | DATA ODBIORU: —
+
+#### Krok 18 — Wybór Champion — wersja bazowa  [NIE ROZPOCZĘTO]
+
+- **CO ZROBIĘ:** Wybrać wersję dopuszczoną do prognoz testowych i zamrozić jej parametry.
+- **CO ROBISZ TY:** Zatwierdzić wybór po obejrzeniu wyników; można wybrać brak awansu.
+- **NARZĘDZIA I KOSZT:** GitHub tag/release, dokument decyzji; 0 zł.
+- **BRAMKA ODBIORU / TEST PASS:** Decyzja zawiera metryki porównawcze, dokładną wersję, datę, zakres i powód; model odtwarzalny z zamrożonych danych; fallback dostępny.
+- **DOWÓD ZALICZENIA:** Karta awansu Champion z commit SHA i identyfikatorem modelu, zatwierdzenie.
+- **ZALEŻY OD:** Krok 17.
+- **STATUS:** NIE ROZPOCZĘTO | TEST: NIE URUCHOMIONO | LINK DOWODU: — | DATA ODBIORU: —
+
+### Etap E. Kursy, freeze i rozliczenia
+
+#### Krok 19 — Historyczne i bieżące kursy  [NIE ROZPOCZĘTO]
+
+- **CO ZROBIĘ:** Pobierać dokładne rynki i linie wraz z datą, bukmacherem, marżą oraz limitem czasowym; nie rekonstruować brakujących historycznych kursów.
+- **CO ROBISZ TY:** Potwierdzić zakres bukmacherów i ewentualny zakup dopiero po raporcie.
+- **NARZĘDZIA I KOSZT:** Obecne odds API-Football, ewentualny dostawca po zgodzie.
+- **BRAMKA ODBIORU / TEST PASS:** Każdy kurs ma market+line+provider+timestamp; niewiarygodna linia nie jest porównywana; EV obliczone na kontrolnych przykładach bez pomyłek.
+- **DOWÓD ZALICZENIA:** Próbka zapisów kursów, raport pokrycia i test matematyki EV/no-vig.
+- **ZALEŻY OD:** Kroki 8, 18.
+- **STATUS:** NIE ROZPOCZĘTO | TEST: NIE URUCHOMIONO | LINK DOWODU: — | DATA ODBIORU: —
+
+#### Krok 20 — Rankingi jakości, szans i wartości  [NIE ROZPOCZĘTO]
+
+- **CO ZROBIĘ:** Stworzyć osobne rankingi HIGH PROBABILITY, VALUE CANDIDATE, WATCH i NO BET; nie mieszać wysokiego P z dodatnim EV.
+- **CO ROBISZ TY:** Wybrać preferencje prezentacji i budżet ostrożności, bez hazardowego automatu.
+- **NARZĘDZIA I KOSZT:** Logika selekcji, dane z testów; 0 zł.
+- **BRAMKA ODBIORU / TEST PASS:** Ten sam mecz i kurs dają tę samą klasyfikację; niska jakość danych blokuje publikowanie pewnych rekomendacji; progi mają uzasadnienie w walidacji.
+- **DOWÓD ZALICZENIA:** Tabela warunków, przykłady graniczne i testy regresyjne.
+- **ZALEŻY OD:** Kroki 16–19.
+- **STATUS:** NIE ROZPOCZĘTO | TEST: NIE URUCHOMIONO | LINK DOWODU: — | DATA ODBIORU: —
+
+#### Krok 21 — Niezmienialny przedmeczowy freeze  [NIE ROZPOCZĘTO]
+
+- **CO ZROBIĘ:** Zapisać każdą prognozę z wersją modelu, danymi, czasem pobrania, czasem rozpoczęcia i kursami; osobno EARLY i FINAL PREMATCH.
+- **CO ROBISZ TY:** Nie musisz utrwalać ręcznie; możesz przeglądać archiwum.
+- **NARZĘDZIA I KOSZT:** Baza, manifest hashe, log GitHub; 0 zł.
+- **BRAMKA ODBIORU / TEST PASS:** Zmiana starego rekordu jest odrzucana; test próby zapisu po kickoff skutkuje BLOCKED; niezależny odczyt zwraca pierwotny timestamp i P.
+- **DOWÓD ZALICZENIA:** Freeze ID, kontrola hasha, wynik testu no-lookahead i przykładowy odczyt.
+- **ZALEŻY OD:** Kroki 8, 20.
+- **STATUS:** NIE ROZPOCZĘTO | TEST: NIE URUCHOMIONO | LINK DOWODU: — | DATA ODBIORU: —
+
+#### Krok 22 — Automatyczne rozliczanie  [NIE ROZPOCZĘTO]
+
+- **CO ZROBIĘ:** Zakończone mecze powiązać z prognozami, rozliczyć dokładny rynek i obliczyć Brier, log loss, WIN/LOSS/PUSH/VOID.
+- **CO ROBISZ TY:** Przejrzeć audyt próbki historycznej.
+- **NARZĘDZIA I KOSZT:** API-Football, lokalna baza, testy rynku; 0 zł.
+- **BRAMKA ODBIORU / TEST PASS:** Przykładowe poprawne/odwołane/przełożone mecze rozliczone zgodnie z regułami; brak dubli; settlement nie przepisuje dawnej prognozy.
+- **DOWÓD ZALICZENIA:** Raport settlement i zestaw testów WIN/LOSS/PUSH/VOID.
+- **ZALEŻY OD:** Krok 21.
+- **STATUS:** NIE ROZPOCZĘTO | TEST: NIE URUCHOMIONO | LINK DOWODU: — | DATA ODBIORU: —
+
+### Etap F. PDF i automatyzacja
+
+#### Krok 23 — Generator 3 PDF  [NIE ROZPOCZĘTO]
+
+- **CO ZROBIĘ:** Przygotować czytelne raporty DZIS, JUTRO, POJUTRZE z prognozami, zastrzeżeniami, źródłami, kursami i audytem.
+- **CO ROBISZ TY:** Zaakceptować szablon czytelny na telefonie.
+- **NARZĘDZIA I KOSZT:** Python, PDF, Google Drive; 0 zł.
+- **BRAMKA ODBIORU / TEST PASS:** Trzy PDF otwierają się; polskie znaki i zakres dat poprawne; brak wymyślonych danych; przykład niskiej jakości oznaczony jako WATCH; kontrola automatyczna zawartości i ręczny odbiór wyglądu.
+- **DOWÓD ZALICZENIA:** 3 przykładowe PDF, raport kontroli tekstu/stron i zatwierdzony szablon.
+- **ZALEŻY OD:** Kroki 20–22.
+- **STATUS:** NIE ROZPOCZĘTO | TEST: NIE URUCHOMIONO | LINK DOWODU: — | DATA ODBIORU: —
+
+#### Krok 24 — Harmonogram i kontrola uruchomienia  [NIE ROZPOCZĘTO]
+
+- **CO ZROBIĘ:** Automatycznie zbierać dane, wyliczać, zamrażać, rozliczać i publikować w strefie Europe/Warsaw; kontrolować opóźnienia i ponowienia.
+- **CO ROBISZ TY:** Potwierdzić docelową godzinę 09:30 i zakres 3 dni; może być zmienione.
+- **NARZĘDZIA I KOSZT:** GitHub Actions, monitoring, trwałe składowanie; bez opłat w limitach.
+- **BRAMKA ODBIORU / TEST PASS:** Test ręczny i test harmonogramu przechodzą; każdy błąd wywołuje kontrolowany retry albo alarm; brak podwójnej publikacji; archiwum nie zależy tylko od artefaktów Actions.
+- **DOWÓD ZALICZENIA:** Linki do przebiegów Actions, próbna dostawa 3 PDF i raport retry/failure.
+- **ZALEŻY OD:** Krok 23.
+- **STATUS:** NIE ROZPOCZĘTO | TEST: NIE URUCHOMIONO | LINK DOWODU: — | DATA ODBIORU: —
+
+#### Krok 25 — Wysyłka i powiadomienia  [NIE ROZPOCZĘTO]
+
+- **CO ZROBIĘ:** Dostarczać PDF wybraną metodą; błędy i braki danych sygnalizować, ale nie wysyłać fikcyjnego raportu.
+- **CO ROBISZ TY:** Wybrać odbiorcę i zatwierdzić dostęp do wysyłki, nie podawać hasła w czacie.
+- **NARZĘDZIA I KOSZT:** Gmail/SMTP lub inny bezpieczny mechanizm po autoryzacji.
+- **BRAMKA ODBIORU / TEST PASS:** Dostarczenie testowego raportu potwierdzone; brak duplikatu i wycieku danych; celowo wymuszony błąd powoduje właściwe powiadomienie.
+- **DOWÓD ZALICZENIA:** Testowy e-mail/odbiór w Drive, log z redakcją danych oraz test alarmu.
+- **ZALEŻY OD:** Krok 24.
+- **STATUS:** NIE ROZPOCZĘTO | TEST: NIE URUCHOMIONO | LINK DOWODU: — | DATA ODBIORU: —
+
+### Etap G. Nauka kontrolowana
+
+#### Krok 26 — Champion–Challenger — okresowe trenowanie  [NIE ROZPOCZĘTO]
+
+- **CO ZROBIĘ:** Nowe wyniki powiększają bazę, lecz nie zmieniają automatycznie oficjalnego modelu; test nowej wersji odbywa się osobno.
+- **CO ROBISZ TY:** Zatwierdzać tylko istotne awanse modelu.
+- **NARZĘDZIA I KOSZT:** Python, CI/CD, rejestr modeli; koszt wg czasu obliczeń.
+- **BRAMKA ODBIORU / TEST PASS:** Challenger przechodzi niezależne testy; wersja produkcyjna nie zmienia się bez decyzji; istnieje sprawdzony rollback; trening loguje dane i ustawienia.
+- **DOWÓD ZALICZENIA:** Raport champion/challenger, protokół awansu i test powrotu do starej wersji.
+- **ZALEŻY OD:** Kroki 18, 22, 24.
+- **STATUS:** NIE ROZPOCZĘTO | TEST: NIE URUCHOMIONO | LINK DOWODU: — | DATA ODBIORU: —
+
+#### Krok 27 — Monitoring jakości i degradacji  [NIE ROZPOCZĘTO]
+
+- **CO ZROBIĘ:** Kontrolować dryf danych, pogorszenie Brier/log loss, braki ligowe i stabilność prognoz w czasie.
+- **CO ROBISZ TY:** Zapoznawać się z sygnałami ostrzegawczymi i decydować o ograniczeniach.
+- **NARZĘDZIA I KOSZT:** Monitor metryk, powiadomienia; 0 zł na start.
+- **BRAMKA ODBIORU / TEST PASS:** Celowo zepsute dane powodują alarm/blokadę; poprawne dane nie generują fałszywej awarii; istnieją jawne progi i reakcja systemu.
+- **DOWÓD ZALICZENIA:** Dziennik kontrolowanego testu awarii i dashboard jakości.
+- **ZALEŻY OD:** Kroki 22, 25, 26.
+- **STATUS:** NIE ROZPOCZĘTO | TEST: NIE URUCHOMIONO | LINK DOWODU: — | DATA ODBIORU: —
+
+### Etap H. Rynki specjalne i panel
+
+#### Krok 28 — Modele rożnych, kartek i fauli  [NIE ROZPOCZĘTO]
+
+- **CO ZROBIĘ:** Osobno przetestować rodziny rynków, z uwagą na rzeczywiste definicje statystyk i dokładne linie; faule Under jako osobny moduł.
+- **CO ROBISZ TY:** Zatwierdzić kolejność rozwoju, dopiero po wynikach testów podstawowych.
+- **NARZĘDZIA I KOSZT:** API-Football/PitchAPI jeśli dane wystarczą; koszt dopiero po audycie.
+- **BRAMKA ODBIORU / TEST PASS:** Każda rodzina ma osobny zbiór, freeze, wyniki, benchmark i próbę walk-forward; brak awansu przy niskiej jakości lub nieporównywalnych liniach.
+- **DOWÓD ZALICZENIA:** Raport per rynek i osobna karta dopuszczenia/odrzucenia.
+- **ZALEŻY OD:** Kroki 10–27.
+- **STATUS:** NIE ROZPOCZĘTO | TEST: NIE URUCHOMIONO | LINK DOWODU: — | DATA ODBIORU: —
+
+#### Krok 29 — Opcjonalny panel mobilny  [NIE ROZPOCZĘTO]
+
+- **CO ZROBIĘ:** Zaprojektować panel z kalendarzem, historią, P(model), oceną rynku, raportami i statusem bramek.
+- **CO ROBISZ TY:** Ocenić czy panel jest potrzebny i wybrać sposób korzystania z telefonu.
+- **NARZĘDZIA I KOSZT:** Strona PWA, ewentualnie Base44 po odrębnej decyzji.
+- **BRAMKA ODBIORU / TEST PASS:** Panel pokazuje dokładnie dane z archiwum i nie generuje alternatywnych wartości; test mobilny, autoryzacji oraz dostępności przebiega poprawnie.
+- **DOWÓD ZALICZENIA:** Link do panelu, test mobilny i odbiór użytkownika.
+- **ZALEŻY OD:** Krok 24, opcjonalny.
+- **STATUS:** NIE ROZPOCZĘTO | TEST: NIE URUCHOMIONO | LINK DOWODU: — | DATA ODBIORU: —
+
+
+## Jak wznowić pracę
+
+W nowej rozmowie wystarczy: „Otwórz plan KB Score 3.0 na Dysku Google; podaj status i dowody ostatniej bramki”. Do odbioru wymagany jest zawsze **aktualny odczyt** planu i dowodów, a nie pamięć czatu.
+
+## Aktualne dowody pierwszych kroków
+
+- **01 PASS (24.10.2026):** audyt kont, limitów i budżetu — protokół w [Google Docs](https://docs.google.com/document/d/10wjHL3r3OAuxtezwcIeWztxS8lwjhYon5GM3BLhI0xE/edit).
+- **02 PASS (25.10.2026):** [prywatne repozytorium](https://github.com/karolbarankiewicz1984-ui/kb-score-3) i [commit struktury](https://github.com/karolbarankiewicz1984-ui/kb-score-3/commit/7c6cee2be18b3a771d0d94ccd3f6841f7f6d83a6).
+- **03 PASS (25.10.2026):** [odczyt API-Football i PitchAPI](https://github.com/karolbarankiewicz1984-ui/kb-score-3/actions/runs/40203074557) oraz [checklista bezpieczeństwa](STEP_03_SECURITY_CHECKLIST.md).
+- **04 w opracowaniu:** cztery dokumenty i powiązanie źródła prawdy; status PASS wymaga osobnego wpisu po weryfikacji.
