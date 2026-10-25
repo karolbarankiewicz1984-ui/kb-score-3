@@ -1,0 +1,26 @@
+{
+  "schema": "kb3-step08-offsite-evidence-v1",
+  "date_local": "2026-10-25",
+  "source_classification": "SYNTHETIC_TEST_ONLY",
+  "raw_backup_is_unencrypted": true,
+  "production_use_forbidden": true,
+  "backup_id": "20261025T224033196429Z-95353b524e",
+  "backup_sqlite_sha256": "ae76048deebd45bc0d97f21b189859fec0ae42f5e69ca51eb197c7b0ad6fe80f",
+  "backup_sqlite_bytes": 212992,
+  "github_run_first": "https://github.com/karolbarankiewicz1984-ui/kb-score-3/actions/runs/40241295913",
+  "github_run_hardened": "https://github.com/karolbarankiewicz1984-ui/kb-score-3/actions/runs/40241611841",
+  "gdrive_folder": "https://drive.google.com/drive/folders/17NvQFKNkFd4eHZSqa-bNU0nFFSmHKTKo",
+  "gdrive_file": "https://drive.google.com/file/d/1DkaIfH24qf7z_KDuwbMzRuUd_iORbFxb/view",
+  "gdrive_file_id": "1DkaIfH24qf7z_KDuwbMzRuUd_iORbFxb",
+  "gdrive_archived_zip_bytes": 17459,
+  "verification_from_drive": {
+    "re_downloaded": true,
+    "zip_crc": "PASS",
+    "sha256_matching_manifest": true,
+    "sqlite_integrity_check": "ok",
+    "foreign_key_check": "PASS_ZERO_VIOLATIONS",
+    "schema_version": 1,
+    "restored_fixture_count": 1,
+    "prediction_immutability_triggers_present": true
+  }
+}
