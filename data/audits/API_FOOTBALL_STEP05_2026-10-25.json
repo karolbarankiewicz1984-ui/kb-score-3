@@ -1,0 +1,1008 @@
+{
+  "schema": "kb30-api-football-coverage-v1",
+  "run_at_utc": "2026-10-25T17:49:30.142971+00:00",
+  "leagues_requested": 5,
+  "seasons_requested": [
+    2021,
+    2022,
+    2023,
+    2024,
+    2025,
+    2026
+  ],
+  "sampling": "Two deterministic finished fixtures per league-season, 25%/75% chronological index; five 2025 lineup, events, player examples",
+  "rows": [
+    {
+      "league_id": 39,
+      "league": "Premier League",
+      "country": "England",
+      "season": 2021,
+      "season_listed": true,
+      "coverage_declared": {
+        "events": true,
+        "lineups": true,
+        "statistics_fixtures": true,
+        "statistics_players": true,
+        "injuries": true,
+        "odds": false
+      },
+      "fixture_fetch": "OK",
+      "n_fixtures": 380,
+      "n_finished": 380,
+      "n_results_with_goals": 380,
+      "n_scheduled_other": 0,
+      "stats_sample_count": 2,
+      "stats_available_count": 2,
+      "stats_fields_both_teams": {
+        "Corner Kicks": 2,
+        "Fouls": 2,
+        "Shots on Goal": 2,
+        "Yellow Cards": 2
+      }
+    },
+    {
+      "league_id": 39,
+      "league": "Premier League",
+      "country": "England",
+      "season": 2022,
+      "season_listed": true,
+      "coverage_declared": {
+        "events": true,
+        "lineups": true,
+        "statistics_fixtures": true,
+        "statistics_players": true,
+        "injuries": true,
+        "odds": false
+      },
+      "fixture_fetch": "OK",
+      "n_fixtures": 380,
+      "n_finished": 380,
+      "n_results_with_goals": 380,
+      "n_scheduled_other": 0,
+      "stats_sample_count": 2,
+      "stats_available_count": 2,
+      "stats_fields_both_teams": {
+        "Corner Kicks": 2,
+        "Fouls": 2,
+        "Shots on Goal": 2,
+        "Yellow Cards": 2
+      }
+    },
+    {
+      "league_id": 39,
+      "league": "Premier League",
+      "country": "England",
+      "season": 2023,
+      "season_listed": true,
+      "coverage_declared": {
+        "events": true,
+        "lineups": true,
+        "statistics_fixtures": true,
+        "statistics_players": true,
+        "injuries": true,
+        "odds": false
+      },
+      "fixture_fetch": "OK",
+      "n_fixtures": 380,
+      "n_finished": 380,
+      "n_results_with_goals": 380,
+      "n_scheduled_other": 0,
+      "stats_sample_count": 2,
+      "stats_available_count": 2,
+      "stats_fields_both_teams": {
+        "Corner Kicks": 2,
+        "Fouls": 2,
+        "Shots on Goal": 2,
+        "Yellow Cards": 2
+      }
+    },
+    {
+      "league_id": 39,
+      "league": "Premier League",
+      "country": "England",
+      "season": 2024,
+      "season_listed": true,
+      "coverage_declared": {
+        "events": true,
+        "lineups": true,
+        "statistics_fixtures": true,
+        "statistics_players": true,
+        "injuries": true,
+        "odds": false
+      },
+      "fixture_fetch": "OK",
+      "n_fixtures": 380,
+      "n_finished": 380,
+      "n_results_with_goals": 380,
+      "n_scheduled_other": 0,
+      "stats_sample_count": 2,
+      "stats_available_count": 2,
+      "stats_fields_both_teams": {
+        "Corner Kicks": 2,
+        "Fouls": 2,
+        "Shots on Goal": 2,
+        "Yellow Cards": 2
+      }
+    },
+    {
+      "league_id": 39,
+      "league": "Premier League",
+      "country": "England",
+      "season": 2025,
+      "season_listed": true,
+      "coverage_declared": {
+        "events": true,
+        "lineups": true,
+        "statistics_fixtures": true,
+        "statistics_players": true,
+        "injuries": true,
+        "odds": false
+      },
+      "fixture_fetch": "OK",
+      "n_fixtures": 380,
+      "n_finished": 380,
+      "n_results_with_goals": 380,
+      "n_scheduled_other": 0,
+      "stats_sample_count": 2,
+      "stats_available_count": 2,
+      "stats_fields_both_teams": {
+        "Corner Kicks": 2,
+        "Fouls": 2,
+        "Shots on Goal": 2,
+        "Yellow Cards": 2
+      }
+    },
+    {
+      "league_id": 39,
+      "league": "Premier League",
+      "country": "England",
+      "season": 2026,
+      "season_listed": true,
+      "coverage_declared": {
+        "events": true,
+        "lineups": true,
+        "statistics_fixtures": true,
+        "statistics_players": true,
+        "injuries": true,
+        "odds": true
+      },
+      "fixture_fetch": "OK",
+      "n_fixtures": 380,
+      "n_finished": 79,
+      "n_results_with_goals": 79,
+      "n_scheduled_other": 301,
+      "stats_sample_count": 2,
+      "stats_available_count": 2,
+      "stats_fields_both_teams": {
+        "Corner Kicks": 2,
+        "Fouls": 2,
+        "Shots on Goal": 2,
+        "Yellow Cards": 2
+      }
+    },
+    {
+      "league_id": 140,
+      "league": "La Liga",
+      "country": "Spain",
+      "season": 2021,
+      "season_listed": true,
+      "coverage_declared": {
+        "events": true,
+        "lineups": true,
+        "statistics_fixtures": true,
+        "statistics_players": true,
+        "injuries": true,
+        "odds": false
+      },
+      "fixture_fetch": "OK",
+      "n_fixtures": 380,
+      "n_finished": 380,
+      "n_results_with_goals": 380,
+      "n_scheduled_other": 0,
+      "stats_sample_count": 2,
+      "stats_available_count": 2,
+      "stats_fields_both_teams": {
+        "Corner Kicks": 2,
+        "Fouls": 2,
+        "Shots on Goal": 2,
+        "Yellow Cards": 2
+      }
+    },
+    {
+      "league_id": 140,
+      "league": "La Liga",
+      "country": "Spain",
+      "season": 2022,
+      "season_listed": true,
+      "coverage_declared": {
+        "events": true,
+        "lineups": true,
+        "statistics_fixtures": true,
+        "statistics_players": true,
+        "injuries": true,
+        "odds": false
+      },
+      "fixture_fetch": "OK",
+      "n_fixtures": 380,
+      "n_finished": 380,
+      "n_results_with_goals": 380,
+      "n_scheduled_other": 0,
+      "stats_sample_count": 2,
+      "stats_available_count": 2,
+      "stats_fields_both_teams": {
+        "Corner Kicks": 2,
+        "Fouls": 2,
+        "Shots on Goal": 2,
+        "Yellow Cards": 2
+      }
+    },
+    {
+      "league_id": 140,
+      "league": "La Liga",
+      "country": "Spain",
+      "season": 2023,
+      "season_listed": true,
+      "coverage_declared": {
+        "events": true,
+        "lineups": true,
+        "statistics_fixtures": true,
+        "statistics_players": true,
+        "injuries": true,
+        "odds": false
+      },
+      "fixture_fetch": "OK",
+      "n_fixtures": 380,
+      "n_finished": 380,
+      "n_results_with_goals": 380,
+      "n_scheduled_other": 0,
+      "stats_sample_count": 2,
+      "stats_available_count": 2,
+      "stats_fields_both_teams": {
+        "Corner Kicks": 2,
+        "Fouls": 2,
+        "Shots on Goal": 2,
+        "Yellow Cards": 2
+      }
+    },
+    {
+      "league_id": 140,
+      "league": "La Liga",
+      "country": "Spain",
+      "season": 2024,
+      "season_listed": true,
+      "coverage_declared": {
+        "events": true,
+        "lineups": true,
+        "statistics_fixtures": true,
+        "statistics_players": true,
+        "injuries": true,
+        "odds": false
+      },
+      "fixture_fetch": "OK",
+      "n_fixtures": 380,
+      "n_finished": 380,
+      "n_results_with_goals": 380,
+      "n_scheduled_other": 0,
+      "stats_sample_count": 2,
+      "stats_available_count": 2,
+      "stats_fields_both_teams": {
+        "Corner Kicks": 2,
+        "Fouls": 2,
+        "Shots on Goal": 2,
+        "Yellow Cards": 2
+      }
+    },
+    {
+      "league_id": 140,
+      "league": "La Liga",
+      "country": "Spain",
+      "season": 2025,
+      "season_listed": true,
+      "coverage_declared": {
+        "events": true,
+        "lineups": true,
+        "statistics_fixtures": true,
+        "statistics_players": true,
+        "injuries": true,
+        "odds": false
+      },
+      "fixture_fetch": "OK",
+      "n_fixtures": 380,
+      "n_finished": 380,
+      "n_results_with_goals": 380,
+      "n_scheduled_other": 0,
+      "stats_sample_count": 2,
+      "stats_available_count": 2,
+      "stats_fields_both_teams": {
+        "Corner Kicks": 2,
+        "Fouls": 2,
+        "Shots on Goal": 2,
+        "Yellow Cards": 2
+      }
+    },
+    {
+      "league_id": 140,
+      "league": "La Liga",
+      "country": "Spain",
+      "season": 2026,
+      "season_listed": true,
+      "coverage_declared": {
+        "events": true,
+        "lineups": true,
+        "statistics_fixtures": true,
+        "statistics_players": true,
+        "injuries": true,
+        "odds": true
+      },
+      "fixture_fetch": "OK",
+      "n_fixtures": 380,
+      "n_finished": 96,
+      "n_results_with_goals": 96,
+      "n_scheduled_other": 284,
+      "stats_sample_count": 2,
+      "stats_available_count": 2,
+      "stats_fields_both_teams": {
+        "Corner Kicks": 2,
+        "Fouls": 2,
+        "Shots on Goal": 2,
+        "Yellow Cards": 2
+      }
+    },
+    {
+      "league_id": 135,
+      "league": "Serie A",
+      "country": "Italy",
+      "season": 2021,
+      "season_listed": true,
+      "coverage_declared": {
+        "events": true,
+        "lineups": true,
+        "statistics_fixtures": true,
+        "statistics_players": true,
+        "injuries": true,
+        "odds": false
+      },
+      "fixture_fetch": "OK",
+      "n_fixtures": 380,
+      "n_finished": 380,
+      "n_results_with_goals": 380,
+      "n_scheduled_other": 0,
+      "stats_sample_count": 2,
+      "stats_available_count": 2,
+      "stats_fields_both_teams": {
+        "Corner Kicks": 2,
+        "Fouls": 2,
+        "Shots on Goal": 2,
+        "Yellow Cards": 2
+      }
+    },
+    {
+      "league_id": 135,
+      "league": "Serie A",
+      "country": "Italy",
+      "season": 2022,
+      "season_listed": true,
+      "coverage_declared": {
+        "events": true,
+        "lineups": true,
+        "statistics_fixtures": true,
+        "statistics_players": true,
+        "injuries": true,
+        "odds": false
+      },
+      "fixture_fetch": "OK",
+      "n_fixtures": 381,
+      "n_finished": 381,
+      "n_results_with_goals": 381,
+      "n_scheduled_other": 0,
+      "stats_sample_count": 2,
+      "stats_available_count": 2,
+      "stats_fields_both_teams": {
+        "Corner Kicks": 2,
+        "Fouls": 2,
+        "Shots on Goal": 2,
+        "Yellow Cards": 2
+      }
+    },
+    {
+      "league_id": 135,
+      "league": "Serie A",
+      "country": "Italy",
+      "season": 2023,
+      "season_listed": true,
+      "coverage_declared": {
+        "events": true,
+        "lineups": true,
+        "statistics_fixtures": true,
+        "statistics_players": true,
+        "injuries": true,
+        "odds": false
+      },
+      "fixture_fetch": "OK",
+      "n_fixtures": 380,
+      "n_finished": 380,
+      "n_results_with_goals": 380,
+      "n_scheduled_other": 0,
+      "stats_sample_count": 2,
+      "stats_available_count": 2,
+      "stats_fields_both_teams": {
+        "Corner Kicks": 2,
+        "Fouls": 2,
+        "Shots on Goal": 2,
+        "Yellow Cards": 2
+      }
+    },
+    {
+      "league_id": 135,
+      "league": "Serie A",
+      "country": "Italy",
+      "season": 2024,
+      "season_listed": true,
+      "coverage_declared": {
+        "events": true,
+        "lineups": true,
+        "statistics_fixtures": true,
+        "statistics_players": true,
+        "injuries": true,
+        "odds": false
+      },
+      "fixture_fetch": "OK",
+      "n_fixtures": 380,
+      "n_finished": 380,
+      "n_results_with_goals": 380,
+      "n_scheduled_other": 0,
+      "stats_sample_count": 2,
+      "stats_available_count": 2,
+      "stats_fields_both_teams": {
+        "Corner Kicks": 2,
+        "Fouls": 2,
+        "Shots on Goal": 2,
+        "Yellow Cards": 2
+      }
+    },
+    {
+      "league_id": 135,
+      "league": "Serie A",
+      "country": "Italy",
+      "season": 2025,
+      "season_listed": true,
+      "coverage_declared": {
+        "events": true,
+        "lineups": true,
+        "statistics_fixtures": true,
+        "statistics_players": true,
+        "injuries": true,
+        "odds": false
+      },
+      "fixture_fetch": "OK",
+      "n_fixtures": 380,
+      "n_finished": 380,
+      "n_results_with_goals": 380,
+      "n_scheduled_other": 0,
+      "stats_sample_count": 2,
+      "stats_available_count": 2,
+      "stats_fields_both_teams": {
+        "Corner Kicks": 2,
+        "Fouls": 2,
+        "Shots on Goal": 2,
+        "Yellow Cards": 2
+      }
+    },
+    {
+      "league_id": 135,
+      "league": "Serie A",
+      "country": "Italy",
+      "season": 2026,
+      "season_listed": true,
+      "coverage_declared": {
+        "events": true,
+        "lineups": true,
+        "statistics_fixtures": true,
+        "statistics_players": true,
+        "injuries": true,
+        "odds": true
+      },
+      "fixture_fetch": "OK",
+      "n_fixtures": 380,
+      "n_finished": 78,
+      "n_results_with_goals": 78,
+      "n_scheduled_other": 302,
+      "stats_sample_count": 2,
+      "stats_available_count": 2,
+      "stats_fields_both_teams": {
+        "Corner Kicks": 2,
+        "Fouls": 2,
+        "Shots on Goal": 2,
+        "Yellow Cards": 2
+      }
+    },
+    {
+      "league_id": 78,
+      "league": "Bundesliga",
+      "country": "Germany",
+      "season": 2021,
+      "season_listed": true,
+      "coverage_declared": {
+        "events": true,
+        "lineups": true,
+        "statistics_fixtures": true,
+        "statistics_players": true,
+        "injuries": true,
+        "odds": false
+      },
+      "fixture_fetch": "OK",
+      "n_fixtures": 308,
+      "n_finished": 308,
+      "n_results_with_goals": 308,
+      "n_scheduled_other": 0,
+      "stats_sample_count": 2,
+      "stats_available_count": 2,
+      "stats_fields_both_teams": {
+        "Corner Kicks": 2,
+        "Fouls": 2,
+        "Shots on Goal": 2,
+        "Yellow Cards": 2
+      }
+    },
+    {
+      "league_id": 78,
+      "league": "Bundesliga",
+      "country": "Germany",
+      "season": 2022,
+      "season_listed": true,
+      "coverage_declared": {
+        "events": true,
+        "lineups": true,
+        "statistics_fixtures": true,
+        "statistics_players": true,
+        "injuries": true,
+        "odds": false
+      },
+      "fixture_fetch": "OK",
+      "n_fixtures": 308,
+      "n_finished": 308,
+      "n_results_with_goals": 308,
+      "n_scheduled_other": 0,
+      "stats_sample_count": 2,
+      "stats_available_count": 2,
+      "stats_fields_both_teams": {
+        "Corner Kicks": 2,
+        "Fouls": 2,
+        "Shots on Goal": 2,
+        "Yellow Cards": 2
+      }
+    },
+    {
+      "league_id": 78,
+      "league": "Bundesliga",
+      "country": "Germany",
+      "season": 2023,
+      "season_listed": true,
+      "coverage_declared": {
+        "events": true,
+        "lineups": true,
+        "statistics_fixtures": true,
+        "statistics_players": true,
+        "injuries": true,
+        "odds": false
+      },
+      "fixture_fetch": "OK",
+      "n_fixtures": 308,
+      "n_finished": 308,
+      "n_results_with_goals": 308,
+      "n_scheduled_other": 0,
+      "stats_sample_count": 2,
+      "stats_available_count": 2,
+      "stats_fields_both_teams": {
+        "Corner Kicks": 2,
+        "Fouls": 2,
+        "Shots on Goal": 2,
+        "Yellow Cards": 2
+      }
+    },
+    {
+      "league_id": 78,
+      "league": "Bundesliga",
+      "country": "Germany",
+      "season": 2024,
+      "season_listed": true,
+      "coverage_declared": {
+        "events": true,
+        "lineups": true,
+        "statistics_fixtures": true,
+        "statistics_players": true,
+        "injuries": true,
+        "odds": false
+      },
+      "fixture_fetch": "OK",
+      "n_fixtures": 308,
+      "n_finished": 308,
+      "n_results_with_goals": 308,
+      "n_scheduled_other": 0,
+      "stats_sample_count": 2,
+      "stats_available_count": 2,
+      "stats_fields_both_teams": {
+        "Corner Kicks": 2,
+        "Fouls": 2,
+        "Shots on Goal": 2,
+        "Yellow Cards": 2
+      }
+    },
+    {
+      "league_id": 78,
+      "league": "Bundesliga",
+      "country": "Germany",
+      "season": 2025,
+      "season_listed": true,
+      "coverage_declared": {
+        "events": true,
+        "lineups": true,
+        "statistics_fixtures": true,
+        "statistics_players": true,
+        "injuries": true,
+        "odds": false
+      },
+      "fixture_fetch": "OK",
+      "n_fixtures": 308,
+      "n_finished": 308,
+      "n_results_with_goals": 308,
+      "n_scheduled_other": 0,
+      "stats_sample_count": 2,
+      "stats_available_count": 2,
+      "stats_fields_both_teams": {
+        "Corner Kicks": 2,
+        "Fouls": 2,
+        "Shots on Goal": 2,
+        "Yellow Cards": 2
+      }
+    },
+    {
+      "league_id": 78,
+      "league": "Bundesliga",
+      "country": "Germany",
+      "season": 2026,
+      "season_listed": true,
+      "coverage_declared": {
+        "events": true,
+        "lineups": true,
+        "statistics_fixtures": true,
+        "statistics_players": true,
+        "injuries": true,
+        "odds": true
+      },
+      "fixture_fetch": "OK",
+      "n_fixtures": 306,
+      "n_finished": 62,
+      "n_results_with_goals": 62,
+      "n_scheduled_other": 244,
+      "stats_sample_count": 2,
+      "stats_available_count": 2,
+      "stats_fields_both_teams": {
+        "Corner Kicks": 2,
+        "Fouls": 2,
+        "Shots on Goal": 2,
+        "Yellow Cards": 2
+      }
+    },
+    {
+      "league_id": 61,
+      "league": "Ligue 1",
+      "country": "France",
+      "season": 2021,
+      "season_listed": true,
+      "coverage_declared": {
+        "events": true,
+        "lineups": true,
+        "statistics_fixtures": true,
+        "statistics_players": true,
+        "injuries": true,
+        "odds": false
+      },
+      "fixture_fetch": "OK",
+      "n_fixtures": 382,
+      "n_finished": 382,
+      "n_results_with_goals": 382,
+      "n_scheduled_other": 0,
+      "stats_sample_count": 2,
+      "stats_available_count": 2,
+      "stats_fields_both_teams": {
+        "Corner Kicks": 2,
+        "Fouls": 2,
+        "Shots on Goal": 2,
+        "Yellow Cards": 2
+      }
+    },
+    {
+      "league_id": 61,
+      "league": "Ligue 1",
+      "country": "France",
+      "season": 2022,
+      "season_listed": true,
+      "coverage_declared": {
+        "events": true,
+        "lineups": true,
+        "statistics_fixtures": true,
+        "statistics_players": true,
+        "injuries": true,
+        "odds": false
+      },
+      "fixture_fetch": "OK",
+      "n_fixtures": 380,
+      "n_finished": 380,
+      "n_results_with_goals": 380,
+      "n_scheduled_other": 0,
+      "stats_sample_count": 2,
+      "stats_available_count": 2,
+      "stats_fields_both_teams": {
+        "Corner Kicks": 2,
+        "Fouls": 2,
+        "Shots on Goal": 2,
+        "Yellow Cards": 1
+      }
+    },
+    {
+      "league_id": 61,
+      "league": "Ligue 1",
+      "country": "France",
+      "season": 2023,
+      "season_listed": true,
+      "coverage_declared": {
+        "events": true,
+        "lineups": true,
+        "statistics_fixtures": true,
+        "statistics_players": true,
+        "injuries": true,
+        "odds": false
+      },
+      "fixture_fetch": "OK",
+      "n_fixtures": 308,
+      "n_finished": 308,
+      "n_results_with_goals": 308,
+      "n_scheduled_other": 0,
+      "stats_sample_count": 2,
+      "stats_available_count": 2,
+      "stats_fields_both_teams": {
+        "Corner Kicks": 2,
+        "Fouls": 2,
+        "Shots on Goal": 2,
+        "Yellow Cards": 2
+      }
+    },
+    {
+      "league_id": 61,
+      "league": "Ligue 1",
+      "country": "France",
+      "season": 2024,
+      "season_listed": true,
+      "coverage_declared": {
+        "events": true,
+        "lineups": true,
+        "statistics_fixtures": true,
+        "statistics_players": true,
+        "injuries": true,
+        "odds": false
+      },
+      "fixture_fetch": "OK",
+      "n_fixtures": 308,
+      "n_finished": 308,
+      "n_results_with_goals": 308,
+      "n_scheduled_other": 0,
+      "stats_sample_count": 2,
+      "stats_available_count": 2,
+      "stats_fields_both_teams": {
+        "Corner Kicks": 2,
+        "Fouls": 2,
+        "Shots on Goal": 2,
+        "Yellow Cards": 2
+      }
+    },
+    {
+      "league_id": 61,
+      "league": "Ligue 1",
+      "country": "France",
+      "season": 2025,
+      "season_listed": true,
+      "coverage_declared": {
+        "events": true,
+        "lineups": true,
+        "statistics_fixtures": true,
+        "statistics_players": true,
+        "injuries": true,
+        "odds": false
+      },
+      "fixture_fetch": "OK",
+      "n_fixtures": 308,
+      "n_finished": 307,
+      "n_results_with_goals": 307,
+      "n_scheduled_other": 1,
+      "stats_sample_count": 2,
+      "stats_available_count": 2,
+      "stats_fields_both_teams": {
+        "Corner Kicks": 2,
+        "Fouls": 2,
+        "Shots on Goal": 2,
+        "Yellow Cards": 2
+      }
+    },
+    {
+      "league_id": 61,
+      "league": "Ligue 1",
+      "country": "France",
+      "season": 2026,
+      "season_listed": true,
+      "coverage_declared": {
+        "events": true,
+        "lineups": true,
+        "statistics_fixtures": true,
+        "statistics_players": true,
+        "injuries": true,
+        "odds": true
+      },
+      "fixture_fetch": "OK",
+      "n_fixtures": 306,
+      "n_finished": 66,
+      "n_results_with_goals": 66,
+      "n_scheduled_other": 240,
+      "stats_sample_count": 2,
+      "stats_available_count": 2,
+      "stats_fields_both_teams": {
+        "Corner Kicks": 2,
+        "Fouls": 2,
+        "Shots on Goal": 2,
+        "Yellow Cards": 2
+      }
+    }
+  ],
+  "special_probes": [
+    {
+      "league_id": 39,
+      "league": "Premier League",
+      "season": 2025,
+      "kind": "fixtures/lineups",
+      "state": "RETURNED_LIST",
+      "items": 2
+    },
+    {
+      "league_id": 39,
+      "league": "Premier League",
+      "season": 2025,
+      "kind": "fixtures/events",
+      "state": "RETURNED_LIST",
+      "items": 17
+    },
+    {
+      "league_id": 39,
+      "league": "Premier League",
+      "season": 2025,
+      "kind": "fixtures/players",
+      "state": "RETURNED_LIST",
+      "items": 2
+    },
+    {
+      "league_id": 140,
+      "league": "La Liga",
+      "season": 2025,
+      "kind": "fixtures/lineups",
+      "state": "RETURNED_LIST",
+      "items": 2
+    },
+    {
+      "league_id": 140,
+      "league": "La Liga",
+      "season": 2025,
+      "kind": "fixtures/events",
+      "state": "RETURNED_LIST",
+      "items": 16
+    },
+    {
+      "league_id": 140,
+      "league": "La Liga",
+      "season": 2025,
+      "kind": "fixtures/players",
+      "state": "RETURNED_LIST",
+      "items": 2
+    },
+    {
+      "league_id": 135,
+      "league": "Serie A",
+      "season": 2025,
+      "kind": "fixtures/lineups",
+      "state": "RETURNED_LIST",
+      "items": 2
+    },
+    {
+      "league_id": 135,
+      "league": "Serie A",
+      "season": 2025,
+      "kind": "fixtures/events",
+      "state": "RETURNED_LIST",
+      "items": 17
+    },
+    {
+      "league_id": 135,
+      "league": "Serie A",
+      "season": 2025,
+      "kind": "fixtures/players",
+      "state": "RETURNED_LIST",
+      "items": 2
+    },
+    {
+      "league_id": 78,
+      "league": "Bundesliga",
+      "season": 2025,
+      "kind": "fixtures/lineups",
+      "state": "RETURNED_LIST",
+      "items": 2
+    },
+    {
+      "league_id": 78,
+      "league": "Bundesliga",
+      "season": 2025,
+      "kind": "fixtures/events",
+      "state": "RETURNED_LIST",
+      "items": 18
+    },
+    {
+      "league_id": 78,
+      "league": "Bundesliga",
+      "season": 2025,
+      "kind": "fixtures/players",
+      "state": "RETURNED_LIST",
+      "items": 2
+    },
+    {
+      "league_id": 61,
+      "league": "Ligue 1",
+      "season": 2025,
+      "kind": "fixtures/lineups",
+      "state": "RETURNED_LIST",
+      "items": 2
+    },
+    {
+      "league_id": 61,
+      "league": "Ligue 1",
+      "season": 2025,
+      "kind": "fixtures/events",
+      "state": "RETURNED_LIST",
+      "items": 24
+    },
+    {
+      "league_id": 61,
+      "league": "Ligue 1",
+      "season": 2025,
+      "kind": "fixtures/players",
+      "state": "RETURNED_LIST",
+      "items": 2
+    }
+  ],
+  "limitations": [
+    "League-season declared coverage is not per-fixture completeness.",
+    "Per-fixture statistics are sampled; they are not an exhaustive count of statistical completeness.",
+    "An absent provider field means NOT_AVAILABLE, never an actual zero.",
+    "Historical odds older than the provider's retention window are not authenticated prematch snapshots.",
+    "Fixture results retrieved now do not establish that earlier snapshots existed before kickoff.",
+    "The project has not trained a model; this is only a read-only source audit."
+  ],
+  "odds_now": {
+    "state": "CURRENT_SNAPSHOT_ONLY",
+    "league_id": 39,
+    "season": 2026,
+    "n_page_items": 10,
+    "paging": 3
+  },
+  "outcome": "DATA_COLLECTED",
+  "account_status": {
+    "plan": "Pro",
+    "subscription_active": true,
+    "daily_limit": 7500,
+    "daily_remaining_after": 6816,
+    "minute_limit": 300
+  },
+  "requests_used_by_this_audit": 112,
+  "request_ceiling": 125,
+  "provider_errors": [],
+  "rows_with_fixtures": 30,
+  "total_fixture_rows_reported": 10679,
+  "total_stats_samples": 60,
+  "total_stats_2teams_available": 60
+}
