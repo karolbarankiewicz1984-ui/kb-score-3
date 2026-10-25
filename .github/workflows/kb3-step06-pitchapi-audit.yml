@@ -22,6 +22,8 @@ jobs:
     timeout-minutes: 12
     steps:
       - uses: actions/checkout@v4
+      - name: Install verified PitchAPI SDK
+        run: python3 -m pip install --disable-pip-version-check 'pitchapi==0.1.6'
       - name: Validate missing data semantics and match identity offline
         run: python3 -m unittest tests.test_pitchapi_step06 -v
       - name: Read-only source audit - max 110 PitchAPI + 45 API-Football
