@@ -6,7 +6,7 @@
 
 Każdy odbiór zawiera: identyfikator kroku, datę i godzinę (z podaną strefą lub UTC), stan przed/po, wynik PASS/FAIL, link do dowodu, metadane testu, znane ograniczenia, osobę/automat dokonujący weryfikacji oraz następny krok. Samo uruchomienie testu **nie oznacza** PASS. Przed wpisaniem ZALICZONO należy ponownie odczytać dowody. Nowa wersja modelu, nowa opłata lub uruchomienie produkcji wymaga osobnej zgody właściciela.
 
-**Status projektu podczas tworzenia tego dokumentu:** 3/29 odebranych (01–03); krok 04 w przygotowaniu; 05–29 jeszcze nieodebrane. Dziennik Google Docs może zawierać późniejsze wpisy — w razie rozbieżności **odczytujemy oryginał Google Docs**.
+**Stan po odbiorze kroku 04 (25.10.2026):** 4/29 odebranych (01–04); kroki 05–29 nieodebrane. W razie późniejszych zmian decyduje aktualny dziennik Google Docs. Dziennik Google Docs może zawierać późniejsze wpisy — w razie rozbieżności **odczytujemy oryginał Google Docs**.
 
 ## Rejestr decyzji projektowych
 
@@ -44,13 +44,21 @@ Każdy odbiór zawiera: identyfikator kroku, datę i godzinę (z podaną strefą
 - **Wynik:** API-Football PASS HTTP_200_JSON i PitchAPI PASS HTTP_200_JSON, kontrola wzorców wycieku w 12 plikach i logu: 0 trafień. To nie dowodzi niemożliwości innych wycieków.
 - **Wydatki:** ekran GitHub Budgets & alerts z 25.10 pokazał Actions 0 USD i alerty On. Nie oznacza to samoistnie twardego stopu ani potwierdzenia aktualnych minut.
 
-## GATE 04 — dokumentacja (w opracowaniu, jeszcze NIE ZALICZONO)
+## GATE 04 — PASS / ZALICZONO (25.10.2026)
 
 **Cel:** przygotować 4 pliki [PLAN.md](PLAN.md), [DANE.md](DANE.md), [MODEL.md](MODEL.md), [ZMIANY.md](ZMIANY.md) i linki między nimi oraz do Google Docs; skontrolować 29/29 kryteriów odbioru, brak fałszywych zaliczeń i zgodność źródła prawdy. 
 
-**Dowód do dołączenia po wykonaniu:** URL commitów, raport odczytu wszystkich plików GitHub, porównanie statusów z dokumentem Google, wpis w Google Docs, końcowa kontrola README. 
+**Dowody wykonania:** [protokół odbioru i wyniki QA](STEP_04_ACCEPTANCE.md), [plan 29 bramek](PLAN.md), [aktualizowany dziennik Google Docs](https://docs.google.com/document/d/10wjHL3r3OAuxtezwcIeWztxS8lwjhYon5GM3BLhI0xE/edit). Komplet dokumentacji: [DANE](DANE.md), [MODEL](MODEL.md), [ZMIANY](ZMIANY.md). 
 
-**Decyzja odbioru:** PENDING — wynik będzie wpisany dopiero po potwierdzonym odczycie i testach, bez uznawania samego faktu stworzenia dokumentów za ukończenie.
+**Decyzja odbioru:** PASS — 29/29 bramek, 29/29 wymaganych dowodów i zależności, zero błędnych odnośników w sprawdzonych dokumentach oraz zero przedwcześnie oznaczonych ukończeń kroków 05–29. Zatwierdzenie techniczne: odczyt GitHub i aktualizacja planu Google Docs. Następny KROK 05 — audyt API-Football.
+
+### Wpis odbioru GATE 04 — 2026-10-25
+
+- **Co wykonano:** cztery specyfikacje, indeks repo i decyzje.
+- **Kontrola:** odczyt wszystkich plików i 29 etapów z ich warunkami PASS, porównanie odnośników i statusu z Google Docs.
+- **Wynik:** PASS; [raport techniczny](STEP_04_ACCEPTANCE.md); [commit synchronizacji PLAN](https://github.com/karolbarankiewicz1984-ui/kb-score-3/commit/c0dcac77b32dacc20afe1723660dc4187347723d).
+- **Ryzyka:** brak jeszcze audytu danych/pełnej metodologii produkcyjnej; nie uruchomiono ML.
+- **Następny krok:** KROK 05 — API-Football.
 
 ## Szablon następnego wpisu
 
