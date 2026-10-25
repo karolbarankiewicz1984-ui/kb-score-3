@@ -1,6 +1,6 @@
 {
   "schema": "kb30-pitchapi-audit-v1",
-  "run_utc": "2026-10-25T21:23:31.948304+00:00",
+  "run_utc": "2026-10-25T21:27:12.952080+00:00",
   "source": "PitchAPI",
   "sample_policy": "two deterministic finished matches (25%, 75%) per available league-season",
   "rows": [
@@ -96,91 +96,91 @@
     },
     {
       "league": "La Liga",
-      "pitch_league_id": null,
+      "pitch_league_id": "l_0ErfuF",
       "api_football_league_id": 140,
       "season": "2021/2022",
-      "in_catalog": false,
-      "list_state": "NOT_IN_CATALOG",
-      "played_count": null,
-      "sample_count": 0,
-      "complete_xg_count": 0,
+      "in_catalog": true,
+      "list_state": "OK",
+      "played_count": 380,
+      "sample_count": 2,
+      "complete_xg_count": 2,
       "partial_xg_count": 0,
-      "strict_pair_count": 0,
+      "strict_pair_count": 1,
       "alias_candidates": 0,
       "unmatched_pair_count": 0
     },
     {
       "league": "La Liga",
-      "pitch_league_id": null,
+      "pitch_league_id": "l_0ErfuF",
       "api_football_league_id": 140,
       "season": "2022/2023",
-      "in_catalog": false,
-      "list_state": "NOT_IN_CATALOG",
-      "played_count": null,
-      "sample_count": 0,
-      "complete_xg_count": 0,
+      "in_catalog": true,
+      "list_state": "OK",
+      "played_count": 380,
+      "sample_count": 2,
+      "complete_xg_count": 2,
       "partial_xg_count": 0,
-      "strict_pair_count": 0,
+      "strict_pair_count": 1,
       "alias_candidates": 0,
       "unmatched_pair_count": 0
     },
     {
       "league": "La Liga",
-      "pitch_league_id": null,
+      "pitch_league_id": "l_0ErfuF",
       "api_football_league_id": 140,
       "season": "2023/2024",
-      "in_catalog": false,
-      "list_state": "NOT_IN_CATALOG",
-      "played_count": null,
-      "sample_count": 0,
-      "complete_xg_count": 0,
+      "in_catalog": true,
+      "list_state": "OK",
+      "played_count": 379,
+      "sample_count": 2,
+      "complete_xg_count": 2,
       "partial_xg_count": 0,
-      "strict_pair_count": 0,
+      "strict_pair_count": 1,
       "alias_candidates": 0,
       "unmatched_pair_count": 0
     },
     {
       "league": "La Liga",
-      "pitch_league_id": null,
+      "pitch_league_id": "l_0ErfuF",
       "api_football_league_id": 140,
       "season": "2024/2025",
-      "in_catalog": false,
-      "list_state": "NOT_IN_CATALOG",
-      "played_count": null,
-      "sample_count": 0,
-      "complete_xg_count": 0,
+      "in_catalog": true,
+      "list_state": "OK",
+      "played_count": 380,
+      "sample_count": 2,
+      "complete_xg_count": 2,
       "partial_xg_count": 0,
-      "strict_pair_count": 0,
+      "strict_pair_count": 1,
       "alias_candidates": 0,
       "unmatched_pair_count": 0
     },
     {
       "league": "La Liga",
-      "pitch_league_id": null,
+      "pitch_league_id": "l_0ErfuF",
       "api_football_league_id": 140,
       "season": "2025/2026",
-      "in_catalog": false,
-      "list_state": "NOT_IN_CATALOG",
-      "played_count": null,
-      "sample_count": 0,
-      "complete_xg_count": 0,
+      "in_catalog": true,
+      "list_state": "OK",
+      "played_count": 380,
+      "sample_count": 2,
+      "complete_xg_count": 2,
       "partial_xg_count": 0,
-      "strict_pair_count": 0,
+      "strict_pair_count": 1,
       "alias_candidates": 0,
       "unmatched_pair_count": 0
     },
     {
       "league": "La Liga",
-      "pitch_league_id": null,
+      "pitch_league_id": "l_0ErfuF",
       "api_football_league_id": 140,
       "season": "2026/2027",
-      "in_catalog": false,
-      "list_state": "NOT_IN_CATALOG",
-      "played_count": null,
-      "sample_count": 0,
-      "complete_xg_count": 0,
+      "in_catalog": true,
+      "list_state": "OK",
+      "played_count": 97,
+      "sample_count": 2,
+      "complete_xg_count": 2,
       "partial_xg_count": 0,
-      "strict_pair_count": 0,
+      "strict_pair_count": 1,
       "alias_candidates": 0,
       "unmatched_pair_count": 0
     },
@@ -750,6 +750,306 @@
         "away_shots": 18,
         "home_xg_sum": 0.42,
         "away_xg_sum": 1.47
+      },
+      "api_football_pair": {
+        "state": "NOT_CHECKED",
+        "api_football_fixture_id": null
+      }
+    },
+    {
+      "league": "La Liga",
+      "season": "2021/2022",
+      "pitch_match_id": "m_07LdyJ",
+      "kickoff_utc": "2021-10-25T19:00:00Z",
+      "home_team": "Getafe",
+      "away_team": "Celta Vigo",
+      "score_home": 0,
+      "score_away": 3,
+      "shot_xg": {
+        "state": "COMPLETE_SHOT_XG",
+        "shots": 27,
+        "missing_xg": 0,
+        "invalid_xg": 0,
+        "unknown_team": 0,
+        "home_shots": 11,
+        "away_shots": 16,
+        "home_xg_sum": 0.46,
+        "away_xg_sum": 1.67
+      },
+      "api_football_pair": {
+        "state": "EXACT_NAMES_DATE_SCORE",
+        "api_football_fixture_id": 720833
+      }
+    },
+    {
+      "league": "La Liga",
+      "season": "2021/2022",
+      "pitch_match_id": "m_3aIjM0",
+      "kickoff_utc": "2022-03-20T15:15:00Z",
+      "home_team": "Celta Vigo",
+      "away_team": "Real Betis",
+      "score_home": 0,
+      "score_away": 0,
+      "shot_xg": {
+        "state": "COMPLETE_SHOT_XG",
+        "shots": 16,
+        "missing_xg": 0,
+        "invalid_xg": 0,
+        "unknown_team": 0,
+        "home_shots": 9,
+        "away_shots": 7,
+        "home_xg_sum": 0.87,
+        "away_xg_sum": 0.51
+      },
+      "api_football_pair": {
+        "state": "NOT_CHECKED",
+        "api_football_fixture_id": null
+      }
+    },
+    {
+      "league": "La Liga",
+      "season": "2022/2023",
+      "pitch_match_id": "m_4gFEof",
+      "kickoff_utc": "2022-10-19T18:00:00Z",
+      "home_team": "Real Sociedad",
+      "away_team": "Mallorca",
+      "score_home": 1,
+      "score_away": 0,
+      "shot_xg": {
+        "state": "COMPLETE_SHOT_XG",
+        "shots": 26,
+        "missing_xg": 0,
+        "invalid_xg": 0,
+        "unknown_team": 0,
+        "home_shots": 14,
+        "away_shots": 12,
+        "home_xg_sum": 1.24,
+        "away_xg_sum": 0.9
+      },
+      "api_football_pair": {
+        "state": "EXACT_NAMES_DATE_SCORE",
+        "api_football_fixture_id": 878040
+      }
+    },
+    {
+      "league": "La Liga",
+      "season": "2022/2023",
+      "pitch_match_id": "m_0ZWL9H",
+      "kickoff_utc": "2023-04-16T12:00:00Z",
+      "home_team": "Girona",
+      "away_team": "Elche",
+      "score_home": 2,
+      "score_away": 0,
+      "shot_xg": {
+        "state": "COMPLETE_SHOT_XG",
+        "shots": 27,
+        "missing_xg": 0,
+        "invalid_xg": 0,
+        "unknown_team": 0,
+        "home_shots": 14,
+        "away_shots": 13,
+        "home_xg_sum": 1.4,
+        "away_xg_sum": 0.79
+      },
+      "api_football_pair": {
+        "state": "NOT_CHECKED",
+        "api_football_fixture_id": null
+      }
+    },
+    {
+      "league": "La Liga",
+      "season": "2023/2024",
+      "pitch_match_id": "m_0KLOaW",
+      "kickoff_utc": "2023-10-22T12:00:00Z",
+      "home_team": "Las Palmas",
+      "away_team": "Rayo Vallecano",
+      "score_home": 0,
+      "score_away": 1,
+      "shot_xg": {
+        "state": "COMPLETE_SHOT_XG",
+        "shots": 24,
+        "missing_xg": 0,
+        "invalid_xg": 0,
+        "unknown_team": 0,
+        "home_shots": 12,
+        "away_shots": 12,
+        "home_xg_sum": 1.33,
+        "away_xg_sum": 1.35
+      },
+      "api_football_pair": {
+        "state": "EXACT_NAMES_DATE_SCORE",
+        "api_football_fixture_id": 1038042
+      }
+    },
+    {
+      "league": "La Liga",
+      "season": "2023/2024",
+      "pitch_match_id": "m_359QIv",
+      "kickoff_utc": "2024-03-17T15:15:00Z",
+      "home_team": "Las Palmas",
+      "away_team": "Almería",
+      "score_home": 0,
+      "score_away": 1,
+      "shot_xg": {
+        "state": "COMPLETE_SHOT_XG",
+        "shots": 24,
+        "missing_xg": 0,
+        "invalid_xg": 0,
+        "unknown_team": 0,
+        "home_shots": 21,
+        "away_shots": 3,
+        "home_xg_sum": 0.94,
+        "away_xg_sum": 0.78
+      },
+      "api_football_pair": {
+        "state": "NOT_CHECKED",
+        "api_football_fixture_id": null
+      }
+    },
+    {
+      "league": "La Liga",
+      "season": "2024/2025",
+      "pitch_match_id": "m_1vvXxf",
+      "kickoff_utc": "2024-10-20T12:00:00Z",
+      "home_team": "Mallorca",
+      "away_team": "Rayo Vallecano",
+      "score_home": 1,
+      "score_away": 0,
+      "shot_xg": {
+        "state": "COMPLETE_SHOT_XG",
+        "shots": 29,
+        "missing_xg": 0,
+        "invalid_xg": 0,
+        "unknown_team": 0,
+        "home_shots": 19,
+        "away_shots": 10,
+        "home_xg_sum": 2.11,
+        "away_xg_sum": 0.6
+      },
+      "api_football_pair": {
+        "state": "EXACT_NAMES_DATE_SCORE",
+        "api_football_fixture_id": 1208579
+      }
+    },
+    {
+      "league": "La Liga",
+      "season": "2024/2025",
+      "pitch_match_id": "m_1XYsMt",
+      "kickoff_utc": "2025-03-30T16:30:00Z",
+      "home_team": "Athletic Club",
+      "away_team": "Osasuna",
+      "score_home": 0,
+      "score_away": 0,
+      "shot_xg": {
+        "state": "COMPLETE_SHOT_XG",
+        "shots": 16,
+        "missing_xg": 0,
+        "invalid_xg": 0,
+        "unknown_team": 0,
+        "home_shots": 11,
+        "away_shots": 5,
+        "home_xg_sum": 0.71,
+        "away_xg_sum": 0.36
+      },
+      "api_football_pair": {
+        "state": "NOT_CHECKED",
+        "api_football_fixture_id": null
+      }
+    },
+    {
+      "league": "La Liga",
+      "season": "2025/2026",
+      "pitch_match_id": "m_1MbMQ5",
+      "kickoff_utc": "2025-10-26T13:00:00Z",
+      "home_team": "Mallorca",
+      "away_team": "Levante",
+      "score_home": 1,
+      "score_away": 1,
+      "shot_xg": {
+        "state": "COMPLETE_SHOT_XG",
+        "shots": 33,
+        "missing_xg": 0,
+        "invalid_xg": 0,
+        "unknown_team": 0,
+        "home_shots": 20,
+        "away_shots": 13,
+        "home_xg_sum": 1.58,
+        "away_xg_sum": 1.88
+      },
+      "api_football_pair": {
+        "state": "EXACT_NAMES_DATE_SCORE",
+        "api_football_fixture_id": 1390913
+      }
+    },
+    {
+      "league": "La Liga",
+      "season": "2025/2026",
+      "pitch_match_id": "m_2LEBaJ",
+      "kickoff_utc": "2026-03-21T20:00:00Z",
+      "home_team": "Sevilla",
+      "away_team": "Valencia",
+      "score_home": 0,
+      "score_away": 2,
+      "shot_xg": {
+        "state": "COMPLETE_SHOT_XG",
+        "shots": 22,
+        "missing_xg": 0,
+        "invalid_xg": 0,
+        "unknown_team": 0,
+        "home_shots": 13,
+        "away_shots": 9,
+        "home_xg_sum": 0.41,
+        "away_xg_sum": 1.41
+      },
+      "api_football_pair": {
+        "state": "NOT_CHECKED",
+        "api_football_fixture_id": null
+      }
+    },
+    {
+      "league": "La Liga",
+      "season": "2026/2027",
+      "pitch_match_id": "m_0HQBKl",
+      "kickoff_utc": "2026-08-29T19:30:00Z",
+      "home_team": "Sevilla",
+      "away_team": "Atlético Madrid",
+      "score_home": 1,
+      "score_away": 3,
+      "shot_xg": {
+        "state": "COMPLETE_SHOT_XG",
+        "shots": 33,
+        "missing_xg": 0,
+        "invalid_xg": 0,
+        "unknown_team": 0,
+        "home_shots": 21,
+        "away_shots": 12,
+        "home_xg_sum": 0.95,
+        "away_xg_sum": 0.92
+      },
+      "api_football_pair": {
+        "state": "EXACT_NAMES_DATE_SCORE",
+        "api_football_fixture_id": 1570362
+      }
+    },
+    {
+      "league": "La Liga",
+      "season": "2026/2027",
+      "pitch_match_id": "m_2sXiE5",
+      "kickoff_utc": "2026-10-10T19:00:00Z",
+      "home_team": "Real Madrid",
+      "away_team": "Villarreal",
+      "score_home": 1,
+      "score_away": 0,
+      "shot_xg": {
+        "state": "COMPLETE_SHOT_XG",
+        "shots": 26,
+        "missing_xg": 0,
+        "invalid_xg": 0,
+        "unknown_team": 0,
+        "home_shots": 11,
+        "away_shots": 15,
+        "home_xg_sum": 0.94,
+        "away_xg_sum": 0.64
       },
       "api_football_pair": {
         "state": "NOT_CHECKED",
@@ -1675,9 +1975,16 @@
     {
       "expected_league": "La Liga",
       "expected_country": "ESP",
-      "found": false,
-      "pitch_id": null,
-      "declared_seasons": []
+      "found": true,
+      "pitch_id": "l_0ErfuF",
+      "declared_seasons": [
+        "2021/2022",
+        "2022/2023",
+        "2023/2024",
+        "2024/2025",
+        "2025/2026",
+        "2026/2027"
+      ]
     },
     {
       "expected_league": "Serie A",
@@ -1737,19 +2044,19 @@
   "catalog_league_count": 77,
   "outcome": "AUDIT_COLLECTED",
   "requests": {
-    "pitchapi": 73,
-    "api_football": 24,
+    "pitchapi": 91,
+    "api_football": 30,
     "pitch_limit": 110,
     "football_limit": 45
   },
   "summary": {
     "target_rows": 30,
-    "listed_rows": 24,
-    "played_matches_sum": 7301,
-    "shots_examined": 48,
-    "complete_xg_samples": 48,
+    "listed_rows": 30,
+    "played_matches_sum": 9297,
+    "shots_examined": 60,
+    "complete_xg_samples": 60,
     "partial_or_missing_xg_samples": 0,
-    "strict_verified_api_football_matches": 14,
+    "strict_verified_api_football_matches": 20,
     "candidate_alias_matches": 6,
     "provider_errors_total": 0
   }

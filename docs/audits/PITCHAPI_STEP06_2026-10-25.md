@@ -1,6 +1,6 @@
 # KB Score 3.0 — Audyt PitchAPI, krok 06
 
-Odczyt UTC: 2026-10-25T21:23:31.948304+00:00
+Odczyt UTC: 2026-10-25T21:27:12.952080+00:00
 Stan testu: AUDIT_COLLECTED; odbiór GATE 06 wymaga kontroli raportu.
 
 ## Wyniki zbiorcze
@@ -8,16 +8,16 @@ Stan testu: AUDIT_COLLECTED; odbiór GATE 06 wymaga kontroli raportu.
 | Pozycja | Wynik |
 |---|---:|
 | target_rows | 30 |
-| listed_rows | 24 |
-| played_matches_sum | 7301 |
-| shots_examined | 48 |
-| complete_xg_samples | 48 |
+| listed_rows | 30 |
+| played_matches_sum | 9297 |
+| shots_examined | 60 |
+| complete_xg_samples | 60 |
 | partial_or_missing_xg_samples | 0 |
-| strict_verified_api_football_matches | 14 |
+| strict_verified_api_football_matches | 20 |
 | candidate_alias_matches | 6 |
 | provider_errors_total | 0 |
-| PitchAPI calls | 73 / 110 |
-| API-Football crosscheck calls | 24 / 45 |
+| PitchAPI calls | 91 / 110 |
+| API-Football crosscheck calls | 30 / 45 |
 
 ## Liga × sezon — historia i xG próbek
 
@@ -29,12 +29,12 @@ Stan testu: AUDIT_COLLECTED; odbiór GATE 06 wymaga kontroli raportu.
 | Premier League | 2024/2025 | TAK | 380 | 2 | 2 | 0 |
 | Premier League | 2025/2026 | TAK | 380 | 2 | 2 | 0 |
 | Premier League | 2026/2027 | TAK | 80 | 2 | 2 | 0 |
-| La Liga | 2021/2022 | NIE | BRAK | 0 | 0 | 0 |
-| La Liga | 2022/2023 | NIE | BRAK | 0 | 0 | 0 |
-| La Liga | 2023/2024 | NIE | BRAK | 0 | 0 | 0 |
-| La Liga | 2024/2025 | NIE | BRAK | 0 | 0 | 0 |
-| La Liga | 2025/2026 | NIE | BRAK | 0 | 0 | 0 |
-| La Liga | 2026/2027 | NIE | BRAK | 0 | 0 | 0 |
+| La Liga | 2021/2022 | TAK | 380 | 2 | 2 | 1 |
+| La Liga | 2022/2023 | TAK | 380 | 2 | 2 | 1 |
+| La Liga | 2023/2024 | TAK | 379 | 2 | 2 | 1 |
+| La Liga | 2024/2025 | TAK | 380 | 2 | 2 | 1 |
+| La Liga | 2025/2026 | TAK | 380 | 2 | 2 | 1 |
+| La Liga | 2026/2027 | TAK | 97 | 2 | 2 | 1 |
 | Serie A | 2021/2022 | TAK | 380 | 2 | 2 | 1 |
 | Serie A | 2022/2023 | TAK | 381 | 2 | 2 | 1 |
 | Serie A | 2023/2024 | TAK | 380 | 2 | 2 | 1 |
@@ -70,6 +70,18 @@ Stan testu: AUDIT_COLLECTED; odbiór GATE 06 wymaga kontroli raportu.
 | Premier League | 2025/2026 | m_0Z4lMM | Brighton & Hove Albion – Arsenal | 0.82/0.46 | 18 | BRAK | NOT_CHECKED |
 | Premier League | 2026/2027 | m_1rqNHl | Ipswich Town – Liverpool | 0.73/0.66 | 24 | 1557393 | ALIAS_CANDIDATE_UNVERIFIED |
 | Premier League | 2026/2027 | m_3fEVzy | Everton – Chelsea | 0.42/1.47 | 24 | BRAK | NOT_CHECKED |
+| La Liga | 2021/2022 | m_07LdyJ | Getafe – Celta Vigo | 0.46/1.67 | 27 | 720833 | EXACT_NAMES_DATE_SCORE |
+| La Liga | 2021/2022 | m_3aIjM0 | Celta Vigo – Real Betis | 0.87/0.51 | 16 | BRAK | NOT_CHECKED |
+| La Liga | 2022/2023 | m_4gFEof | Real Sociedad – Mallorca | 1.24/0.9 | 26 | 878040 | EXACT_NAMES_DATE_SCORE |
+| La Liga | 2022/2023 | m_0ZWL9H | Girona – Elche | 1.4/0.79 | 27 | BRAK | NOT_CHECKED |
+| La Liga | 2023/2024 | m_0KLOaW | Las Palmas – Rayo Vallecano | 1.33/1.35 | 24 | 1038042 | EXACT_NAMES_DATE_SCORE |
+| La Liga | 2023/2024 | m_359QIv | Las Palmas – Almería | 0.94/0.78 | 24 | BRAK | NOT_CHECKED |
+| La Liga | 2024/2025 | m_1vvXxf | Mallorca – Rayo Vallecano | 2.11/0.6 | 29 | 1208579 | EXACT_NAMES_DATE_SCORE |
+| La Liga | 2024/2025 | m_1XYsMt | Athletic Club – Osasuna | 0.71/0.36 | 16 | BRAK | NOT_CHECKED |
+| La Liga | 2025/2026 | m_1MbMQ5 | Mallorca – Levante | 1.58/1.88 | 33 | 1390913 | EXACT_NAMES_DATE_SCORE |
+| La Liga | 2025/2026 | m_2LEBaJ | Sevilla – Valencia | 0.41/1.41 | 22 | BRAK | NOT_CHECKED |
+| La Liga | 2026/2027 | m_0HQBKl | Sevilla – Atlético Madrid | 0.95/0.92 | 33 | 1570362 | EXACT_NAMES_DATE_SCORE |
+| La Liga | 2026/2027 | m_2sXiE5 | Real Madrid – Villarreal | 0.94/0.64 | 26 | BRAK | NOT_CHECKED |
 | Serie A | 2021/2022 | m_2VVIN1 | Sampdoria – Atalanta | 1.36/1.32 | 22 | 731680 | EXACT_NAMES_DATE_SCORE |
 | Serie A | 2021/2022 | m_4VGhNd | Sassuolo – Spezia | 1.94/0.3 | 21 | BRAK | NOT_CHECKED |
 | Serie A | 2022/2023 | m_3cPC20 | Lazio – Udinese | 0.8/0.86 | 20 | 881874 | EXACT_NAMES_DATE_SCORE |
