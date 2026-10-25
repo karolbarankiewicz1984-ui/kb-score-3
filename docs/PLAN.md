@@ -78,7 +78,7 @@
 - **ZALEŻY OD:** Krok 3.
 - **STATUS:** ZALICZONO | TEST: PASS — 30/30 sezonów, próbki 60/60, 25/25 krzyżowych zgodności; 0 błędów API | DOWÓD: [STEP_05_ACCEPTANCE.md](STEP_05_ACCEPTANCE.md) i [raport liga×sezon](audits/API_FOOTBALL_STEP05_2026-10-25.md) | DATA ODBIORU: 25.10.2026
 
-#### Krok 06 — Audyt PitchAPI  [NIE ROZPOCZĘTO]
+#### Krok 06 — Audyt PitchAPI  [BLOKADA / DO POPRAWY]
 
 - **CO ZROBIĘ:** Sprawdzić legalnie dostępne ligi, sezony, rzeczywiste xG, statystyki strzałów i zgodność czasową.
 - **CO ROBISZ TY:** W razie potrzeby potwierdzić konto/klucz w bezpieczny sposób.
@@ -86,7 +86,7 @@
 - **BRAMKA ODBIORU / TEST PASS:** Porównano minimum reprezentatywną próbkę meczów z API-Football; opisano zakres i brak xG oraz ograniczenia historyczne.
 - **DOWÓD ZALICZENIA:** Raport pokrycia xG z identyfikatorami przykładowych meczów i rezultatami zapytań.
 - **ZALEŻY OD:** Krok 3.
-- **STATUS:** NIE ROZPOCZĘTO | TEST: NIE URUCHOMIONO | LINK DOWODU: — | DATA ODBIORU: —
+- **STATUS:** BLOKADA / DO POPRAWY | TEST: FAIL — PitchAPI SDK_AuthError / HTTP 401; katalogu i próbek xG brak, nie zaliczono | DOWÓD: [STEP_06_BLOCKER.md](STEP_06_BLOCKER.md), [GitHub Actions #40220569321](https://github.com/karolbarankiewicz1984-ui/kb-score-3/actions/runs/40220569321) | DATA ODBIORU: —
 
 #### Krok 07 — Dopasowanie identyfikatorów meczów  [NIE ROZPOCZĘTO]
 
