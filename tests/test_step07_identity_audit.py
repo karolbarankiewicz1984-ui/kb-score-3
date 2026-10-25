@@ -92,6 +92,19 @@ class IdentityContractTests(unittest.TestCase):
         out=evaluate([s],{("La Liga",2026):[football(456)]})
         self.assertEqual(out[0]["independent_crosscheck"],"CONFLICT")
 
+    def test_old_exact_pair_one_hour_offset_is_flagged_for_review(self):
+        p=pitch(when="2026-10-25T16:00:00Z")
+        out=evaluate([p],{("La Liga",2026):[football()]})
+        self.assertEqual(out[0]["state"],"REVIEW_CANDIDATE")
+        self.assertEqual(out[0]["independent_crosscheck"],"TIME_DISAGREEMENT_REVIEW")
+        self.assertIsNone(out[0]["football_id"])
+
+    def test_short_name_with_exact_time_and_score_goes_to_review(self):
+        r=classify(pitch(home="Club Deportivo Atletico Madrileno"),[football()])
+        self.assertEqual(r["state"],"REVIEW_CANDIDATE")
+        self.assertIsNone(r["football_id"])
+        self.assertEqual(r["candidates"][0]["football_id"],123)
+
     def test_missing_or_invalid_kickoff_rejected(self):
         self.assertEqual(classify(pitch(when="not-a-date"),[football()])["state"],
                          "REVIEW_INVALID_KICKOFF")
