@@ -11,4 +11,6 @@
 
 [STEP_03_SECURITY_CHECKLIST.md](STEP_03_SECURITY_CHECKLIST.md) — dokumentacja sprawdzonego testu API-Football/PitchAPI i budżetu.
 
+[STEP_04_ACCEPTANCE.md](STEP_04_ACCEPTANCE.md) — protokół PASS: 4 dokumenty, 29/29 bramek, poprawne linki, postęp 4/29.
+
 **Uwaga:** GitHub jest kopią operacyjną. W razie rozbieżności statusu decyduje najnowszy [dziennik na Dysku Google](https://docs.google.com/document/d/10wjHL3r3OAuxtezwcIeWztxS8lwjhYon5GM3BLhI0xE/edit). Nigdy nie deklarujemy ZALICZONO bez odczytanego testu i linku do dowodu. Żaden nowy silnik prognoz nie został jeszcze napisany.
