@@ -95,7 +95,10 @@ def classify(pitch, full_fixtures):
         else:
             a = SequenceMatcher(None, norm(home), norm(pitch["home_team"])).ratio()
             b = SequenceMatcher(None, norm(away), norm(pitch["away_team"])).ratio()
-            if (a >= .55 and b >= .55) or exact_names:
+            # Date + exact score is useful REVIEW evidence even when one
+            # provider abbreviates the club so aggressively that a fuzzy
+            # similarity threshold would hide the candidate.
+            if (a >= .55 and b >= .55) or exact_names or (delta <= STRICT_SECONDS and goal_ok):
                 candidate = flattened_game(f)
                 candidate.update({"time_delta_minutes": int(round(delta/60)),
                                   "name_similarity_home": round(a, 3),
@@ -155,10 +158,21 @@ def evaluate(pitch_samples, football_by_season):
     for r in output:
         historical = r.get("previous_gate06_pair") or {}
         if historical.get("state") == "EXACT_NAMES_DATE_SCORE":
-            r["independent_crosscheck"] = (
-                "CONSISTENT" if r["state"] == "STRICT" and
-                r["football_id"] == historical.get("api_football_fixture_id")
-                else "CONFLICT")
+            prior = historical.get("api_football_fixture_id")
+            if r["state"] == "STRICT" and r["football_id"] == prior:
+                r["independent_crosscheck"] = "CONSISTENT"
+            elif any(
+                c.get("football_id") == prior and c.get("same_score") and
+                c.get("time_delta_minutes", 99999) <= 120 and
+                norm(c.get("home_team")) == norm(r["pitch_home"]) and
+                norm(c.get("away_team")) == norm(r["pitch_away"])
+                for c in r.get("candidates", [])
+            ):
+                # Same names and score but kickoff differs (e.g. DST or
+                # provider feed mistake). Preserve ID only as REVIEW evidence.
+                r["independent_crosscheck"] = "TIME_DISAGREEMENT_REVIEW"
+            else:
+                r["independent_crosscheck"] = "CONFLICT"
         elif historical.get("api_football_fixture_id"):
             r["independent_crosscheck"] = (
                 "SAME_CANDIDATE" if r["football_id"] == historical.get("api_football_fixture_id")
@@ -222,6 +236,8 @@ def main():
     matches=evaluate(samples,fixture_lists)
     counts=dict(sorted(Counter(r["state"] for r in matches).items()))
     conflicts=[r["pitch_match_id"] for r in matches if r["independent_crosscheck"]=="CONFLICT"]
+    time_disagreements=[r["pitch_match_id"] for r in matches if
+        r["independent_crosscheck"]=="TIME_DISAGREEMENT_REVIEW"]
     dup_result=[r["pitch_match_id"] for r in matches if "DUPLICATE" in r["state"]]
     verified=[r for r in matches if r["state"]=="STRICT"]
     reviews=[r for r in matches if r["state"]!="STRICT"]
@@ -230,7 +246,7 @@ def main():
        "validation_policy":"league+season, same home and away after conservative normalization, same score, kickoff <=20 min UTC, finished, unique IDs; no fuzzy auto-match",
        "outcome":"AUDIT_COLLECTED_NOT_GATE_ACCEPTED",
        "samples":len(matches),"groups":len(groups),"status_counts":counts,
-       "strict_count":len(verified),"review_count":len(reviews),"crosscheck_conflicts":conflicts,
+       "strict_count":len(verified),"review_count":len(reviews),"crosscheck_conflicts":conflicts,"time_disagreement_review":time_disagreements,
        "duplicates_input":duplicates,"duplicate_mapping":dup_result,
        "api_football_calls":observed["calls"],"api_daily_limit":observed["daily_limit"],
        "api_daily_remaining":observed["daily_remaining"],
@@ -248,7 +264,7 @@ def main():
     lines=["# Gate 07 — API-Football ↔ PitchAPI identity audit","",
       f"UTC: {payload['run_utc']}",
       f"Samples: {len(matches)} in {len(groups)} league-seasons; calls: {observed['calls']}; fixtures scanned: {payload['fixtures_checked']}",
-      f"STRICT: {len(verified)}; REVIEW/UNMATCHED: {len(reviews)}; crosscheck conflicts: {len(conflicts)}; duplicates: {len(dup_result)}",
+      f"STRICT: {len(verified)}; REVIEW/UNMATCHED: {len(reviews)}; genuine crosscheck conflicts: {len(conflicts)}; time disagreements in review: {len(time_disagreements)}; duplicates: {len(dup_result)}",
       "", "**Only STRICT rows can be auto-used. Others are NOT linked.**",
       "", "| Pitch ID | Competition | Fixture | API-F ID | State | Detail |",
       "|---|---|---|---|---|---|"]
@@ -264,7 +280,7 @@ def main():
             "- Sample is not historical full coverage; the complete crosswalk will grow in the dedicated import stages."]
     REPORT.write_text("\n".join(lines)+"\n",encoding="utf-8")
     summ={"samples":len(matches),"strict":len(verified),"review":len(reviews),
-          "previous_strict_conflicts":len(conflicts),"duplicate_mapping":len(dup_result),
+          "previous_strict_conflicts":len(conflicts),"time_disagreement_review":len(time_disagreements),"duplicate_mapping":len(dup_result),
           "duplicate_input":len(duplicates),"api_calls":observed["calls"],"fixtures_checked":payload["fixtures_checked"]}
     print("GATE07_SUMMARY "+json.dumps(summ,sort_keys=True))
     with open(os.getenv("GITHUB_STEP_SUMMARY","/dev/null"),"a",encoding="utf-8") as f:
