@@ -1,6 +1,6 @@
 # Krok 03 — Secrets, limity i budżet
 
-Status: W REALIZACJI / GATE 03: PENDING. Nie uruchomiono testu w GitHub Actions. Brak nowych zakupów.
+Status: ZALICZONO / GATE 03: PASS (2026-10-25). Brak nowych zakupów.
 
 ## Co jest już gotowe
 - Prywatne repozytorium `kb-score-3` ze strukturą (krok 02 PASS).
@@ -31,3 +31,18 @@ Błąd HTTP 403 lub 1010 z PitchAPI może wskazywać blokadę WAF; nie traktuj g
 Pełny plan: https://docs.google.com/document/d/10wjHL3r3OAuxtezwcIeWztxS8lwjhYon5GM3BLhI0xE/edit
 
 Krok 04 (pełna dokumentacja metodologii) jest nadal NIE ROZPOCZĘTY.
+
+
+## Wynik odbioru — 2026-10-25
+
+**GATE 03: PASS / ZALICZONO.**
+
+- Właściciel potwierdził dodanie obu sekretów do nowego repo. Wykonane zapytania potwierdzają ich działanie, bez odczytu ich wartości.
+- Ręczne uruchomienie Actions: https://github.com/karolbarankiewicz1984-ui/kb-score-3/actions/runs/40203074557, status **success**.
+- W logach: **API-Football: PASS (HTTP_200_JSON)** oraz **PitchAPI: PASS (HTTP_200_JSON)**.
+- Kontrola 12 plików repozytorium i logu (6985 znaków) na typowe wzorce kluczy: **0 wykryć**. Była to kontrola wzorców, a nie gwarancja wykrycia każdego możliwego sekretu.
+- Budżety GitHub: zrzut ekranu użytkownika z 2026-10-25 pokazuje **Actions: $0.00 / $0.00 spent**, **Included usage alerts: On**. Nie potwierdza twardego zatrzymania naliczania kosztów ani aktualnej liczby wolnych minut.
+- Historyczne wykorzystanie GitHub Free ze wcześniejszego audytu: 1638/2000 min w dniu 2026-10-24; nie należy go traktować jako bieżącego stanu.
+- Żadnych nowych zakupów. Osobno kontrolować wykorzystanie GitHub Actions przed ciężkimi treningami modeli.
+
+Źródło prawdy i dziennik: https://docs.google.com/document/d/10wjHL3r3OAuxtezwcIeWztxS8lwjhYon5GM3BLhI0xE/edit
