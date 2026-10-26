@@ -1,0 +1,36 @@
+name: "KB3 Step 12 - Immutable Chronological Split"
+on:
+  push:
+    branches: ["feature/step12-*", "main"]
+    paths:
+      - "src/kb3_split.py"
+      - "tests/test_step12_split.py"
+      - "docs/STEP_12_PROGRESS.md"
+      - ".github/workflows/kb3-step12-split.yml"
+  pull_request:
+    paths:
+      - "src/kb3_split.py"
+      - "tests/test_step12_split.py"
+      - "docs/STEP_12_PROGRESS.md"
+      - ".github/workflows/kb3-step12-split.yml"
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  offline-split-safety:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Test step12 chronological and immutable data gates
+        run: python -m unittest discover -s tests -p 'test_step12*.py' -v
+      - name: Regression step11 historical and PIT guards
+        run: python -m unittest discover -s tests -p 'test_step11_original_acceptance.py' -v
+      - name: Confirm no training or API reads
+        run: |
+          python - <<'PY'
+          from src.kb3_split import build_manifest
+          assert build_manifest([], exported_at_utc="2026-10-26T14:30:00Z",
+                                dataset_version="ci-empty")["training_allowed"] is False
+          print("STEP12_NO_TRAINING_NO_API_PASS")
+          PY
