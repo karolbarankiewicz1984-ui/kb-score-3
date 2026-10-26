@@ -11,7 +11,8 @@ import math
 import sqlite3
 from datetime import timedelta,datetime,timezone
 from src.kb3_pit_ledger import canonical,hexdigest,as_utc
-from scripts.pitchapi_step06_audit import parse_shots, find_af_match
+from scripts.pitchapi_step06_audit import parse_shots
+from src.kb3_identity_review import inspect_match
 
 MIN_POSTMATCH_LAG=timedelta(hours=3)
 
@@ -51,7 +52,8 @@ def _inspect(record):
         raise ValueError("XG_PROVENANCE_VIOLATION")
     if as_utc(started)>as_utc(completed) or (as_utc(completed)-as_utc(started)).total_seconds()>180:
         raise ValueError("XG_TIME_NOT_CREDIBLE")
-    if hexdigest(canonical(json.loads(raw)))!=rawhash:
+    envelope=json.loads(raw)
+    if hexdigest(canonical(envelope))!=rawhash:
         raise ValueError("XG_RAW_HASH_MISMATCH")
     info={"pitch_match_id":match_id,"api_football_fixture_id":fixture_id,
           "pitch_kickoff_utc":kickoff,"result_state":state,
@@ -60,7 +62,37 @@ def _inspect(record):
           "xg_away":xga,"raw_sha256":rawhash}
     if oid!=recordhash[:32] or hexdigest(canonical(info))!=recordhash:
         raise ValueError("XG_OBSERVATION_HASH_MISMATCH")
-    if (identity!="EXACT_NAMES_DATE_SCORE" or state!="COMPLETE_SHOT_XG"):
+    # Version-2 observations contain enough original provider metadata to
+    # independently recompute matching and xG from the archived raw payload.
+    if isinstance(envelope,dict) and envelope.get("schema")=="kb3-xg-source-envelope-v2":
+        match=envelope.get("pitch_match")
+        shots=envelope.get("shots_response")
+        fixture_candidates=envelope.get("api_football_candidates")
+        if not isinstance(match,dict) or not isinstance(fixture_candidates,list):
+            raise ValueError("XG_SOURCE_ENVELOPE_INVALID")
+        if match.get("id")!=match_id or match.get("time_utc")!=kickoff:
+            raise ValueError("XG_SOURCE_MATCH_METADATA_MISMATCH")
+        res=inspect_match(match,fixture_candidates)
+        if res["state"]!=identity:
+            raise ValueError("XG_IDENTITY_RECOMPUTATION_MISMATCH")
+        source_teams=(match.get("home_team") or {}).get("id"),(match.get("away_team") or {}).get("id")
+        parsed=parse_shots(shots,*source_teams)
+        if parsed.get("state")!=state:
+            raise ValueError("XG_SOURCE_STATE_MISMATCH")
+        strict_source=(identity=="EXACT_TIME_NAMES_SCORE_FT" and state=="COMPLETE_SHOT_XG")
+        expected_fid=res["fixture_id"] if strict_source else None
+        if fixture_id!=expected_fid:
+            raise ValueError("XG_CANONICAL_FIXTURE_MISMATCH")
+        expected_home=parsed.get("home_xg_sum") if strict_source else None
+        expected_away=parsed.get("away_xg_sum") if strict_source else None
+        if xgh!=expected_home or xga!=expected_away:
+            raise ValueError("XG_SOURCE_TOTALS_MISMATCH")
+    else:
+        # Legacy observations lacked match metadata: keep quarantine, never
+        # retroactively promote to strict or certified evidence.
+        if identity in ("EXACT_NAMES_DATE_SCORE","EXACT_TIME_NAMES_SCORE_FT"):
+            raise ValueError("XG_LEGACY_SOURCE_METADATA_MISSING")
+    if (identity!="EXACT_TIME_NAMES_SCORE_FT" or state!="COMPLETE_SHOT_XG"):
         if xgh is not None or xga is not None or fixture_id is not None:
             raise ValueError("UNVERIFIED_XG_MUST_BE_NULL")
     else:
@@ -92,24 +124,30 @@ def record_xg(db, match, shots_response, football_fixtures, *,
     if not all(teams) or teams[0]==teams[1]:
         raise ValueError("INVALID_PITCH_TEAM_IDS")
     result=parse_shots(shots_response,teams[0],teams[1])
-    link=find_af_match(match,football_fixtures)
+    # Preserve what was sent by both sources inside encrypted payload, so
+    # the identity decision can be re-evaluated independently years later.
+    candidates=[]
+    for game in football_fixtures:
+        try:
+            game_time=as_utc((game.get("fixture") or {})["date"])
+        except (KeyError,TypeError,ValueError,AttributeError):
+            continue
+        if abs(game_time-as_utc(match["time_utc"])).total_seconds()<=3*3600:
+            candidates.append(game)
+    link=inspect_match(match,candidates)
     state=result.get("state","INVALID_RESPONSE")
     if state not in ("COMPLETE_SHOT_XG","PARTIAL_SHOT_XG","NO_SHOTS",
                      "NO_PERIOD_LIST","INVALID_RESPONSE","INCOMPLETE_PERIOD"):
         state="INVALID_RESPONSE"
-    matched=next((g for g in football_fixtures
-                  if (g.get("fixture") or {}).get("id")==link.get("api_football_fixture_id")),
-                 None)
-    match_finished=(matched is not None
-                    and (matched.get("fixture") or {}).get("status",{}).get("short")=="FT"
-                    and match.get("status")=="finished")
-    if link["state"]=="EXACT_NAMES_DATE_SCORE" and not match_finished:
-        link={"state":"RESULT_NOT_90MIN_FT","api_football_fixture_id":None}
-    strict=(link["state"]=="EXACT_NAMES_DATE_SCORE" and state=="COMPLETE_SHOT_XG")
+    strict=(link["state"]=="EXACT_TIME_NAMES_SCORE_FT" and state=="COMPLETE_SHOT_XG")
     xgh=result.get("home_xg_sum") if strict else None
     xga=result.get("away_xg_sum") if strict else None
-    fid=link["api_football_fixture_id"] if strict else None
-    raw=canonical(shots_response).decode("utf8")
+    fid=link["fixture_id"] if strict else None
+    envelope={"schema":"kb3-xg-source-envelope-v2",
+              "pitch_match":match,"shots_response":shots_response,
+              "api_football_candidates":candidates,
+              "review_candidate_ids":link.get("review_candidates",[])}
+    raw=canonical(envelope).decode("utf8")
     info={"pitch_match_id":mid,"api_football_fixture_id":fid,
           "pitch_kickoff_utc":match["time_utc"],"result_state":state,
           "identity_state":link["state"],"started_at_utc":started_at_utc,
@@ -133,7 +171,7 @@ def verify_xg(db):
            "provider_publication_confirmed":0,"training_allowed":False}
     for row in rows:
         info=_inspect(row)
-        if info["identity_state"]=="EXACT_NAMES_DATE_SCORE" and info["result_state"]=="COMPLETE_SHOT_XG":
+        if info["identity_state"]=="EXACT_TIME_NAMES_SCORE_FT" and info["result_state"]=="COMPLETE_SHOT_XG":
             stats["strict_complete"]+=1
         else:
             stats["quarantined"]+=1
@@ -151,7 +189,7 @@ def select_xg_asof(db,fixture_id,cutoff_utc):
         info=_inspect(row)
         if as_utc(info["completed_at_utc"])>cutoff:
             continue
-        if info["identity_state"]!="EXACT_NAMES_DATE_SCORE" or info["result_state"]!="COMPLETE_SHOT_XG":
+        if info["identity_state"]!="EXACT_TIME_NAMES_SCORE_FT" or info["result_state"]!="COMPLETE_SHOT_XG":
             return None
         return {"home_xg":info["xg_home"],"away_xg":info["xg_away"],
                 "observed_completed_at_utc":info["completed_at_utc"],
