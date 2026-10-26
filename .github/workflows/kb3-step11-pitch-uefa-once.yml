@@ -4,6 +4,7 @@ on:
     branches: ["feature/step11-single-pitchapi-shadow-20261026"]
     paths:
       - ".github/workflows/kb3-step11-pitch-uefa-once.yml"
+      - "scripts/step11_pitch_native_uefa_stats.py"
 permissions:
   contents: read
 concurrency:
