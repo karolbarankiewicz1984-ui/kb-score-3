@@ -61,5 +61,8 @@
       "api_home_name": "Crystal Palace",
       "api_away_name": "Newcastle"
     }
-  ]
+  ],
+  "review_approval_not_before_utc": "2026-10-26T09:53:09Z",
+  "review_approval_commit": "https://github.com/karolbarankiewicz1984-ui/kb-score-3/commit/1f6032d4562d457e9bcb92381bf28a6cfa56a120",
+  "review_approval_policy": "Conservative: cannot use curated xG before the reviewed crosswalk was merged to main"
 }
