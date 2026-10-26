@@ -217,17 +217,21 @@ def select_result_asof(db,provider_fixture_id,forecast_cutoff_utc):
       ORDER BY c.completed_at_utc DESC,c.capture_id DESC
     """,(provider_fixture_id,)).fetchall()
     for observed,origin,kickoff,raw,h,cid in found:
-        if origin!="NETWORK_OBSERVED" or as_utc(observed)>cutoff or as_utc(kickoff)>=cutoff:
+        if origin!="NETWORK_OBSERVED" or as_utc(observed)>cutoff:
             continue
+        # Latest observed state supersedes all older versions. Never resurrect
+        # an obsolete FT when a later snapshot says postponed, awarded, etc.
+        if as_utc(kickoff)>=cutoff:
+            return None
         item=json.loads(raw)
         if hexdigest(canonical(item))!=h:
             raise ValueError("TAMPERED_SOURCE_RECORD")
-        if (item["fixture"]["status"]["short"]!=FINAL_STATUS):
-            continue
+        if item["fixture"]["status"]["short"]!=FINAL_STATUS:
+            return None
         score=(item.get("score") or {}).get("fulltime") or {}
         gh,ga=score.get("home"),score.get("away")
         if not all(type(n) is int and n>=0 for n in (gh,ga)):
-            continue
+            return None
         return {"fixture_id":provider_fixture_id,
                 "result_home_90":gh,"result_away_90":ga,
                 "capture_id":cid,"observed_completed_at_utc":observed,
