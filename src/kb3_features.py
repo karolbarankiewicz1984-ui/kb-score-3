@@ -5,6 +5,7 @@ No training, predictions, odds, API requests, or database mutation.
 """
 from __future__ import annotations
 from collections import defaultdict
+from dataclasses import dataclass, asdict
 from datetime import datetime, timedelta, timezone
 import argparse
 import hashlib
@@ -13,10 +14,23 @@ import math
 from pathlib import Path
 import sqlite3
 
-FEATURE_VERSION = "kb3-step11-v0.1"
-ELO_INITIAL = 1500.0  # provisional prior; estimate parameters only on future TRAIN
-ELO_K = 20.0
-HOME_ADVANTAGE = 65.0
+FEATURE_VERSION = "kb3-step11-v0.2"
+# Defaults are provisional, not fitted. Tune only after Step12 chronological split.
+@dataclass(frozen=True)
+class EloParameters:
+    initial: float = 1500.0
+    k: float = 20.0
+    home_advantage: float = 65.0
+    scale: float = 400.0
+    season_retention: float = 0.85
+
+    def __post_init__(self):
+        for value in (self.initial, self.k, self.home_advantage, self.scale, self.season_retention):
+            if isinstance(value, bool) or not isinstance(value, (int, float)) or not math.isfinite(value):
+                raise FeatureSafetyError("INVALID_ELO_PARAMETERS")
+        if self.k <= 0 or self.scale <= 0 or not (0 <= self.season_retention <= 1):
+            raise FeatureSafetyError("INVALID_ELO_PARAMETERS")
+
 WINDOWS = (5, 10, 15)
 RESULT_LAG = timedelta(hours=3)
 REPLAY_LAG = timedelta(hours=48)
@@ -48,30 +62,40 @@ def digest(value):
         allow_nan=False).encode("utf8")).hexdigest()
 
 
-def elo_probability(home, away):
-    return 1.0 / (1.0 + 10 ** ((away-home-HOME_ADVANTAGE)/400.0))
+def elo_probability(home, away, params=None):
+    params = params or EloParameters()
+    return 1.0 / (1.0 + 10 ** ((away-home-params.home_advantage)/params.scale))
 
 
 def load_fixtures(db, target_id):
+    """Read only the same competition and earlier/current seasons.
+
+    Stable team IDs are required for cross-season continuity. Missing games
+    in another league cannot silently count as observed history.
+    """
     db.row_factory = sqlite3.Row
     target = db.execute("""
-      SELECT fixture_id, season_id, home_team_id, away_team_id, kickoff_utc
-      FROM fixtures WHERE fixture_id=?""", (target_id,)).fetchone()
+      SELECT f.fixture_id,f.season_id,f.home_team_id,f.away_team_id,f.kickoff_utc,
+             se.competition_id,se.start_year AS season_start_year
+      FROM fixtures f JOIN seasons se ON se.season_id=f.season_id
+      WHERE f.fixture_id=?""", (target_id,)).fetchone()
     if target is None:
         raise FeatureSafetyError("TARGET_NOT_FOUND")
     history = db.execute("""
-      SELECT f.fixture_id,f.season_id,f.home_team_id,f.away_team_id,
-             f.kickoff_utc,f.status,f.goals_home_90,f.goals_away_90,
+      SELECT f.fixture_id,f.season_id,se.start_year AS season_start_year,
+             f.home_team_id,f.away_team_id,f.kickoff_utc,
+             f.status,f.goals_home_90,f.goals_away_90,
              m.match_quality,m.review_status,
-             s.snapshot_id,s.availability_class,s.captured_at_utc,s.published_at_utc
+             ss.snapshot_id,ss.availability_class,
+             ss.captured_at_utc,ss.published_at_utc
       FROM fixtures f
+      JOIN seasons se ON se.season_id=f.season_id
       LEFT JOIN fixture_provider_map m ON f.fixture_id=m.fixture_id
-      LEFT JOIN source_snapshots s ON s.snapshot_id=m.source_snapshot_id
-      WHERE f.season_id=? AND f.fixture_id<>?
+      LEFT JOIN source_snapshots ss ON ss.snapshot_id=m.source_snapshot_id
+      WHERE se.competition_id=? AND se.start_year<=? AND f.fixture_id<>?
       ORDER BY f.kickoff_utc,f.fixture_id
-    """, (target["season_id"], target_id)).fetchall()
+    """, (target["competition_id"], target["season_start_year"],target_id)).fetchall()
     return dict(target), [dict(x) for x in history]
-
 
 def result_eligible(row, cutoff, mode):
     start = utc_dt(row["kickoff_utc"])
@@ -125,7 +149,10 @@ def fetch_xg(db, fixture, team, kickoff, cutoff, mode):
     return accepted[0] if accepted else (None,None)
 
 
-def build_features(db, target_id, *, cutoff_utc, mode="verified"):
+def build_features(db, target_id, *, cutoff_utc, mode="verified", elo_params=None):
+    params = EloParameters() if elo_params is None else elo_params
+    if not isinstance(params, EloParameters):
+        raise FeatureSafetyError("INVALID_ELO_PARAMETERS")
     if mode not in ("verified","replay"):
         raise FeatureSafetyError("INVALID_MODE")
     target, rows = load_fixtures(db,target_id)
@@ -159,7 +186,23 @@ def build_features(db, target_id, *, cutoff_utc, mode="verified"):
         history.append({**row,"date":source_start,"xgh":xgh,"xga":xga,
                         "xgh_source":src_h,"xga_source":src_a})
     history.sort(key=lambda r:(r["date"],r["fixture_id"]))
-    ratings = defaultdict(lambda:ELO_INITIAL)
+    ratings = {}
+    last_elo_season = {}
+    elo_match_counts = defaultdict(int)
+
+    def rating_for(tid, year):
+        """Decay per elapsed season, even after relegation or a missing season."""
+        prior_year = last_elo_season.get(tid)
+        if prior_year is not None and year < prior_year:
+            raise FeatureSafetyError("NONMONOTONIC_TEAM_SEASON")
+        rating = ratings.get(tid, params.initial)
+        if prior_year is not None and year > prior_year:
+            rating = params.initial + (rating - params.initial) * (
+                params.season_retention ** (year - prior_year))
+        ratings[tid] = rating
+        last_elo_season[tid] = year
+        return rating
+
     team_history = defaultdict(list)
     lineage = []
     offset = 0
@@ -177,10 +220,13 @@ def build_features(db, target_id, *, cutoff_utc, mode="verified"):
         deltas = defaultdict(float)
         for row in batch:
             home,away = row["home_team_id"],row["away_team_id"]
-            pre_h,pre_a = ratings[home],ratings[away]
+            season_year = row["season_start_year"]
+            pre_h,pre_a = rating_for(home,season_year),rating_for(away,season_year)
             score = (1 if row["goals_home_90"] > row["goals_away_90"] else
                      0 if row["goals_home_90"] < row["goals_away_90"] else .5)
-            change = ELO_K*(score-elo_probability(pre_h,pre_a))
+            change = params.k*(score-elo_probability(pre_h,pre_a,params))
+            elo_match_counts[home] += 1
+            elo_match_counts[away] += 1
             deltas[home] += change
             deltas[away] -= change
             for tid,oid,venue,gf,ga,xg_for,xg_against,opp_elo in (
@@ -190,11 +236,13 @@ def build_features(db, target_id, *, cutoff_utc, mode="verified"):
                  row["xga"],row["xgh"],pre_h)):
                 team_history[tid].append({
                     "fixture_id":row["fixture_id"],"kickoff_utc":row["kickoff_utc"],
+                    "season_start_year":season_year,
                     "home":venue,"opponent":oid,"opponent_elo":opp_elo,
                     "gf":gf,"ga":ga,"points":3 if gf>ga else 1 if gf==ga else 0,
                     "xg":xg_for,"xga":xg_against})
             lineage.append({
                 "fixture_id":row["fixture_id"],"kickoff_utc":row["kickoff_utc"],
+                "season_start_year":season_year,
                 "result_snapshot":row["snapshot_id"],
                 "result_captured_at_utc":row["captured_at_utc"],
                 "result_published_at_utc":row["published_at_utc"],
@@ -208,7 +256,10 @@ def build_features(db, target_id, *, cutoff_utc, mode="verified"):
         ("home",target["home_team_id"],True),
         ("away",target["away_team_id"],False)):
         all_games = team_history[tid]
-        values[side+"_elo"] = round(ratings[tid],5)
+        values[side+"_elo"] = round(rating_for(tid,target["season_start_year"]),5)
+        values[side+"_elo_games_available"] = elo_match_counts[tid]
+        values[side+"_prior_seasons_games_available"] = sum(
+            r["season_start_year"] < target["season_start_year"] for r in all_games)
         values[side+"_games_available"] = len(all_games)
         values[side+"_days_since_last_kickoff"] = (
             round((cutoff-utc_dt(all_games[-1]["kickoff_utc"])).total_seconds()/86400,4)
@@ -233,9 +284,11 @@ def build_features(db, target_id, *, cutoff_utc, mode="verified"):
                     missing[stem+"_"+field] = len(real)<count or count==0
                 missing[stem+"_history"] = count<n
     values["elo_home_minus_away"] = round(
-        ratings[target["home_team_id"]]-ratings[target["away_team_id"]],5)
+        values["home_elo"]-values["away_elo"],5)
     out = {
         "schema":FEATURE_VERSION,"fixture_id":target_id,
+        "elo_parameters":asdict(params),
+        "elo_parameter_status":"PROVISIONAL_NOT_FITTED",
         "kickoff_utc":utc_str(kickoff),"feature_cutoff_utc":utc_str(cutoff),
         "mode":mode,
         "availability_class":"RETROSPECTIVE" if mode=="replay" else "NOT_VERIFIED",
