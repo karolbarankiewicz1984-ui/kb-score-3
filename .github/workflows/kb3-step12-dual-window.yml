@@ -1,0 +1,58 @@
+name: "KB3 Step12 - Dual History Windows (Offline)"
+on:
+  push:
+    branches: ["feature/step12-dual-window-walkforward-20261026"]
+    paths: [".github/workflows/kb3-step12-dual-window.yml"]
+permissions:
+  contents: write
+jobs:
+  review-and-freeze:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - name: Test real expanding vs rolling calendar windows without API
+        run: |
+          python3 -m unittest discover -s tests -p 'test_step12_windows.py' -v
+          python3 -m unittest discover -s tests -p 'test_step12_methodology.py' -v
+          python3 -m unittest discover -s tests -p 'test_step12_split.py' -v
+      - name: Generate and freeze same-fixture comparison manifest
+        run: |
+          python3 -m src.kb3_step12_windows \
+            --safe-view data/splits/STEP12_SAFE_MODEL_VIEW_2026-10-26.json \
+            --output data/splits/STEP12_DUAL_WINDOWS_REAL_2026-10-26.json \
+            --audit data/audits/STEP12_DUAL_WINDOWS_AUDIT_2026-10-26.json
+      - name: Verify zero training, same validation and model-test separation
+        run: |
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          from src.kb3_split import sha
+          s=json.loads(Path('data/splits/STEP12_DUAL_WINDOWS_REAL_2026-10-26.json').read_text())
+          a=json.loads(Path('data/audits/STEP12_DUAL_WINDOWS_AUDIT_2026-10-26.json').read_text())
+          assert s['comparison_sha256']==sha({k:v for k,v in s.items() if k!='comparison_sha256'})
+          assert len(s['folds'])==4 and s['all_validation_candidate_count']==380
+          assert not s['training_allowed'] and not s['gate12_pass']
+          assert not a['trained_model'] and not a['model_scores_generated']
+          assert not a['test_outcomes_accessed'] and not a['gate12_pass']
+          assert all(f['strategies']['ROLLING_24_CALENDAR_MONTHS']['schedule_candidate_count']
+                     <= f['strategies']['EXPANDING']['schedule_candidate_count']
+                     for f in s['folds'])
+          print('KB3_STEP12_DUAL_REAL_SCHEDULE_NO_LEAKAGE_PASS')
+          PY
+      - name: Preserve immutable comparison evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: kb3-step12-two-windows-20261026
+          path: |
+            data/splits/STEP12_DUAL_WINDOWS_REAL_2026-10-26.json
+            data/audits/STEP12_DUAL_WINDOWS_AUDIT_2026-10-26.json
+          retention-days: 90
+          if-no-files-found: error
+      - name: Commit candidate-only comparison report
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/splits/STEP12_DUAL_WINDOWS_REAL_2026-10-26.json data/audits/STEP12_DUAL_WINDOWS_AUDIT_2026-10-26.json
+          git commit -m "Step12: freeze expanding and rolling two-year real fixture comparison"
+          git push origin "HEAD:feature/step12-dual-window-walkforward-20261026"

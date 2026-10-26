@@ -314,3 +314,9 @@ Następny krok:
 - Oryginalny plik metadanych zachowany, wykryty weń hash zależny od wyników: wyłącznie do audytu. [Zamrożony bezpieczny widok modelu](../data/splits/STEP12_SAFE_MODEL_VIEW_2026-10-26.json) nie ujawnia wyników ani tych hashy, [kontrola wersji](../data/audits/STEP12_INDEPENDENT_METHODOLOGY_2026-10-26.json).
 - Rzeczywiste 1520 meczów w 3 częściach 760/380/380, 4 foldy 60/126/123/71 (razem 380 walidacyjnych), brak TEST w train/validation. [Protokół dla właściciela](STEP_12_METHOD_DECISION.md).
 - **Stan:** metodologia przygotowana do akceptacji, brak zgody właściciela -> GATE12 PENDING, brak PIT -> `training_allowed=false`, wciąż 11/29. Starsze modele nietknięte.
+
+## KROK12 — DWA PORÓWNYWALNE OKNA, 26.10.2026
+
+- Po ponownym omówieniu planu wprowadzono porównanie EXPANDING (pełna starsza historia) vs ROLLING (ostatnie 24 miesiące) na tych samych rzeczywistych meczach VALIDATION. Kwartały: 60,126,123,71 meczów. Kandydaci po samych datach EXPANDING: 760,820,946,1069; ROLLING: 760,753,750,776.
+- [Metodologia i dowód](STEP_12_DUAL_WINDOWS.md), [niezmienny manifest SHA 25242ed4a626aba2669ea86605b31664cb17bf10a6a74e4e3548470954c81198](../data/splits/STEP12_DUAL_WINDOWS_REAL_2026-10-26.json), [odrębny audyt](../data/audits/STEP12_DUAL_WINDOWS_AUDIT_2026-10-26.json), [CI testy PASS](https://github.com/karolbarankiewicz1984-ui/kb-score-3/actions/runs/40353630051).
+- 380 TEST nigdy nie trafia do treningu/walidacji. Wybór metody historii tylko na VALIDATION po dopuszczeniu danych i metryk. Nie wykonano treningu lub modelowych prognoz; źródło pozostaje 0/1520 gotowych próbek PIT, `training_allowed=false` i GATE12 PENDING do formalnego zamknięcia.
