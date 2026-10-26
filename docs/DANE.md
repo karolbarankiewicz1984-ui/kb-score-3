@@ -1,6 +1,6 @@
 # KB Score 3.0 — DANE (specyfikacja źródeł i rejestrów)
 
-**Status 26.10.2026:** audyty źródeł 05–06, mapowanie 07, infrastruktura bazy 08 oraz kontrolny import pierwszego sezonu 09 ZALICZONE. Premier League 2024/25: 380 meczów, test ponownego importu i wznowienia PASS, prywatne archiwum AES-256-GCM odtworzone po pobraniu z Drive. Pełny import pozostałych sezonów i ocena jakości/chronologii danych są nadal do wykonania (krok 10 i dalsza rozbudowa).
+**Status 26.10.2026:** kroki 01–10 ZALICZONE (10/29). Krok 10 wykonał audyt 5 lig × 6 sezonów (30 kombinacji, 10 679 rekordów w API) i rozdzielił 19 spotkań faz barażowych, a pojedynczy przyznany decyzją wynik Ligue 1 (`AWD`) skierował do kwarantanny. Pełny [protokół GATE10](STEP_10_ACCEPTANCE.md). W rzeczywistej bazie SQLite pozostaje tylko 380 meczów kontrolnego sezonu Premier League 2024/25; inne sezony sprawdzono źródłowo, ale nie zaimportowano ich pełnej historii. Statystyki, xG, kursy i point-in-time cechy wymagają dalszego pozyskania; trening ML jest zablokowany do spełnienia dalszych bramek, w tym kroku 11.
 
 **Źródło prawdy projektu:** [Plan Google Docs](https://docs.google.com/document/d/10wjHL3r3OAuxtezwcIeWztxS8lwjhYon5GM3BLhI0xE/edit) · [29 bramek odbioru](PLAN.md) · [metodologia](MODEL.md) · [dziennik](ZMIANY.md)
 
