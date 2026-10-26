@@ -14,7 +14,7 @@ import math
 from pathlib import Path
 import sqlite3
 
-FEATURE_VERSION = "kb3-step11-v0.4"
+FEATURE_VERSION = "kb3-step11-v0.5"
 # Defaults are provisional, not fitted. Tune only after Step12 chronological split.
 @dataclass(frozen=True)
 class EloParameters:
