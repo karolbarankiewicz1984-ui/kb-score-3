@@ -59,7 +59,8 @@ def assess_fixture(row):
 def prematch_source_decision(*, fixture_kickoff, feature_cutoff,
                             observed_at, published_at, availability,
                             source_match_id=None, target_match_id=None,
-                            contains_match_outcome=False):
+                            contains_match_outcome=False,
+                            source_match_finished_at=None):
     """Fail closed: evidence for features must exist *at prediction cutoff*."""
     reasons = []
     try:
@@ -82,8 +83,22 @@ def prematch_source_decision(*, fixture_kickoff, feature_cutoff,
                 reasons.append("PUBLISHED_AFTER_CUTOFF")
         except ValueError:
             reasons.append("INVALID_SOURCE_TIME")
-    if contains_match_outcome and source_match_id == target_match_id:
-        reasons.append("TARGET_OUTCOME_LEAKAGE")
+    if contains_match_outcome:
+        if not source_match_id or not target_match_id:
+            reasons.append("MISSING_MATCH_ID_PROOF")
+        if source_match_id == target_match_id:
+            reasons.append("TARGET_OUTCOME_LEAKAGE")
+        if source_match_finished_at is None:
+            reasons.append("MISSING_SOURCE_MATCH_FINISH_PROOF")
+        else:
+            try:
+                finish=parse_time(source_match_finished_at)
+                if cutoff is not None and finish > cutoff:
+                    reasons.append("SOURCE_MATCH_FINISHED_AFTER_CUTOFF")
+                if published_at is not None and parse_time(published_at) < finish:
+                    reasons.append("OUTCOME_PUBLICATION_BEFORE_FINISH")
+            except ValueError:
+                reasons.append("INVALID_SOURCE_MATCH_FINISH_TIME")
     return {"eligible":not bool(reasons), "reasons":sorted(set(reasons))}
 
 def analyze(db, *, expected_count=EXPECTED):
