@@ -274,3 +274,9 @@ Następny krok:
 - Po scaleniu zmian do głównego kalkulatora stary workflow ponownie pobierał dane API-Football dla pilotów 380 i 760, choć nowy system ma korzystać z samego PitchAPI. Zmieniono `.github/workflows/kb3-step11-features.yml`: joby `pilot-380` i `pilot-760` mają teraz warunek **wyłącznie `github.event_name == 'workflow_dispatch'`**. Historyczne testy zostają zachowane do świadomego uruchomienia; na push/PR działają tylko testy offline.
 - [Rzeczywisty CI #40326752798](https://github.com/karolbarankiewicz1984-ui/kb-score-3/actions/runs/40326752798): **220/220 testów offline PASS**, oba zadania wymagające API-Football **SKIPPED**. Dodano 3 testy zabezpieczające taką politykę na przyszłość.
 - Bez nowego abonamentu, bez zakupów, bez produkcyjnej migracji i treningu. GATE11 **PENDING 10/29**.
+
+## KROK11 — PRAWDZIWE WIELOSEZONOWE ELO PITCHAPI 2023/24–2026/27 (26.10.2026)
+
+- [Jednorazowe PitchAPI #40329303189](https://github.com/karolbarankiewicz1984-ui/kb-score-3/actions/runs/40329303189): 3 kompletne poprzednie sezony 3×380=1140 meczów, 20 drużyn/sezon, 17 stabilnych ID między sezonami; 4 zapytania PitchAPI, zero API-Football.
+- Backup [Google Drive](https://drive.google.com/file/d/1_wLVJtOSwjwQwHhjBa54-3f0-aCzhyqJ/view) pobrany ponownie, AES+RSA i SHA-chain 4 źródeł odtworzone lokalnie PASS. Brak prywatnego klucza lub surowych statystyk w repozytorium. Zapis 26.10.2026 jest RETROSPECTIVE i nie udaje wcześniejszych timestampów publikacji.
+- Wielosezonowe ELO w `src/kb3_pitch_native_observed_features.py`: 1140 historycznych +80 bieżących prawdziwych wyników, 121 cech i 159 zweryfikowanych znaczników czasu. xG historii bez feedów pozostaje `null`, parametry ELO prowizoryczne. [231/231 CI PASS](https://github.com/karolbarankiewicz1984-ui/kb-score-3/actions/runs/40330403055), [protokół](STEP_11_PITCH_MULTISEASON_ELO.md). **GATE11 PENDING 10/29**, bez treningu i modyfikacji starszych modeli.
