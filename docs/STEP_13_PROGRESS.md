@@ -158,3 +158,32 @@ To ustawienie ExecutionPolicy dotyczy **tylko uruchamianego procesu**, nie zmien
 Runner poprawnie odrzuca nieoryginalny ZIP, nieprawidłowy nagłówek klucza, lokalizację klucza wewnątrz repo/OneDrive, brak Pythona, błędy integralności czy niespójne 760/380/0. Przy kluczu chronionym hasłem przerywa wykonanie; nie prosi o hasło. Weryfikację składni PowerShell i brak sieciowej transmisji klucza dodano do **istniejącego** workflow Step13. Program nie wykonuje zakładów ani realnego zatwierdzenia GATE13.
 
 **Nawet po udanym wykonaniu:** oznaczenie `RECONSTRUCTED_EVENT_TIME_RESEARCH_NOT_VERIFIED_PIT`, `training_allowed=false`, `gate13_pass=false`; wyniki logloss/Brier z retrospekcji nie są niezależnym dowodem autentycznych dawnych prognoz. Rzeczywistego uruchomienia na laptopie przez ChatGPT nie można potwierdzić przed otrzymaniem jego raportu. **KROK13 W REALIZACJI; 12/29; KROK14 nierozpoczęty.**
+
+## 27.10.2026 — PIERWSZE prawdziwe retrospektywne metryki ELO+Poisson: PitchAPI (KROK 13 bez nowych etapów)
+
+**Istotna zmiana:** Nie trzeba już ręcznego używania prywatnego RSA na laptopie do tego *retrospektywnego* badania. Skorzystano wyłącznie z istniejącego GitHub Actions i darmowego PitchAPI. [Uruchomienie #40422326740 PASS](https://github.com/karolbarankiewicz1984-ui/kb-score-3/actions/runs/40422326740). Źródło pobrano ponownie `2026-10-26T23:49:21.170204Z` (czyli 27 października w Polsce). **Dokładnie 3 odczyty PitchAPI**: 2023/24, 2024/25, 2025/26; **0 kosztów nowego API, 0 wywołań API-Football**. Brak użycia klucza RSA, odds, danych meczowych TEST. Sprawdzono natywne match ID, kickoff i dokładnie trzy 380-meczowe sezony wobec wcześniej zamrożonego widoku Step12. Brak automatycznej podmiany meczów przy niezgodnościach. 9+10 testów offline PASS.
+
+**Autentyczne wyniki sportowe wykorzystano**, ale są pobrane retrospektywnie w październiku 2026, NIE zapisane przed każdym spotkaniem 2023–2026. Przeprowadzony eksperyment wykorzystuje hipotetyczne opóźnienie otrzymania wyniku 48h po starcie i zamrożenie wszystkich prognoz na początku kwartału. Jest to uczciwy `RECONSTRUCTED_EVENT_TIME_RESEARCH_NOT_VERIFIED_PIT`, **nie wiarygodny historyczny backtest PIT ani forward test**. Nie uprawnia do produkcyjnego treningu, typów bukmacherskich ani zaliczenia GATE13.
+
+### METRYKI — wszystkie 380 prawdziwych wyników VALIDATION (tylko zbiorczo)
+
+| Metryka (im mniej, tym lepiej) | EXPANDING | ROLLING 24 miesięcy |
+|---|---:|---:|
+| 1X2 multiclass log loss, średnia ważona z 4 foldów | **1.0326367404** | 1.0343803886 |
+| 1X2 multiclass Brier sum3, średnia ważona | **0.6185368951** | 0.6196881659 |
+| Top-class ECE 5 koszyków, **średnia ważona ECE foldów, nie globalne ECE** | 0.0739533904 | **0.0733160087** |
+
+### Szczegóły czterech zamrożonych kwartalnych walidacji
+
+| Fold od UTC | VALIDATION n | TRAIN expanding | TRAIN rolling | Log loss EXP / ROLL | Brier EXP / ROLL |
+|---|---:|---:|---:|---|---|
+| 2025-07-01 | 60 | 760 | 760 | 1.028276 / 1.028276 | 0.612716 / 0.612716 |
+| 2025-10-01 | 126 | 819 | 752 | 0.965705 / 0.968677 | 0.571618 / 0.573771 |
+| 2026-01-01 | 123 | 940 | 744 | 1.108473 / 1.105917 | 0.674458 / 0.672175 |
+| 2026-04-01 | 71 | 1069 | 776 | 1.023723 / 1.032210 | 0.609843 / 0.616140 |
+
+**Interpretacja:** EXPANDING ma minimalną przewagę w agregacie log loss (+0.00174 na korzyść EXPANDING) i Brier (+0.00115 na korzyść EXPANDING). W foldzie 1 jest remis, w 2 i 4 EXPANDING wypada lepiej, w 3 ROLLING lepiej. Różnica nie jest rozstrzygająca, **nie ogłaszamy czempiona**. Fold 3 jest najsłabszy w obu metodach. W 8/8 zestawów parametr elastyczności ELO osiąga górny brzeg obecnej siatki `0.6` — sygnał do weryfikacji ustalonego zakresu, a nie do dopisywania nowego kroku. Parametry ELO K=20, home=65 nie były optymalizowane.
+
+**Trwałe dowody:** [pełny zbiorczy JSON](../data/audits/STEP13_REAL_RETROSPECTIVE_PITCHAPI_2026-10-27.json), podpis kontrolny `3d950fff30b57c94a6f71462c7521cfda2cb0b27c666d59d09d274261efca803`, [źródłowa akcja z datą i testami](https://github.com/karolbarankiewicz1984-ui/kb-score-3/actions/runs/40422326740), [niezależny transfer tego samego pliku bez pobierania danych z API](https://github.com/karolbarankiewicz1984-ui/kb-score-3/actions/runs/40422560884). **Brak surowych wyników/meczów w GitHub, tylko zbiorcze metryki i hashe.** Dane TEST (380) nietknięte.
+
+**Status:** to istotne wypełnienie części historyczno-badawczej kroku 13, ale nie certyfikacja PIT. Formalnie **KROK13 W REALIZACJI; GATE13 PENDING; training_allowed=false; 12/29**. Nie rozpoczynamy kroku14 ani nie modyfikujemy harmonogramu. Dalsza kontrola w obrębie kroku13: ewaluacja stabilności i przyszły forward-PIT bez przecieków.

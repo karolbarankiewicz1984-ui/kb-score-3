@@ -1,0 +1,58 @@
+name: "KB3 Step13 - ONE TIME Archive Finished Aggregate Research"
+on:
+  push:
+    branches: ["feature/step13-pitchapi-live-retrospective-once-20261027"]
+    paths:
+      - ".github/workflows/kb3-step13-archive-finished-report-once.yml"
+permissions:
+  actions: read
+  contents: write
+jobs:
+  archive-existing-successful-report:
+    runs-on: ubuntu-latest
+    timeout-minutes: 9
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - name: Download original completed one-shot aggregate artifact, without provider calls
+        uses: actions/download-artifact@v4
+        with:
+          name: kb3-step13-pitchapi-retrospective-aggregate-20261027
+          run-id: 40422326740
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: tmp_step13_aggregate
+      - name: Verify immutable report SHA and hard evidence gates BEFORE copying
+        run: |
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          from src.kb3_split import sha
+          f=list(Path('tmp_step13_aggregate').rglob('STEP13_REAL_RETROSPECTIVE_PITCHAPI_2026-10-27.json'))
+          assert len(f)==1
+          assert f[0].stat().st_size < 100000
+          x=json.loads(f[0].read_text(encoding='utf8'))
+          assert x['report_sha256']=='3d950fff30b57c94a6f71462c7521cfda2cb0b27c666d59d09d274261efca803'
+          assert x['report_sha256']==sha({k:v for k,v in x.items() if k!='report_sha256'})
+          assert x['source_category']=='REAL_PROVIDER_RETRIEVED_NOW_RETROSPECTIVE_EVENTTIME_ONLY'
+          assert x['train_partition_rows']==760 and x['validation_partition_rows']==380
+          assert x['test_rows_processed']==0
+          assert x['provider_requests_exactly']==3
+          assert [f['validation_count'] for f in x['folds']]==[60,126,123,71]
+          assert not x['historical_pit_backtest_performed'] and not x['training_allowed'] and not x['gate13_pass']
+          assert not x['source_scores_in_report'] and not x['test_partition_data_requested']
+          assert not any(k in x for k in ('matches','fixtures','results','labels','api_key','private_key','full_match_rows'))
+          target=Path('data/audits/STEP13_REAL_RETROSPECTIVE_PITCHAPI_2026-10-27.json')
+          target.parent.mkdir(parents=True,exist_ok=True)
+          target.write_bytes(f[0].read_bytes())
+          print('KB3_STEP13_ORIGINAL_AGGREGATE_ARCHIVE_VALIDATED_SHA_NO_REFETCH')
+          PY
+      - name: Commit aggregate-only research record to existing Step13 branch
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/audits/STEP13_REAL_RETROSPECTIVE_PITCHAPI_2026-10-27.json
+          if ! git diff --cached --quiet; then
+            git commit -m "Step13: preserve verified real aggregate PitchAPI retrospective research, no PIT promotion"
+            git push origin HEAD:feature/step13-pitchapi-live-retrospective-once-20261027
+          fi
