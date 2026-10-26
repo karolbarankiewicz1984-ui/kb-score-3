@@ -1,0 +1,48 @@
+{
+  "schema": "kb3-step10-qa-v1",
+  "reference_workflow": "https://github.com/karolbarankiewicz1984-ui/kb-score-3/actions/runs/40278994874",
+  "source": "API-Football fixture import, Premier League 2024/25",
+  "dataset": {
+    "league": "Premier League",
+    "season_start": 2024,
+    "fixtures": 380,
+    "expected": 380,
+    "teams": 20,
+    "finished": 380,
+    "first_kickoff_utc": "2024-08-16T19:00:00Z",
+    "last_kickoff_utc": "2025-05-25T15:00:00Z",
+    "min_90min_home_goals": 0,
+    "max_90min_home_goals": 7,
+    "statuses": {
+      "FINISHED": 380
+    },
+    "provider_mappings": 380,
+    "source_snapshots": {
+      "retrospective": 1,
+      "verified_prematch": 0
+    },
+    "match_statistics_rows": 0,
+    "odds_rows": 0,
+    "events_rows": 0,
+    "feature_snapshots": 0
+  },
+  "sqlite": {
+    "foreign_keys": "ok",
+    "integrity": "ok",
+    "schema_version": 1
+  },
+  "fixture_rule_counts": {},
+  "critical_errors": [],
+  "warnings": [
+    "NO_MATCH_EVENTS_IMPORTED",
+    "NO_MATCH_STATISTICS_IMPORTED",
+    "NO_ODDS_IMPORTED",
+    "NO_VERIFIED_PREMATCH_SOURCE_ARCHIVE"
+  ],
+  "historical_integrity": "PASS",
+  "prematch_feature_eligibility": "BLOCKED_NOT_AUDITED",
+  "result": "PASS_WITH_COVERAGE_WARNINGS",
+  "training_allowed": false,
+  "final_gate": "PENDING_FULL_SCOPE_REVIEW",
+  "no_ml_execution": true
+}
