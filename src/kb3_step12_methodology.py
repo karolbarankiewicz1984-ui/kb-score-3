@@ -165,9 +165,13 @@ def method_review(real, *, expected_source_sha256=PINNED_REAL_MANIFEST_SHA256):
 
 def safe_model_fixtures(projection, *, purpose, role):
     """Consumer fail-closed access: no TEST in tuning; no labels for any role."""
+    if projection.get("schema") != SPLIT_PROTOCOL or projection.get("dataset_version") != REAL_DATASET_VERSION:
+        raise SplitSafetyError("STEP12_REQUIRES_EXACT_SAFE_SCHEMA")
     if projection.get("projection_sha256") != sha({
             k: v for k, v in projection.items() if k != "projection_sha256"}):
         raise SplitSafetyError("STEP12_SAFE_PROJECTION_TAMPER")
+    if any(set(row) != SAFE_KEYS for row in projection.get("fixtures", [])):
+        raise SplitSafetyError("STEP12_NO_EXTRA_FIXTURE_FIELDS")
     if projection.get("training_allowed") is not False:
         raise SplitSafetyError("STEP12_TRAINING_GATE_MUST_BE_FALSE")
     if role not in SPLIT_ROLES or purpose not in ("schedule", "tuning", "scoring"):
