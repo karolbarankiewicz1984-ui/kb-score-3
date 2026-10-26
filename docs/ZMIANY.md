@@ -170,3 +170,10 @@ Następny krok:
 - **Test CI:** [Actions #40283222459](https://github.com/karolbarankiewicz1984-ui/kb-score-3/actions/runs/40283222459) — SUCCESS; 11/11 nowego modułu + 39/39 regresyjnych = **50/50 PASS**. Rzeczywisty import kontrolny: 380/380 meczów PL 2024/25.
 - **Audyt:** 371/380 meczów miało wcześniejszą historię przy *retrospektywnym replay*; **0** historycznych obserwacji spełniło pełny wymóg publikacji/przechwycenia przed dawnym meczem. System nie oznacza retrospektywnej historii jako certyfikowanego prematch.
 - **Klasyfikacja:** GATE 11 **PENDING / W REALIZACJI**, postęp **10/29**. Parametry ELO tylko robocze; brak ML, źródłowych historycznych snapshotów xG, nowych zakupów i zmian KB2.1/API Market/MultiModel. Dalszy niezależny odbiór dowodów i akceptacja katalogu przed PASS.
+
+## GATE 11 — DODATKOWY PROGRES ELO I DWÓCH SEZONÓW (26.10.2026)
+
+- [Actions #40289840095](https://github.com/karolbarankiewicz1984-ui/kb-score-3/actions/runs/40289840095) potwierdza **58/58 testów PASS**, osobne pilotaże **380/380 i 760/760** oraz brak podniesienia klasy historycznych danych do `VERIFIED_PREMATCH`.
+- ELO przechodzi między sezonami **tej samej ligi**, z jawnie prowizorycznym `season_retention=0.85` i parametrami K=20, H=65, scale=400, initial=1500; brak optymalizacji. Odrębne ligi i przyszłe sezony są odrzucane.
+- Dwa zakończone sezony Premier League zaimportowano w **tymczasowym jobie CI**, 23 kluby, idempotentnie, w obu przypadkach 380 spotkań. To **nie jest trwałe powiększenie dotychczasowego archiwum**.
+- `GATE11 = PENDING`, postęp **10/29**. Brakuje oryginalnego dowodu dostępności historycznej przed cutoff, rzeczywistych xG i trwałego zaszyfrowanego archiwum szerszego zestawu. Trening zablokowany, bez zakupów.
