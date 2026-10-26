@@ -1,0 +1,73 @@
+name: "KB3 Step 09 - Premier League History Import Pilot"
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/kb3-step09-import-pilot.yml"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: kb3-step09-import-pilot
+  cancel-in-progress: false
+
+jobs:
+  gate-09-pilot:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - name: Check out isolated KB3 repository
+        uses: actions/checkout@v4
+
+      - name: Validate offline importer guards, duplicate protection and resume
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m unittest discover -s tests -p 'test_step09_import_history.py' -v
+          python -m unittest discover -s tests -p 'test_step08_storage.py' -v
+
+      - name: Retrieve one real season and run repeat/resume tests
+        env:
+          API_FOOTBALL_KEY: ${{ secrets.API_FOOTBALL_KEY }}
+          PYTHONDONTWRITEBYTECODE: "1"
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [ -z "${API_FOOTBALL_KEY}" ]; then
+            echo "MISSING_API_FOOTBALL_KEY - secret not set"
+            exit 1
+          fi
+          python -m scripts.step09_import_history --outdir audit/step09
+
+      - name: Make a non-secret run summary (NOT GATE09 acceptance)
+        if: success()
+        shell: bash
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          m=json.loads(Path("audit/step09/step09-manifest.json").read_text())
+          summary=Path(__import__("os").environ["GITHUB_STEP_SUMMARY"])
+          with summary.open("a",encoding="utf8") as o:
+              o.write("# KB3 Step 09 pilot\n\n")
+              o.write(f"API-Football Premier League 2024/25: **{m['source_rows']}/{m['expected']}** fixtures.\n\n")
+              o.write(f"First import: {m['first_import']['inserted']} new.\n\n")
+              o.write(f"Repeat import: {m['repeat_import']['inserted']} new, {m['repeat_import']['reused']} reused.\n\n")
+              o.write(f"Crash recovery: {m['resume_after_17']['inserted']} inserted, {m['resume_after_17']['reused']} reused.\n\n")
+              o.write("**GATE09 PENDING:** Actions artifact expires; encrypted offsite retention and restore are NOT yet certified.\n")
+          PY
+
+      - name: Upload temporary audit evidence (expires in 7 days)
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: kb3-step09-temporary-pilot
+          path: |
+            audit/step09/step09-manifest.json
+            audit/step09/premier-league-2024-25.sqlite3
+            audit/step09/resume-test.sqlite3
+          retention-days: 7
+          if-no-files-found: error
