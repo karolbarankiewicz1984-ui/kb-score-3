@@ -73,6 +73,22 @@ class Step12MethodologyRealTests(unittest.TestCase):
         self.assertEqual(len(r), 380)
         self.assertEqual(set(r[0]), SAFE_KEYS)
 
+    def test_extra_target_field_rejected_even_if_projection_rehashed(self):
+        changed = copy.deepcopy(self.projection)
+        changed["fixtures"][0]["label_90m"] = "H"
+        changed["projection_sha256"] = sha({
+            k: v for k, v in changed.items() if k != "projection_sha256"})
+        with self.assertRaisesRegex(SplitSafetyError, "NO_EXTRA_FIXTURE_FIELDS"):
+            safe_model_fixtures(changed, purpose="schedule", role="TRAIN")
+
+    def test_wrong_safe_schema_cannot_be_pretended_to_be_model_view(self):
+        changed = copy.deepcopy(self.projection)
+        changed["schema"] = "some-privileged-evidence"
+        changed["projection_sha256"] = sha({
+            k: v for k, v in changed.items() if k != "projection_sha256"})
+        with self.assertRaisesRegex(SplitSafetyError, "REQUIRES_EXACT_SAFE_SCHEMA"):
+            safe_model_fixtures(changed, purpose="schedule", role="TRAIN")
+
     def test_original_audit_contains_sensitive_label_hashes_is_not_model_view(self):
         self.assertIn("source_record_sha256", self.source["rows"][0])
         self.assertTrue(self.audit["never_supply_privileged_source_to_model"])
