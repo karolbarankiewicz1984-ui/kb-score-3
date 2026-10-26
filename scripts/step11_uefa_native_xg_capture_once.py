@@ -51,7 +51,7 @@ def select_sample(matches,now,count=SAMPLE_PER_COMPETITION):
     return [eligible[i] for i in indices],len(eligible)
 
 def choose_league(leagues,term):
-    active=[l for l in leagues if norm(l.get("name"))==term and
+    active=[l for l in leagues if term in norm(l.get("name")) and
             SEASON in (l.get("seasons") or [])]
     if len(active)!=1:
         raise ValueError("UEFA_LEAGUE_NOT_UNIQUE")
