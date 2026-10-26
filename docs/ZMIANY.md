@@ -292,3 +292,11 @@ Następny krok:
 - Zamknięto krok 11 na podstawie trzech oryginalnych wymagań: opis/znacznik czasu każdej cechy i missingness, brak lookahead oraz `xG=null` zamiast sztucznego zera. [Protokół i zakres](STEP_11_GATE_ACCEPTANCE_2026-10-26.md) zawiera dowody i odstępstwa dotyczące przyszłych obserwacji między dniami.
 - Pięć nowych testów egzekwuje oryginalne kryteria i zakaz treningu; [CI #40339012432](https://github.com/karolbarankiewicz1984-ui/kb-score-3/actions/runs/40339012432) **246/246 PASS**, brak nowych odczytów API.
 - Krok 12 gotowy do rozpoczęcia, GATE12 **NIEZALICZONY**; `training_allowed=false`, nie wolno mylić danych historycznych pobranych 26.10.2026 z rzeczywistymi historycznymi timestampami prematch. Stare modele nienaruszone, bez dodatkowych opłat.
+
+## KROK12 — START: CHRONOLOGICZNY SPLIT I KONTROLA PIT (26.10.2026)
+
+- **Stan przed:** 11/29 GATE11 PASS; STEP12 NIE ROZPOCZĘTO. **Stan po:** 11/29 PASS; STEP12 **W REALIZACJI / GATE12 PENDING**.
+- Pierwszy kod `src/kb3_split.py` buduje deterministyczne, hashowane manifesty TRAIN (2023/24–2024/25), VALIDATION (2025/26), TEST (2026/27), cztery okna walk-forward oraz wstrzymanie nadpisywania zamrożonej wersji. 90-minutowe wyniki nie są ujawniane w manifeście. Chronologia oparta na rzeczywistym `kickoff_utc`, odczytach cech i datach zaobserwowania etykiet.
+- Historyczne dane pobrane 26.10.2026 (`RETROSPECTIVE`) pozostają w **kwarantannie** i nie otrzymują statusu przeszłych autentycznych prognoz. Dopiero rzeczywisty `PROSPECTIVE_OBSERVED_AT` z pełnym katalogiem znaczników może przejść warstwę sprawdzającą; niezależny odbiór GATE12 nadal konieczny.
+- Testy syntetyczne `tests/test_step12_split.py`, workflow `.github/workflows/kb3-step12-split.yml`. Wczesne uruchomienie wykazało błędny oczekiwany komunikat w jednym teście negatywnym (już skorygowany); ostateczny status i link CI wymagają potwierdzenia.
+- [Opis i ograniczenia](STEP_12_PROGRESS.md). Nie użyto sekretów, nie wywołano dostawców API, nie uruchomiono treningu, brak nowego abonamentu i zmian starszych modeli.
