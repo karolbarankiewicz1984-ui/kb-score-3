@@ -1,0 +1,77 @@
+name: "KB3 Step11 - ONE TIME PitchAPI 3-League xG30 Coverage"
+on:
+  push:
+    branches: ["feature/step11-three-leagues-xg30-coverage-20261026"]
+    paths: [".github/workflows/kb3-step11-xg30-once.yml"]
+permissions:
+  contents: read
+concurrency:
+  group: kb3-one-time-xg30-20261026
+  cancel-in-progress: false
+jobs:
+  offline-safety:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install crypto dependency for existing native source tests
+        run: python3 -m pip install --disable-pip-version-check 'cryptography>=42,<47'
+      - name: Run strict provider coverage guards without any API keys
+        run: |
+          python3 -m unittest discover -s tests -p 'test_step11_pitch_three_league_xg30.py' -v
+          python3 -m unittest discover -s tests -p 'test_step11_uefa_native_xg.py' -v
+  real-coverage:
+    needs: offline-safety
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install native PitchAPI and RSA+AES only
+        run: python3 -m pip install --disable-pip-version-check 'pitchapi==0.1.6' 'cryptography>=42,<47'
+      - name: Max 34 calls (1 catalogue, 3 league lists, 30 finished shot feeds)
+        env:
+          PITCHAPI_API_KEY: ${{ secrets.PITCHAPI_API_KEY }}
+        run: |
+          set -euo pipefail
+          test -n "$PITCHAPI_API_KEY"
+          python3 -m scripts.step11_pitch_three_league_xg30_once \
+            --outdir audit/step11/pitch-xg30 \
+            --recipient config/step11_archive_recipient_public.pem
+      - name: Enforce sealed raw evidence and prohibit statistical extrapolation
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import json
+          p=Path("audit/step11/pitch-xg30")
+          r=json.loads((p/"STEP11_PITCH_3LEAGUE_XG30_SAFE_SUMMARY.json").read_text())
+          m=json.loads((p/"KB3_PITCH_3_LEAGUES_XG30_20261026.manifest.json").read_text())
+          assert r["pitchapi_requests"]==34 and r["api_football_requests"]==0
+          assert r["samples_total"]==30 and r["source_observations_encrypted"]==34
+          assert set(r["competition_results"])=={
+             "premier_league","europa_league","conference_league"}
+          for c in r["competition_results"].values():
+              assert c["sampled_games"]==10 and c["sampled_distinct_kickoff_dates"]>=3
+              assert c["complete_xg"]+c["partial_or_missing_xg"]==10
+              assert not c["whole_competition_completeness_proven"]
+              assert not c["random_sampling_performed"]
+              assert not c["missing_xg_is_zero"]
+          assert m["proof"]["sessions"]==34
+          assert m["proof"]["final_chain_sha256"]==r["source_chain_sha256"]
+          assert m["ciphertext_sha256"]==r["ciphertext_sha256"]
+          assert not r["historical_matchtime_PIT_proven"]
+          assert not m["historical_prematch_pit_certified"]
+          assert not r["training_allowed"] and not r["production_switch_approved"]
+          assert not r["offsite_restore_verified"]
+          assert not any(p.glob("*.sqlite*"))
+          print("KB3_XG30_SEALED_SOURCE_SANITIZED_PASS")
+          PY
+      - name: Upload only encrypted 34 source receipts and public-safe aggregates
+        uses: actions/upload-artifact@v4
+        with:
+          name: kb3-step11-pitch-3-leagues-xg30-sealed-20261026
+          retention-days: 30
+          if-no-files-found: error
+          path: |
+            audit/step11/pitch-xg30/KB3_PITCH_3_LEAGUES_XG30_20261026.enc
+            audit/step11/pitch-xg30/KB3_PITCH_3_LEAGUES_XG30_20261026.manifest.json
+            audit/step11/pitch-xg30/STEP11_PITCH_3LEAGUE_XG30_SAFE_SUMMARY.json
