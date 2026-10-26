@@ -22,6 +22,7 @@ def classify(fixtures, *, league, year):
     seasons=Counter()
     regular=[]
     excluded=[]
+    quarantined_regular=[]
     errs=[]
     teams=set()
     home=Counter()
@@ -43,7 +44,17 @@ def classify(fixtures, *, league, year):
             home[h]+=1
             away[a]+=1
             regular_pairs[(h,a)]+=1
-            if (fx.get("status") or {}).get("short") not in FINISHED:
+            raw_status=(fx.get("status") or {}).get("short")
+            if raw_status in ("AWD","WO"):
+                quarantined_regular.append({
+                    "api_fixture_id":fx.get("id"),
+                    "round":round_label,
+                    "status":raw_status,
+                    "reason":"AWARDED_GAME_NOT_ORDINARY_90MIN_LABEL",
+                    "home_provider_team_id":h,
+                    "away_provider_team_id":a,
+                })
+            elif raw_status not in FINISHED:
                 errs.append("UNFINISHED_DOMESTIC_REGULAR_SEASON_MATCH")
         else:
             excluded.append({
@@ -71,9 +82,11 @@ def classify(fixtures, *, league, year):
        "domestic_regular_fixtures":len(regular),
        "domestic_teams":n,"expected_regular_fixtures":expected,
        "extra_phases_excluded_from_domestic_training":excluded,
+       "quarantined_domestic_fixture_results":quarantined_regular,
+       "normal_played_regular_label_count":len(regular)-len(quarantined_regular),
        "phase_names_counts":dict(sorted(seasons.items())),
        "errors":sorted(set(errs)),
-       "approval":"DOMESTIC_REGULAR_LABELS_PASS_EXTRAS_EXCLUDED" if not errs else "QUARANTINE",
+       "approval":"DOMESTIC_REGULAR_LABELS_PASS_WITH_AWARDED_QUARANTINE" if not errs and quarantined_regular else "DOMESTIC_REGULAR_LABELS_PASS_EXTRAS_EXCLUDED" if not errs else "QUARANTINE",
     }
 
 def run(key):
@@ -91,6 +104,7 @@ def run(key):
       "approved_regular_seasons":sum(r["approval"].startswith("DOMESTIC_REGULAR_LABELS_PASS") for r in results),
       "quarantined":sum(r["approval"]=="QUARANTINE" for r in results),
       "extra_fixtures_excluded":sum(len(r["extra_phases_excluded_from_domestic_training"]) for r in results),
+      "awarded_regular_results_quarantined":sum(len(r["quarantined_domestic_fixture_results"]) for r in results),
       "critical_training_fail_closed":True,
       "scope":"10 exceptional historical season combinations; regular labels only",
       "results":results,
@@ -108,12 +122,14 @@ def main():
        "approved_regular_seasons":d["approved_regular_seasons"],
        "quarantined":d["quarantined"],
        "extra_fixtures_excluded":d["extra_fixtures_excluded"],
+       "awarded_regular_results_quarantined":d["awarded_regular_results_quarantined"],
     },sort_keys=True))
     for r in d["results"]:
         print("KB3_PHASE_DETAIL "+json.dumps({
           k:r[k] for k in ("league","season","total_fixture_rows",
              "domestic_regular_fixtures","domestic_teams","expected_regular_fixtures",
-             "extra_phases_excluded_from_domestic_training","errors")
+             "extra_phases_excluded_from_domestic_training",
+             "quarantined_domestic_fixture_results","errors")
         },ensure_ascii=False))
     if d["quarantined"]:raise SystemExit(4)
 
