@@ -86,6 +86,20 @@ class RealIndexContractTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "UEFA_NON_REAL_EVIDENCE"):
             index_receipts(copy.deepcopy(self.sample))
 
+    def test_source_catalogue_identity_cannot_be_swapped(self):
+        changed = []
+        for index, original in enumerate(self.sample):
+            payload = copy.deepcopy(original["payload"])
+            if index == 0:
+                payload["leagues"][0]["country_code"] = "USA"
+            add_observation(
+                changed, resource=original["resource"], payload=payload,
+                started=original["started_at_utc"],
+                completed=original["completed_at_utc"],
+                origin="SYNTHETIC_TEST")
+        with self.assertRaisesRegex(SplitSafetyError, "CATALOGUE"):
+            index_receipts(changed, allow_synthetic=True)
+
     def test_future_is_pending_with_cutoff_but_not_training_approved(self):
         m, _ = index_receipts(copy.deepcopy(self.sample), allow_synthetic=True)
         r = next(x for x in m["rows"] if x["evidence_class"] == "PROSPECTIVE_OBSERVED_AT")
