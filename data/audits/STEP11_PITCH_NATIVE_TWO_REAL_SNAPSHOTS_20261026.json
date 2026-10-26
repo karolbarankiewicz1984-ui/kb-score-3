@@ -1,0 +1,66 @@
+{
+  "schema": "kb3-step11-native-real-two-observations-v1",
+  "recorded_utc_date": "2026-10-26",
+  "provider": "PitchAPI",
+  "competition": "Premier League 2026/2027",
+  "prior": {
+    "capture_completed_at_utc": "2026-10-26T11:29:09.681040Z",
+    "last_observed_at_utc": "2026-10-26T11:29:10.322396Z",
+    "zip_sha256": "1260442238b8b1b94bcc6d5d99ce7be5ea01ed51736df8289fefc85b4da7b5de",
+    "cipher_sha256": "396826389a58a07ca7366c81b437b111c9fded27143a2bf1b130e3579752bb50",
+    "source_fixture_sha256": "3f68e047863fe6e4c2ffef3b84013fbe121a19b2054503ffa766520c072fc2da",
+    "source_chain_sha256": "4afd5a6e697f13b36170854e0f3816506ca04e3742dd29491293f88785b33a4e",
+    "offsite": "https://drive.google.com/file/d/18AeQOY7it5F58S4EqHKk8GDpqOD_TtUg/view",
+    "source_sessions_verified": 6,
+    "records_verified": 385
+  },
+  "current": {
+    "capture_completed_at_utc": "2026-10-26T12:19:04.753366Z",
+    "last_observed_at_utc": "2026-10-26T12:19:05.378683Z",
+    "zip_sha256": "892707f2d5914b08dd5b4377a16507a6c8694ce50266b23ddcd28ce8cf176584",
+    "cipher_sha256": "1ebe32afa9bc19d3b2ceff390d26ac0bd514b3cfbb886c9d35d8e2e914ed0ce2",
+    "source_fixture_sha256": "3f68e047863fe6e4c2ffef3b84013fbe121a19b2054503ffa766520c072fc2da",
+    "source_chain_sha256": "bfa7eafa2d5d344e2e09985c29b3563d7c9bf08052dc9a4100fd5d3dee5e1813",
+    "offsite": "https://drive.google.com/file/d/13idXMzj3dIn_luUdVi7LbcxKROjeLeZ5/view",
+    "source_sessions_verified": 6,
+    "records_verified": 385
+  },
+  "independent_local_restore": {
+    "offsite_second_re_downloaded": true,
+    "owner_private_key_matched": true,
+    "cryptography": "RSA-OAEP-SHA256 wrapped key + AES-256-GCM",
+    "both_ciphers_authenticated": true,
+    "both_decompressed_sqlite_sha256_pass": true,
+    "both_sqlite_integrity_checks_pass": true,
+    "both_foreign_keys_pass": true,
+    "source_sessions_sha_verified": 12,
+    "record_sha_verified": 770,
+    "raw_rows_shared_in_repo": false,
+    "private_key_shared_in_repo": false,
+    "unpacked_dbs_removed_after_check": true
+  },
+  "real_drift_result": {
+    "match_count": 380,
+    "same_native_match_ids": true,
+    "native_team_id_reassignment": false,
+    "changed_kickoffs": 0,
+    "changed_statuses": 0,
+    "changed_scores": 0,
+    "changed_names": 0,
+    "changed_raw_match_payloads": 0,
+    "distinct_utc_days": false,
+    "minutes_between_fixture_observations_approx": 50
+  },
+  "run": "https://github.com/karolbarankiewicz1984-ui/kb-score-3/actions/runs/40321560312",
+  "study_limits": {
+    "two_real_snapshots_verified": true,
+    "independent_multi_day_source_evidence": false,
+    "original_provider_publication_time_known": false,
+    "historical_point_in_time_prior_seasons_certified": false,
+    "model_training_allowed": false,
+    "production_migration_approved": false
+  },
+  "gate11": "PENDING",
+  "approved_steps": 10,
+  "total_steps": 29
+}
