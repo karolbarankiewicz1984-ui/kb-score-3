@@ -317,6 +317,6 @@ Następny krok:
 
 ## KROK12 — DWA PORÓWNYWALNE OKNA, 26.10.2026
 
-- Po ponownym omówieniu planu wprowadzono porównanie EXANDING (pełna starsza historia) vs ROLLING (ostatnie 24 miesiące) na tych samych rzeczywistych meczach VALIDATION. Kwartały: 60,126,123,71 meczów. Kandydaci po samych datach EXPANDING: 760,820,946,1069; ROLLING: 760,753,750,776.
+- Po ponownym omówieniu planu wprowadzono porównanie EXPANDING (pełna starsza historia) vs ROLLING (ostatnie 24 miesiące) na tych samych rzeczywistych meczach VALIDATION. Kwartały: 60,126,123,71 meczów. Kandydaci po samych datach EXPANDING: 760,820,946,1069; ROLLING: 760,753,750,776.
 - [Metodologia i dowód](STEP_12_DUAL_WINDOWS.md), [niezmienny manifest SHA 25242ed4a626aba2669ea86605b31664cb17bf10a6a74e4e3548470954c81198](../data/splits/STEP12_DUAL_WINDOWS_REAL_2026-10-26.json), [odrębny audyt](../data/audits/STEP12_DUAL_WINDOWS_AUDIT_2026-10-26.json), [CI testy PASS](https://github.com/karolbarankiewicz1984-ui/kb-score-3/actions/runs/40353630051).
 - 380 TEST nigdy nie trafia do treningu/walidacji. Wybór metody historii tylko na VALIDATION po dopuszczeniu danych i metryk. Nie wykonano treningu lub modelowych prognoz; źródło pozostaje 0/1520 gotowych próbek PIT, `training_allowed=false` i GATE12 PENDING do formalnego zamknięcia.
