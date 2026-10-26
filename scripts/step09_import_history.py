@@ -146,15 +146,15 @@ def reference_ids(c, now, response_hash, *, league_id=LEAGUE_ID,
                      (competition_name, country, "LEAGUE")).fetchone()[0]
     c.execute("INSERT OR IGNORE INTO seasons(competition_id,start_year,season_label) VALUES (?,?,?)",
               (comp, season, f"{season}/{str(season+1)[-2:]}"))
-    season = c.execute("SELECT season_id FROM seasons WHERE competition_id=? AND start_year=?",
-                       (comp, season)).fetchone()[0]
+    season_pk = c.execute("SELECT season_id FROM seasons WHERE competition_id=? AND start_year=?",
+                          (comp, season)).fetchone()[0]
     snapshot_id = f"api-football-fixtures-{league_id}-{season}-" + response_hash[:24]
     c.execute("""
         INSERT OR IGNORE INTO source_snapshots
             (snapshot_id,provider_id,endpoint_label,captured_at_utc,source_data_hash,availability_class)
         VALUES (?,?,?,?,?,'RETROSPECTIVE')
     """, (snapshot_id,provider,f"fixtures?league={league_id}&season={season}",now,response_hash))
-    return provider,season,snapshot_id
+    return provider,season_pk,snapshot_id
 
 def get_team(c, provider, external_id, name):
     old = c.execute("""
