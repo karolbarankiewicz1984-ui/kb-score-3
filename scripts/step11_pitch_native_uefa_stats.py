@@ -53,7 +53,12 @@ def audit():
                                     for m in matches),
                "league_name_confirmed":True,
                "historical_xg_coverage_certified":False}
-    pl=choose(leagues,"premier league")
+    pl=[l for l in leagues if norm(l.get("name"))=="premier league"
+        and str(l.get("country_code") or "").upper()=="ENG"
+        and "2026/2027" in (l.get("seasons") or [])]
+    if len(pl)!=1:
+        raise ValueError("PL_CATALOG_ID_NOT_UNIQUE")
+    pl=pl[0]
     obj=to_plain(sdk.leagues.matches(pl["id"],season="2026/2027",status="played"))
     calls+=1
     matches=obj.get("matches") if isinstance(obj,dict) else None
@@ -106,7 +111,13 @@ def main():
             json.dump(result,fd,indent=2,sort_keys=True);fd.write("\n")
         print("KB3_PITCH_NATIVE_UEFA_PASS",json.dumps(result,sort_keys=True))
     except Exception as err:
-        print("KB3_PITCH_NATIVE_UEFA_BLOCKED",type(err).__name__)
+        safe_codes={"UEFA_CATALOG_SCOPE_NOT_UNIQUE","PL_CATALOG_ID_NOT_UNIQUE",
+          "UEFA_CURRENT_SEASON_FIXTURES_MISSING","DUPLICATE_UEFA_PROVIDER_MATCH_IDS",
+          "CATALOG_SHAPE_INVALID","PL_FINISHED_MATCHES_MISSING","PL_NO_COMPLETED_GAMES",
+          "PITCH_STATS_RESPONSE_SHAPE_INVALID","PITCH_STATS_PERIODS_MISSING",
+          "OVER_REQUEST_BUDGET"}
+        reason=str(err) if isinstance(err,ValueError) and str(err) in safe_codes else type(err).__name__
+        print("KB3_PITCH_NATIVE_UEFA_BLOCKED",reason)
         raise SystemExit(3)
 if __name__=="__main__":
     main()
