@@ -1,0 +1,75 @@
+name: "KB3 Step 10 - Cross-League 30 Season Quality QA"
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/kb3-step10-crossleague-qa.yml"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: kb3-step10-crossleague-qa
+  cancel-in-progress: false
+
+jobs:
+  comprehensive-source-audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 18
+    steps:
+      - name: Checkout KB Score 3 only
+        uses: actions/checkout@v4
+      - name: Run all Step10 and Step09 regression and negative tests
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m unittest discover -s tests -p 'test_step10_*.py' -v
+          python -m unittest discover -s tests -p 'test_step09_import_history.py' -v
+          python -m unittest discover -s tests -p 'test_step08_storage.py' -v
+      - name: Fetch 30 league seasons with account API key, no raw logging
+        shell: bash
+        env:
+          API_FOOTBALL_KEY: ${{ secrets.API_FOOTBALL_KEY }}
+        run: |
+          set -euo pipefail
+          if [ -z "$API_FOOTBALL_KEY" ]; then
+            echo "ERROR_API_FOOTBALL_KEY_NOT_SET"
+            exit 1
+          fi
+          python -m scripts.step10_crossleague_qa \
+            --catalog data/audits/API_FOOTBALL_STEP05_2026-10-25.json \
+            --outdir audit/step10
+      - name: Publish bounded cross-league evidence summary
+        if: always()
+        shell: bash
+        run: |
+          if [ -f audit/step10/STEP10_ALL_LEAGUES.json ]; then
+            python - <<'PY'
+          import json,os
+          from pathlib import Path
+          m=json.loads(Path("audit/step10/STEP10_ALL_LEAGUES.json").read_text())
+          s=["# KB Score 3 - Step 10 cross-league status","",
+             "Checked: %d leagues / %d seasons"%(m["leagues"],m["league_seasons"]),
+             "Fixture rows: %d"%m["rows_examined"],
+             "Critical combinations: %d"%m["critical_season_combinations"],
+             "Quarantine/review combinations: %d"%m["review_season_combinations"],
+             "**No training enabled.** Only source QA; raw per-match data not archived.","",
+             "| League | Season | Rows | Finished | QA |",
+             "|---|---:|---:|---:|---|"]
+          for r in m["results"]:
+            s.append("| %s | %s | %s | %s | %s |"%(
+               r["league"],r["season"],r["count"],r["finished"],r["eligibility"]))
+          with open(os.environ["GITHUB_STEP_SUMMARY"],"a",encoding="utf8") as f:
+            f.write("\n".join(s)+"\n")
+          PY
+          fi
+      - name: Upload evidence (no private database or raw API snapshots)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: kb3-step10-crossleague-30-season-qa
+          path: audit/step10/STEP10_ALL_LEAGUES.json
+          retention-days: 14
+          if-no-files-found: warn
