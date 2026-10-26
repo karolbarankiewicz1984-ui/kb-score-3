@@ -63,7 +63,7 @@ def nonnegative_or_none(value):
         raise ImportConflict("INVALID_GOALS")
     return value
 
-def parse_rows(payload, *, expected_count=EXPECTED_COUNT):
+def parse_rows(payload, *, expected_count=EXPECTED_COUNT, league_id=LEAGUE_ID, season=SEASON):
     if not isinstance(payload, dict):
         raise ImportConflict("INVALID_API_RESPONSE")
     if payload.get("errors"):
@@ -86,7 +86,7 @@ def parse_rows(payload, *, expected_count=EXPECTED_COUNT):
                 or fid in ids):
             raise ImportConflict("DUPLICATE_OR_INVALID_PROVIDER_FIXTURE_ID")
         ids.add(fid)
-        if league.get("id") != LEAGUE_ID or league.get("season") != SEASON:
+        if league.get("id") != league_id or league.get("season") != season:
             raise ImportConflict("LEAGUE_SEASON_MISMATCH")
         home, away = teams.get("home") or {}, teams.get("away") or {}
         hid, aid = home.get("id"), away.get("id")
@@ -121,10 +121,10 @@ def parse_rows(payload, *, expected_count=EXPECTED_COUNT):
         })
     return sorted(rows, key=lambda x: int(x["provider_fixture_id"]))
 
-def fetch_api(key):
+def fetch_api(key, *, league_id=LEAGUE_ID, season=SEASON):
     if not key:
         raise RuntimeError("MISSING_API_FOOTBALL_KEY")
-    params = urllib.parse.urlencode({"league": LEAGUE_ID, "season": SEASON})
+    params = urllib.parse.urlencode({"league": league_id, "season": season})
     req = urllib.request.Request(
         BASE + "/fixtures?" + params,
         headers={"x-apisports-key": key, "Accept": "application/json",
@@ -136,23 +136,24 @@ def fetch_api(key):
             raise RuntimeError("OVERSIZED_API_RESPONSE")
         return json.loads(content)
 
-def reference_ids(c, now, response_hash):
+def reference_ids(c, now, response_hash, *, league_id=LEAGUE_ID,
+                  season=SEASON, competition_name="Premier League", country="England"):
     c.execute("INSERT OR IGNORE INTO providers(name, created_utc) VALUES (?,?)", ("API-Football", now))
     provider = c.execute("SELECT provider_id FROM providers WHERE name=?", ("API-Football",)).fetchone()[0]
     c.execute("INSERT OR IGNORE INTO competitions(name,country,type) VALUES (?,?,?)",
-              ("Premier League", "England", "LEAGUE"))
+              (competition_name, country, "LEAGUE"))
     comp = c.execute("SELECT competition_id FROM competitions WHERE name=? AND country=? AND type=?",
-                     ("Premier League", "England", "LEAGUE")).fetchone()[0]
+                     (competition_name, country, "LEAGUE")).fetchone()[0]
     c.execute("INSERT OR IGNORE INTO seasons(competition_id,start_year,season_label) VALUES (?,?,?)",
-              (comp, SEASON, "2024/25"))
+              (comp, season, f"{season}/{str(season+1)[-2:]}"))
     season = c.execute("SELECT season_id FROM seasons WHERE competition_id=? AND start_year=?",
-                       (comp, SEASON)).fetchone()[0]
-    snapshot_id = "api-football-fixtures-39-2024-" + response_hash[:24]
+                       (comp, season)).fetchone()[0]
+    snapshot_id = f"api-football-fixtures-{league_id}-{season}-" + response_hash[:24]
     c.execute("""
         INSERT OR IGNORE INTO source_snapshots
             (snapshot_id,provider_id,endpoint_label,captured_at_utc,source_data_hash,availability_class)
         VALUES (?,?,?,?,?,'RETROSPECTIVE')
-    """, (snapshot_id,provider,"fixtures?league=39&season=2024",now,response_hash))
+    """, (snapshot_id,provider,f"fixtures?league={league_id}&season={season}",now,response_hash))
     return provider,season,snapshot_id
 
 def get_team(c, provider, external_id, name):
@@ -172,11 +173,15 @@ def get_team(c, provider, external_id, name):
     """,(provider,external_id,tid,TEAM_VALID_FROM))
     return tid
 
-def import_rows(db, rows, response_hash, *, stop_after=None):
+def import_rows(db, rows, response_hash, *, stop_after=None,
+                league_id=LEAGUE_ID, season=SEASON,
+                competition_name="Premier League", country="England"):
     initialize(db)
     now=utc_now()
     with connect(db) as c:
-        provider,season,snapshot_id=reference_ids(c,now,response_hash)
+        provider,season_pk,snapshot_id=reference_ids(
+            c,now,response_hash,league_id=league_id,season=season,
+            competition_name=competition_name,country=country)
     inserted=0
     reused=0
     for row in rows:
@@ -190,7 +195,7 @@ def import_rows(db, rows, response_hash, *, stop_after=None):
                 WHERE m.provider_id=? AND m.provider_fixture_id=?
                   AND m.match_quality='STRICT' AND m.review_status='APPROVED'
             """,(provider,row["provider_fixture_id"])).fetchone()
-            expected=(season,home,away,row["kickoff_utc"],row["status"],
+            expected=(season_pk,home,away,row["kickoff_utc"],row["status"],
                       row["goals_home_90"],row["goals_away_90"])
             if existing:
                 if tuple(existing[1:]) != expected:
@@ -208,7 +213,7 @@ def import_rows(db, rows, response_hash, *, stop_after=None):
                     INSERT INTO fixtures(season_id,home_team_id,away_team_id,kickoff_utc,
                         status,goals_home_90,goals_away_90,result_source,created_utc,updated_utc)
                     VALUES (?,?,?,?,?,?,?,?,?,?)
-                """,(season,home,away,row["kickoff_utc"],row["status"],
+                """,(season_pk,home,away,row["kickoff_utc"],row["status"],
                      row["goals_home_90"],row["goals_away_90"],"API-Football",now,now))
                 fixture_id=c.execute("SELECT last_insert_rowid()").fetchone()[0]
                 c.execute("""
@@ -223,9 +228,13 @@ def import_rows(db, rows, response_hash, *, stop_after=None):
             raise SimulatedInterruption("TEST_INTERRUPTION_AFTER_COMMIT")
     with connect(db) as c:
         verify_database(c)
-        matches=c.execute("SELECT COUNT(*) FROM fixture_provider_map WHERE provider_id=?",
-                          (provider,)).fetchone()[0]
-        total=c.execute("SELECT COUNT(*) FROM fixtures WHERE season_id=?",(season,)).fetchone()[0]
+        matches=c.execute("""
+            SELECT COUNT(*) FROM fixture_provider_map m
+            JOIN fixtures f ON f.fixture_id=m.fixture_id
+            WHERE m.provider_id=? AND f.season_id=?
+              AND m.match_quality='STRICT' AND m.review_status='APPROVED'
+        """,(provider,season_pk)).fetchone()[0]
+        total=c.execute("SELECT COUNT(*) FROM fixtures WHERE season_id=?",(season_pk,)).fetchone()[0]
         if matches != len(rows) or total != len(rows):
             raise ImportConflict("COUNT_AFTER_IMPORT_MISMATCH")
     return {"inserted":inserted,"reused":reused,"total":total,
