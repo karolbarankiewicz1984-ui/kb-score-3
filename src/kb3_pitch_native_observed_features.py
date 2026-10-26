@@ -4,7 +4,8 @@ from collections import defaultdict
 from src.kb3_pitch_native_ledger import verify,latest_asof,shots_asof
 from src.kb3_features import FeatureSafetyError,EloParameters,RESULT_LAG,utc_dt,_compose_features
 
-def build_native_observed(db,target_match_id,*,cutoff_utc,elo_params=None):
+def build_native_observed(db,target_match_id,*,cutoff_utc,elo_params=None,
+                          historical_receipts=None):
     params=EloParameters() if elo_params is None else elo_params
     if not isinstance(params,EloParameters):
         raise FeatureSafetyError("INVALID_ELO_PARAMETERS")
@@ -60,11 +61,42 @@ def build_native_observed(db,target_match_id,*,cutoff_utc,elo_params=None):
            "captured_at_utc":observed_at,"published_at_utc":None,
            "xgh":home_xg,"xga":away_xg,
            "xgh_source":source,"xga_source":source})
+    if historical_receipts is not None:
+        # Import ONLY independently verified PitchAPI-native older season
+        # results that were actually observed by this cutoff. The source
+        # does not certify historical match-time knowledge.
+        from src.kb3_pitch_multiseason_history import historical_season_history
+        historical,source_meta=historical_season_history(
+            historical_receipts,cutoff_utc=cutoff_utc,
+            current_match_ids=games.keys())
+        recent_team_ids={x["id"] for g in games.values()
+                         for x in (g["home_team"],g["away_team"])}
+        prior_last={x["home_team_id"] for x in historical
+                    if x["season_start_year"]==2025}
+        prior_last|={x["away_team_id"] for x in historical
+                    if x["season_start_year"]==2025}
+        if len(recent_team_ids & prior_last)<14:
+            raise FeatureSafetyError("PITCH_NATIVE_TEAM_IDS_NOT_STABLE_ACROSS_SEASONS")
+        history.extend(historical)
+    else:
+        source_meta=None
     evidence={"provider":"PitchAPI","native_ids_only":True,
       "source_capture_id":cid,"source_chain_sha256":chain,
       "source_observed_at_utc":observed_at,
       "hash_chain_verified":True,"source_first_publication_time_known":False,
       "historical_pit_certified":False,"training_allowed":False}
+    if source_meta is not None:
+        evidence["historical_native_seasons"]=source_meta
+        # Latest of current-season and newly fetched historic sources is
+        # the conservative availability clock for even an Elo value.
+        evidence["source_observed_at_utc"]=max(
+            (utc_dt(observed_at),
+             utc_dt(source_meta["actual_observed_at_utc"]))
+        ).isoformat().replace("+00:00","Z")
+        evidence["multiseason_elo_status"]="RETROSPECTIVE_HISTORY_OBSERVED_BEFORE_TARGET_CUTOFF"
+    else:
+        evidence["multiseason_elo_status"]="CURRENT_SEASON_ONLY"
+
     return _compose_features(target,history,cutoff=cutoff,kickoff=kickoff,
         target_id=target_match_id,mode="observed",params=params,
         excluded=excluded,source_evidence=evidence)
