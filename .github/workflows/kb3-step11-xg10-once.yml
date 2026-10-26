@@ -1,0 +1,67 @@
+name: "KB3 Step11 - One Time Ten-Match xG Coverage"
+on:
+  push:
+    branches: ["feature/step11-xg-stratified-coverage-20261026"]
+    paths:
+      - ".github/workflows/kb3-step11-xg10-once.yml"
+permissions:
+  contents: read
+concurrency:
+  group: kb3-step11-xg10-once-20261026
+  cancel-in-progress: false
+jobs:
+  capture-ten-stratified:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install PitchAPI SDK and encryption library
+        run: python3 -m pip install --disable-pip-version-check 'pitchapi==0.1.6' 'cryptography>=42,<47'
+      - name: Offline unit and existing provenance smoke tests
+        run: |
+          python3 -m unittest discover -s tests -p 'test_step11_xg_stratified_coverage.py' -v
+          python3 -m unittest discover -s tests -p 'test_step11_second_pit_xg.py' -v
+      - name: Exactly one fixture response plus ten dispersed xG samples
+        env:
+          API_FOOTBALL_KEY: ${{ secrets.API_FOOTBALL_KEY }}
+          PITCHAPI_API_KEY: ${{ secrets.PITCHAPI_API_KEY }}
+        run: |
+          set -euo pipefail
+          test -n "$API_FOOTBALL_KEY" && test -n "$PITCHAPI_API_KEY"
+          python3 -m scripts.step11_xg_stratified_coverage \
+            --outdir audit/step11/stratified-xg \
+            --public-key config/step11_archive_recipient_public.pem
+      - name: Fail closed on leaked/raw/mismatched output
+        run: |
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          p=Path("audit/step11/stratified-xg")
+          s=json.loads((p/"KB3_XG_10_STRATIFIED_SAFE_SUMMARY.json").read_text())
+          m=json.loads((p/"KB3_PL_2026-27_XG_10_STRATIFIED.manifest.json").read_text())
+          assert s["fixture_records"]==380
+          assert s["sample_size"]==10
+          assert s["excluded_previously_reviewed_count"]==3
+          assert 3<=s["distinct_sample_kickoff_dates"]<=10
+          assert s["api_football_calls"]==1
+          assert s["pitchapi_calls"]<=12
+          assert m["ledger_evidence"]["fixture_records"]==380
+          assert m["xg_evidence"]["captured"]==10
+          assert m["xg_evidence"]["strict_complete"]==s["strict_approved_xg"]
+          assert m["xg_evidence"]["quarantined"]==s["quarantined_xg"]
+          assert not m["training_allowed"] and not s["training_allowed"]
+          assert not m["provider_publication_certified"]
+          assert not s["historical_publication_certified"]
+          assert not (p/"EPHEMERAL_STRATIFIED_XG.sqlite3").exists()
+          print("KB3_STRATIFIED_XG_10_SOURCE_EVIDENCE_PASS")
+          PY
+      - name: Upload sealed source evidence only
+        uses: actions/upload-artifact@v4
+        with:
+          name: kb3-step11-xg10-stratified-20261026
+          path: |
+            audit/step11/stratified-xg/KB3_PL_2026-27_XG_10_STRATIFIED.enc
+            audit/step11/stratified-xg/KB3_PL_2026-27_XG_10_STRATIFIED.manifest.json
+            audit/step11/stratified-xg/KB3_XG_10_STRATIFIED_SAFE_SUMMARY.json
+          retention-days: 30
+          if-no-files-found: error
