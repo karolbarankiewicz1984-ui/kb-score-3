@@ -4,6 +4,10 @@ on:
     branches: ["feature/step11-*", "main"]
     paths:
       - "src/kb3_pit_ledger.py"
+      - "src/kb3_features.py"
+      - "src/kb3_observed_features.py"
+      - "tests/test_step11_observed_features.py"
+      - "scripts/step11_observed_features_audit.py"
       - "src/kb3_pit_archive.py"
       - "src/kb3_xg_pit.py"
       - "src/kb3_identity_review.py"
@@ -20,6 +24,10 @@ on:
   pull_request:
     paths:
       - "src/kb3_pit_ledger.py"
+      - "src/kb3_features.py"
+      - "src/kb3_observed_features.py"
+      - "tests/test_step11_observed_features.py"
+      - "scripts/step11_observed_features_audit.py"
       - "src/kb3_pit_archive.py"
       - "src/kb3_xg_pit.py"
       - "src/kb3_identity_review.py"

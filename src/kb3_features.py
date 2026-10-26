@@ -14,7 +14,7 @@ import math
 from pathlib import Path
 import sqlite3
 
-FEATURE_VERSION = "kb3-step11-v0.3"
+FEATURE_VERSION = "kb3-step11-v0.4"
 # Defaults are provisional, not fitted. Tune only after Step12 chronological split.
 @dataclass(frozen=True)
 class EloParameters:
@@ -199,6 +199,14 @@ def build_features(db, target_id, *, cutoff_utc, mode="verified", elo_params=Non
                              source_start,cutoff,mode)
         history.append({**row,"date":source_start,"xgh":xgh,"xga":xga,
                         "xgh_source":src_h,"xga_source":src_a})
+    return _compose_features(target,history,cutoff=cutoff,kickoff=kickoff,
+                             target_id=target_id,mode=mode,params=params,
+                             excluded=excluded)
+
+
+def _compose_features(target, history, *, cutoff, kickoff, target_id, mode, params,
+                      excluded, source_evidence=None):
+    """Pure shared Elo/form/xG aggregation; observed mode uses *real* source receipts."""
     history.sort(key=lambda r:(r["date"],r["fixture_id"]))
     ratings = {}
     last_elo_season = {}
@@ -305,17 +313,23 @@ def build_features(db, target_id, *, cutoff_utc, mode="verified", elo_params=Non
         "schema":FEATURE_VERSION,"fixture_id":target_id,
         "elo_parameters":asdict(params),
         "elo_parameter_status":"PROVISIONAL_NOT_FITTED",
-        "result_evidence_policy":"PROVIDER_SCOPED_AND_MUTABLE_ROW_TIME_CHECKED",
-        "row_payload_at_snapshot_proven":False,
+        "result_evidence_policy":("RECORDED_SOURCE_RESPONSE_HASHED_AS_OF_CUTOFF"
+                                  if mode=="observed" else
+                                  "PROVIDER_SCOPED_AND_MUTABLE_ROW_TIME_CHECKED"),
+        "row_payload_at_snapshot_proven":mode=="observed",
         "kickoff_utc":utc_str(kickoff),"feature_cutoff_utc":utc_str(cutoff),
         "mode":mode,
-        "availability_class":"RETROSPECTIVE" if mode=="replay" else "NOT_VERIFIED",
+        "availability_class":("RETROSPECTIVE" if mode=="replay" else
+                              "OBSERVED_AT_NOT_CERTIFIED" if mode=="observed" else
+                              "NOT_VERIFIED"),
         "target_prematch_snapshot_certified":False,"training_allowed":False,
         "features":values,"missing_flags":missing,"lineage":lineage,
         "accepted_predecessor_count":len(history),
         "excluded":dict(excluded),
-        "note":"Replay is NOT proof of historic availability." if mode=="replay"
-               else "Only timestamp-qualified predecessor history; target unverified."}
+        "note":("Replay is NOT proof of historic availability." if mode=="replay"
+               else "Recorder-observed values only. Provider initial publication unknown; no training." if mode=="observed"
+               else "Only timestamp-qualified predecessor history; target unverified."),
+        "source_evidence":source_evidence if mode=="observed" else None}
     out["sha256"] = digest(out)
     return out
 
