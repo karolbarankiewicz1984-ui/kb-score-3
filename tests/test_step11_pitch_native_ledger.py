@@ -56,6 +56,14 @@ class TestPitchNativeImmutableLedger(unittest.TestCase):
         return record(self.db,"shots",shots(),
              started_at_utc=when(-7),completed_at_utc=when(-6),origin=origin)
 
+    def test_integrity_verification_works_on_strict_readonly_database(self):
+        self.insert_shots()
+        db_path=self.root/"source.sqlite3"
+        with sqlite3.connect("file:"+str(db_path.resolve())+"?mode=ro",uri=True) as readonly:
+            outcome=verify(readonly)
+        self.assertEqual(outcome["stored_records"],381)
+        self.assertEqual(outcome["shot_captures"],1)
+
     def test_native_380_and_hash_immutability(self):
         p=verify(self.db)
         self.assertEqual(p["fixture_captures"],1)
