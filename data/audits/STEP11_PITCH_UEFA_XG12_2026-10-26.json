@@ -1,0 +1,60 @@
+{
+  "schema": "kb3-step11-uefa-native-xg-12-sample-v1",
+  "date_utc": "2026-10-26",
+  "provider": "PitchAPI",
+  "season": "2026/2027",
+  "leagues": {
+    "europa_league": {
+      "season_fixtures_in_listing": 144,
+      "eligible_finished": 54,
+      "sampled": 6,
+      "completed_xg": 6,
+      "sampled_distinct_dates": 4
+    },
+    "conference_league": {
+      "season_fixtures_in_listing": 108,
+      "eligible_finished": 36,
+      "sampled": 6,
+      "completed_xg": 6,
+      "sampled_distinct_dates": 2
+    }
+  },
+  "totals": {
+    "samples": 12,
+    "shot_xg_complete": 12,
+    "partial_or_missing": 0,
+    "pitchapi_requests": 15,
+    "api_football_requests": 0,
+    "raw_source_observations_encrypted": 15
+  },
+  "initial_provider_publication_known": false,
+  "native_cross_provider_mapping_needed": false,
+  "historical_prematch_pit_certified": false,
+  "whole_league_xg_completeness_certified": false,
+  "training_allowed": false,
+  "production_migration_approved": false,
+  "first_captured_sample_run": "https://github.com/karolbarankiewicz1984-ui/kb-score-3/actions/runs/40318301119",
+  "full_offline_tests": "https://github.com/karolbarankiewicz1984-ui/kb-score-3/actions/runs/40318219204",
+  "offline_tests": 187,
+  "evidence": {
+    "final_sha256_chain": "aef1c98c5dfc6cecb60ab810a13b5ed5ca82fd956b79fb4ad5c33b0b2b9ccc06",
+    "encrypted_sha256": "fc49dc39502a2c73a8883d0732797a284075845bac9161f183bf9a496d4c6b16",
+    "encrypted_bytes": 42881,
+    "archive_zip_sha256": "4401fa6be34bad08ddf3729f563506b231851ef45554d0389b524ea34ce30ac4",
+    "archive_zip_bytes": 44599,
+    "google_drive_url": "https://drive.google.com/file/d/1LdmMRLmtaObUK7gs9r55D6950jTMCwxF/view",
+    "offsite_second_download": true,
+    "zip_crc_valid": true,
+    "offsite_ciphertext_sha256_verified": true,
+    "offsite_decryption_not_yet_verified": true,
+    "ciphertext_does_not_contain_plaintext_api_data": true
+  },
+  "next_gate_requirements": [
+    "Obtain and verify independent private-key restore outside CI without sharing key",
+    "Test broader sample and league-wide per-fixture xG coverage (12/12 is not full coverage)",
+    "Observe real future source revisions on different dates using true captured timestamps",
+    "Review license and source feed stability before production switch",
+    "Keep training blocked and retrospective 2023-25 not PIT-certified"
+  ],
+  "status": "GATE11 PENDING; 10 of 29 stages formally approved"
+}

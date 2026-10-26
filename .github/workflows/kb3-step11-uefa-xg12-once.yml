@@ -1,0 +1,74 @@
+name: "KB3 Step11 - ONE TIME Native UEFA Shot xG Coverage"
+on:
+  push:
+    branches: ["feature/step11-uefa-native-xg-coverage-20261026"]
+    paths: [".github/workflows/kb3-step11-uefa-xg12-once.yml"]
+permissions:
+  contents: read
+concurrency:
+  group: kb3-one-time-native-uefa-xg12-20261026
+  cancel-in-progress: false
+jobs:
+  unit-safety:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Crypto dependency for source receipt test
+        run: python3 -m pip install --disable-pip-version-check 'cryptography>=42,<47'
+      - name: Only offline source evidence and shot provenance tests
+        run: |
+          python3 -m unittest discover -s tests -p 'test_step11_uefa_native_xg.py' -v
+          python3 -m unittest discover -s tests -p 'test_step11_pitch_native.py' -v
+  one-real-capture:
+    needs: unit-safety
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - name: Pinned native SDK and AES encryption
+        run: python3 -m pip install --disable-pip-version-check 'pitchapi==0.1.6' 'cryptography>=42,<47'
+      - name: 12 xG from two UEFA leagues and full source evidence
+        env:
+          PITCHAPI_API_KEY: ${{ secrets.PITCHAPI_API_KEY }}
+        run: |
+          set -euo pipefail
+          test -n "$PITCHAPI_API_KEY"
+          python3 -m scripts.step11_uefa_native_xg_capture_once \
+            --outdir audit/step11/native-uefa \
+            --recipient config/step11_archive_recipient_public.pem
+      - name: Validate no source leaks and no false xG coverage claim
+        run: |
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          p=Path("audit/step11/native-uefa")
+          a=json.loads((p/"STEP11_UEFA_NATIVE_XG_AGGREGATES.json").read_text())
+          b=json.loads((p/"KB3_UEFA_EL_UECL_XG_NATIVE_20261026.manifest.json").read_text())
+          assert a["samples_total"]==12 and a["requests_pitchapi"]==15
+          assert a["requests_api_football"]==0 and a["sealed_source_sessions"]==15
+          assert set(a["competitions"])=={"europa_league","conference_league"}
+          for c in a["competitions"].values():
+              assert c["sample_size"]==6
+              assert c["sample_distinct_dates"]>=2
+              assert c["complete_shot_xg"]+c["missing_or_partial_xg"]==6
+              assert c["all_fixture_xg_coverage_not_certified"]
+              assert not c["training_allowed"]
+          assert b["proof"]["sessions"]==15
+          assert b["proof"]["final_chain_sha256"]==a["sealed_final_chain_sha256"]
+          assert b["ciphertext_sha256"]==a["ciphertext_sha256"]
+          assert not b["provider_publication_proven"] and not b["historical_prematch_pit_certified"]
+          assert not b["training_allowed"] and not b["offsite_restore_verified"]
+          assert not a["training_allowed"] and not a["production_switch_approved"]
+          print("KB3_UEFA_12_NATIVE_XG_SEALED_EVIDENCE_PASS")
+          PY
+      - name: Upload encrypted raw evidence plus aggregate counts only
+        uses: actions/upload-artifact@v4
+        with:
+          name: kb3-step11-native-uefa-12xg-encrypted-20261026
+          retention-days: 30
+          if-no-files-found: error
+          path: |
+            audit/step11/native-uefa/KB3_UEFA_EL_UECL_XG_NATIVE_20261026.enc
+            audit/step11/native-uefa/KB3_UEFA_EL_UECL_XG_NATIVE_20261026.manifest.json
+            audit/step11/native-uefa/STEP11_UEFA_NATIVE_XG_AGGREGATES.json
