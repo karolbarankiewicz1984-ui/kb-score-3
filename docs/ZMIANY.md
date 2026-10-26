@@ -262,3 +262,9 @@ Następny krok:
 
 - `kb3_pitch_native_ledger.verify` nie wykonuje już DDL na otwartym `mode=ro`, co zapobiega fałszywemu błędowi podczas sprawdzania niezależnie odszyfrowanych archiwów. `step11_pitch_native_compare_offsite_zip.py` wykonuje lokalny restore dwóch szyfrogramów i porównanie po natywnych PitchAPI ID, z kontrolą whitelist ZIP i bez drukowania klucza prywatnego.
 - [206/206 testów offline PASS](https://github.com/karolbarankiewicz1984-ui/kb-score-3/actions/runs/40322588669): 167 Step11 +39 regresyjnych, w tym 7 nowych przypadków ZIP/readonly. Prawdziwy drugi odczyt i brak zmian w 380 meczach dokumentowano wcześniej w [raporcie](STEP_11_NATIVE_SECOND_REAL_CAPTURE.md). GATE11 wciąż PENDING, 10/29, bez treningu.
+
+## GATE11 — WERSJA CECH 0.5, SZCZEGÓŁOWY ZEGAR DOSTĘPNOŚCI KAŻDEGO POLA (26.10.2026)
+
+- `src/kb3_step11_field_audit.py` + wspólny `_compose_features`: dla wszystkich cech `observed` i flag missingness zapisuje konserwatywny, oryginalnie zaobserwowany czas danych, zakres i hash źródła; sprawdza wszystkie rezultaty, xG i approval przed cutoff. Retrospektywne `replay` ma `feature_availability=null`, nie certyfikację.
+- [217/217 CI PASS](https://github.com/karolbarankiewicz1984-ui/kb-score-3/actions/runs/40325431132), 11 nowych testów czasu / odrzucania leak i 39 wcześniejszych regresji. [Katalog pola-po-polu](STEP_11_FIELD_PROVENANCE_GATE.md).
+- Ograniczenie: `PitchAPI-native` obecnie liczy ELO tylko z sezonu 2026/27, nie z importu sezonów wcześniejszych; potrzebne jest jawne rozszerzenie, bez udawania historycznego PIT. GATE11 nadal PENDING, 10/29. Produkcja, trening, starsze modele bez zmian.
