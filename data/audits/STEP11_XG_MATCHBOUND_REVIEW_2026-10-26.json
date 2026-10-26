@@ -1,0 +1,23 @@
+{
+  "schema": "kb3-step11-real-archived-xg-reconciliation-v1",
+  "date": "2026-10-26",
+  "source_encrypted_sha256": "ca725e3405b2c728d6cbfb9c8f15da13cfb9257b9ef36a7a6d18e510665ae9b9",
+  "source_fixture_chain_sha256": "fdaa0e3251ad128fd4e490723f4911ef5dc4d35c494a29369948b6b2be9d817f",
+  "source_archive_drive_url": "https://drive.google.com/file/d/1eoBQ-71T4J0wsmqEZ9NPLHcWR7rlnXqW/view?usp=drivesdk",
+  "source_capture_run": "https://github.com/karolbarankiewicz1984-ui/kb-score-3/actions/runs/40301238526",
+  "source_archived_xg_quarantined": 3,
+  "source_archived_xg_strict": 0,
+  "curated_pairs_in_frozen_manifest": 3,
+  "source_pairs_independently_validated": 3,
+  "eligible_later_target_smoke_test_count": 3,
+  "own_match_xg_test": "REJECTED",
+  "pre_capture_cutoff_test": "REJECTED",
+  "source_record_rewritten": false,
+  "source_archive_verified_sha256": true,
+  "sqlite_integrity": "ok",
+  "foreign_key_violations": 0,
+  "unknown_provider_publication_time": true,
+  "historical_training_approved": false,
+  "raw_xg_exported": false,
+  "note": "Archive decryption and re-evaluation executed in private isolated runtime. This is a fixture-bound derived review layer, not a new source record and not training/PIT certification."
+}
