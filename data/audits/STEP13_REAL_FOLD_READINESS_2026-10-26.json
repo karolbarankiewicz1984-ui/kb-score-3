@@ -1,0 +1,57 @@
+{
+  "asof_training_eligibility": "BLOCKED_0_OF_1520",
+  "dual_window_sha256": "25242ed4a626aba2669ea86605b31664cb17bf10a6a74e4e3548470954c81198",
+  "fold_counts": [
+    {
+      "certified_train_samples": 0,
+      "certified_validation_samples": 0,
+      "expanding_history_candidates": 760,
+      "fold": 1,
+      "rolling_24month_candidates": 760,
+      "validation_candidates": 60
+    },
+    {
+      "certified_train_samples": 0,
+      "certified_validation_samples": 0,
+      "expanding_history_candidates": 820,
+      "fold": 2,
+      "rolling_24month_candidates": 753,
+      "validation_candidates": 126
+    },
+    {
+      "certified_train_samples": 0,
+      "certified_validation_samples": 0,
+      "expanding_history_candidates": 946,
+      "fold": 3,
+      "rolling_24month_candidates": 750,
+      "validation_candidates": 123
+    },
+    {
+      "certified_train_samples": 0,
+      "certified_validation_samples": 0,
+      "expanding_history_candidates": 1069,
+      "fold": 4,
+      "rolling_24month_candidates": 776,
+      "validation_candidates": 71
+    }
+  ],
+  "gate13_pass": false,
+  "historical_labels_read": false,
+  "historical_predictions_made": false,
+  "method_source_sha256": "3b8da84b334d897e327c883b769944bf36016cb44daf1da041bfb7d16a7b11e7",
+  "model_selection_allowed": false,
+  "next_requirements": [
+    "Genuine result and team-ID receipts for the selected provider.",
+    "Independent per-fixture pre-target availability and provenance review.",
+    "Choose and document OBSERVED_PIT vs RECONSTRUCTED_EVENT_TIME_RESEARCH policy.",
+    "TRAIN fitting and matched VALIDATION scoring only after documented data approval.",
+    "Never select parameters using TEST."
+  ],
+  "real_backtest_performed": false,
+  "real_fixture_count": 1520,
+  "real_metrics_available": false,
+  "real_training_performed": false,
+  "report_sha256": "814b58950a387ec206673203c51a494b1b82a3a199ab1f9b28f77dac4e84e29b",
+  "schema": "kb3-step13-replay-readiness-v0.2",
+  "training_allowed": false
+}

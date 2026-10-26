@@ -163,7 +163,7 @@
 - **BRAMKA ODBIORU / TEST PASS:** P(1)+P(X)+P(2) sumują się do 1; prognozy nie korzystają z kursów; wzorcowe przykłady i testy historyczne przechodzą.
 - **DOWÓD ZALICZENIA:** Raport baseline z Brier, log loss, kalibracją, wersją danych i uruchomieniem testów.
 - **ZALEŻY OD:** Krok 12.
-- **STATUS:** W REALIZACJI od 2026-10-26. M0 ELO + niezależny Poisson: matematyka i syntetyczne przykłady PASS; prawdopodobieństwa 1X2 sumują się do 100%; parametry są ILLUSTRATIVE_NOT_FITTED. [Kod](../src/kb3_step13_baseline.py), [dokumentacja](STEP_13_PROGRESS.md), [zamrożona referencja](../data/audits/STEP13_M0_REFERENCE_2026-10-26.json), [CI](https://github.com/karolbarankiewicz1984-ui/kb-score-3/actions/runs/40375744613). **Nie ma prawdziwego testu historycznego ani wiarygodnych metryk Brier/logloss/kalibracji; 0/1520 gotowych próbek PIT. GATE13 PENDING; training_allowed=false, nadal 12/29 odebranych kroków.**
+- **STATUS:** W REALIZACJI od 2026-10-26. M0 ELO+Poisson matematyka PASS (3 przykłady syntetyczne). Rozpoczęto też [kontrolowany walk-forward replay](STEP_13_REPLAY_CONTRACT.md) dwóch historii: 4 foldy i 48h embargo, testy na wyłącznie syntetycznych wynikach PASS; sprawdzono niezmienność prognoz przy podmianie etykiet walidacji, brak TEST i kursów. [Realny raport gotowości terminarza 1520 ID](../data/audits/STEP13_REAL_FOLD_READINESS_2026-10-26.json) — PRAWIDŁOWY podział, **0 certyfikowanych historycznych PIT**; żaden prawdziwy backtest nie został wykonany, Brier/logloss/kalibracja z historii PENDING. **GATE13 PENDING, training_allowed=false, 12/29.**
 
 #### Krok 14 — Pierwszy CatBoost 1X2  [NIE ROZPOCZĘTO]
 

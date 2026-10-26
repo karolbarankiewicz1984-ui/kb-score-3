@@ -52,3 +52,11 @@
 - [CI Step13 (offline)](https://github.com/karolbarankiewicz1984-ui/kb-score-3/actions/runs/40375744613).
 
 **GATE13: PENDING. training_allowed=false.** Zamrożony raport syntetyczny nie zastępuje prawdziwego testu historycznego.
+
+## 26.10.2026 — Drugi fragment kroku 13: bezpieczny walk-forward ELO (v0.2)
+
+Dodano rzeczywiście wykonujący obliczenia ELO w czasie [silnik kwartalnego replay](../src/kb3_step13_fold_replay.py) — na **wyłącznie sztucznych danych**. W każdej strategii TRAIN zamraża stan na granicy folda i wylicza z tych ratingów niezależne prognozy VALIDATION. Wyniki ze sprawdzanego kwartału trafiają do oceny **po** zapisaniu wszystkich prognoz, nie do uczenia. Wprowadzono 48-godzinne konserwatywne embargo po kickoff oraz warunek rzeczywistego receipt wcześniejszego od cutoff; to jest syntetyczny test bezpieczeństwa, **nie dowód historycznych godzin publikacji w PitchAPI**. Brak choć jednego wyniku blokuje syntetyczne metryki całego folda. TEST i kursy są blokowane.
+
+Zamrożono [realny audyt gotowości samych terminarzy na 1520 ID](../data/audits/STEP13_REAL_FOLD_READINESS_2026-10-26.json), SHA `814b58950a387ec206673203c51a494b1b82a3a199ab1f9b28f77dac4e84e29b`. Walidacja 60/126/123/71, TRAIN-kandydaci EXPANDING 760/820/946/1069 oraz ROLLING 760/753/750/776, ale **każdy fold: 0 certyfikowanych danych do prawdziwego treningu.** Nie czytano żadnych historycznych etykiet ani nie liczono prawdziwych wyników i metryk modelu. Testy [CI PASS](https://github.com/karolbarankiewicz1984-ui/kb-score-3/actions/runs/40377868431) weryfikują w szczególności, że zmiana etykiety meczowej walidacji nie może zmienić zamrożonej prognozy. [Pełny kontrakt rozróżnienia PIT i retrospektywnego replay](STEP_13_REPLAY_CONTRACT.md).
+
+**GATE13 PENDING; postęp 12/29; training_allowed=false.**

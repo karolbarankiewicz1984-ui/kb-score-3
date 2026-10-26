@@ -59,3 +59,5 @@
 **Aktualny stan (26.10.2026):** Krok 12 ODEBRANY — GATE12 PASS wyłącznie metodologia, 12/29; 0/1520 zatwierdzonych próbek do treningu. [Rekord odbioru](data/audits/STEP12_METHOD_GATE_PASS_2026-10-26.json), [raport ograniczeń PIT](data/audits/STEP12_REAL_PIT_GAP_REPORT_2026-10-26.json). Bez startu kroku13 lub zmiany innych modeli.
 
 **Krok 13 — W REALIZACJI:** [Pierwszy silnik ELO + Poisson i testy matematyczne](docs/STEP_13_PROGRESS.md). [Syntetyczny zamrożony raport M0](data/audits/STEP13_M0_REFERENCE_2026-10-26.json); wzorcowe 1X2 PASS, lecz **brak jeszcze prawdziwego backtestu i metryk historycznych**, GATE13 PENDING, nadal 12/29, training_allowed=false.
+
+**Krok13 v0.2 — symulator walk-forward:** [bezpieczny mechanizm kwartalnego odtwarzania (tylko sztuczne wyniki)](docs/STEP_13_REPLAY_CONTRACT.md) i [realny raport gotowości terminarza](data/audits/STEP13_REAL_FOLD_READINESS_2026-10-26.json) (0/1520 kwalifikowanych danych). CI testuje brak wpływu wyniku walidacji na jego prognozę. Realnego historycznego backtestu nadal nie wykonano, GATE13 PENDING.
