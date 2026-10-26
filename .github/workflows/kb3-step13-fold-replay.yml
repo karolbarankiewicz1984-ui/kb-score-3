@@ -1,0 +1,72 @@
+name: "KB3 Step13 v0.2 - Fold Replay Safety"
+on:
+  push:
+    branches: ["feature/step13-fold-replay-safety-v02", "main"]
+    paths:
+      - "src/kb3_step13_fold_replay.py"
+      - "src/kb3_step13_baseline.py"
+      - "src/kb3_step13_reference_metrics.py"
+      - "tests/test_step13_fold_replay.py"
+      - "docs/STEP_13_PROGRESS.md"
+      - ".github/workflows/kb3-step13-fold-replay.yml"
+  pull_request:
+    paths:
+      - "src/kb3_step13_fold_replay.py"
+      - "src/kb3_step13_baseline.py"
+      - "src/kb3_step13_reference_metrics.py"
+      - "tests/test_step13_fold_replay.py"
+      - "docs/STEP_13_PROGRESS.md"
+      - ".github/workflows/kb3-step13-fold-replay.yml"
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  replay-math-without-leaks:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - name: Test replay anti-lookahead and original M0 regressions without API
+        run: |
+          python3 -m unittest discover -s tests -p 'test_step13*.py' -v
+          python3 -m unittest discover -s tests -p 'test_step12_acceptance.py' -v
+      - name: Verify real frozen split and generate nontraining readiness report
+        run: |
+          python3 -m src.kb3_step13_fold_replay \
+            --safe-view data/splits/STEP12_SAFE_MODEL_VIEW_2026-10-26.json \
+            --dual-plan data/splits/STEP12_DUAL_WINDOWS_REAL_2026-10-26.json \
+            --out data/audits/STEP13_REAL_FOLD_READINESS_2026-10-26.json
+      - name: Ensure report does not claim real historical predictions or training
+        run: |
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          from src.kb3_split import sha
+          j=json.loads(Path('data/audits/STEP13_REAL_FOLD_READINESS_2026-10-26.json').read_text())
+          assert j['report_sha256']==sha({k:v for k,v in j.items() if k!='report_sha256'})
+          assert j['real_fixture_count']==1520
+          assert [x['validation_candidates'] for x in j['fold_counts']]==[60,126,123,71]
+          assert all(x['certified_train_samples']==0 for x in j['fold_counts'])
+          assert not j['historical_predictions_made'] and not j['real_backtest_performed']
+          assert not j['real_metrics_available'] and not j['training_allowed']
+          assert not j['model_selection_allowed'] and not j['gate13_pass']
+          print('STEP13_REPLAY_HARNESS_PASS_REAL_HISTORICAL_LABELS_UNREAD')
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: kb3-step13-fold-replay-readiness-20261026
+          path: data/audits/STEP13_REAL_FOLD_READINESS_2026-10-26.json
+          if-no-files-found: error
+          retention-days: 90
+      - name: Freeze real schedule readiness report on reviewed feature branch
+        if: github.ref == 'refs/heads/feature/step13-fold-replay-safety-v02'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/audits/STEP13_REAL_FOLD_READINESS_2026-10-26.json
+          if ! git diff --cached --quiet; then
+            git commit -m "Step13: archive real fold readiness, zero eligible PIT"
+            git push origin "HEAD:feature/step13-fold-replay-safety-v02"
+          else
+            echo "Frozen real split readiness verified"
+          fi
