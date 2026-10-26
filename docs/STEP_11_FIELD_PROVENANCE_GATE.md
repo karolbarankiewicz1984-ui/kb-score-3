@@ -1,3 +1,5 @@
+> **Aktualizacja 26.10.2026:** GATE11 **PASS (11/29)** według oryginalnych trzech kryteriów z planu. Wymóg prospektywnych odczytów z różnych dni i pełnego xG jest dodatkową kontrolą jakości na późniejsze etapy, a nie warunkiem zamknięcia kroku 11. [Protokół odbioru](STEP_11_GATE_ACCEPTANCE_2026-10-26.md). Poniższy status PENDING odzwierciedla wcześniejszy stan przygotowań.
+
 # KB Score 3.0 — krok 11: katalog cech i audyt rzeczywistego czasu dostępności
 
 **26.10.2026 • wersja kalkulatora `kb3-step11-v0.5` + nowa mapa `feature_availability` • GATE11 nadal PENDING (10/29).**

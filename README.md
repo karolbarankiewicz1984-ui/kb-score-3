@@ -7,6 +7,7 @@
 **ŹRÓDŁO PRAWDY:** [Plan główny, bramki odbioru i dziennik na Google Drive](https://docs.google.com/document/d/10wjHL3r3OAuxtezwcIeWztxS8lwjhYon5GM3BLhI0xE/edit).
 
 - [PLAN — mapa wszystkich 29 kroków](docs/PLAN.md)
+- [Krok 11 — odbiór według pierwotnych wymagań: GATE11 PASS, 11/29 etapów](docs/STEP_11_GATE_ACCEPTANCE_2026-10-26.md)
 - [Krok 11 — zaszyfrowane archiwum 760 meczów z niezależnym restore Google Drive](docs/STEP_11_OFFSITE_ARCHIVE.md)
 - [Krok 11 — pierwszy rzeczywisty rejestr czasu i treści obserwacji 380 meczów PL 2026/27](docs/STEP_11_PIT_OBSERVATION.md)
 - [Krok 11 — drugi odczyt 380 meczów i limitowane xG PitchAPI w kwarantannie](docs/STEP_11_TWO_PIT_XG.md)
@@ -30,10 +31,10 @@
 - [Krok 08 — SQLite, niezmienne prognozy i odtworzenie backupu z Dysku Google](docs/STEP_08_ACCEPTANCE.md)
 - [Krok 09 — pilot importu 380 meczów Premier League, 19/19 testów i zaszyfrowany backup](docs/STEP_09_ACCEPTANCE.md)
 - [Krok 10 — audyt jakości 5 lig × 6 sezonów, 10 679 meczów, 54/54 testów PASS](docs/STEP_10_ACCEPTANCE.md)
-- [Krok 11 — ELO + ścisła kontrola pochodzenia xG, 241/241 testów, 12/12 xG w próbce (8/12 zgodnych ID), GATE11 PENDING](docs/STEP_11_PROGRESS.md)
+- [Krok 11 — ELO + ścisła kontrola pochodzenia xG, 246/246 testów, 38 potwierdzonych unikalnych próbek xG, GATE11 PASS](docs/STEP_11_PROGRESS.md)
 - [Historia blokady PitchAPI HTTP 401 (rozwiązana)](docs/STEP_06_BLOCKER.md)
 
-**Stan przy aktualizacji tego README (26.10.2026):** kroki 01–10 ZALICZONE (10/29); krok 11 W REALIZACJI (GATE11 PENDING), kroki 12–29 niezaliczone. GATE10 obejmuje audyt źródła i chronologii, z jawnym wyłączeniem 19 baraży i jednego wyniku AWD. Archiwum historii **760 meczów PL 2023/24 i 2024/25** zostało trwale zaszyfrowane na Google Drive z niezależnym odtworzeniem. Dodatkowo zarchiwizowano **dwa osobne realne snapshoty po 380 meczów PL 2026/27** z rzeczywistym czasem odczytu i 3 feedy xG zapisane w kwarantannie, następnie **3/3 mapowania konkretnych meczów** zatwierdzone niezależną warstwą weryfikacji (bez zmiany pierwotnych rekordów); zweryfikowane xG mogą już być użyte jako historyczne cechy w osobnym obserwacyjnym builderze (kontrola faktycznego pobrania i zatwierdzenia crosswalk); preferowany jest już jednosprzedawcowy PitchAPI (na razie tylko pilot, bez przełączenia produkcji) po realnej weryfikacji 1140 meczów trzech sezonów, LE/LK i pól fauli/kartek; nie wykonano produkcyjnego importu kompletnej ligi ani kalibracji modeli, a **ML/trening pozostają zablokowane** do bramek dotyczących cech i chronologii. Nie zmieniono KB2.1 ani innych modeli.
+**Stan przy aktualizacji tego README (26.10.2026):** kroki 01–11 ZALICZONE (11/29); krok 11 ODEBRANY (GATE11 PASS według pierwotnego kontraktu), kroki 12–29 niezaliczone. GATE10 obejmuje audyt źródła i chronologii, z jawnym wyłączeniem 19 baraży i jednego wyniku AWD. Archiwum historii **760 meczów PL 2023/24 i 2024/25** zostało trwale zaszyfrowane na Google Drive z niezależnym odtworzeniem. Dodatkowo zarchiwizowano **dwa osobne realne snapshoty po 380 meczów PL 2026/27** z rzeczywistym czasem odczytu i 3 feedy xG zapisane w kwarantannie, następnie **3/3 mapowania konkretnych meczów** zatwierdzone niezależną warstwą weryfikacji (bez zmiany pierwotnych rekordów); zweryfikowane xG mogą już być użyte jako historyczne cechy w osobnym obserwacyjnym builderze (kontrola faktycznego pobrania i zatwierdzenia crosswalk); preferowany jest już jednosprzedawcowy PitchAPI (na razie tylko pilot, bez przełączenia produkcji) po realnej weryfikacji 1140 meczów trzech sezonów, LE/LK i pól fauli/kartek; nie wykonano produkcyjnego importu kompletnej ligi ani kalibracji modeli, a **ML/trening pozostają zablokowane** do bramek dotyczących cech i chronologii. Nie zmieniono KB2.1 ani innych modeli.
 
 ## Co znajduje się w repo?
 

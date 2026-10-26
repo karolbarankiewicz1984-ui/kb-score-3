@@ -1,0 +1,66 @@
+{
+  "schema": "kb3-stage11-original-contract-technical-gate-v1",
+  "decision_date": "2026-10-26",
+  "decision": "PASS",
+  "scope": "Original Step11 prematch feature-engineering acceptance only, NOT training or provider completeness certification",
+  "original_acceptance_contract": {
+    "source": "docs/PLAN.md",
+    "field_description_and_availability_utc": {
+      "pass": true,
+      "evidence": "docs/STEP_11_FIELD_PROVENANCE_GATE.md",
+      "implementation": [
+        "src/kb3_features.py",
+        "src/kb3_step11_field_audit.py"
+      ]
+    },
+    "prevent_future_information_leak": {
+      "pass": true,
+      "evidence": "tests/test_step11_field_availability.py",
+      "integration": "tests/test_step11_original_acceptance.py"
+    },
+    "missing_xg_never_zero_filled": {
+      "pass": true,
+      "evidence": "tests/test_step11_original_acceptance.py",
+      "missing_value": null,
+      "missing_count": 0
+    }
+  },
+  "audit_ci": {
+    "run_url": "https://github.com/karolbarankiewicz1984-ui/kb-score-3/actions/runs/40339012432",
+    "result": "SUCCESS",
+    "offline_tests": 246,
+    "distribution": {
+      "step11_tests": 207,
+      "other_step11_related_tests": 19,
+      "previous_stage_tests": 20
+    },
+    "provider_network_job": "SKIPPED",
+    "new_billable_api_calls": 0
+  },
+  "covered_live_evidence": {
+    "provider": "PitchAPI",
+    "strict_native_ids": true,
+    "multiseason_elo_finished_matches": {
+      "historical_retrospective": 1140,
+      "current_observed": 80
+    },
+    "xg_spot_checks_complete": 38,
+    "xg_spot_checks_not_complete_provider_population": true,
+    "actual_source_observed_time_proven": true,
+    "historical_original_provider_publish_time_proven": false,
+    "cross_day_observation_proven": false
+  },
+  "out_of_scope_followup_checks": [
+    "prospective snapshots on distinct calendar dates and chronological revision diffs",
+    "broader xG completeness over future rounds",
+    "time-safe train/validation/test frozen splits and data eligibility at each historical cutoff",
+    "training, probability calibration, production forecasts and wagering"
+  ],
+  "training_allowed": false,
+  "production_switch_approved": false,
+  "retrospective_2023_2025_pre_match_pit_certified": false,
+  "stage12_status": "NOT_STARTED",
+  "completed_stages": 11,
+  "total_stages": 29,
+  "owner_financial_authorization_granted": false
+}
