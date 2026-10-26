@@ -1,0 +1,125 @@
+name: "KB3 Step 10 - Historical QA and No Lookahead"
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/kb3-step10-quality-gate.yml"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: kb3-step10-quality-gate
+  cancel-in-progress: false
+
+jobs:
+  qa-history:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      PYTHONDONTWRITEBYTECODE: "1"
+    steps:
+      - name: Checkout isolated KB Score 3
+        uses: actions/checkout@v4
+
+      - name: Offline negative tests and prior storage regression
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m unittest discover -s tests -p 'test_step10_quality_audit.py' -v
+          python -m unittest discover -s tests -p 'test_step09_import_history.py' -v
+          python -m unittest discover -s tests -p 'test_step08_storage.py' -v
+
+      - name: Independently fetch fixed historical season and reimport
+        env:
+          API_FOOTBALL_KEY: ${{ secrets.API_FOOTBALL_KEY }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -n "$API_FOOTBALL_KEY" || { echo "MISSING_API_FOOTBALL_KEY"; exit 1; }
+          python -m scripts.step09_import_history --outdir audit/step10/source
+
+      - name: Audit all 380 fixtures and source chronology
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m scripts.step10_quality_audit \
+            --db audit/step10/source/premier-league-2024-25.sqlite3 \
+            --outdir audit/step10
+
+      - name: Negative mutation gate on actual imported SQLite
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          from pathlib import Path
+          import json, shutil, sqlite3
+          from scripts.step10_quality_audit import analyze
+          src=Path("audit/step10/source/premier-league-2024-25.sqlite3")
+          cases = (
+            ("bad_kickoff","UPDATE fixtures SET kickoff_utc='2028-01-01T00:00:00Z' WHERE fixture_id=(SELECT MIN(fixture_id) FROM fixtures)", "KICKOFF_OUTSIDE_SEASON"),
+            ("missing_result","UPDATE fixtures SET goals_home_90=NULL WHERE fixture_id=(SELECT MIN(fixture_id) FROM fixtures)", "MISSING_OR_INVALID_REGULATION_GOALS_goals_home_90"),
+            ("false_prematch","UPDATE source_snapshots SET availability_class='VERIFIED_PREMATCH',published_at_utc=NULL", "PREMATCH_SOURCE_WITHOUT_PUBLICATION_PROOF"),
+            ("broken_mapping","DELETE FROM fixture_provider_map WHERE provider_fixture_id=(SELECT MIN(provider_fixture_id) FROM fixture_provider_map)", "PROVIDER_MAPPING_INCONSISTENT"),
+          )
+          summary={}
+          for name,query,expected in cases:
+              dst=Path("audit/step10/"+name+".sqlite3")
+              shutil.copyfile(src,dst)
+              with sqlite3.connect(dst) as c:
+                  c.execute("PRAGMA foreign_keys=ON")
+                  c.execute(query)
+              result=analyze(dst)
+              if result["result"]!="FAIL" or expected not in result["critical_errors"] or result["training_allowed"]:
+                  raise SystemExit("NEGATIVE_TEST_DID_NOT_BLOCK_"+name)
+              summary[name]={"blocked":True,"critical_reason":expected}
+              dst.unlink()
+          Path("audit/step10/STEP10_NEGATIVE_TESTS.json").write_text(
+              json.dumps({"scenario_tests":summary,"all_blocked":True},indent=2)+"\n")
+          print("KB3_STEP10_NEGATIVE_ALL_BLOCKED",json.dumps(summary,sort_keys=True))
+          PY
+
+      - name: Publish nonsecret summary (not an ML go-live)
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import json, os
+          m=json.loads(Path("audit/step10/STEP10_QA.json").read_text())
+          if m["result"]=="FAIL" or m["training_allowed"]:
+              raise SystemExit("QUALITY_GATE_REJECT")
+          lines=[
+              "# KB3 GATE10 historical quality check",
+              "",
+              "**Historical fixture integrity:** "+m["historical_integrity"],
+              "",
+              "**Prematch feature usage:** BLOCKED until evidence is built in Step11.",
+              "",
+              "| Field | Value |","|---|---|",
+          ]
+          for k,v in m["dataset"].items():
+              if isinstance(v,(str,int,float)):lines.append("| "+k+" | "+str(v)+" |")
+          lines.extend(["","## Critical errors"]+
+                       (["- "+s for s in m["critical_errors"]] or ["None"]))
+          lines.extend(["","## Missing-data warnings"]+["- "+s for s in m["warnings"]])
+          lines+=["","## Negative tests","Every bad fixture/provenance/mapping scenario was blocked.",
+                  "","**GATE10 final acceptance requires review of independent proof.**"]
+          txt="\n".join(lines)+"\n"
+          Path("audit/step10/STEP10_QA.md").write_text(txt,encoding="utf8")
+          with Path(os.environ["GITHUB_STEP_SUMMARY"]).open("a",encoding="utf8") as f:
+              f.write(txt)
+          PY
+
+      - name: Upload bounded QA audit evidence only (no database, no secrets)
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: kb3-step10-qa-evidence
+          path: |
+            audit/step10/STEP10_QA.json
+            audit/step10/STEP10_NEGATIVE_TESTS.json
+            audit/step10/STEP10_QA.md
+          if-no-files-found: error
+          retention-days: 14
