@@ -1,0 +1,209 @@
+{
+  "comparison": {
+    "expanding": {
+      "empirical_historical_performance": false,
+      "evaluation_asof_utc": "2026-01-03T00:00:00Z",
+      "fold": 2,
+      "gate13_pass": false,
+      "history_window_from_utc": "2023-07-01T00:00:00Z",
+      "method": "EXPANDING",
+      "model_fitted": false,
+      "prediction_rows": [
+        {
+          "applied_prior_observations": 2,
+          "elo_away_before_kickoff": 1504.147568908605,
+          "elo_home_before_kickoff": 1495.852431091395,
+          "fixture_id": "SYN-MATCH-VAL1",
+          "kickoff_utc": "2025-10-05T12:00:00Z",
+          "label_90m": "H",
+          "p_1x2": {
+            "1": 0.4351987434145616,
+            "2": 0.30386366546895055,
+            "X": 0.2609375911164878
+          }
+        },
+        {
+          "applied_prior_observations": 3,
+          "elo_away_before_kickoff": 1495.7653271850588,
+          "elo_home_before_kickoff": 1504.2346728149412,
+          "fixture_id": "SYN-MATCH-VAL2",
+          "kickoff_utc": "2025-10-06T12:00:00Z",
+          "label_90m": "D",
+          "p_1x2": {
+            "1": 0.44455330885749444,
+            "2": 0.2956556445316302,
+            "X": 0.2597910466108754
+          }
+        }
+      ],
+      "real_historical_training_allowed": false,
+      "real_pit_verified": false,
+      "report_sha256": "44fc00bc2fcafc5235791c4eb7dd562d12e42946a230a990b17dbb1b1325d75c",
+      "schema": "kb3-step13-synthetic-fold-replay-v0.2",
+      "source_content_sha256": "183e94a26cb1e87435369e78e992685133643f0c061554a95d3fea6192f6bfd0",
+      "source_type": "SYNTHETIC_REFERENCE_ONLY",
+      "synthetic_score_reference": {
+        "calibration_bins": [
+          {
+            "high_exclusive_except_last": 0.2,
+            "low_inclusive": 0.0,
+            "mean_confidence": null,
+            "observed_top_class_accuracy": null,
+            "sample_size": 0
+          },
+          {
+            "high_exclusive_except_last": 0.4,
+            "low_inclusive": 0.2,
+            "mean_confidence": null,
+            "observed_top_class_accuracy": null,
+            "sample_size": 0
+          },
+          {
+            "high_exclusive_except_last": 0.6,
+            "low_inclusive": 0.4,
+            "mean_confidence": 0.43987602613602805,
+            "observed_top_class_accuracy": 0.5,
+            "sample_size": 2
+          },
+          {
+            "high_exclusive_except_last": 0.8,
+            "low_inclusive": 0.6,
+            "mean_confidence": null,
+            "observed_top_class_accuracy": null,
+            "sample_size": 0
+          },
+          {
+            "high_exclusive_except_last": 1.0,
+            "low_inclusive": 0.8,
+            "mean_confidence": null,
+            "observed_top_class_accuracy": null,
+            "sample_size": 0
+          }
+        ],
+        "empirical_historical_performance": false,
+        "multiclass_brier_sum3": 0.6561856061636877,
+        "multiclass_log_loss": 1.0899150543902079,
+        "reference_type": "SYNTHETIC_ONLY_NOT_HISTORICAL",
+        "sample_size": 2,
+        "top_class_ece_5bins": 0.06012397386397195,
+        "training_allowed": false
+      },
+      "training_synthetic_candidate_count": 2,
+      "validation_from_utc": "2025-10-01T00:00:00Z",
+      "validation_synthetic_count": 2,
+      "validation_to_exclusive_utc": "2026-01-01T00:00:00Z"
+    },
+    "fold": 2,
+    "real_historical_test": false,
+    "rolling": {
+      "empirical_historical_performance": false,
+      "evaluation_asof_utc": "2026-01-03T00:00:00Z",
+      "fold": 2,
+      "gate13_pass": false,
+      "history_window_from_utc": "2023-10-01T00:00:00Z",
+      "method": "ROLLING_24_CALENDAR_MONTHS",
+      "model_fitted": false,
+      "prediction_rows": [
+        {
+          "applied_prior_observations": 1,
+          "elo_away_before_kickoff": 1511.8493246116866,
+          "elo_home_before_kickoff": 1488.1506753883134,
+          "fixture_id": "SYN-MATCH-VAL1",
+          "kickoff_utc": "2025-10-05T12:00:00Z",
+          "label_90m": "H",
+          "p_1x2": {
+            "1": 0.42664080224495987,
+            "2": 0.31149276205294263,
+            "X": 0.26186643570209744
+          }
+        },
+        {
+          "applied_prior_observations": 2,
+          "elo_away_before_kickoff": 1503.0325050236377,
+          "elo_home_before_kickoff": 1496.9674949763623,
+          "fixture_id": "SYN-MATCH-VAL2",
+          "kickoff_utc": "2025-10-06T12:00:00Z",
+          "label_90m": "D",
+          "p_1x2": {
+            "1": 0.43644081073490343,
+            "2": 0.3027659989098494,
+            "X": 0.26079319035524723
+          }
+        }
+      ],
+      "real_historical_training_allowed": false,
+      "real_pit_verified": false,
+      "report_sha256": "9171093eebd75191fa1378a9945ab2b36216bba0dadf6a66e522b405337889ad",
+      "schema": "kb3-step13-synthetic-fold-replay-v0.2",
+      "source_content_sha256": "183e94a26cb1e87435369e78e992685133643f0c061554a95d3fea6192f6bfd0",
+      "source_type": "SYNTHETIC_REFERENCE_ONLY",
+      "synthetic_score_reference": {
+        "calibration_bins": [
+          {
+            "high_exclusive_except_last": 0.2,
+            "low_inclusive": 0.0,
+            "mean_confidence": null,
+            "observed_top_class_accuracy": null,
+            "sample_size": 0
+          },
+          {
+            "high_exclusive_except_last": 0.4,
+            "low_inclusive": 0.2,
+            "mean_confidence": null,
+            "observed_top_class_accuracy": null,
+            "sample_size": 0
+          },
+          {
+            "high_exclusive_except_last": 0.6,
+            "low_inclusive": 0.4,
+            "mean_confidence": 0.43154080648993165,
+            "observed_top_class_accuracy": 0.5,
+            "sample_size": 2
+          },
+          {
+            "high_exclusive_except_last": 0.8,
+            "low_inclusive": 0.6,
+            "mean_confidence": null,
+            "observed_top_class_accuracy": null,
+            "sample_size": 0
+          },
+          {
+            "high_exclusive_except_last": 1.0,
+            "low_inclusive": 0.8,
+            "mean_confidence": null,
+            "observed_top_class_accuracy": null,
+            "sample_size": 0
+          }
+        ],
+        "empirical_historical_performance": false,
+        "multiclass_brier_sum3": 0.6614585397024938,
+        "multiclass_log_loss": 1.0979201960919913,
+        "reference_type": "SYNTHETIC_ONLY_NOT_HISTORICAL",
+        "sample_size": 2,
+        "top_class_ece_5bins": 0.06845919351006835,
+        "training_allowed": false
+      },
+      "training_synthetic_candidate_count": 1,
+      "validation_from_utc": "2025-10-01T00:00:00Z",
+      "validation_synthetic_count": 2,
+      "validation_to_exclusive_utc": "2026-01-01T00:00:00Z"
+    },
+    "source_type": "SYNTHETIC_REFERENCE_ONLY",
+    "training_allowed": false,
+    "validation_paired": true
+  },
+  "conclusion": "REPLAY_TEMPORAL_UNIT_TESTS_ONLY_HISTORICAL_PIT_STILL_BLOCKED",
+  "dataset": "100_PERCENT_SYNTHETIC_NO_PROVIDER_MATCHES",
+  "gate13_pass": false,
+  "historical_training_allowed": false,
+  "model_fitted": false,
+  "purpose": "VERIFY_ORDER_OF_EVENTS_AND_INFORMATION_AVAILABILITY",
+  "real_historical_brier_available": false,
+  "real_historical_log_loss_available": false,
+  "real_historical_matches_scored": 0,
+  "real_pit_proven": false,
+  "report_sha256": "68849afe0389e994b51e7ee2f55927fe9e875ca69d3e0d9433a3a8f232ec6d2e",
+  "schema": "kb3-step13-replay-control-report-v0.2",
+  "synthetic_source_sha256": "183e94a26cb1e87435369e78e992685133643f0c061554a95d3fea6192f6bfd0",
+  "validation_fixture_count_synthetic": 2
+}
