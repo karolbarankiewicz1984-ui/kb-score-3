@@ -148,7 +148,8 @@ def record(db,kind,payload,*,started_at_utc,completed_at_utc,
 
 
 def verify(db):
-    init(db)
+    # Read-only authentication must NEVER initialize DDL on a restored mode=ro
+    # database; SQLite attempts writes even for CREATE IF NOT EXISTS.
     sessions=db.execute("""SELECT capture_id,kind,resource,season,started_at_utc,
       completed_at_utc,origin,published_at_utc,response_json,response_sha256,
       record_count,previous_sha256,chain_sha256,training_allowed
