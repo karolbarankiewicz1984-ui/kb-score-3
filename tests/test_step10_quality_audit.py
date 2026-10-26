@@ -21,7 +21,8 @@ def source(**changes):
        "observed_at":OLD,"published_at":OLD,
        "availability":"VERIFIED_PREMATCH",
        "source_match_id":"prior-match","target_match_id":"target-match",
-       "contains_match_outcome":True}
+       "contains_match_outcome":True,
+       "source_match_finished_at":"2024-12-30T18:00:00Z"}
     r.update(changes)
     return prematch_source_decision(**r)
 
@@ -86,6 +87,24 @@ class Gate10Tests(unittest.TestCase):
     def test_reject_naive_time(self):
         with self.assertRaises(ValueError):
             parse_time("2025-01-01T19:00:00")
+
+    def test_reject_outcome_without_match_finish_evidence(self):
+        d=source(source_match_finished_at=None)
+        self.assertIn("MISSING_SOURCE_MATCH_FINISH_PROOF",d["reasons"])
+
+    def test_reject_future_source_match(self):
+        d=source(source_match_finished_at="2025-01-02T22:00:00Z",
+                 published_at="2025-01-02T23:00:00Z",
+                 observed_at="2025-01-02T23:00:00Z")
+        self.assertIn("SOURCE_MATCH_FINISHED_AFTER_CUTOFF",d["reasons"])
+
+    def test_reject_outcome_published_before_match_ends(self):
+        d=source(published_at="2024-12-29T22:00:00Z")
+        self.assertIn("OUTCOME_PUBLICATION_BEFORE_FINISH",d["reasons"])
+
+    def test_reject_missing_ids_for_prior_match_result(self):
+        d=source(source_match_id=None)
+        self.assertIn("MISSING_MATCH_ID_PROOF",d["reasons"])
 
 if __name__=="__main__":
     unittest.main()
