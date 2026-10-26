@@ -19,6 +19,14 @@ from src.kb3_pit_ledger import (
 from src.kb3_xg_pit import verify_xg
 from src.kb3_reviewed_xg import review
 
+# Concrete audited v1 crosswalk: its earliest admissible approval time is the
+# public merge timestamp. Future reviews require a versioned approval policy.
+PINNED_REVIEW_COMMIT = (
+    "https://github.com/karolbarankiewicz1984-ui/kb-score-3/commit/"
+    "1f6032d4562d457e9bcb92381bf28a6cfa56a120"
+)
+PINNED_REVIEW_EARLIEST_UTC = "2026-10-26T09:53:09Z"
+
 
 def _observed_index(db, cutoff):
     """Select the most recent *authentic recorded* full source snapshot as-of."""
@@ -102,6 +110,8 @@ def build_observed_features(db, target_fixture_id, *, cutoff_utc,
           "https://github.com/karolbarankiewicz1984-ui/kb-score-3/commit/"):
             raise FeatureSafetyError("NO_REVIEW_APPROVAL_PROVENANCE")
         approval_time=utc_dt(approved_xg_since)
+        if commit!=PINNED_REVIEW_COMMIT or approval_time<utc_dt(PINNED_REVIEW_EARLIEST_UTC):
+            raise FeatureSafetyError("REVIEW_APPROVAL_REFERENCE_INVALID")
         if approval_time<=cutoff:
             try:
                 xg_by_fixture=review(db,archive_manifest,reviewed_crosswalk)
