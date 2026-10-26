@@ -237,3 +237,9 @@ Następny krok:
 - Zaszyfrowany backup w [prywatnym Google Drive](https://drive.google.com/file/d/18AeQOY7it5F58S4EqHKk8GDpqOD_TtUg/view), pobrany ponownie i odszyfrowany dotychczasowym kluczem prywatnym: 385/385 hashy i pełny łańcuch sesji, SQLite integrity=ok, FK=0. Klucz nie trafił do GitHub.
 - Natywny append-only ledger, osobne RSA+AES archiwum i odczyt as-of do wspólnego ELO/formy/xG. [175/175 PASS](https://github.com/karolbarankiewicz1984-ui/kb-score-3/actions/runs/40316210520). [Raport](STEP_11_PITCH_NATIVE_PIT_ARCHIVE.md).
 - **GATE11 PENDING, 10/29**, brak certyfikowanego historycznego PIT, brak treningu i produkcyjnego przełączenia.
+
+## GATE11 — 12/12 xG PitchAPI UEFA i bezpieczne zaszyfrowane dowody (26.10.2026)
+
+- [15-call realny audyt #40318301119](https://github.com/karolbarankiewicz1984-ui/kb-score-3/actions/runs/40318301119): **6/6** Liga Europy i **6/6** Liga Konferencji 2026/27, kompletne xG tylko z natywnych meczów PitchAPI, zero API-Football. Próbki są rozłożone odpowiednio na 4/2 daty, nie poświadczają pełnego pokrycia ligi.
+- 15 pełnych odpowiedzi + rzeczywiste czasy + SHA-chain zaszyfrowano. [Kopia na Google Drive](https://drive.google.com/file/d/1LdmMRLmtaObUK7gs9r55D6950jTMCwxF/view) została pobrana drugi raz; SHA ZIP i szyfrogramu PASS. **Odtworzenie prywatnym kluczem jeszcze nie wykonane**.
+- [187/187 PASS](https://github.com/karolbarankiewicz1984-ui/kb-score-3/actions/runs/40318219204). [Pełny protokół](STEP_11_UEFA_NATIVE_XG_COVERAGE.md). **GATE11 PENDING 10/29**, brak autoryzacji treningu i zmiany produkcji.
