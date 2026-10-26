@@ -5,18 +5,19 @@ from src.kb3_features import build_features, FeatureSafetyError, EloParameters, 
 
 SCHEMA = """
 CREATE TABLE seasons (season_id INTEGER PRIMARY KEY, competition_id INTEGER, start_year INTEGER);
+CREATE TABLE providers (provider_id INTEGER PRIMARY KEY, name TEXT);
 CREATE TABLE fixtures (
  fixture_id INTEGER PRIMARY KEY, season_id INTEGER, home_team_id INTEGER,
  away_team_id INTEGER, kickoff_utc TEXT, status TEXT, goals_home_90 INTEGER,
- goals_away_90 INTEGER);
+ goals_away_90 INTEGER, updated_utc TEXT, result_source TEXT);
 CREATE TABLE fixture_provider_map (
- provider_fixture_id TEXT, fixture_id INTEGER, match_quality TEXT,
+ provider_id INTEGER, provider_fixture_id TEXT, fixture_id INTEGER, match_quality TEXT,
  review_status TEXT, source_snapshot_id TEXT);
 CREATE TABLE source_snapshots (
- snapshot_id TEXT, captured_at_utc TEXT, published_at_utc TEXT,
+ provider_id INTEGER, snapshot_id TEXT, captured_at_utc TEXT, published_at_utc TEXT,
  availability_class TEXT);
 CREATE TABLE match_stat_observations (
- fixture_id INTEGER,team_id INTEGER,numeric_value REAL,observed_at_utc TEXT,
+ fixture_id INTEGER,team_id INTEGER,provider_id INTEGER,numeric_value REAL,observed_at_utc TEXT,
  snapshot_id TEXT,metric TEXT);
 """
 
@@ -26,6 +27,8 @@ CUTOFF = "2024-08-11T17:00:00Z"
 def sample(verified=True):
     db=sqlite3.connect(":memory:")
     db.executescript(SCHEMA)
+    db.executemany("INSERT INTO providers VALUES (?,?)",
+                   [(1,"API-Football"),(2,"PitchAPI")])
     db.executemany("INSERT INTO seasons VALUES (?,?,?)",
                    [(1,100,2024),(2,100,2023),(3,200,2023),(4,100,2025)])
     matches=[
@@ -35,7 +38,8 @@ def sample(verified=True):
       (4,1,10,20,"2024-08-11T18:00:00Z","SCHEDULED",None,None),
       (5,1,20,30,"2024-08-12T18:00:00Z","FINISHED",99,0),
       (6,1,30,20,"2024-08-09T18:00:00Z","AWARDED",99,0)]
-    db.executemany("INSERT INTO fixtures VALUES (?,?,?,?,?,?,?,?)",matches)
+    db.executemany("INSERT INTO fixtures VALUES (?,?,?,?,?,?,?,?,?,?)",
+                   [(*r,r[4][:10]+"T21:00:00Z","API-Football") for r in matches])
     for i in (1,2,3,5,6):
         published={
           1:"2024-08-01T22:00:00Z",
@@ -44,11 +48,11 @@ def sample(verified=True):
           5:"2024-08-12T22:00:00Z",
           6:"2024-08-09T22:00:00Z"}[i]
         captured="2024-08-08T12:00:00Z" if i<4 else "2024-08-14T12:00:00Z"
-        db.execute("INSERT INTO source_snapshots VALUES (?,?,?,?)",(
-          "s"+str(i),captured,published if verified else None,
+        db.execute("INSERT INTO source_snapshots VALUES (?,?,?,?,?)",(
+          1,"s"+str(i),captured,published if verified else None,
           "VERIFIED_PREMATCH" if verified else "RETROSPECTIVE"))
-        db.execute("INSERT INTO fixture_provider_map VALUES (?,?,?,?,?)",(
-          "external"+str(i),i,"STRICT","APPROVED","s"+str(i)))
+        db.execute("INSERT INTO fixture_provider_map VALUES (?,?,?,?,?,?)",(
+          1,"external"+str(i),i,"STRICT","APPROVED","s"+str(i)))
     return db
 
 
@@ -105,12 +109,12 @@ class Step11Features(unittest.TestCase):
 
     def test_xg_real_missing_or_late(self):
         with sample() as db:
-            db.execute("INSERT INTO match_stat_observations VALUES (?,?,?,?,?,?)",
-                (1,10,1.75,"2024-08-01T22:30:00Z","s1","xG"))
-            db.execute("INSERT INTO source_snapshots VALUES (?,?,?,?)",(
-                "late","2024-08-15T12:00:00Z","2024-08-15T10:00:00Z","VERIFIED_PREMATCH"))
-            db.execute("INSERT INTO match_stat_observations VALUES (?,?,?,?,?,?)",
-                (2,10,99,"2024-08-15T11:00:00Z","late","xg"))
+            db.execute("INSERT INTO match_stat_observations VALUES (?,?,?,?,?,?,?)",
+                (1,10,1,1.75,"2024-08-01T22:30:00Z","s1","xG"))
+            db.execute("INSERT INTO source_snapshots VALUES (?,?,?,?,?)",(
+                1,"late","2024-08-15T12:00:00Z","2024-08-15T10:00:00Z","VERIFIED_PREMATCH"))
+            db.execute("INSERT INTO match_stat_observations VALUES (?,?,?,?,?,?,?)",
+                (2,10,1,99,"2024-08-15T11:00:00Z","late","xg"))
             x=build_features(db,4,cutoff_utc=CUTOFF)
         self.assertEqual(x["features"]["home_all_5_xg_n"],1)
         self.assertEqual(x["features"]["home_all_5_xg_avg"],1.75)
@@ -120,8 +124,8 @@ class Step11Features(unittest.TestCase):
     def test_conflicting_xg_fails_closed(self):
         with sample() as db:
             for value in (1.0,2.0):
-                db.execute("INSERT INTO match_stat_observations VALUES (?,?,?,?,?,?)",
-                    (1,10,value,"2024-08-01T22:30:00Z","s1","xg"))
+                db.execute("INSERT INTO match_stat_observations VALUES (?,?,?,?,?,?,?)",
+                    (1,10,1,value,"2024-08-01T22:30:00Z","s1","xg"))
             with self.assertRaisesRegex(FeatureSafetyError,"CONFLICTING_XG"):
                 build_features(db,4,cutoff_utc=CUTOFF)
 
@@ -146,13 +150,14 @@ class Step11Features(unittest.TestCase):
 
 
     def prior_season(self, db, *, season_id=2, fid=71, year="2023"):
-        db.execute("INSERT INTO fixtures VALUES (?,?,?,?,?,?,?,?)",
-                   (fid,season_id,10,20,f"{year}-08-01T18:00:00Z","FINISHED",3,0))
-        db.execute("INSERT INTO source_snapshots VALUES (?,?,?,?)",
-                   (f"s{fid}",f"{year}-08-02T12:00:00Z",
+        db.execute("INSERT INTO fixtures VALUES (?,?,?,?,?,?,?,?,?,?)",
+                   (fid,season_id,10,20,f"{year}-08-01T18:00:00Z","FINISHED",3,0,
+                    f"{year}-08-01T21:00:00Z","API-Football"))
+        db.execute("INSERT INTO source_snapshots VALUES (?,?,?,?,?)",
+                   (1,f"s{fid}",f"{year}-08-02T12:00:00Z",
                     f"{year}-08-01T22:00:00Z","VERIFIED_PREMATCH"))
-        db.execute("INSERT INTO fixture_provider_map VALUES (?,?,?,?,?)",
-                   (f"provider{fid}",fid,"STRICT","APPROVED",f"s{fid}"))
+        db.execute("INSERT INTO fixture_provider_map VALUES (?,?,?,?,?,?)",
+                   (1,f"provider{fid}",fid,"STRICT","APPROVED",f"s{fid}"))
 
     def test_carries_previous_season_without_retraining(self):
         with sample() as db:
@@ -213,6 +218,57 @@ class Step11Features(unittest.TestCase):
         self.assertNotEqual(x["sha256"],y["sha256"])
         self.assertNotEqual(x["features"]["home_elo"],y["features"]["home_elo"])
         self.assertFalse(y["training_allowed"])
+
+
+    def test_result_revised_after_its_snapshot_is_not_verified(self):
+        with sample() as db:
+            baseline=build_features(db,4,cutoff_utc=CUTOFF,mode="verified")
+            self.assertEqual(baseline["accepted_predecessor_count"],3)
+            # A later edit to fixtures cannot inherit a trustworthy old timestamp.
+            db.execute("UPDATE fixtures SET updated_utc='2024-08-10T00:00:00Z' WHERE fixture_id=1")
+            after=build_features(db,4,cutoff_utc=CUTOFF,mode="verified")
+        self.assertEqual(after["accepted_predecessor_count"],2)
+        self.assertEqual(after["features"]["home_elo_games_available"],1)
+        self.assertFalse(after["row_payload_at_snapshot_proven"])
+
+    def test_two_valid_providers_do_not_duplicate_result_fixture(self):
+        with sample() as db:
+            db.execute("INSERT INTO source_snapshots VALUES (?,?,?,?,?)",
+                       (2,"px1","2024-08-07T12:00:00Z",
+                        "2024-08-01T22:00:00Z","VERIFIED_PREMATCH"))
+            db.execute("INSERT INTO fixture_provider_map VALUES (?,?,?,?,?,?)",
+                       (2,"m_pitch01",1,"STRICT","APPROVED","px1"))
+            db.execute("INSERT INTO match_stat_observations VALUES (?,?,?,?,?,?,?)",
+                       (1,10,2,1.25,"2024-08-07T00:00:00Z","px1","xg"))
+            x=build_features(db,4,cutoff_utc=CUTOFF,mode="verified")
+        self.assertEqual(x["accepted_predecessor_count"],3)
+        self.assertEqual(x["features"]["home_all_5_xg_n"],1)
+        self.assertEqual(x["features"]["home_all_5_xg_avg"],1.25)
+        self.assertTrue(any(y["xg_home"] and y["xg_home"]["snapshot_id"]=="px1"
+                            for y in x["lineage"]))
+
+    def test_unapproved_pitch_mapping_never_contributes_xg(self):
+        with sample() as db:
+            db.execute("INSERT INTO source_snapshots VALUES (?,?,?,?,?)",
+                       (2,"px2","2024-08-07T12:00:00Z",
+                        "2024-08-01T22:00:00Z","VERIFIED_PREMATCH"))
+            db.execute("INSERT INTO fixture_provider_map VALUES (?,?,?,?,?,?)",
+                       (2,"m_pending",1,"REVIEW","PENDING","px2"))
+            db.execute("INSERT INTO match_stat_observations VALUES (?,?,?,?,?,?,?)",
+                       (1,10,2,2.50,"2024-08-07T00:00:00Z","px2","xg"))
+            x=build_features(db,4,cutoff_utc=CUTOFF,mode="verified")
+        self.assertEqual(x["accepted_predecessor_count"],3)
+        self.assertEqual(x["features"]["home_all_5_xg_n"],0)
+        self.assertIsNone(x["features"]["home_all_5_xg_avg"])
+
+    def test_stat_snapshot_wrong_provider_cannot_authenticate_xg(self):
+        with sample() as db:
+            db.execute("INSERT INTO fixture_provider_map VALUES (?,?,?,?,?,?)",
+                       (2,"m_pitch01",1,"STRICT","APPROVED","s1"))
+            db.execute("INSERT INTO match_stat_observations VALUES (?,?,?,?,?,?,?)",
+                       (1,10,2,4.25,"2024-08-02T00:00:00Z","s1","xg"))
+            x=build_features(db,4,cutoff_utc=CUTOFF,mode="verified")
+        self.assertEqual(x["features"]["home_all_5_xg_n"],0)
 
 
 
