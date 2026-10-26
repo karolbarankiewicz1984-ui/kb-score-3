@@ -2,9 +2,9 @@ name: "KB3 Step 11 - Prematch Features No Lookahead"
 on:
   push:
     branches: ["feature/step11-*", "main"]
-    paths: ["src/kb3_features.py", "tests/test_step11_features.py", "scripts/step11_features_audit.py", "scripts/step11_two_season_pilot.py", "scripts/step09_import_history.py", "tests/test_step11_two_seasons.py", "tests/test_step11_xg_readiness.py", "scripts/step11_xg_readiness.py", ".github/workflows/kb3-step11-features.yml"]
+    paths: ["src/kb3_features.py", "tests/test_step11_features.py", "scripts/step11_features_audit.py", "scripts/step11_two_season_pilot.py", "scripts/step09_import_history.py", "tests/test_step11_two_seasons.py", "tests/test_step11_xg_readiness.py", "scripts/step11_xg_readiness.py", "tests/test_step11_workflow_budget.py", ".github/workflows/kb3-step11-features.yml"]
   pull_request:
-    paths: ["src/kb3_features.py", "tests/test_step11_features.py", "scripts/step11_features_audit.py", "scripts/step11_two_season_pilot.py", "scripts/step09_import_history.py", "tests/test_step11_two_seasons.py", "tests/test_step11_xg_readiness.py", "scripts/step11_xg_readiness.py", ".github/workflows/kb3-step11-features.yml"]
+    paths: ["src/kb3_features.py", "tests/test_step11_features.py", "scripts/step11_features_audit.py", "scripts/step11_two_season_pilot.py", "scripts/step09_import_history.py", "tests/test_step11_two_seasons.py", "tests/test_step11_xg_readiness.py", "scripts/step11_xg_readiness.py", "tests/test_step11_workflow_budget.py", ".github/workflows/kb3-step11-features.yml"]
   workflow_dispatch:
 permissions:
   contents: read
@@ -22,7 +22,7 @@ jobs:
           python -m unittest discover -s tests -p 'test_step09_import_history.py' -v
           python -m unittest discover -s tests -p 'test_step10_quality_audit.py' -v
   pilot-380:
-    if: github.event_name != 'pull_request'
+    if: github.event_name == 'workflow_dispatch'
     needs: offline-tests
     runs-on: ubuntu-latest
     timeout-minutes: 20
@@ -62,7 +62,7 @@ jobs:
           if-no-files-found: error
 
   pilot-760:
-    if: github.event_name != 'pull_request'
+    if: github.event_name == 'workflow_dispatch'
     needs: offline-tests
     runs-on: ubuntu-latest
     timeout-minutes: 20
