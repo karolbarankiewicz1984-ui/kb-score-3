@@ -120,6 +120,28 @@ class NativeHistoricalEloTests(unittest.TestCase):
         with self.assertRaisesRegex(FeatureSafetyError,"INVALID_HISTORICAL_SOURCE_CHAIN"):
             historical_season_history(rows,cutoff_utc=clock(1))
 
+    def test_real_receipt_time_after_cutoff_is_refused(self):
+        with self.assertRaisesRegex(FeatureSafetyError,"OBSERVED_AFTER_CUTOFF"):
+            historical_season_history(self.past,cutoff_utc=clock(-18))
+
+    def test_rehashed_source_with_unstable_team_ids_is_refused(self):
+        from src.kb3_pit_ledger import canonical,hexdigest
+        rows=deepcopy(self.past)
+        for match in rows[2]["payload"]["matches"]:
+            for side in ("home_team","away_team"):
+                number=int(match[side]["id"][2:])
+                match[side]["id"]=f"t_{number+1000:06d}"
+                match[side]["name"]=f"Renamed {number+1000}"
+        previous="0"*64
+        for receipt in rows:
+            receipt["payload_sha256"]=hexdigest(canonical(receipt["payload"]))
+            receipt["previous_sha256"]=previous
+            payload=dict(receipt);payload.pop("chain_sha256")
+            receipt["chain_sha256"]=hexdigest(canonical(payload))
+            previous=receipt["chain_sha256"]
+        with self.assertRaisesRegex(FeatureSafetyError,"UNSTABLE_TEAM_IDENTIFIERS"):
+            historical_season_history(rows,cutoff_utc=self.cutoff)
+
     def test_replayed_history_deterministic(self):
         a=self.build()
         b=self.build()
