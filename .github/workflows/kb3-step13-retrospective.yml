@@ -7,6 +7,7 @@ on:
       - "src/kb3_step13_archive_preflight.py"
       - "data/audits/STEP13_ORIGINAL_SEALED_ZIP_PREFLIGHT_2026-10-26.json"
       - "scripts/step13_pitch_retrospective_local.py"
+      - "scripts/step13_windows_local_start.ps1"
       - "tests/test_step13_retrospective.py"
       - "tests/test_step13_archive_preflight.py"
       - "tests/test_step13_local_archive.py"
@@ -18,6 +19,7 @@ on:
       - "src/kb3_step13_archive_preflight.py"
       - "data/audits/STEP13_ORIGINAL_SEALED_ZIP_PREFLIGHT_2026-10-26.json"
       - "scripts/step13_pitch_retrospective_local.py"
+      - "scripts/step13_windows_local_start.ps1"
       - "tests/test_step13_retrospective.py"
       - "tests/test_step13_archive_preflight.py"
       - "tests/test_step13_local_archive.py"
@@ -37,6 +39,24 @@ jobs:
       - name: Run offline model and anti-leakage regression tests
         run: |
           python3 -m unittest discover -s tests -p 'test_step13*.py' -v
+      - name: Parse Windows PowerShell 5.1-compatible local owner launcher
+        shell: pwsh
+        run: |
+          $tokens=$null
+          $errors=$null
+          [System.Management.Automation.Language.Parser]::ParseFile("scripts/step13_windows_local_start.ps1", [ref]$tokens, [ref]$errors) | Out-Null
+          if ($errors.Count -ne 0) {
+            $errors | ForEach-Object { Write-Host $_.Message }
+            throw "STEP13_WINDOWS_LAUNCHER_SYNTAX_INVALID"
+          }
+          $script = Get-Content "scripts/step13_windows_local_start.ps1" -Raw
+          if ($script -match "Invoke-WebRequest|Invoke-RestMethod|Start-Transcript|Upload-Artifact|PITCHAPI_API_KEY|API_FOOTBALL_KEY") {
+            throw "STEP13_WINDOWS_LAUNCHER_NETWORK_OR_SECRET_EXFILTRATION_FORBIDDEN"
+          }
+          if (-not $script.Contains("STEP13_RETROSPECTIVE_RESEARCH_RESULT.json")) {
+            throw "STEP13_WINDOWS_LAUNCHER_PRIVATE_REPORT_MISSING"
+          }
+          Write-Host "STEP13_WINDOWS_LAUNCHER_PARSER_AND_LOCAL_ONLY_POLICY_PASS"
       - name: Verify local-only encrypted archive interface and no CI keys
         run: |
           python3 - <<'PY'
