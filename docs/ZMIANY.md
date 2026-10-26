@@ -250,3 +250,9 @@ Następny krok:
 - Dodano `kb3_pitch_native_drift.py`, `step11_pitch_native_drift_audit.py`: dwa zweryfikowane snapshoty PitchAPI można odtwarzać i porównywać po dokładnym provider-native ID, oddzielnie licząc zmiany dat/statusu/wyniku/nazwy. Identyfikatory drużyn i pełen skład ligi są chronione przed milczącą podmianą. Skrypt nie wywołuje API i nie udostępnia nazw/ID w raporcie.
 - [199/199 testów CI](https://github.com/karolbarankiewicz1984-ui/kb-score-3/actions/runs/40320084066) PASS. **Drugi autentyczny odczyt nie został wykonany, wielodniowy diff pozostaje PENDING**; nie generowano fikcyjnych snapshotów. [Raport](STEP_11_UEFA_NATIVE_XG_COVERAGE.md).
 - GATE11 **PENDING, 10/29**, trening i produkcja pozostają zablokowane.
+
+## GATE11 — PIERWSZE DWA PRAWDZIWE OBSERVED-AT ARCHIWA PITCHAPI + ZERO ZMIAN (26.10.2026)
+
+- [Drugi realny run #40321560312](https://github.com/karolbarankiewicz1984-ui/kb-score-3/actions/runs/40321560312) **SUCCESS**: PL 2026/27 380 meczów, 5/5 xG, 7 PitchAPI, zero API-Football. Drugi szyfrowany backup w prywatnym [Drive](https://drive.google.com/file/d/13idXMzj3dIn_luUdVi7LbcxKROjeLeZ5/view). Odtworzono oba archiwa poza GitHubem, sprawdzono AES-GCM i RSA fingerprint, pełne 12 sesji oraz 770 SHA rekordów. Następnie **380/380 natywnych rekordów identycznych** między 11:29 a 12:19 UTC; 0 zmian dat/statusów/wyników/nazw/payloadu. Dwa odczyty tego samego dnia, to NIE jest dowód stabilności wielodniowej.
+- Lokalny `step11_pitch_native_compare_offsite_zip.py` wykonuje bezpieczny restore 2 szyfrowanych ZIP i raportuje agregaty, usuwając po sobie jawne pliki. Naprawiono weryfikację `mode=ro`, dodano testy. [206/206 CI PASS](https://github.com/karolbarankiewicz1984-ui/kb-score-3/actions/runs/40322588669).
+- [Raport](STEP_11_PITCH_NATIVE_TWO_REAL_SNAPSHOTS.md) / [dowód SHA](../data/audits/STEP11_PITCH_NATIVE_TWO_REAL_SNAPSHOTS_20261026.json). **GATE11 PENDING 10/29**, brak treningu, bez zmiany starszych modeli.
