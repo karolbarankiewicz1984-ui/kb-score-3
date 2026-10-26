@@ -46,15 +46,29 @@
     "offsite_second_download": true,
     "zip_crc_valid": true,
     "offsite_ciphertext_sha256_verified": true,
-    "offsite_decryption_not_yet_verified": true,
-    "ciphertext_does_not_contain_plaintext_api_data": true
+    "offsite_decryption_not_yet_verified": false,
+    "ciphertext_does_not_contain_plaintext_api_data": true,
+    "offsite_private_key_restore_verified": true,
+    "offsite_aes256gcm_authenticated": true,
+    "offsite_recipient_key_fingerprint_verified": true,
+    "offsite_decrypted_raw_sha256_verified": true,
+    "offsite_recomputed_canonical_receipts": 15,
+    "offsite_15_receipt_chain_verified": true,
+    "offsite_decrypted_payload_bytes": 364970,
+    "no_private_key_or_source_data_sent_to_github": true
   },
   "next_gate_requirements": [
-    "Obtain and verify independent private-key restore outside CI without sharing key",
     "Test broader sample and league-wide per-fixture xG coverage (12/12 is not full coverage)",
     "Observe real future source revisions on different dates using true captured timestamps",
     "Review license and source feed stability before production switch",
     "Keep training blocked and retrospective 2023-25 not PIT-certified"
   ],
-  "status": "GATE11 PENDING; 10 of 29 stages formally approved"
+  "status": "GATE11 PENDING; 10 of 29 stages formally approved",
+  "follow_up": {
+    "native_snapshot_drift_implementation": "src/kb3_pitch_native_drift.py",
+    "offline_tests_total": 199,
+    "ci_run": "https://github.com/karolbarankiewicz1984-ui/kb-score-3/actions/runs/40320084066",
+    "second_genuine_pitchapi_native_snapshot_verified": false,
+    "cross_day_comparison_verified": false
+  }
 }

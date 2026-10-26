@@ -32,7 +32,7 @@ Każdą z 15 odpowiedzi zapisano w niezmiennym pakiecie źródłowym zawierając
 - Szyfrogram SHA-256: `fc49dc39502a2c73a8883d0732797a284075845bac9161f183bf9a496d4c6b16`.
 - Hash ostatniej obserwacji: `aef1c98c5dfc6cecb60ab810a13b5ed5ca82fd956b79fb4ad5c33b0b2b9ccc06`.
 - Wykonano **niezależne ponowne pobranie z Google Drive**. Porównano ZIP SHA, CRC plików oraz SHA zaszyfrowanego payloadu z manifestem — **PASS**.
-- **Ważne:** ponowne odszyfrowanie kopii Drive kluczem prywatnym **nie zostało jeszcze przeprowadzone**. Pełną zgodność oryginalnych 15 odpowiedzi i łańcucha zweryfikowano w GitHub Actions **przed szyfrowaniem**, a kontrola po pobraniu potwierdza tylko integralność zaszyfrowanej kopii. To osobny punkt do zaliczenia w GATE11.
+- **Aktualizacja:** przeprowadzono **niezależne odszyfrowanie ponownie pobranej kopii Drive** przy użyciu dotychczasowego prywatnego klucza właściciela poza GitHubem. RSA-OAEP odczytał klucz sesji, AES-256-GCM potwierdził autentyczność szyfrogramu, SHA-256 danych odszyfrowanych jest zgodne, a ponowne przeliczenie **15/15** oryginalnych odpowiedzi i całego łańcucha dało **PASS**. Dane źródłowe i klucz prywatny nie trafiły do repozytorium.
 
 Nie umieszczono publicznie oryginalnych danych wszystkich strzałów, identyfikatorów par z próby ani prywatnego klucza. Dane surowe znajdują się w zaszyfrowanym pakiecie. [Manifest zbiorczy z hashami i ograniczeniami](../data/audits/STEP11_PITCH_UEFA_XG12_2026-10-26.json).
 
@@ -45,9 +45,16 @@ Nie umieszczono publicznie oryginalnych danych wszystkich strzałów, identyfika
 
 ## Następne wymagania GATE11
 
-1. Wykonać **rzeczywiste odtworzenie** zaszyfrowanego backupu UEFA z kopii Drive przez prywatny klucz właściciela i porównać wszystkie rekordy; nie ujawniać klucza w CI.
+1. **ZALICZONE:** rzeczywiste odtworzenie zaszyfrowanej kopii Drive kluczem prywatnym i pełne przeliczenie wszystkich 15 rekordów źródła, bez udostępnienia klucza w CI.
 2. Zbadać xG na większej, bardziej zróżnicowanej próbce, nie deklarując pełnego pokrycia tylko z 12/12.
 3. Zarejestrować **rzeczywiste korekty wyników i terminów z kolejnych dat**; nie udawać historycznych obserwacji wykonanych wcześniej.
 4. Potwierdzić warunki licencyjne/dopuszczalne sposoby wykorzystania PitchAPI oraz jakość dla kolejnych lig przed decyzją o przełączeniu produkcyjnym.
 
 **Wciąż `GATE11 PENDING`, formalnie 10/29.** Zero treningu, zero typów, brak przełączenia produkcyjnego. Dawne KB Score 2.1, API Market i MultiModel oraz ich archiwa nie zostały zmienione.
+
+## Nowy odbiór: odzyskanie offsite i testowanie zmian w historii
+
+- Pełne odszyfrowanie lokalnie pobranego szyfrogramu po kontroli odcisku klucza RSA i autentyczności AES-GCM: **PASS**. Nieskompresowane źródło zawierało **364 970 bajtów**, 15 oryginalnych odpowiedzi i zgodny hash końcowy. Odtworzenie to jest niezależne od wcześniejszej kontroli ZIP/SHA.
+- `src/kb3_pitch_native_drift.py`: nowy moduł porównuje **dwa osobne, rzeczywiste i zweryfikowane** snapshoty natywnych meczów, bez łączenia łańcuchów. Osobno liczy zmiany dat, statusów, wyników i nazw, a nieoczekiwane przepisanie ID drużyny lub zestawu meczów blokuje. Nie wysyła nazw ani identyfikatorów do zbiorczego raportu.
+- [GitHub Actions #40320084066](https://github.com/karolbarankiewicz1984-ui/kb-score-3/actions/runs/40320084066): **199/199 PASS** (160 Step11 +39 poprzednie) — w tym **12 nowych testów dryfu** na danych syntetycznych. **Rzeczywista druga obserwacja PitchAPI w tym torze jeszcze nie została pobrana**, dlatego wynik wykrytych zmian i porównanie między różnymi dniami **PENDING**, a nie „zero zmian”.
+- [Zaktualizowany bezpieczny manifest audytu](../data/audits/STEP11_PITCH_UEFA_XG12_2026-10-26.json).
