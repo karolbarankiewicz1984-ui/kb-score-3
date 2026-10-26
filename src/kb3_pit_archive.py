@@ -17,6 +17,7 @@ from cryptography.hazmat.primitives import serialization,hashes
 from cryptography.hazmat.primitives.asymmetric import padding,rsa
 from cryptography.hazmat.primitives.ciphers.aead import AESGCM
 from src.kb3_pit_ledger import verify_chain
+from src.kb3_xg_pit import verify_xg
 
 MAGIC=b"KB3PIT1\n"
 AAD=b"KB3-STEP11-PIT-OBSERVATION-LEDGER-V1"
@@ -38,6 +39,8 @@ def seal(source,recipient_public_key,dest,manifest,*,allow_synthetic=False):
             original.backup(backup)
         with sqlite3.connect(clean) as check:
             evidence=verify_chain(check)
+            has_xg=check.execute("SELECT 1 FROM sqlite_master WHERE type='table' AND name='pit_xg_observations'").fetchone() is not None
+            xg_evidence=verify_xg(check) if has_xg else None
             origins=[r[0] for r in check.execute("SELECT DISTINCT origin FROM captures")]
             if not origins or (not allow_synthetic and origins!=["NETWORK_OBSERVED"]):
                 raise ValueError("NON_REAL_CAPTURE_CANNOT_BE_PUBLISHED")
@@ -60,6 +63,7 @@ def seal(source,recipient_public_key,dest,manifest,*,allow_synthetic=False):
           "encrypted_sha256":digest(blob),"encrypted_bytes":len(blob),
           "sqlite_sha256":digest(raw),"sqlite_bytes":len(raw),
           "ledger_evidence":evidence,
+          "xg_evidence":xg_evidence,
           "provider_publication_certified":False,
           "historical_before_observation_certified":False,
           "training_allowed":False,"prediction_enabled":False,
@@ -115,6 +119,10 @@ def restore(source,manifest,private_key,target):
             found=verify_chain(db)
             if found!=meta["ledger_evidence"]:
                 raise ValueError("RESTORE_CHAIN_MISMATCH")
+            if meta.get("xg_evidence") is not None:
+                xg=verify_xg(db)
+                if xg!=meta["xg_evidence"]:
+                    raise ValueError("RESTORE_XG_EVIDENCE_MISMATCH")
     except BaseException:
         target.unlink(missing_ok=True)
         raise
