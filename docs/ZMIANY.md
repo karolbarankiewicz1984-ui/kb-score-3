@@ -177,3 +177,10 @@ Następny krok:
 - ELO przechodzi między sezonami **tej samej ligi**, z jawnie prowizorycznym `season_retention=0.85` i parametrami K=20, H=65, scale=400, initial=1500; brak optymalizacji. Odrębne ligi i przyszłe sezony są odrzucane.
 - Dwa zakończone sezony Premier League zaimportowano w **tymczasowym jobie CI**, 23 kluby, idempotentnie, w obu przypadkach 380 spotkań. To **nie jest trwałe powiększenie dotychczasowego archiwum**.
 - `GATE11 = PENDING`, postęp **10/29**. Brakuje oryginalnego dowodu dostępności historycznej przed cutoff, rzeczywistych xG i trwałego zaszyfrowanego archiwum szerszego zestawu. Trening zablokowany, bez zakupów.
+
+## GATE11 — kontrola pochodzenia xG i wyników (26.10.2026)
+
+- [Actions #40292159243](https://github.com/karolbarankiewicz1984-ui/kb-score-3/actions/runs/40292159243) — **66/66 PASS** (27 testów Step11 + 39 regresyjnych). Sprawdzono rozdzielenie dostawców wyniku i xG, zakaz użycia REVIEW/PENDING oraz niezgodnych snapshotów, odmowę zaufania staremu snapshotowi po zmianie wiersza wyniku.
+- [Actions #40291895443](https://github.com/karolbarankiewicz1984-ui/kb-score-3/actions/runs/40291895443) — **PitchAPI 12/12** kompletne xG obu drużyn w małej, celowej próbce PL 2023/24 i 2024/25; **8/12** dokładnych zgodnych par API-Football; **4/12** niezatwierdzone; 15 zapytań PitchAPI i 2 API-Football, 0 nowych zakupów.
+- Kontrola wykonana bez publikowania surowych xG, pełnej bazy, wyników pojedynczych spotkań czy kluczy. Nie posiadamy dowodu row-hash oraz historycznego czasu publikacji xG; **0/12** z certyfikacją historycznego PIT. Odczyt tych wartości teraz nie może zostać uznany za przeszły snapshot.
+- **GATE11 PENDING, 10/29**, brak treningu, historyczny zbiór 760 wyłącznie tymczasowy; starsze modele nietknięte.
