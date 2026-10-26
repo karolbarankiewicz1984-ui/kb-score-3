@@ -1,0 +1,62 @@
+name: "KB3 Step 11 - Prematch Features No Lookahead"
+on:
+  push:
+    branches: ["feature/step11-prematch-features"]
+    paths: ["src/kb3_features.py", "tests/test_step11_features.py", "scripts/step11_features_audit.py", ".github/workflows/kb3-step11-features.yml"]
+  pull_request:
+    paths: ["src/kb3_features.py", "tests/test_step11_features.py", "scripts/step11_features_audit.py", ".github/workflows/kb3-step11-features.yml"]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  offline-tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Step11 no-lookahead and missing-value tests
+        run: python -m unittest discover -s tests -p 'test_step11_features.py' -v
+      - name: Regression tests for previous storage and audit
+        run: |
+          python -m unittest discover -s tests -p 'test_step08_storage.py' -v
+          python -m unittest discover -s tests -p 'test_step09_import_history.py' -v
+          python -m unittest discover -s tests -p 'test_step10_quality_audit.py' -v
+  pilot-380:
+    if: github.event_name != 'pull_request'
+    needs: offline-tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - name: Recreate fixed local pilot PL 2024/25
+        env:
+          API_FOOTBALL_KEY: ${{ secrets.API_FOOTBALL_KEY }}
+        run: |
+          set -euo pipefail
+          test -n "$API_FOOTBALL_KEY"
+          python -m scripts.step09_import_history --outdir audit/step11/source
+      - name: Audit both modes without exporting match rows
+        run: |
+          set -euo pipefail
+          python -m scripts.step11_features_audit \
+            --db audit/step11/source/premier-league-2024-25.sqlite3 \
+            --out audit/step11/STEP11_AGGREGATE.json
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          x=json.loads(Path('audit/step11/STEP11_AGGREGATE.json').read_text())
+          assert x['fixture_count']==380
+          assert x['counts']['verified_targets']==380
+          assert x['counts']['replay_targets']==380
+          assert x['counts']['verified_predecessors']==0
+          assert x['counts']['replay_with_history']>0
+          assert not x['training_allowed'] and not x['trained_model']
+          print('STEP11_PILOT_380_PASS')
+          PY
+      - name: Upload aggregates only (no database or secrets)
+        uses: actions/upload-artifact@v4
+        with:
+          name: kb3-step11-aggregate
+          path: audit/step11/STEP11_AGGREGATE.json
+          retention-days: 14
+          if-no-files-found: error
