@@ -23,6 +23,20 @@ from src.kb3_pitch_multiseason_history import historical_season_history
 from src.kb3_step13_retrospective import POLICY, retrospective_research
 
 HIST_CUTOFF_UTC = "2026-10-26T23:59:00Z"
+PINNED_ZIP_SHA256 = "301bae69251d19a0192e12c2c033636b3f2822a15dcea2c4beaca28f4b45de2e"
+PINNED_CIPHER_SHA256 = "e5e14a2320e65f945a2709c4cd8dfb49ed38d45ccca3502b3e5ba7c21f84d343"
+PINNED_CHAIN_SHA256 = "33c750f2db89a0df5faeba9348652a451f33548959839ff7bb0ca49210c2b367"
+
+
+def _pinned_audit(root):
+    summary=_pinned_audit(root)
+    meta=summary["history"]
+    if (meta["encrypted_zip_sha256"]!=PINNED_ZIP_SHA256
+            or meta["cipher_sha256"]!=PINNED_CIPHER_SHA256
+            or meta["chain_sha256"]!=PINNED_CHAIN_SHA256
+            or meta["finished_fixtures"]!=1140):
+        raise ValueError("STEP13_SOURCE_AUDIT_CHANGED_FROM_FROZEN")
+    return summary
 
 
 def research_local(*,cipher_path,manifest_path,private_key_path,root):
@@ -93,7 +107,7 @@ def research_local(*,cipher_path,manifest_path,private_key_path,root):
 def research_archive_zip_local(*,archive_zip,private_key_path,root):
     """Accept the exact original Drive ZIP directly, with byte-for-byte pin."""
     root=Path(root)
-    report=json.loads((root/"data/audits/STEP11_PITCH_MULTISEASON_ELO_REAL_2026-10-26.json").read_text())
+    report=_pinned_audit(root)
     expected=report["history"]["encrypted_zip_sha256"]
     if hashlib.sha256(Path(archive_zip).read_bytes()).hexdigest()!=expected:
         raise ValueError("STEP13_ARCHIVE_ZIP_NOT_PINNED")
