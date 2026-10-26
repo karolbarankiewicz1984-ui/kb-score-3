@@ -53,3 +53,5 @@
 **Zasada bramki:** każdy z 29 kroków ma kryterium odbioru, test PASS i link do dowodu. Kod źródłowy lub sam opis nie zalicza kroku. Brak automatycznego obstawiania i nowych zakupów bez zgody właściciela; sekrety pozostają w GitHub Secrets, nigdy w repo.
 
 **Krok 12 — bezpieczny podział do zatwierdzenia:** [Metodyka oraz protokół decyzji](docs/STEP_12_METHOD_DECISION.md), [zamrożony widok bez wyników](data/splits/STEP12_SAFE_MODEL_VIEW_2026-10-26.json), [niezależny audyt](data/audits/STEP12_INDEPENDENT_METHODOLOGY_2026-10-26.json). 1520 realnych meczów, 760/380/380, 4 foldy 60/126/123/71. GATE12 nadal PENDING (brak akceptacji); trening zablokowany.
+
+**Krok 12 — rozszerzona walidacja:** [EXPANDING kontra przesuwane 24 miesiące](docs/STEP_12_DUAL_WINDOWS.md) — te same cztery kwartalne walidacje 2025/26, 380 spotkań, zero przecieków TEST, brak treningu na niezatwierdzonych danych. [Niezmienny manifest obu metod](data/splits/STEP12_DUAL_WINDOWS_REAL_2026-10-26.json). GATE12 PENDING.
