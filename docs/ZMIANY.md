@@ -217,3 +217,9 @@ Następny krok:
 - [CI #40306542175](https://github.com/karolbarankiewicz1984-ui/kb-score-3/actions/runs/40306542175) 125/125 PASS (86 Step11 + 39 regresja).
 - Niezależne sprawdzenie realnej odszyfrowanej bazy 380 źródłowych spotkań z Drive i finalnego kodu [#40306671705](https://github.com/karolbarankiewicz1984-ui/kb-score-3/actions/runs/40306671705): 80 prawidłowo dostępnych wcześniejszych wyników dla przyszłego Bournemouth–Leeds, reviewed xG Leeds 1 w oknie 5 **dopiero po** zatwierdzeniu powiązania, 0 przed; bez review również 0. [Protokół](STEP_11_OBSERVED_FEATURES.md), [manifest](../data/audits/STEP11_OBSERVED_BUILDER_REAL_DRIVE_2026-10-26.json).
 - Nadal **GATE11 PENDING, 10/29, training_allowed=false**. ELO K/H bez treningu, starsze modele bez zmian.
+
+## GATE11 — 10 dodatkowych prawdziwych xG + bezpieczne drugie archiwum (26.10.2026)
+
+- Audyt [#40308346204](https://github.com/karolbarankiewicz1984-ui/kb-score-3/actions/runs/40308346204): 10 meczów / 10 dat, kompletność xG 10/10, **5** ścisłych par, **5** w kwarantannie (4 × alias, 1 × mismatch), 12 PitchAPI + 1 API-Football, 0 błędów, 0 nowych zakupów.
+- Encrypted ZIP [Drive](https://drive.google.com/file/d/1l0Ng06QDIqM1h8IUH9m3Z8aER4f_COdC/view?usp=drivesdk) z niezależnym odtworzeniem 380 rezultatów/10 xG i SQL integrity=ok/FK=0. Nowy `kb3_external_xg_asof.py` umożliwia bezpieczny odczyt xG z drugiej osobno hashowanej bazy przy zgodności source SHA i strict cutoff. Test na realnych dwóch archiwach: 80 historii + 1 nowe xG dla przyszłego meczu; przed capture i bez drugiego źródła xG 0.
+- [140/140 CI PASS](https://github.com/karolbarankiewicz1984-ui/kb-score-3/actions/runs/40309316442). [Raport](STEP_11_XG10_STRATIFIED.md), [manifest dowodów](../data/audits/STEP11_XG10_STRATIFIED_REAL_2026-10-26.json). **GATE11 PENDING 10/29**, brak historycznego PIT publikacji, `training_allowed=false`, stare modele bez zmian.

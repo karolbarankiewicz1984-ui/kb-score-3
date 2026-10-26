@@ -1,0 +1,33 @@
+name: "KB3 Step11 - Independent Strict xG Source Bundle"
+on:
+  push:
+    branches: ["feature/step11-xg-stratified-coverage-20261026"]
+    paths: [".github/workflows/kb3-step11-xg10-source-once.yml"]
+permissions:
+  contents: read
+jobs:
+  offline-src-only:
+    runs-on: ubuntu-latest
+    timeout-minutes: 9
+    steps:
+      - uses: actions/checkout@v4
+      - name: Test strict separate xG, timing and stratified coverage without API
+        run: |
+          python3 -m unittest discover -s tests -p 'test_step11_external_strict_xg.py' -v
+          python3 -m unittest discover -s tests -p 'test_step11_xg_stratified_coverage.py' -v
+      - name: Source-only bundle, NO raw data, NO API, NO keys
+        uses: actions/upload-artifact@v4
+        with:
+          name: kb3-step11-xg10-integration-source-20261026
+          retention-days: 3
+          if-no-files-found: error
+          path: |
+            src/kb3_features.py
+            src/kb3_observed_features.py
+            src/kb3_pit_ledger.py
+            src/kb3_xg_pit.py
+            src/kb3_external_xg_asof.py
+            src/kb3_reviewed_xg.py
+            src/kb3_identity_review.py
+            scripts/pitchapi_step06_audit.py
+            scripts/step11_observed_features_audit.py

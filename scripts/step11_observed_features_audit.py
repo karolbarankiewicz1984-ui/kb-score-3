@@ -40,12 +40,16 @@ def main():
     p.add_argument("--cutoff",required=True)
     p.add_argument("--review-manifest")
     p.add_argument("--crosswalk")
+    p.add_argument("--strict-xg-db")
+    p.add_argument("--strict-xg-manifest")
     p.add_argument("--out",required=True)
     a=p.parse_args()
     out=load_observed_features(
         a.restored_pit_db,a.fixture_id,a.cutoff,
         review_manifest_path=a.review_manifest,
-        reviewed_crosswalk_path=a.crosswalk)
+        reviewed_crosswalk_path=a.crosswalk,
+        strict_xg_db_path=a.strict_xg_db,
+        strict_xg_manifest_path=a.strict_xg_manifest)
     if out["mode"]!="observed" or out["training_allowed"]:
         raise RuntimeError("INVALID_OBSERVED_MODE")
     result=sanitize(out)

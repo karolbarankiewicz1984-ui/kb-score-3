@@ -18,6 +18,7 @@ from src.kb3_pit_ledger import (
 )
 from src.kb3_xg_pit import verify_xg
 from src.kb3_reviewed_xg import review
+from src.kb3_external_xg_asof import collect_strict_xg
 
 # Concrete audited v1 crosswalk: its earliest admissible approval time is the
 # public merge timestamp. Future reviews require a versioned approval policy.
@@ -66,6 +67,7 @@ def _observed_index(db, cutoff):
 
 def build_observed_features(db, target_fixture_id, *, cutoff_utc,
                             archive_manifest=None,reviewed_crosswalk=None,
+                            strict_xg_db=None,strict_xg_manifest=None,
                             elo_params=None):
     """Observed-at builder with explicit, fail-closed xG provenance.
 
@@ -80,6 +82,8 @@ def build_observed_features(db, target_fixture_id, *, cutoff_utc,
         raise FeatureSafetyError("INVALID_TARGET_FIXTURE_ID")
     if (archive_manifest is None)!=(reviewed_crosswalk is None):
         raise FeatureSafetyError("XG_REVIEW_AND_ARCHIVE_EVIDENCE_REQUIRED_TOGETHER")
+    if (strict_xg_db is None)!=(strict_xg_manifest is None):
+        raise FeatureSafetyError("STRICT_XG_DB_AND_MANIFEST_REQUIRED_TOGETHER")
     verify_chain(db)
     has_xg=db.execute("""SELECT 1 FROM sqlite_master
                            WHERE type='table' AND name='pit_xg_observations'""").fetchone()
@@ -124,6 +128,18 @@ def build_observed_features(db, target_fixture_id, *, cutoff_utc,
         else:
             xg_by_fixture={}
             approved_xg_since=None
+    strict_source={}
+    if strict_xg_db is not None:
+        try:
+            extra,strict_source=collect_strict_xg(
+                strict_xg_db,strict_xg_manifest,
+                cutoff_utc=cutoff_utc,
+                fixture_response_sha256=selected["source_response_sha256"])
+        except (ValueError,KeyError,TypeError,sqlite3.DatabaseError) as exc:
+            raise FeatureSafetyError("INDEPENDENT_STRICT_XG_SOURCE_REJECTED") from exc
+        if xg_by_fixture.keys() & extra.keys():
+            raise FeatureSafetyError("AMBIGUOUS_DUPLICATE_XG_ACROSS_ARCHIVES")
+        xg_by_fixture.update(extra)
     history=[]
     excluded=defaultdict(int)
     for fid,source in snapshots.items():
@@ -152,14 +168,19 @@ def build_observed_features(db, target_fixture_id, *, cutoff_utc,
         xgh=xga=None
         xsource_h=xsource_a=None
         xg=xg_by_fixture.get(fid)
-        if xg is not None and approved_xg_since is not None:
+        if xg is not None:
             observed_xg=utc_dt(xg["observed_completed_at_utc"])
-            if max(observed_xg,utc_dt(approved_xg_since))<=cutoff:
+            barrier=(utc_dt(approved_xg_since) if xg["review_status"]==
+                     "CURATED_MATCH_BOUND_SOURCE_EVIDENCE" and approved_xg_since
+                     else observed_xg)
+            if max(observed_xg,barrier)<=cutoff:
                 xgh,xga=xg["xg_home"],xg["xg_away"]
                 provenance={"observation_id":xg["source_observation_id"],
                             "pitch_match_id":xg["pitch_match_id"],
                             "actual_observed_at_utc":xg["observed_completed_at_utc"],
-                            "review_approval_not_before_utc":approved_xg_since,
+                            "review_approval_not_before_utc":(
+                                approved_xg_since if xg["review_status"]==
+                                "CURATED_MATCH_BOUND_SOURCE_EVIDENCE" else None),
                             "source_provider_published_at_utc":None,
                             "review_status":xg["review_status"]}
                 xsource_h=dict(provenance)
@@ -187,6 +208,7 @@ def build_observed_features(db, target_fixture_id, *, cutoff_utc,
         "provider_first_publication_time_known":False,
         "historical_prematch_backtest_certified":False,
         "reviewed_xg_source":review_source if review_source else None,
+        "strict_external_xg_source":strict_source if strict_source else None,
         "archived_ciphertext_restore_must_be_verified_externally":True,
     }
     return _compose_features(target,history,
@@ -196,16 +218,28 @@ def build_observed_features(db, target_fixture_id, *, cutoff_utc,
 
 
 def load_observed_features(ledger_file,fixture_id,cutoff,*,review_manifest_path=None,
-                           reviewed_crosswalk_path=None):
+                           reviewed_crosswalk_path=None,
+                           strict_xg_db_path=None,strict_xg_manifest_path=None):
     """Read existing restored, independently validated ledger; never download/decrypt."""
     from pathlib import Path
     def read_json(path):
         return json.loads(Path(path).read_text(encoding="utf8"))
     if (review_manifest_path is None)!=(reviewed_crosswalk_path is None):
         raise FeatureSafetyError("XG_REVIEW_AND_ARCHIVE_EVIDENCE_REQUIRED_TOGETHER")
+    if (strict_xg_db_path is None)!=(strict_xg_manifest_path is None):
+        raise FeatureSafetyError("STRICT_XG_DB_AND_MANIFEST_REQUIRED_TOGETHER")
     manifest=read_json(review_manifest_path) if review_manifest_path else None
     crosswalk=read_json(reviewed_crosswalk_path) if reviewed_crosswalk_path else None
-    with sqlite3.connect("file:"+str(Path(ledger_file).resolve())+"?mode=rw",uri=True) as db:
+    strict_mf=read_json(strict_xg_manifest_path) if strict_xg_manifest_path else None
+    from contextlib import ExitStack
+    with ExitStack() as stack:
+        db=stack.enter_context(sqlite3.connect(
+            "file:"+str(Path(ledger_file).resolve())+"?mode=rw",uri=True))
+        strict_db=(stack.enter_context(sqlite3.connect(
+            "file:"+str(Path(strict_xg_db_path).resolve())+"?mode=rw",uri=True))
+            if strict_xg_db_path else None)
         return build_observed_features(db,fixture_id,cutoff_utc=cutoff,
                                        archive_manifest=manifest,
-                                       reviewed_crosswalk=crosswalk)
+                                       reviewed_crosswalk=crosswalk,
+                                       strict_xg_db=strict_db,
+                                       strict_xg_manifest=strict_mf)
