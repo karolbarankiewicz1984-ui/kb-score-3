@@ -1,6 +1,6 @@
 # KB Score 3.0 — DANE (specyfikacja źródeł i rejestrów)
 
-**Status 25.10.2026:** audyty źródeł 05–06, mapowanie 07 i infrastruktura bazy 08 ZALICZONE. Import prawdziwej historii i analiza jakości każdego spotkania nadal należą do kroków 09–10.
+**Status 26.10.2026:** audyty źródeł 05–06, mapowanie 07, infrastruktura bazy 08 oraz kontrolny import pierwszego sezonu 09 ZALICZONE. Premier League 2024/25: 380 meczów, test ponownego importu i wznowienia PASS, prywatne archiwum AES-256-GCM odtworzone po pobraniu z Drive. Pełny import pozostałych sezonów i ocena jakości/chronologii danych są nadal do wykonania (krok 10 i dalsza rozbudowa).
 
 **Źródło prawdy projektu:** [Plan Google Docs](https://docs.google.com/document/d/10wjHL3r3OAuxtezwcIeWztxS8lwjhYon5GM3BLhI0xE/edit) · [29 bramek odbioru](PLAN.md) · [metodologia](MODEL.md) · [dziennik](ZMIANY.md)
 
