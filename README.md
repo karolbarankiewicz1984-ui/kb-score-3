@@ -18,10 +18,10 @@
 - [Krok 07 — parowanie identyfikatorów, GATE PASS i kolejka REVIEW](docs/STEP_07_ACCEPTANCE.md)
 - [Krok 08 — SQLite, niezmienne prognozy i odtworzenie backupu z Dysku Google](docs/STEP_08_ACCEPTANCE.md)
 - [Krok 09 — pilot importu 380 meczów Premier League, 19/19 testów i zaszyfrowany backup](docs/STEP_09_ACCEPTANCE.md)
-- [Krok 10 — jakość i chronologia: 35/35 testów PASS, brakujące dane jawne, prace trwają](docs/STEP_10_PROGRESS.md)
+- [Krok 10 — audyt jakości 5 lig × 6 sezonów, 10 679 meczów, 54/54 testów PASS](docs/STEP_10_ACCEPTANCE.md)
 - [Historia blokady PitchAPI HTTP 401 (rozwiązana)](docs/STEP_06_BLOCKER.md)
 
-**Stan przy aktualizacji tego README (26.10.2026):** kroki 01–09 ZALICZONE; krok 10 W REALIZACJI (pilotażowy audyt przeszedł, ale pełna bramka jeszcze nieodebrana), kroki 11–29 jeszcze niezaliczone. Dokładny stan na dany dzień należy zawsze sprawdzić w planie Google Docs. Żaden nowy model ani uczenie ML nie zostały uruchomione.
+**Stan przy aktualizacji tego README (26.10.2026):** kroki 01–10 ZALICZONE (10/29); krok 11 NIE ROZPOCZĘTO, kroki 12–29 niezaliczone. GATE10 obejmuje audyt źródła i chronologii, z jawnym wyłączeniem 19 baraży i jednego wyniku AWD. W SQLite nadal jest tylko 380 meczów pilota Premier League 2024/25; statystyki, xG i kursy nie są jeszcze zaimportowane, a **ML/trening pozostają zablokowane** do bramek dotyczących cech i chronologii. Nie zmieniono KB2.1 ani innych modeli.
 
 ## Co znajduje się w repo?
 
