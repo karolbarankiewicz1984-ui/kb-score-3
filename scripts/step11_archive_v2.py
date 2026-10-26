@@ -34,6 +34,7 @@ def require_counts(db, *, expected_fixtures, expected_by_year):
         violations = c.execute("PRAGMA foreign_key_check").fetchall()
         version = c.execute("SELECT MAX(version) FROM schema_migrations").fetchone()[0]
         count = c.execute("SELECT COUNT(*) FROM fixtures").fetchone()[0]
+        finished = c.execute("SELECT COUNT(*) FROM fixtures WHERE status='FINISHED' AND goals_home_90 IS NOT NULL AND goals_away_90 IS NOT NULL").fetchone()[0]
         maps = c.execute("SELECT COUNT(*) FROM fixture_provider_map WHERE match_quality='STRICT' AND review_status='APPROVED'").fetchone()[0]
         by_year = {str(y):n for y,n in c.execute("""
           SELECT s.start_year,COUNT(*) FROM fixtures f
@@ -41,7 +42,7 @@ def require_counts(db, *, expected_fixtures, expected_by_year):
         """)}
         classes = sorted(set(v for (v,) in c.execute("SELECT availability_class FROM source_snapshots")))
         if (integrity!="ok" or violations or version!=1 or count!=expected_fixtures
-            or maps!=expected_fixtures or by_year!=expected_by_year
+            or finished!=expected_fixtures or maps!=expected_fixtures or by_year!=expected_by_year
             or classes!=["RETROSPECTIVE"]):
             raise ValueError("ARCHIVE_SOURCE_NOT_APPROVED_REPLAY")
         return {"fixtures":count,"approved_provider_maps":maps,
