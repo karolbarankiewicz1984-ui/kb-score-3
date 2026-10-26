@@ -39,6 +39,22 @@ class ThreeLeagueCoverageTests(unittest.TestCase):
         self.assertIsNone(status["xg_away"])
         self.assertNotEqual(status["shot_state"],"COMPLETE_SHOT_XG")
 
+    def test_conference_only_two_real_kickoff_dates_is_valid_sample(self):
+        source=games(20)
+        for i,m in enumerate(source):
+            m["time_utc"]="2026-09-01T15:00:00Z" if i%2 else "2026-09-08T15:00:00Z"
+        chosen,eligible=select_sample(source,now(),count=10)
+        self.assertEqual(len(chosen),10)
+        self.assertEqual(eligible,20)
+        self.assertEqual(len({m["time_utc"][:10] for m in chosen}),2)
+
+    def test_archive_upload_runs_even_if_assertion_fails(self):
+        from pathlib import Path
+        workflow=Path(__file__).resolve().parents[1]/".github/workflows/kb3-step11-xg30-once.yml"
+        code=workflow.read_text(encoding="utf8")
+        self.assertIn("if: always()",code)
+        self.assertIn("KB3_PITCH_3_LEAGUES_XG30_20261026.enc",code)
+
     def test_all_ten_complete_still_not_95pct_full_coverage(self):
         self.assertLess(wilson_lower(10,10),0.8)
         self.assertGreater(wilson_lower(10,10),0.7)
