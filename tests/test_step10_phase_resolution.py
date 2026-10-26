@@ -49,5 +49,15 @@ class PhaseResolutionTest(unittest.TestCase):
         self.assertIn("UNFINISHED_DOMESTIC_REGULAR_SEASON_MATCH",
                       classify(data,league=78,year=2024)["errors"])
 
+
+    def test_awarded_regular_match_explicitly_quarantined(self):
+        data=season()
+        data[0]["fixture"]["status"]["short"]="AWD"
+        r=classify(data,league=78,year=2024)
+        self.assertEqual(r["errors"],[])
+        self.assertEqual(r["normal_played_regular_label_count"],305)
+        self.assertEqual(len(r["quarantined_domestic_fixture_results"]),1)
+        self.assertEqual(r["approval"],"DOMESTIC_REGULAR_LABELS_PASS_WITH_AWARDED_QUARANTINE")
+
 if __name__=="__main__":
     unittest.main()
