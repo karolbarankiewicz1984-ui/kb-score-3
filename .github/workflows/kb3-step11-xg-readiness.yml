@@ -1,0 +1,51 @@
+name: "KB3 Step11 - Bounded xG Readiness Audit"
+on:
+  push:
+    branches: ["feature/step11-provenance-xg-20261026"]
+    paths:
+      - "scripts/step11_xg_readiness.py"
+      - "tests/test_step11_xg_readiness.py"
+      - ".github/workflows/kb3-step11-xg-readiness.yml"
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  xg-readiness:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install pinned existing PitchAPI SDK
+        run: python3 -m pip install --disable-pip-version-check 'pitchapi==0.1.6'
+      - name: Offline bounded sampling tests
+        run: python3 -m unittest discover -s tests -p 'test_step11_xg_readiness.py' -v
+      - name: Strict xG source-readiness audit (max 16 Pitch and 2 Football calls)
+        env:
+          PITCHAPI_API_KEY: ${{ secrets.PITCHAPI_API_KEY }}
+          API_FOOTBALL_KEY: ${{ secrets.API_FOOTBALL_KEY }}
+        run: |
+          set -euo pipefail
+          test -n "$PITCHAPI_API_KEY" && test -n "$API_FOOTBALL_KEY"
+          python -m scripts.step11_xg_readiness --out audit/step11/STEP11_XG_READINESS.json
+      - name: Enforce no false point-in-time certification
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          x=json.loads(Path('audit/step11/STEP11_XG_READINESS.json').read_text())
+          assert x["schema"]=="kb3-step11-xg-readiness-v1"
+          assert len(x["seasons"])==2
+          assert sum(s["counts"]["selected"] for s in x["seasons"])==12
+          assert x["requests"]["pitchapi"]<=16
+          assert x["requests"]["api_football"]<=2
+          assert not x["point_in_time_verified"] and not x["historical_xg_imported"]
+          assert not x["training_allowed"] and not x["trained_model"]
+          print("STEP11_XG_BOUNDED_PASS_NOT_CERTIFIED")
+          PY
+      - name: Upload aggregates only, not xG data or secrets
+        uses: actions/upload-artifact@v4
+        with:
+          name: kb3-step11-xg-readiness-aggregate
+          path: audit/step11/STEP11_XG_READINESS.json
+          retention-days: 14
+          if-no-files-found: error

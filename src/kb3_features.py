@@ -14,7 +14,7 @@ import math
 from pathlib import Path
 import sqlite3
 
-FEATURE_VERSION = "kb3-step11-v0.2"
+FEATURE_VERSION = "kb3-step11-v0.3"
 # Defaults are provisional, not fitted. Tune only after Step12 chronological split.
 @dataclass(frozen=True)
 class EloParameters:
@@ -85,13 +85,18 @@ def load_fixtures(db, target_id):
       SELECT f.fixture_id,f.season_id,se.start_year AS season_start_year,
              f.home_team_id,f.away_team_id,f.kickoff_utc,
              f.status,f.goals_home_90,f.goals_away_90,
+             f.updated_utc AS result_record_updated_at_utc,
+             f.result_source AS result_provider_name,
              m.match_quality,m.review_status,
              ss.snapshot_id,ss.availability_class,
              ss.captured_at_utc,ss.published_at_utc
       FROM fixtures f
       JOIN seasons se ON se.season_id=f.season_id
-      LEFT JOIN fixture_provider_map m ON f.fixture_id=m.fixture_id
-      LEFT JOIN source_snapshots ss ON ss.snapshot_id=m.source_snapshot_id
+      LEFT JOIN providers rp ON rp.name=f.result_source
+      LEFT JOIN fixture_provider_map m
+          ON m.fixture_id=f.fixture_id AND m.provider_id=rp.provider_id
+      LEFT JOIN source_snapshots ss
+          ON ss.snapshot_id=m.source_snapshot_id AND ss.provider_id=m.provider_id
       WHERE se.competition_id=? AND se.start_year<=? AND f.fixture_id<>?
       ORDER BY f.kickoff_utc,f.fixture_id
     """, (target["competition_id"], target["season_start_year"],target_id)).fetchall()
@@ -112,9 +117,14 @@ def result_eligible(row, cutoff, mode):
         return False
     if not row["captured_at_utc"] or not row["published_at_utc"]:
         return False
+    if not row["result_record_updated_at_utc"]:
+        return False
     captured = utc_dt(row["captured_at_utc"])
     published = utc_dt(row["published_at_utc"])
-    return start + RESULT_LAG <= published <= captured <= cutoff
+    row_updated = utc_dt(row["result_record_updated_at_utc"])
+    # A current mutable fixture row edited after the claimed snapshot cannot
+    # stand in for that older snapshot's actual result payload.
+    return start + RESULT_LAG <= published <= captured <= cutoff and row_updated <= captured
 
 
 def fetch_xg(db, fixture, team, kickoff, cutoff, mode):
@@ -123,7 +133,11 @@ def fetch_xg(db, fixture, team, kickoff, cutoff, mode):
                s.published_at_utc,s.availability_class,s.snapshot_id
         FROM match_stat_observations o
         JOIN source_snapshots s ON s.snapshot_id=o.snapshot_id
+                                   AND s.provider_id=o.provider_id
+        JOIN fixture_provider_map pm ON pm.fixture_id=o.fixture_id
+                                     AND pm.provider_id=o.provider_id
         WHERE o.fixture_id=? AND o.team_id=?
+          AND pm.match_quality='STRICT' AND pm.review_status='APPROVED'
           AND lower(o.metric) IN ('xg','expected_goals')
     """, (fixture, team)).fetchall()
     accepted = []
@@ -244,6 +258,8 @@ def build_features(db, target_id, *, cutoff_utc, mode="verified", elo_params=Non
                 "fixture_id":row["fixture_id"],"kickoff_utc":row["kickoff_utc"],
                 "season_start_year":season_year,
                 "result_snapshot":row["snapshot_id"],
+                "result_provider_name":row["result_provider_name"],
+                "result_record_updated_at_utc":row["result_record_updated_at_utc"],
                 "result_captured_at_utc":row["captured_at_utc"],
                 "result_published_at_utc":row["published_at_utc"],
                 "xg_home":row["xgh_source"],"xg_away":row["xga_source"]})
@@ -289,6 +305,8 @@ def build_features(db, target_id, *, cutoff_utc, mode="verified", elo_params=Non
         "schema":FEATURE_VERSION,"fixture_id":target_id,
         "elo_parameters":asdict(params),
         "elo_parameter_status":"PROVISIONAL_NOT_FITTED",
+        "result_evidence_policy":"PROVIDER_SCOPED_AND_MUTABLE_ROW_TIME_CHECKED",
+        "row_payload_at_snapshot_proven":False,
         "kickoff_utc":utc_str(kickoff),"feature_cutoff_utc":utc_str(cutoff),
         "mode":mode,
         "availability_class":"RETROSPECTIVE" if mode=="replay" else "NOT_VERIFIED",

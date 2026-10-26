@@ -138,7 +138,7 @@
 - **BRAMKA ODBIORU / TEST PASS:** Każda cecha ma opis i znacznik daty dostępności; test odcina przyszły mecz i pokazuje brak przecieku; brak xG nie jest zamieniany na fikcyjną wartość.
 - **DOWÓD ZALICZENIA:** Katalog cech z źródłem, datą i wynikiem testów no-lookahead.
 - **ZALEŻY OD:** Krok 10.
-- **STATUS:** W REALIZACJI | GATE11: PENDING | TEST: 58/58 PASS (19 Step11 + 39 regresyjnych); pilot 380/380 i tymczasowy pilotaż 760/760 dwóch sezonów PL; 0 certyfikowanych archiwalnych prematch i brak trwałego backupu 760; training_allowed=false | DOWÓD: [run #40289840095](https://github.com/karolbarankiewicz1984-ui/kb-score-3/actions/runs/40289840095), [katalog i blokady](STEP_11_PROGRESS.md) | START: 26.10.2026, ODBIÓR: —
+- **STATUS:** W REALIZACJI | GATE11: PENDING | TEST: 66/66 PASS (27 Step11 + 39 regresyjnych); pilot 380/380 i tymczasowy 760/760; xG PitchAPI 12/12 kompletnych, 8/12 dokładnych mapowań, 0/12 historycznej certyfikacji czasu; training_allowed=false | DOWÓD: [testy 66/66 #40292159243](https://github.com/karolbarankiewicz1984-ui/kb-score-3/actions/runs/40292159243), [xG #40291895443](https://github.com/karolbarankiewicz1984-ui/kb-score-3/actions/runs/40291895443), [katalog i blokady](STEP_11_PROGRESS.md) | START: 26.10.2026, ODBIÓR: —
 
 #### Krok 12 — Podział TRAIN / VALIDATION / TEST  [NIE ROZPOCZĘTO]
 

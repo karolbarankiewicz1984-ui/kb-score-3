@@ -2,9 +2,9 @@ name: "KB3 Step 11 - Prematch Features No Lookahead"
 on:
   push:
     branches: ["feature/step11-*", "main"]
-    paths: ["src/kb3_features.py", "tests/test_step11_features.py", "scripts/step11_features_audit.py", "scripts/step11_two_season_pilot.py", "scripts/step09_import_history.py", "tests/test_step11_two_seasons.py", ".github/workflows/kb3-step11-features.yml"]
+    paths: ["src/kb3_features.py", "tests/test_step11_features.py", "scripts/step11_features_audit.py", "scripts/step11_two_season_pilot.py", "scripts/step09_import_history.py", "tests/test_step11_two_seasons.py", "tests/test_step11_xg_readiness.py", "scripts/step11_xg_readiness.py", ".github/workflows/kb3-step11-features.yml"]
   pull_request:
-    paths: ["src/kb3_features.py", "tests/test_step11_features.py", "scripts/step11_features_audit.py", "scripts/step11_two_season_pilot.py", "scripts/step09_import_history.py", "tests/test_step11_two_seasons.py", ".github/workflows/kb3-step11-features.yml"]
+    paths: ["src/kb3_features.py", "tests/test_step11_features.py", "scripts/step11_features_audit.py", "scripts/step11_two_season_pilot.py", "scripts/step09_import_history.py", "tests/test_step11_two_seasons.py", "tests/test_step11_xg_readiness.py", "scripts/step11_xg_readiness.py", ".github/workflows/kb3-step11-features.yml"]
   workflow_dispatch:
 permissions:
   contents: read

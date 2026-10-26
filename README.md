@@ -19,10 +19,10 @@
 - [Krok 08 — SQLite, niezmienne prognozy i odtworzenie backupu z Dysku Google](docs/STEP_08_ACCEPTANCE.md)
 - [Krok 09 — pilot importu 380 meczów Premier League, 19/19 testów i zaszyfrowany backup](docs/STEP_09_ACCEPTANCE.md)
 - [Krok 10 — audyt jakości 5 lig × 6 sezonów, 10 679 meczów, 54/54 testów PASS](docs/STEP_10_ACCEPTANCE.md)
-- [Krok 11 — ELO między sezonami, 58/58 testów, pilot 760 w CI, GATE11 PENDING](docs/STEP_11_PROGRESS.md)
+- [Krok 11 — ELO + ścisła kontrola pochodzenia xG, 66/66 testów, 12/12 xG w próbce (8/12 zgodnych ID), GATE11 PENDING](docs/STEP_11_PROGRESS.md)
 - [Historia blokady PitchAPI HTTP 401 (rozwiązana)](docs/STEP_06_BLOCKER.md)
 
-**Stan przy aktualizacji tego README (26.10.2026):** kroki 01–10 ZALICZONE (10/29); krok 11 W REALIZACJI (GATE11 PENDING), kroki 12–29 niezaliczone. GATE10 obejmuje audyt źródła i chronologii, z jawnym wyłączeniem 19 baraży i jednego wyniku AWD. Trwała baza pilota nadal zawiera 380 meczów PL 2024/25; dodatkowo sprawdzono **760 meczów dwóch sezonów w tymczasowym CI** bez trwałego backupu; statystyki, xG i kursy nie są jeszcze zaimportowane, a **ML/trening pozostają zablokowane** do bramek dotyczących cech i chronologii. Nie zmieniono KB2.1 ani innych modeli.
+**Stan przy aktualizacji tego README (26.10.2026):** kroki 01–10 ZALICZONE (10/29); krok 11 W REALIZACJI (GATE11 PENDING), kroki 12–29 niezaliczone. GATE10 obejmuje audyt źródła i chronologii, z jawnym wyłączeniem 19 baraży i jednego wyniku AWD. Trwała baza pilota nadal zawiera 380 meczów PL 2024/25; dodatkowo sprawdzono **760 meczów dwóch sezonów w tymczasowym CI** bez trwałego backupu; statystyki, xG i kursy nie są jeszcze zaimportowane do trwałej bazy (12 testowych odczytów PitchAPI wyłącznie w tymczasowym audycie), a **ML/trening pozostają zablokowane** do bramek dotyczących cech i chronologii. Nie zmieniono KB2.1 ani innych modeli.
 
 ## Co znajduje się w repo?
 
