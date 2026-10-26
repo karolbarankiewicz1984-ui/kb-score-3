@@ -1,0 +1,56 @@
+name: "KB3 Step11 - PitchAPI Single Provider Shadow Proof"
+on:
+  push:
+    branches: ["feature/step11-single-pitchapi-shadow-20261026"]
+    paths:
+      - ".github/workflows/kb3-step11-pitch-native-once.yml"
+permissions:
+  contents: read
+concurrency:
+  group: kb3-step11-pitch-native-single-shot-20261026
+  cancel-in-progress: false
+jobs:
+  one-source-shadow:
+    runs-on: ubuntu-latest
+    timeout-minutes: 18
+    steps:
+      - uses: actions/checkout@v4
+      - name: Pinned PitchAPI Python SDK
+        run: python -m pip install --disable-pip-version-check 'pitchapi==0.1.6'
+      - name: Offline native identity tests
+        run: |
+          python -m unittest discover -s tests -p 'test_step11_pitch_native.py' -v
+      - name: Exactly 9 PitchAPI requests max; ZERO API-Football requests
+        env:
+          PITCHAPI_API_KEY: ${{ secrets.PITCHAPI_API_KEY }}
+        run: |
+          set -euo pipefail
+          test -n "$PITCHAPI_API_KEY"
+          python -m scripts.step11_pitch_single_provider_shadow \
+            --out audit/step11/PITCHAPI_SINGLE_PROVIDER_SHADOW.json
+      - name: Hard evidence and zero-training gate
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import json
+          f=Path('audit/step11/PITCHAPI_SINGLE_PROVIDER_SHADOW.json')
+          x=json.loads(f.read_text())
+          assert x['schema']=='kb3-step11-pitchapi-single-provider-feasibility-v1'
+          assert set(x['season_evidence'])=={'2023/2024','2024/2025','2026/2027'}
+          assert all(v['fixtures']==380 for v in x['season_evidence'].values())
+          assert x['season_evidence']['2026/2027']['unique_provider_match_ids']==380
+          assert x['future_schedule_verified_with_status_all']
+          assert x['api_football_requests']==0
+          assert x['pitchapi_requests']<=9
+          assert x['shot_feed_sample']==5
+          assert not x['training_allowed'] and not x['production_switch_approved']
+          assert not x['historical_prematch_proof'] and not x['raw_payloads_persisted']
+          print('KB3_PITCHAPI_SHADOW_NO_CROSS_PROVIDER_JOIN_PASS')
+          PY
+      - name: Publish only aggregate counters, never API key or raw records
+        uses: actions/upload-artifact@v4
+        with:
+          name: kb3-pitchapi-single-provider-shadow-20261026
+          path: audit/step11/PITCHAPI_SINGLE_PROVIDER_SHADOW.json
+          retention-days: 30
+          if-no-files-found: error
