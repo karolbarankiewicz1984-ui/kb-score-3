@@ -57,3 +57,5 @@
 **Krok 12 — rozszerzona walidacja:** [EXPANDING kontra przesuwane 24 miesiące](docs/STEP_12_DUAL_WINDOWS.md) — te same cztery kwartalne walidacje 2025/26, 380 spotkań, zero przecieków TEST, brak treningu na niezatwierdzonych danych. [Niezmienny manifest obu metod](data/splits/STEP12_DUAL_WINDOWS_REAL_2026-10-26.json). GATE12 PENDING.
 
 **Aktualny stan (26.10.2026):** Krok 12 ODEBRANY — GATE12 PASS wyłącznie metodologia, 12/29; 0/1520 zatwierdzonych próbek do treningu. [Rekord odbioru](data/audits/STEP12_METHOD_GATE_PASS_2026-10-26.json), [raport ograniczeń PIT](data/audits/STEP12_REAL_PIT_GAP_REPORT_2026-10-26.json). Bez startu kroku13 lub zmiany innych modeli.
+
+**Krok 13 — W REALIZACJI:** [Pierwszy silnik ELO + Poisson i testy matematyczne](docs/STEP_13_PROGRESS.md). [Syntetyczny zamrożony raport M0](data/audits/STEP13_M0_REFERENCE_2026-10-26.json); wzorcowe 1X2 PASS, lecz **brak jeszcze prawdziwego backtestu i metryk historycznych**, GATE13 PENDING, nadal 12/29, training_allowed=false.

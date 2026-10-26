@@ -1,0 +1,286 @@
+{
+  "data_version": "NO_REAL_MATCH_DATA_SYNTHETIC_REFERENCE_ONLY",
+  "default_parameters": {
+    "base_away_goals": 1.15,
+    "base_home_goals": 1.45,
+    "elo_goal_elasticity": 0.35,
+    "elo_home_advantage": 65.0,
+    "elo_k": 20.0,
+    "elo_scale": 400.0,
+    "initial_elo": 1500.0,
+    "poisson_max_goals": 64,
+    "poisson_tail_tolerance": 1e-12
+  },
+  "default_parameters_status": "ILLUSTRATIVE_NOT_FITTED",
+  "dependencies": "Step12 split methodology PASS; real historical PIT not certified",
+  "engine": "KB3_ELO_POISSON_M0_V0_1",
+  "evaluation_version": "SUM3_BRIER_MULTICLASS_LOGLOSS_TOP1_ECE_5BIN_V1",
+  "gate13_pass": false,
+  "gate13_reason": "REFERENCE_ENGINE_TESTED_BUT_REAL_HISTORICAL_TEST_AND_METRICS_REQUIRED",
+  "historical_metrics_available": false,
+  "historical_sample_size": 0,
+  "illustrative_elo_after_home_win": [
+    1508.1506753883134,
+    1491.8493246116866
+  ],
+  "is_real_historical_backtest": false,
+  "mathematical_reference_forecasts": [
+    {
+      "forecast": {
+        "elo_away": 1500.0,
+        "elo_expected_home_points": 0.5924662305843318,
+        "elo_home": 1500.0,
+        "expected_goals": {
+          "away": 1.15,
+          "home": 1.45
+        },
+        "historical_test_passed": false,
+        "input_parameters": {
+          "base_away_goals": 1.15,
+          "base_home_goals": 1.45,
+          "elo_goal_elasticity": 0.35,
+          "elo_home_advantage": 65.0,
+          "elo_k": 20.0,
+          "elo_scale": 400.0,
+          "initial_elo": 1500.0,
+          "poisson_max_goals": 64,
+          "poisson_tail_tolerance": 1e-12
+        },
+        "match_duration": "REGULAR_90_MINUTES",
+        "model": "KB3_ELO_POISSON_M0_V0_1",
+        "p_1x2": {
+          "1": 0.4398224153823534,
+          "2": 0.2997897324702881,
+          "X": 0.26038785214735855
+        },
+        "p_btts_yes": 0.523066520741382,
+        "p_over": {
+          "1.5": 0.7326151184282509,
+          "2.5": 0.48157042406366457,
+          "3.5": 0.2639983556143567
+        },
+        "parameters_status": "ILLUSTRATIVE_UNFITTED_NOT_FOR_BETTING",
+        "poisson_joint_retained_mass": 0.9999999999994511,
+        "top_5_scorelines": [
+          {
+            "away": 1,
+            "home": 1,
+            "probability": 0.12385119167246973
+          },
+          {
+            "away": 0,
+            "home": 1,
+            "probability": 0.10769668841084325
+          },
+          {
+            "away": 1,
+            "home": 2,
+            "probability": 0.08979211396254055
+          },
+          {
+            "away": 1,
+            "home": 0,
+            "probability": 0.08541461494653085
+          },
+          {
+            "away": 0,
+            "home": 2,
+            "probability": 0.07808009909786136
+          }
+        ],
+        "training_allowed": false
+      },
+      "illustrative_away_team": "SYNTHETIC_TEAM_B",
+      "illustrative_home_team": "SYNTHETIC_TEAM_A",
+      "synthetic_assumed_label_for_formula_check_only": "H"
+    },
+    {
+      "forecast": {
+        "elo_away": 1500.0,
+        "elo_expected_home_points": 0.7210782431975601,
+        "elo_home": 1600.0,
+        "expected_goals": {
+          "away": 1.0536517023985092,
+          "home": 1.58259128344228
+        },
+        "historical_test_passed": false,
+        "input_parameters": {
+          "base_away_goals": 1.15,
+          "base_home_goals": 1.45,
+          "elo_goal_elasticity": 0.35,
+          "elo_home_advantage": 65.0,
+          "elo_k": 20.0,
+          "elo_scale": 400.0,
+          "initial_elo": 1500.0,
+          "poisson_max_goals": 64,
+          "poisson_tail_tolerance": 1e-12
+        },
+        "match_duration": "REGULAR_90_MINUTES",
+        "model": "KB3_ELO_POISSON_M0_V0_1",
+        "p_1x2": {
+          "1": 0.49616997214302877,
+          "2": 0.2527104396602435,
+          "X": 0.2511195881967277
+        },
+        "p_btts_yes": 0.5175256188895724,
+        "p_over": {
+          "1.5": 0.7395363544528948,
+          "2.5": 0.4906305083436062,
+          "3.5": 0.27190507803014674
+        },
+        "parameters_status": "ILLUSTRATIVE_UNFITTED_NOT_FOR_BETTING",
+        "poisson_joint_retained_mass": 0.9999999999992394,
+        "top_5_scorelines": [
+          {
+            "away": 1,
+            "home": 1,
+            "probability": 0.11944282344194641
+          },
+          {
+            "away": 0,
+            "home": 1,
+            "probability": 0.11336082233820668
+          },
+          {
+            "away": 1,
+            "home": 2,
+            "probability": 0.09451458562447981
+          },
+          {
+            "away": 0,
+            "home": 2,
+            "probability": 0.0897019246581474
+          },
+          {
+            "away": 1,
+            "home": 0,
+            "probability": 0.0754729440832932
+          }
+        ],
+        "training_allowed": false
+      },
+      "illustrative_away_team": "SYNTHETIC_TEAM_D",
+      "illustrative_home_team": "SYNTHETIC_TEAM_C",
+      "synthetic_assumed_label_for_formula_check_only": "D"
+    },
+    {
+      "forecast": {
+        "elo_away": 1600.0,
+        "elo_expected_home_points": 0.3149403910066497,
+        "elo_home": 1400.0,
+        "expected_goals": {
+          "away": 1.3699331491042117,
+          "home": 1.2172126801153507
+        },
+        "historical_test_passed": false,
+        "input_parameters": {
+          "base_away_goals": 1.15,
+          "base_home_goals": 1.45,
+          "elo_goal_elasticity": 0.35,
+          "elo_home_advantage": 65.0,
+          "elo_k": 20.0,
+          "elo_scale": 400.0,
+          "initial_elo": 1500.0,
+          "poisson_max_goals": 64,
+          "poisson_tail_tolerance": 1e-12
+        },
+        "match_duration": "REGULAR_90_MINUTES",
+        "model": "KB3_ELO_POISSON_M0_V0_1",
+        "p_1x2": {
+          "1": 0.3323000891896553,
+          "2": 0.4039433843686272,
+          "X": 0.26375652644171754
+        },
+        "p_btts_yes": 0.5250563028023851,
+        "p_over": {
+          "1.5": 0.7301229992532535,
+          "2.5": 0.4783386882094237,
+          "3.5": 0.2612044448161011
+        },
+        "parameters_status": "ILLUSTRATIVE_UNFITTED_NOT_FOR_BETTING",
+        "poisson_joint_retained_mass": 0.9999999999994833,
+        "top_5_scorelines": [
+          {
+            "away": 1,
+            "home": 1,
+            "probability": 0.12545347197192344
+          },
+          {
+            "away": 1,
+            "home": 0,
+            "probability": 0.10306618886030229
+          },
+          {
+            "away": 0,
+            "home": 1,
+            "probability": 0.09157634593626447
+          },
+          {
+            "away": 2,
+            "home": 1,
+            "probability": 0.08593143496227704
+          },
+          {
+            "away": 1,
+            "home": 2,
+            "probability": 0.0763517784243605
+          }
+        ],
+        "training_allowed": false
+      },
+      "illustrative_away_team": "SYNTHETIC_TEAM_F",
+      "illustrative_home_team": "SYNTHETIC_TEAM_E",
+      "synthetic_assumed_label_for_formula_check_only": "A"
+    }
+  ],
+  "report_sha256": "38e08689a8d7ca81b96c9b4a8fa4ed8c6e75d5eef617f3f421bb839711c989ff",
+  "schema": "kb3-step13-m0-reference-v0.1",
+  "synthetic_metric_formula_check": {
+    "calibration_bins": [
+      {
+        "high_exclusive_except_last": 0.2,
+        "low_inclusive": 0.0,
+        "mean_confidence": null,
+        "observed_top_class_accuracy": null,
+        "sample_size": 0
+      },
+      {
+        "high_exclusive_except_last": 0.4,
+        "low_inclusive": 0.2,
+        "mean_confidence": null,
+        "observed_top_class_accuracy": null,
+        "sample_size": 0
+      },
+      {
+        "high_exclusive_except_last": 0.6,
+        "low_inclusive": 0.4,
+        "mean_confidence": 0.4466452572980031,
+        "observed_top_class_accuracy": 0.6666666666666666,
+        "sample_size": 3
+      },
+      {
+        "high_exclusive_except_last": 0.8,
+        "low_inclusive": 0.6,
+        "mean_confidence": null,
+        "observed_top_class_accuracy": null,
+        "sample_size": 0
+      },
+      {
+        "high_exclusive_except_last": 1.0,
+        "low_inclusive": 0.8,
+        "mean_confidence": null,
+        "observed_top_class_accuracy": null,
+        "sample_size": 0
+      }
+    ],
+    "empirical_historical_performance": false,
+    "multiclass_brier_sum3": 0.6258726886182959,
+    "multiclass_log_loss": 1.0365635966004738,
+    "reference_type": "SYNTHETIC_ONLY_NOT_HISTORICAL",
+    "sample_size": 3,
+    "top_class_ece_5bins": 0.22002140936866355,
+    "training_allowed": false
+  },
+  "trained_on_historical_data": false,
+  "training_allowed": false
+}

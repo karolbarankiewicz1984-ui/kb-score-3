@@ -123,3 +123,7 @@ Dwa momenty prognozy: **EARLY** (z wyprzedzeniem) oraz **FINAL PREMATCH** (po no
 - Wysyłka, monitorowanie i harmonogram produkcyjny? **Kroki 23–25.**
 
 **Stan na 25.10.2026:** to dokument metodologiczny, bez nowych predykcji, bez treningu i bez uznanych rekomendacji KB Score 3.0.
+
+## 11. Rozpoczęty M0 (KROK 13, 26.10.2026)
+
+Ukończono wstępną matematyczną implementację ELO + niezależnego Poissona, bez dopasowywania do historii. Standardowe Elo expected points liczone z przewagą gospodarzy +65 przy aktualizacji ratingów (K=20, skala 400), natomiast estymatory goli używają niezfitowanych poglądowych baz 1.45 / 1.15 i różnicy Elo, bez ponownego dodawania przewagi gospodarzy. 1X2, Over 1.5/2.5/3.5, BTTS i najczęstsze wyniki pochodzą z jednego rozkładu 90-minutowego. Wprowadzono jawny guard przeciw przypadkowemu wykorzystaniu niepotwierdzonych danych historycznych w ocenie: funkcja metryk przyjmuje tylko SYNTHETIC_REFERENCE_ONLY. Testy i [referencyjne trzy przykłady](STEP_13_PROGRESS.md) demonstrują matematykę, nie prawdziwe P dla drużyn czy jakość modelu. **Wymagany historyczny Brier/log loss, historyczna kalibracja i akceptacja właściciela nadal czekają. GATE13 PENDING; 12/29; training_allowed=false.**
