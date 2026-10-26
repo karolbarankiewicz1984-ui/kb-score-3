@@ -1,0 +1,52 @@
+name: "KB3 Step12 Methodology Gate Acceptance"
+on:
+  push:
+    branches: ["feature/step12-asof-gate-and-acceptance-20261026"]
+    paths: [".github/workflows/kb3-step12-method-acceptance.yml"]
+permissions:
+  contents: write
+jobs:
+  frozen-method-gate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - name: Independently test method acceptance and regress prior frozen windows
+        run: |
+          python3 -m unittest discover -s tests -p 'test_step12_acceptance.py' -v
+          python3 -m unittest discover -s tests -p 'test_step12_windows.py' -v
+          python3 -m unittest discover -s tests -p 'test_step12_methodology.py' -v
+      - name: Freeze methodological PASS independent of training
+        run: |
+          python3 -m src.kb3_step12_acceptance \
+            --safe-view data/splits/STEP12_SAFE_MODEL_VIEW_2026-10-26.json \
+            --dual-plan data/splits/STEP12_DUAL_WINDOWS_REAL_2026-10-26.json \
+            --out data/audits/STEP12_METHOD_GATE_PASS_2026-10-26.json
+      - name: Inspect exact gate boundaries
+        run: |
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          from src.kb3_split import sha
+          p=Path('data/audits/STEP12_METHOD_GATE_PASS_2026-10-26.json')
+          a=json.loads(p.read_text())
+          assert a['record_sha256']==sha({k:v for k,v in a.items() if k!='record_sha256'})
+          assert a['step12_gate_pass'] and a['methodology_gate']=='PASS_SPLIT_PROTOCOL_ONLY'
+          assert a['completed_steps']==12 and a['total_steps']==29
+          assert not a['training_allowed'] and not a['real_historical_pit_verified']
+          assert not a['test_labels_accessed'] and not a['validation_predictions_created']
+          assert a['validation_fixture_coverage']==380 and a['heldout_test_fixtures']==380
+          print('KB3_STEP12_METHODOLOGY_GATE_PASS_TRAINING_BLOCKED')
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: kb3-step12-methodology-only-acceptance-20261026
+          path: data/audits/STEP12_METHOD_GATE_PASS_2026-10-26.json
+          retention-days: 90
+      - name: Commit signed-off protocol evidence
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/audits/STEP12_METHOD_GATE_PASS_2026-10-26.json
+          git commit -m "Step12: methodology-only PASS; no training, PIT uncertified"
+          git push origin "HEAD:feature/step12-asof-gate-and-acceptance-20261026"
