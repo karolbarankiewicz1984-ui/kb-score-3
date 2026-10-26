@@ -93,6 +93,8 @@ def audit_row(raw, exported_at, next_boundaries):
         normalized_cutoff = utc(raw["feature_cutoff_utc"])
         if not cutoff < kickoff:
             raise SplitSafetyError("FEATURE_CUTOFF_AFTER_KICKOFF")
+        if cutoff > exported_at:
+            raise SplitSafetyError("FEATURE_CUTOFF_AFTER_EXPORT")
         availability = raw.get("feature_availability")
         if not isinstance(availability, dict) or not availability:
             raise SplitSafetyError("MISSING_PER_FEATURE_PROVENANCE")
@@ -104,6 +106,8 @@ def audit_row(raw, exported_at, next_boundaries):
             receipt = timestamp(meta["latest_required_observed_at_utc"])
             if receipt > cutoff:
                 raise SplitSafetyError("FEATURE_OBSERVED_AFTER_CUTOFF")
+            if receipt > exported_at:
+                raise SplitSafetyError("FEATURE_OBSERVED_AFTER_EXPORT")
             if meta.get("training_allowed") is not True:
                 reason = "STEP11_FEATURE_TRAINING_NOT_APPROVED"
                 break
