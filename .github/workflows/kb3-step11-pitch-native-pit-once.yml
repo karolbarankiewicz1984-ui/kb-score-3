@@ -1,4 +1,5 @@
 name: KB3 Step11 - ONE TIME PitchAPI Native Sealed PIT
+# Explicit same-day second observation requested in Step11; 7 requests max; no recurrence.
 on:
   push:
     branches: ["feature/step11-pitch-native-encrypted-ledger-20261026"]
