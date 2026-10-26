@@ -89,8 +89,10 @@ class FieldAvailabilityTests(unittest.TestCase):
                          "actual_observed_at_utc":t(-9)})
 
     def test_source_time_applies_review_approval_barrier(self):
-        self.assertEqual(source_time({"actual_observed_at_utc":t(-20),
-             "review_approval_not_before_utc":t(-3)}),timestamp(t(-3)))
+        approval=t(-3)
+        actual=t(-20)
+        self.assertEqual(source_time({"actual_observed_at_utc":actual,
+             "review_approval_not_before_utc":approval}),timestamp(approval))
 
     def test_later_xg_and_approval_cannot_leak_past_cutoff(self):
         current=datetime.now(timezone.utc)
