@@ -7,7 +7,7 @@
 **ŹRÓDŁO PRAWDY:** [Plan główny, bramki odbioru i dziennik na Google Drive](https://docs.google.com/document/d/10wjHL3r3OAuxtezwcIeWztxS8lwjhYon5GM3BLhI0xE/edit).
 
 - [PLAN — mapa wszystkich 29 kroków](docs/PLAN.md)
-- [Krok 12 — rzeczywisty indeks 1520 meczów i kopia Google Drive; nadal GATE12 PENDING](docs/STEP_12_REAL_INDEX_2026-10-26.md)
+- [Krok 12 — rzeczywisty indeks 1520 meczów i kopia Google Drive (stan w trakcie prac)](docs/STEP_12_REAL_INDEX_2026-10-26.md)
 - [Krok 12 — dokumentacja metody TRAIN/VALIDATION/TEST](docs/STEP_12_PROGRESS.md)
 - [Krok 11 — odbiór według pierwotnych wymagań: GATE11 PASS, 11/29 etapów](docs/STEP_11_GATE_ACCEPTANCE_2026-10-26.md)
 - [Krok 11 — zaszyfrowane archiwum 760 meczów z niezależnym restore Google Drive](docs/STEP_11_OFFSITE_ARCHIVE.md)
@@ -36,7 +36,7 @@
 - [Krok 11 — ELO + ścisła kontrola pochodzenia xG, 246/246 testów, 38 potwierdzonych unikalnych próbek xG, GATE11 PASS](docs/STEP_11_PROGRESS.md)
 - [Historia blokady PitchAPI HTTP 401 (rozwiązana)](docs/STEP_06_BLOCKER.md)
 
-**Stan przy aktualizacji tego README (26.10.2026):** kroki 01–11 ZALICZONE (11/29); krok 11 ODEBRANY (GATE11 PASS według pierwotnego kontraktu), krok 12 W REALIZACJI / GATE12 PENDING, kroki 13–29 niezaliczone. GATE10 obejmuje audyt źródła i chronologii, z jawnym wyłączeniem 19 baraży i jednego wyniku AWD. Archiwum historii **760 meczów PL 2023/24 i 2024/25** zostało trwale zaszyfrowane na Google Drive z niezależnym odtworzeniem. Dodatkowo zarchiwizowano **dwa osobne realne snapshoty po 380 meczów PL 2026/27** z rzeczywistym czasem odczytu i 3 feedy xG zapisane w kwarantannie, następnie **3/3 mapowania konkretnych meczów** zatwierdzone niezależną warstwą weryfikacji (bez zmiany pierwotnych rekordów); zweryfikowane xG mogą już być użyte jako historyczne cechy w osobnym obserwacyjnym builderze (kontrola faktycznego pobrania i zatwierdzenia crosswalk); preferowany jest już jednosprzedawcowy PitchAPI (na razie tylko pilot, bez przełączenia produkcji) po realnej weryfikacji 1140 meczów trzech sezonów, LE/LK i pól fauli/kartek; nie wykonano produkcyjnego importu kompletnej ligi ani kalibracji modeli, a **ML/trening pozostają zablokowane** do bramek dotyczących cech i chronologii. Nie zmieniono KB2.1 ani innych modeli.
+**Stan przy aktualizacji tego README (26.10.2026):** kroki 01–12 ZALICZONE (12/29); kroki 11 i 12 ODEBRANE (GATE11 PASS, GATE12 PASS wyłącznie metodologia), kroki 13–29 niezaliczone; training_allowed=false. GATE10 obejmuje audyt źródła i chronologii, z jawnym wyłączeniem 19 baraży i jednego wyniku AWD. Archiwum historii **760 meczów PL 2023/24 i 2024/25** zostało trwale zaszyfrowane na Google Drive z niezależnym odtworzeniem. Dodatkowo zarchiwizowano **dwa osobne realne snapshoty po 380 meczów PL 2026/27** z rzeczywistym czasem odczytu i 3 feedy xG zapisane w kwarantannie, następnie **3/3 mapowania konkretnych meczów** zatwierdzone niezależną warstwą weryfikacji (bez zmiany pierwotnych rekordów); zweryfikowane xG mogą już być użyte jako historyczne cechy w osobnym obserwacyjnym builderze (kontrola faktycznego pobrania i zatwierdzenia crosswalk); preferowany jest już jednosprzedawcowy PitchAPI (na razie tylko pilot, bez przełączenia produkcji) po realnej weryfikacji 1140 meczów trzech sezonów, LE/LK i pól fauli/kartek; nie wykonano produkcyjnego importu kompletnej ligi ani kalibracji modeli, a **ML/trening pozostają zablokowane** do bramek dotyczących cech i chronologii. Nie zmieniono KB2.1 ani innych modeli.
 
 ## Co znajduje się w repo?
 
@@ -55,3 +55,5 @@
 **Krok 12 — bezpieczny podział do zatwierdzenia:** [Metodyka oraz protokół decyzji](docs/STEP_12_METHOD_DECISION.md), [zamrożony widok bez wyników](data/splits/STEP12_SAFE_MODEL_VIEW_2026-10-26.json), [niezależny audyt](data/audits/STEP12_INDEPENDENT_METHODOLOGY_2026-10-26.json). 1520 realnych meczów, 760/380/380, 4 foldy 60/126/123/71. GATE12 nadal PENDING (brak akceptacji); trening zablokowany.
 
 **Krok 12 — rozszerzona walidacja:** [EXPANDING kontra przesuwane 24 miesiące](docs/STEP_12_DUAL_WINDOWS.md) — te same cztery kwartalne walidacje 2025/26, 380 spotkań, zero przecieków TEST, brak treningu na niezatwierdzonych danych. [Niezmienny manifest obu metod](data/splits/STEP12_DUAL_WINDOWS_REAL_2026-10-26.json). GATE12 PENDING.
+
+**Aktualny stan (26.10.2026):** Krok 12 ODEBRANY — GATE12 PASS wyłącznie metodologia, 12/29; 0/1520 zatwierdzonych próbek do treningu. [Rekord odbioru](data/audits/STEP12_METHOD_GATE_PASS_2026-10-26.json), [raport ograniczeń PIT](data/audits/STEP12_REAL_PIT_GAP_REPORT_2026-10-26.json). Bez startu kroku13 lub zmiany innych modeli.
