@@ -37,6 +37,7 @@ def historical_season_history(receipts,*,cutoff_utc,current_match_ids=()):
     identities=set(current_match_ids)
     history=[]
     latest_observed=None
+    previous_teams=None
     for year in HISTORICAL_SEASONS:
         res=SEASON_RESOURCE.format(season=year)
         matching=[r for r in receipts if r.get("resource")==res]
@@ -58,8 +59,16 @@ def historical_season_history(receipts,*,cutoff_utc,current_match_ids=()):
             raise FeatureSafetyError("PITCH_HISTORICAL_SEASON_INVALID") from exc
         if evidence["status_counts"]!={"finished":380}:
             raise FeatureSafetyError("PITCH_HISTORICAL_SEASON_NOT_ALL_FINISHED")
+        team_ids={team["id"] for m in match_list
+                  for team in (m["home_team"],m["away_team"])}
+        overlap=len(previous_teams & team_ids) if previous_teams is not None else None
+        if overlap is not None and overlap<14:
+            raise FeatureSafetyError("PITCH_HISTORICAL_UNSTABLE_TEAM_IDENTIFIERS")
+        previous_teams=team_ids
         all_sources[year]={
             "fixture_count":380,
+            "teams":len(team_ids),
+            "stable_team_ids_prev_season":overlap,
             "status":"RETROSPECTIVE_OBSERVED_NOW_NOT_HISTORIC_PIT",
             "provider_original_published_at_utc":None,
             "source_observed_at_utc":r["completed_at_utc"],
