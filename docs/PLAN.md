@@ -148,7 +148,7 @@
 - **BRAMKA ODBIORU / TEST PASS:** Czas trenowania jest wcześniejszy od czasu testu, brak przekroczeń granic i przecieków; podział zapisany i niezmienny dla danej wersji eksperymentu.
 - **DOWÓD ZALICZENIA:** Plik manifestu splitu, liczby prób i test niezmienności.
 - **ZALEŻY OD:** Krok 11.
-- **STATUS:** W REALIZACJI | TEST: CI offline na syntetycznych rekordach; rzeczywiste PIT nadal wymagane | LINK DOWODU: [projekt splitu i GATE12 PENDING](STEP_12_PROGRESS.md) | DATA ODBIORU: —
+- **STATUS:** W REALIZACJI | TEST: rzeczywisty indeks PitchAPI 1520/1520, split 760/380/380, realne CI PASS i kopia szyfrowana Drive readback hash PASS; historyczna dostępność wszystkich cech nadal nieudowodniona; 0/1520 dopuszczonych do treningu | DOWÓD: [rzeczywisty indeks i audyt](STEP_12_REAL_INDEX_2026-10-26.md) | GATE12: PENDING | DATA ODBIORU: —
 
 
 **Decyzja 26.10.2026:** GATE11 PASS dotyczy inżynierii cech według pierwotnego testu: znacznik czasu i opis każdej cechy, zakaz lookahead oraz `null` przy brakującym xG. Testy offline 246/246 PASS. Niezrealizowane obserwacje z różnych dni, pełne pokrycie xG i historyczne provider-published-at należą do następnych kontroli jakości, NIE retroaktywnie do bramki 11. `training_allowed=false`; nie ma aprobaty produkcyjnej.

@@ -7,7 +7,8 @@
 **ŹRÓDŁO PRAWDY:** [Plan główny, bramki odbioru i dziennik na Google Drive](https://docs.google.com/document/d/10wjHL3r3OAuxtezwcIeWztxS8lwjhYon5GM3BLhI0xE/edit).
 
 - [PLAN — mapa wszystkich 29 kroków](docs/PLAN.md)
-- [Krok 12 — chronologiczny TRAIN/VALIDATION/TEST, W REALIZACJI (GATE12 PENDING)](docs/STEP_12_PROGRESS.md)
+- [Krok 12 — rzeczywisty indeks 1520 meczów i kopia Google Drive; nadal GATE12 PENDING](docs/STEP_12_REAL_INDEX_2026-10-26.md)
+- [Krok 12 — dokumentacja metody TRAIN/VALIDATION/TEST](docs/STEP_12_PROGRESS.md)
 - [Krok 11 — odbiór według pierwotnych wymagań: GATE11 PASS, 11/29 etapów](docs/STEP_11_GATE_ACCEPTANCE_2026-10-26.md)
 - [Krok 11 — zaszyfrowane archiwum 760 meczów z niezależnym restore Google Drive](docs/STEP_11_OFFSITE_ARCHIVE.md)
 - [Krok 11 — pierwszy rzeczywisty rejestr czasu i treści obserwacji 380 meczów PL 2026/27](docs/STEP_11_PIT_OBSERVATION.md)

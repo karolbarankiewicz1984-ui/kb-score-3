@@ -300,3 +300,10 @@ Następny krok:
 - Historyczne dane pobrane 26.10.2026 (`RETROSPECTIVE`) pozostają w **kwarantannie** i nie otrzymują statusu przeszłych autentycznych prognoz. Dopiero rzeczywisty `PROSPECTIVE_OBSERVED_AT` z pełnym katalogiem znaczników może przejść warstwę sprawdzającą; niezależny odbiór GATE12 nadal konieczny.
 - Testy syntetyczne `tests/test_step12_split.py`, workflow `.github/workflows/kb3-step12-split.yml`. Wczesne uruchomienie wykazało błędny oczekiwany komunikat w jednym teście negatywnym (już skorygowany); ostateczny status i link CI wymagają potwierdzenia.
 - [Opis i ograniczenia](STEP_12_PROGRESS.md). Nie użyto sekretów, nie wywołano dostawców API, nie uruchomiono treningu, brak nowego abonamentu i zmian starszych modeli.
+
+## KROK12 — RZECZYWISTY SPLIT 1520 + KOPIA DRIVE (26.10.2026)
+
+- [PitchAPI one-time GitHub Actions #40345911294](https://github.com/karolbarankiewicz1984-ui/kb-score-3/actions/runs/40345911294) **PASS**. Pięć odczytów istniejącego PitchAPI (0 API-Football), Premier League cztery sezony po 380: 760 TRAIN, 380 VALIDATION, 380 TEST. W sezonie 2026/27: 80 zakończonych i 300 przyszłych; 1520 unikalnych natywnych fixture IDs.
+- SHA splitu `da387303645a9bb9476351044944e5465d178ddff689c96b579093c4fb4fce3a`, [manifest](../data/splits/STEP12_NATIVE_REAL_SPLIT_2026-10-26.json), [źródłowy audyt](../data/audits/STEP12_NATIVE_REAL_AUDIT_2026-10-26.json); rzeczywiste historyczne odczyty RETROSPECTIVE, brak iluzji historycznej informacji prematch.
+- [Pakiet RSA+AES w folderze Google Drive](https://drive.google.com/file/d/1j56rqRA8SnVYi1g65dbfwPaXHH96GzhB/view): pobrany ponownie, ZIP 115137 B, SHA ZIP `191554843271756b0f472432719c00477c6a14bea255f403b25d17c6cfb9dbce`. Zgodność ciphertext SHA / wewnętrznego manifestu / manifestu splitu oraz 1520 IDs [PASS](../data/audits/STEP12_OFFSITE_CIPHERTEXT_READBACK_2026-10-26.json); surowy RSA restore **NIE** wykonywany bez prywatnego klucza.
+- **Stan po:** nadal **11/29**, krok 12 **W REALIZACJI / GATE12 PENDING**, ponieważ **0** rekordów spełnia historyczne kryteria PIT dla treningu. Nie uruchomiono ELO/Poissona/ML, nie było żadnego zakupu ani zmian innych modeli.
