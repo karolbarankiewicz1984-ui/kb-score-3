@@ -165,7 +165,7 @@ def verify_chain(db):
          response_hash,response_json,count,prior,chain)=row
         if prior!=prev or provider!="API-Football" or published is not None or state!="UNAVAILABLE":
             raise ValueError("CAPTURE_CHAIN_METADATA_MISMATCH")
-        if as_utc(start)>as_utc(completed):
+        if as_utc(started)>as_utc(completed):
             raise ValueError("REVERSED_CAPTURE_TIME")
         if hexdigest(canonical(json.loads(response_json)))!=response_hash:
             raise ValueError("TAMPERED_CAPTURE_RESPONSE")
