@@ -80,6 +80,12 @@ class Step12SplitTests(unittest.TestCase):
         with self.assertRaisesRegex(SplitSafetyError, "MISSING_PER_FEATURE"):
             build([r])
 
+    def test_future_cutoff_cannot_be_claimed_as_observed(self):
+        with self.assertRaisesRegex(SplitSafetyError, "FEATURE_CUTOFF_AFTER_EXPORT"):
+            build([item(mid="future", kickoff="2026-11-20T20:00:00Z",
+                        cutoff="2026-11-20T08:00:00Z",
+                        observed="2026-11-20T07:00:00Z")])
+
     def test_future_feature_receipt_rejected(self):
         with self.assertRaisesRegex(SplitSafetyError, "FEATURE_OBSERVED_AFTER_CUTOFF"):
             build([item(observed="2024-01-15T11:00:00Z")])
@@ -113,8 +119,8 @@ class Step12SplitTests(unittest.TestCase):
 
     def test_pending_future_match_not_eligible(self):
         r = item(mid="future", kickoff="2026-11-20T20:00:00Z",
-                 cutoff="2026-11-20T08:00:00Z",
-                 observed="2026-11-20T07:00:00Z")
+                 cutoff="2026-10-26T12:00:00Z",
+                 observed="2026-10-26T11:00:00Z")
         r["label_90m"] = None
         r["label_observed_at_utc"] = None
         self.assertEqual(build([r])["rows"][0]["reason"], "PENDING_LABEL")
