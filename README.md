@@ -7,6 +7,7 @@
 **ŹRÓDŁO PRAWDY:** [Plan główny, bramki odbioru i dziennik na Google Drive](https://docs.google.com/document/d/10wjHL3r3OAuxtezwcIeWztxS8lwjhYon5GM3BLhI0xE/edit).
 
 - [PLAN — mapa wszystkich 29 kroków](docs/PLAN.md)
+- [Krok 11 — zaszyfrowane archiwum 760 meczów z niezależnym restore Google Drive](docs/STEP_11_OFFSITE_ARCHIVE.md)
 - [DANE — projekt bazy i źródeł](docs/DANE.md)
 - [MODEL — metodologia i testy](docs/MODEL.md)
 - [ZMIANY — rejestr decyzji i PASS/FAIL](docs/ZMIANY.md)
