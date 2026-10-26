@@ -73,8 +73,9 @@ class TestSeparateStrictXg(unittest.TestCase):
         }
 
     def features(self,delta,**kw):
+        strict_manifest=kw.pop("strict_xg_manifest",self.manifest)
         return build_observed_features(self.primary,3002,cutoff_utc=utc(delta),
-            strict_xg_db=self.extra,strict_xg_manifest=self.manifest,**kw)
+            strict_xg_db=self.extra,strict_xg_manifest=strict_manifest,**kw)
 
     def test_strict_xg_from_independent_source(self):
         v=self.features(1)
