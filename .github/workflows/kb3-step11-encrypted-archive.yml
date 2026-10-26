@@ -1,0 +1,64 @@
+name: "KB3 Step 11 - Sealed Two-Season Offsite Archive"
+on:
+  push:
+    branches: ["feature/step11-offsite-encrypted-760-20261026"]
+    paths:
+      - "scripts/step11_archive_v2.py"
+      - "tests/test_step11_archive_v2.py"
+      - "config/step11_archive_recipient_public.pem"
+      - ".github/workflows/kb3-step11-encrypted-archive.yml"
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  archive-760:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install cryptography
+        run: python3 -m pip install --disable-pip-version-check 'cryptography>=42,<47'
+      - name: Synthetic two-season encryption and restore tests
+        run: python3 -m unittest discover -s tests -p 'test_step11_archive_v2.py' -v
+      - name: Build real ephemeral 760-fixture database
+        env:
+          API_FOOTBALL_KEY: ${{ secrets.API_FOOTBALL_KEY }}
+        run: |
+          set -euo pipefail
+          test -n "$API_FOOTBALL_KEY"
+          python -m scripts.step11_two_season_pilot --outdir audit/step11/two-season
+      - name: Seal snapshot to recipient public key; DO NOT export raw database
+        run: |
+          set -euo pipefail
+          mkdir -p audit/step11/archive
+          python -m scripts.step11_archive_v2 encrypt \
+            --db audit/step11/two-season/step11-pl-two-seasons-EPHEMERAL.sqlite3 \
+            --public-key config/step11_archive_recipient_public.pem \
+            --out audit/step11/archive/KB3_PL_2023-2025_REPLAY.enc \
+            --manifest audit/step11/archive/KB3_PL_2023-2025_REPLAY.manifest.json
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          p=Path('audit/step11/archive/KB3_PL_2023-2025_REPLAY.manifest.json')
+          x=json.loads(p.read_text())
+          assert x['evidence']['by_year']=={'2023':380,'2024':380}
+          assert x['evidence']['fixtures']==760
+          assert x['evidence']['approved_provider_maps']==760
+          assert x['evidence']['integrity_check']=='ok'
+          assert x['evidence']['source_availability_classes']==['RETROSPECTIVE']
+          assert not x['training_allowed'] and not x['historical_point_in_time_certified']
+          print('STEP11_ENCRYPTED_760_READY_REPLAY_ONLY')
+          PY
+      - name: Drop unencrypted CI copies after encryption
+        if: always()
+        run: |
+          rm -rf audit/step11/two-season
+      - name: Publish ONLY sealed ciphertext and safe aggregate manifest
+        uses: actions/upload-artifact@v4
+        with:
+          name: kb3-step11-sealed-760-20261026
+          path: |
+            audit/step11/archive/KB3_PL_2023-2025_REPLAY.enc
+            audit/step11/archive/KB3_PL_2023-2025_REPLAY.manifest.json
+          retention-days: 30
+          if-no-files-found: error
