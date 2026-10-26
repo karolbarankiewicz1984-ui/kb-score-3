@@ -34,7 +34,8 @@ def setup(tmp, *, duplicate=False):
             "encrypted_zip_sha256":digest,
             "cipher_sha256":local.PINNED_CIPHER_SHA256,
             "chain_sha256":local.PINNED_CHAIN_SHA256,
-            "finished_fixtures":1140}}))
+            "finished_fixtures":1140,
+            "historical_archive_observed_last_utc":local.HIST_CUTOFF_UTC}}))
     return root,path,digest
 
 
