@@ -52,9 +52,17 @@ class UefaNativeEvidenceTests(unittest.TestCase):
         self.start=now(-4);self.end=now(-3)
 
     def add(self,source="pitchapi:catalog",value=None):
+        if self.records:
+            start_dt=datetime.fromisoformat(
+                self.records[-1]["completed_at_utc"].replace("Z","+00:00")
+            )+timedelta(seconds=1)
+            started=start_dt.isoformat().replace("+00:00","Z")
+            completed=(start_dt+timedelta(seconds=1)).isoformat().replace("+00:00","Z")
+        else:
+            started,completed=self.start,self.end
         return add_observation(self.records,resource=source,
             payload={"data":"test"} if value is None else value,
-            started=self.start,completed=self.end,origin="SYNTHETIC_TEST")
+            started=started,completed=completed,origin="SYNTHETIC_TEST")
 
     def test_bounded_sample_spread_and_determinism(self):
         a,n=select_sample(games(),now())
