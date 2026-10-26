@@ -1,0 +1,42 @@
+name: "KB3 Step 13 - Retrospective Research Contract"
+on:
+  push:
+    branches: ["feature/step13-real-retrospective-research-v04", "main"]
+    paths:
+      - "src/kb3_step13_retrospective.py"
+      - "scripts/step13_pitch_retrospective_local.py"
+      - "tests/test_step13_retrospective.py"
+      - "docs/STEP_13_PROGRESS.md"
+      - ".github/workflows/kb3-step13-retrospective.yml"
+  pull_request:
+    paths:
+      - "src/kb3_step13_retrospective.py"
+      - "scripts/step13_pitch_retrospective_local.py"
+      - "tests/test_step13_retrospective.py"
+      - "docs/STEP_13_PROGRESS.md"
+      - ".github/workflows/kb3-step13-retrospective.yml"
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  research-safety-without-private-archive:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run offline model and anti-leakage regression tests
+        run: |
+          python3 -m unittest discover -s tests -p 'test_step13*.py' -v
+      - name: Verify local-only encrypted archive interface and no CI keys
+        run: |
+          python3 - <<'PY'
+          from src.kb3_step13_retrospective import POLICY,retrospective_research
+          from src.kb3_step13_baseline import BaselineSafetyError
+          try:
+              retrospective_research([],policy="VERIFIED_PREMATCH_PIT")
+              raise AssertionError("unsafe policy was accepted")
+          except BaselineSafetyError as exc:
+              assert "EXPLICIT_POLICY_REQUIRED" in str(exc)
+          assert POLICY == "RECONSTRUCTED_EVENT_TIME_RESEARCH_NOT_VERIFIED_PIT"
+          print("STEP13_RESEARCH_ONLY_POLICY_PASS_NO_REAL_MATCHES_OR_PRIVATE_KEYS")
+          PY
