@@ -17,9 +17,10 @@
 - [Krok 06 — audyt PitchAPI PASS i wyniki](docs/STEP_06_ACCEPTANCE.md)
 - [Krok 07 — parowanie identyfikatorów, GATE PASS i kolejka REVIEW](docs/STEP_07_ACCEPTANCE.md)
 - [Krok 08 — SQLite, niezmienne prognozy i odtworzenie backupu z Dysku Google](docs/STEP_08_ACCEPTANCE.md)
+- [Krok 09 — pilot importu 380 meczów Premier League, 19/19 testów i zaszyfrowany backup](docs/STEP_09_ACCEPTANCE.md)
 - [Historia blokady PitchAPI HTTP 401 (rozwiązana)](docs/STEP_06_BLOCKER.md)
 
-**Stan przy aktualizacji tego README (25.10.2026):** kroki 01–08 ZALICZONE, kroki 09–29 jeszcze niezaliczone. Dokładny stan na dany dzień należy zawsze sprawdzić w planie Google Docs. Żaden nowy model ani uczenie ML nie zostały uruchomione.
+**Stan przy aktualizacji tego README (26.10.2026):** kroki 01–09 ZALICZONE, kroki 10–29 jeszcze niezaliczone. Dokładny stan na dany dzień należy zawsze sprawdzić w planie Google Docs. Żaden nowy model ani uczenie ML nie zostały uruchomione.
 
 ## Co znajduje się w repo?
 
