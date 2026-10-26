@@ -21,6 +21,7 @@ from src.kb3_step13_fold_replay import real_schedule_probe
 from src.kb3_pitch_uefa_evidence import restore
 from src.kb3_pitch_multiseason_history import historical_season_history
 from src.kb3_step13_retrospective import POLICY, retrospective_research
+from src.kb3_step13_archive_preflight import verify_original_zip
 
 HIST_CUTOFF_UTC = "2026-10-26T13:17:47.692940Z"
 PINNED_ZIP_SHA256 = "301bae69251d19a0192e12c2c033636b3f2822a15dcea2c4beaca28f4b45de2e"
@@ -109,6 +110,8 @@ def research_local(*,cipher_path,manifest_path,private_key_path,root):
 def research_archive_zip_local(*,archive_zip,private_key_path,root):
     """Accept the exact original Drive ZIP directly, with byte-for-byte pin."""
     root=Path(root)
+    # Independent no-key ZIP + sealed manifest + provider-summary check.
+    archive_preflight=verify_original_zip(archive_zip)
     report=_pinned_audit(root)
     expected=report["history"]["encrypted_zip_sha256"]
     if hashlib.sha256(Path(archive_zip).read_bytes()).hexdigest()!=expected:
@@ -128,8 +131,11 @@ def research_archive_zip_local(*,archive_zip,private_key_path,root):
             man_path=Path(tmp)/manifest_name
             ct_path.write_bytes(zipped.read(cipher))
             man_path.write_bytes(zipped.read(manifest))
-            return research_local(cipher_path=ct_path,manifest_path=man_path,
+            result=research_local(cipher_path=ct_path,manifest_path=man_path,
                                   private_key_path=private_key_path,root=root)
+            result["original_encrypted_archive_preflight_sha256"]=archive_preflight["report_sha256"]
+            result["report_sha256"]=sha({k:v for k,v in result.items() if k!="report_sha256"})
+            return result
 
 
 def main():
