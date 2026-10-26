@@ -230,3 +230,10 @@ Następny krok:
 - [Pilot 1140 meczów + 5 xG #40312167476](https://github.com/karolbarankiewicz1984-ui/kb-score-3/actions/runs/40312167476) PASS; [UEFA + faule/kartki #40312704445](https://github.com/karolbarankiewicz1984-ui/kb-score-3/actions/runs/40312704445) PASS. 14 wywołań PitchAPI łącznie, 0 API-Football. Katalog 77 lig; szczegółowa pokrywalność xG innych lig nadal niepotwierdzona.
 - [160/160 testów #40313071652](https://github.com/karolbarankiewicz1984-ui/kb-score-3/actions/runs/40313071652) PASS, w tym nowy `shadow_native` ELO/formy/xG bez lookahead. `config/STEP11_PROVIDER_POLICY.json` ustala PitchAPI jako preferowanego kandydata, bez produkcyjnej migracji danych i bez opłat.
 - [Protokół](STEP_11_SINGLE_PROVIDER_DECISION.md). **GATE11 PENDING 10/29**, brak treningu i zmian wcześniejszych modeli; retro PIT nie poświadczony.
+
+## KROK11 — NATYWNY REJESTR PitchAPI, HASH CHAIN + OFFSITE RESTORE (26.10.2026)
+
+- [Rzeczywisty run #40315374235](https://github.com/karolbarankiewicz1984-ui/kb-score-3/actions/runs/40315374235): pełny sezon PL 2026/27 (380 fixture), 5 xG, sześć sesji PIT, 385 niezmiennych rekordów, 7 zapytań PitchAPI, **zero API-Football**.
+- Zaszyfrowany backup w [prywatnym Google Drive](https://drive.google.com/file/d/18AeQOY7it5F58S4EqHKk8GDpqOD_TtUg/view), pobrany ponownie i odszyfrowany dotychczasowym kluczem prywatnym: 385/385 hashy i pełny łańcuch sesji, SQLite integrity=ok, FK=0. Klucz nie trafił do GitHub.
+- Natywny append-only ledger, osobne RSA+AES archiwum i odczyt as-of do wspólnego ELO/formy/xG. [175/175 PASS](https://github.com/karolbarankiewicz1984-ui/kb-score-3/actions/runs/40316210520). [Raport](STEP_11_PITCH_NATIVE_PIT_ARCHIVE.md).
+- **GATE11 PENDING, 10/29**, brak certyfikowanego historycznego PIT, brak treningu i produkcyjnego przełączenia.
