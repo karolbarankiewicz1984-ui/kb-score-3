@@ -1,0 +1,77 @@
+{
+  "schema": "kb3-step11-pitch-multiseason-elo-real-v1",
+  "date_utc": "2026-10-26",
+  "provider": "PitchAPI",
+  "history": {
+    "seasons": [
+      "2023/2024",
+      "2024/2025",
+      "2025/2026"
+    ],
+    "complete_fixtures_per_season": 380,
+    "finished_fixtures": 1140,
+    "unique_teams_per_season": 20,
+    "consecutive_team_id_intersection": [
+      17,
+      17
+    ],
+    "historical_archive_observed_last_utc": "2026-10-26T13:17:47.692940Z",
+    "archive_file_url": "https://drive.google.com/file/d/1_wLVJtOSwjwQwHhjBa54-3f0-aCzhyqJ/view",
+    "encrypted_zip_sha256": "301bae69251d19a0192e12c2c033636b3f2822a15dcea2c4beaca28f4b45de2e",
+    "cipher_sha256": "e5e14a2320e65f945a2709c4cd8dfb49ed38d45ccca3502b3e5ba7c21f84d343",
+    "chain_sha256": "33c750f2db89a0df5faeba9348652a451f33548959839ff7bb0ca49210c2b367",
+    "source_receipts": 4,
+    "independent_offsite_RSA_AES_restore_verified": true,
+    "source_payload_bytes_authenticated": 560243
+  },
+  "current": {
+    "season": "2026/2027",
+    "completed_results": 80,
+    "current_archive_url": "https://drive.google.com/file/d/13idXMzj3dIn_luUdVi7LbcxKROjeLeZ5/view",
+    "current_zip_sha256": "892707f2d5914b08dd5b4377a16507a6c8694ce50266b23ddcd28ce8cf176584",
+    "independent_offsite_restore_verified": true
+  },
+  "live_integration": {
+    "cutoff_utc": "2026-10-26T13:19:00Z",
+    "target_kickoff_utc": "2026-10-31T12:30:00Z",
+    "historical_results_used": 1140,
+    "with_current_results_used": 1220,
+    "home_previous_seasons_matches": 114,
+    "away_previous_seasons_matches": 114,
+    "all_output_features": 121,
+    "feature_availability_items": 159,
+    "source_history_real_decrypted": true,
+    "source_current_real_decrypted": true,
+    "elo_parameters_status": "PROVISIONAL_NOT_FITTED",
+    "current_only_home_elo": 1508.52765,
+    "multiseason_home_elo": 1535.01106,
+    "current_only_away_elo": 1480.35796,
+    "multiseason_away_elo": 1553.50263,
+    "feature_sha256": "38107759ad916fdc7cb581080067327ae6890a2e7cca423e628767392ab7070d",
+    "historical_xg_fabricated": false,
+    "provider_publication_time_known": false,
+    "historical_matchtime_pit_certified": false,
+    "training_allowed": false,
+    "betting_predictions_produced": false
+  },
+  "provider_requests": {
+    "pitchapi": 4,
+    "api_football": 0
+  },
+  "regression": {
+    "source": "https://github.com/karolbarankiewicz1984-ui/kb-score-3/actions/runs/40330403055",
+    "total_tests_pass": 231,
+    "step11": 192,
+    "earlier": 39,
+    "provider_calls_during_ci": 0
+  },
+  "status": {
+    "GATE11": "PENDING",
+    "approved_steps": 10,
+    "total_steps": 29,
+    "multiday_real_observation_pending": true,
+    "broader_xg_completeness_pending": true,
+    "model_training_allowed": false,
+    "production_source_switch_approved": false
+  }
+}

@@ -1,0 +1,74 @@
+name: "KB3 Step11 - ONE TIME Native PL Historical Seasons"
+on:
+  push:
+    branches: ["feature/step11-native-multiseason-elo-20261026"]
+    paths: [".github/workflows/kb3-step11-native-historical-once.yml"]
+permissions:
+  contents: read
+concurrency:
+  group: kb3-step11-native-pl-historical-only-20261026
+  cancel-in-progress: false
+jobs:
+  offline-before-provider:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - name: Crypto dependency
+        run: python3 -m pip install --disable-pip-version-check 'cryptography>=42,<47'
+      - name: No-leak and native multiseason Elo tests without API
+        run: |
+          python3 -m unittest discover -s tests -p 'test_step11_pitch_multiseason_elo.py' -v
+          python3 -m unittest discover -s tests -p 'test_step11_pitch_native_observed.py' -v
+  seal-three-historical-seasons:
+    needs: offline-before-provider
+    runs-on: ubuntu-latest
+    timeout-minutes: 18
+    steps:
+      - uses: actions/checkout@v4
+      - name: Existing provider and public-key AES
+        run: python3 -m pip install --disable-pip-version-check 'pitchapi==0.1.6' 'cryptography>=42,<47'
+      - name: One catalog and three finished PL seasons - FOUR PitchAPI calls only
+        env:
+          PITCHAPI_API_KEY: ${{ secrets.PITCHAPI_API_KEY }}
+        run: |
+          set -euo pipefail
+          test -n "$PITCHAPI_API_KEY"
+          python3 -m scripts.step11_pitch_multiseason_capture_once \
+            --outdir audit/step11/pitch-history \
+            --recipient config/step11_archive_recipient_public.pem
+      - name: Reject false PIT and plaintext backup claims
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import json
+          root=Path('audit/step11/pitch-history')
+          a=json.loads((root/'PITCH_PL_HIST_NATIVE_SUMMARY.json').read_text())
+          m=json.loads((root/'KB3_PITCH_PL_HIST_2023_2026_NATIVE.manifest.json').read_text())
+          assert a['pitchapi_requests']==4 and a['api_football_requests']==0
+          assert a['historical_seasons']==3 and a['historical_fixtures_total']==1140
+          assert set(a['seasons'])=={'2023/2024','2024/2025','2025/2026'}
+          assert all(s['fixtures']==380 for s in a['seasons'].values())
+          assert a['seasons']['2024/2025']['overlap_with_previous_season']>=14
+          assert a['seasons']['2025/2026']['overlap_with_previous_season']>=14
+          assert a['sealed_sessions']==4 and m['proof']['sessions']==4
+          assert m['proof']['final_chain_sha256']==a['final_chain_sha256']
+          assert m['ciphertext_sha256']==a['cipher_sha256']
+          assert not a['original_provider_publication_known']
+          assert not a['historical_prematch_pit_certified']
+          assert not a['training_allowed'] and not a['production_switch_approved']
+          assert not m['historical_prematch_pit_certified'] and not m['training_allowed']
+          assert not a['independent_drive_restore_verified']
+          assert not any(root.glob('*.sqlite*'))
+          print('KB3_THREE_PL_SEASONS_NATIVE_ENCRYPTED_NOT_HISTORIC_PIT_PASS')
+          PY
+      - name: Only encrypted historical responses, manifest and aggregate stats
+        uses: actions/upload-artifact@v4
+        with:
+          name: kb3-native-pl-historical-3-seasons-20261026
+          path: |
+            audit/step11/pitch-history/KB3_PITCH_PL_HIST_2023_2026_NATIVE.enc
+            audit/step11/pitch-history/KB3_PITCH_PL_HIST_2023_2026_NATIVE.manifest.json
+            audit/step11/pitch-history/PITCH_PL_HIST_NATIVE_SUMMARY.json
+          retention-days: 30
+          if-no-files-found: error

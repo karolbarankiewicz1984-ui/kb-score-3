@@ -120,7 +120,8 @@ def seal(receipts,public_pem,out,manifest):
     return meta
 
 
-def restore(encrypted,manifest,private_key,*,allow_synthetic=False):
+def restore(encrypted,manifest,private_key,*,allow_synthetic=False,
+            include_receipts=False):
     meta=json.loads(Path(manifest).read_text("utf8"))
     if meta.get("schema")!=SCHEMA:
         raise ValueError("UEFA_ARCHIVE_SCHEMA_MISMATCH")
@@ -155,4 +156,9 @@ def restore(encrypted,manifest,private_key,*,allow_synthetic=False):
     proof=verify_receipts(payload["receipts"],allow_synthetic=allow_synthetic)
     if proof!=meta.get("proof"):
         raise ValueError("UEFA_PROVENANCE_CHECK_FAILED")
-    return {"validated":True,"proof":proof,"training_allowed":False}
+    result={"validated":True,"proof":proof,"training_allowed":False}
+    if include_receipts:
+        # Sensitive provider records: strictly caller-owned in-memory return,
+        # never print or store in CI artifacts/public reports.
+        result["receipts"]=payload["receipts"]
+    return result
