@@ -63,3 +63,5 @@
 **Krok13 v0.2 — symulator walk-forward:** [bezpieczny mechanizm kwartalnego odtwarzania (tylko sztuczne wyniki)](docs/STEP_13_REPLAY_CONTRACT.md) i [realny raport gotowości terminarza](data/audits/STEP13_REAL_FOLD_READINESS_2026-10-26.json) (0/1520 kwalifikowanych danych). CI testuje brak wpływu wyniku walidacji na jego prognozę. Realnego historycznego backtestu nadal nie wykonano, GATE13 PENDING.
 
 **Krok 13 — kontrola opóźnionych wyników:** [Dodatkowy test prequential w obrębie kwartału](docs/STEP_13_PROGRESS.md), [moduł](src/kb3_step13_replay.py) i [raport wyłącznie syntetyczny](data/audits/STEP13_M0_SYNTHETIC_REPLAY_2026-10-26.json). Nie zastępuje głównego modelu ze stałym zamrożeniem na początku folda. Nie testowano prawdziwej historii; GATE13 PENDING.
+
+**Krok 13 v0.3 — dopasowanie matematyczne TRAIN-only:** [wyjaśnienie i testy](docs/STEP_13_PROGRESS.md), [nieprodukcyjny raport syntetyczny](data/audits/STEP13_SYNTHETIC_POISSON_FIT_V03_2026-10-26.json). Wykonano MLE Poissona jedynie na 12 sztucznych meczach TRAIN, **nie na rzeczywistych wynikach**. Prawdziwe backtesty 1X2, Brier, log loss i kalibracja wciąż zablokowane; GATE13 PENDING i 12/29.
