@@ -1,0 +1,51 @@
+name: "KB3 Step11 - PitchAPI One-Source UEFA & Fouls Check"
+on:
+  push:
+    branches: ["feature/step11-single-pitchapi-shadow-20261026"]
+    paths:
+      - ".github/workflows/kb3-step11-pitch-uefa-once.yml"
+      - "scripts/step11_pitch_native_uefa_stats.py"
+permissions:
+  contents: read
+concurrency:
+  group: kb3-step11-pitch-uefa-once-20261026
+  cancel-in-progress: false
+jobs:
+  native-uefa-stats:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - name: Pinned Python SDK
+        run: python -m pip install --disable-pip-version-check 'pitchapi==0.1.6'
+      - name: One provider only, 5 requests maximum
+        env:
+          PITCHAPI_API_KEY: ${{ secrets.PITCHAPI_API_KEY }}
+        run: |
+          set -euo pipefail
+          test -n "$PITCHAPI_API_KEY"
+          python -m scripts.step11_pitch_native_uefa_stats \
+            --out audit/step11/PITCHAPI_NATIVE_UEFA_STATS.json
+      - name: Explicitly deny false coverage claims
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          p=Path("audit/step11/PITCHAPI_NATIVE_UEFA_STATS.json")
+          x=json.loads(p.read_text())
+          assert x["schema"]=="kb3-step11-native-uefa-discipline-v1"
+          assert len(x["competition_2026_27"])==2
+          assert all(v["fixture_count"]>0 for v in x["competition_2026_27"].values())
+          assert x["api_football_requests"]==0
+          assert x["pitchapi_requests"]<=5
+          assert not x["training_allowed"] and x["shadow_mode"]
+          assert x["league_level_xg_completeness_not_proven"]
+          print("KB3_NATIVE_UEFA_FEASIBILITY_PASS_NOT_GATE11")
+          PY
+      - name: Export only safe aggregates
+        uses: actions/upload-artifact@v4
+        with:
+          name: kb3-step11-native-uefa-stats-20261026
+          path: audit/step11/PITCHAPI_NATIVE_UEFA_STATS.json
+          retention-days: 30
+          if-no-files-found: error

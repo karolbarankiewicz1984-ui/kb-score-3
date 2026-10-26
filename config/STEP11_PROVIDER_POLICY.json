@@ -1,0 +1,57 @@
+{
+  "schema": "kb3-step11-source-of-truth-policy-v1",
+  "decision_date": "2026-10-26",
+  "preferred_primary_sports_provider": "PitchAPI",
+  "decision": "APPROVED_AS_PREFERRED_CANDIDATE",
+  "runtime_state": "SHADOW_ONLY_NOT_PRODUCTION",
+  "source_scope": [
+    "football fixtures",
+    "90min final results",
+    "teams",
+    "shot xG",
+    "fouls/cards where covered"
+  ],
+  "provider_native_join_key": "PitchAPI.match_id",
+  "cross_provider_fixture_mapping_required": false,
+  "pitchapi_test_evidence": {
+    "run": "https://github.com/karolbarankiewicz1984-ui/kb-score-3/actions/runs/40312167476",
+    "league_test_run": "https://github.com/karolbarankiewicz1984-ui/kb-score-3/actions/runs/40312704445",
+    "premier_league_seasons": {
+      "2023/2024": 380,
+      "2024/2025": 380,
+      "2026/2027": 380
+    },
+    "tested_shot_feeds": 5,
+    "complete_tested_shot_feeds": 5,
+    "current_uefa_europa_fixture_count": 144,
+    "current_uefa_conference_fixture_count": 108,
+    "fouls_yellow_red_keys_confirmed_in_sample": true
+  },
+  "cost_assertion": "No added account purchase or upgrade authorized; provider public docs currently describe free access, terms subject to change",
+  "legacy_api_football_archives": "PRESERVE_READ_ONLY",
+  "legacy_unresolved_pitchapi_to_api_football_joins": "LEAVE_QUARANTINED_NOT_NEEDED_IN_NEW_NATIVE_PATH",
+  "api_football_in_new_pitchapi_native_path": "PROHIBITED",
+  "odds_data": "SEPARATE_LATER_IF_NEEDED_ONLY_WITH_EXPLICIT_SOURCE_LICENSE",
+  "market_data_does_not_define_fixture_identity": true,
+  "known_unverified": [
+    "UEFA fixture-wide shot xG coverage",
+    "all 77 league completeness",
+    "provider SLA and original published_at",
+    "source archive durable observed-at receipts",
+    "betting odds market availability",
+    "license for intended use"
+  ],
+  "migration_requirements": [
+    "archive source-native fixture and shot snapshots with capture hash/timestamp",
+    "verify coverage by league and season, and shot xG availability per fixture",
+    "compare offline Elo/form feature outputs under source-only identity",
+    "test reschedules, corrections and unknown team IDs without false PIT",
+    "make explicit approval and retain reversible legacy read-only backup"
+  ],
+  "migrate_existing_historic_api_football_rows": false,
+  "historical_prematch_proof": false,
+  "training_allowed": false,
+  "gate11": "PENDING",
+  "approved_steps": 10,
+  "total_steps": 29
+}
