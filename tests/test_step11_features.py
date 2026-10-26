@@ -1,9 +1,10 @@
 """Step11: synthetic temporal invariants, no API or private data."""
 import sqlite3
 import unittest
-from src.kb3_features import build_features, FeatureSafetyError, digest
+from src.kb3_features import build_features, FeatureSafetyError, EloParameters, digest
 
 SCHEMA = """
+CREATE TABLE seasons (season_id INTEGER PRIMARY KEY, competition_id INTEGER, start_year INTEGER);
 CREATE TABLE fixtures (
  fixture_id INTEGER PRIMARY KEY, season_id INTEGER, home_team_id INTEGER,
  away_team_id INTEGER, kickoff_utc TEXT, status TEXT, goals_home_90 INTEGER,
@@ -25,6 +26,8 @@ CUTOFF = "2024-08-11T17:00:00Z"
 def sample(verified=True):
     db=sqlite3.connect(":memory:")
     db.executescript(SCHEMA)
+    db.executemany("INSERT INTO seasons VALUES (?,?,?)",
+                   [(1,100,2024),(2,100,2023),(3,200,2023),(4,100,2025)])
     matches=[
       (1,1,10,20,"2024-08-01T18:00:00Z","FINISHED",2,1),
       (2,1,30,10,"2024-08-04T18:00:00Z","FINISHED",0,0),
@@ -140,6 +143,77 @@ class Step11Features(unittest.TestCase):
             b=build_features(db,4,cutoff_utc=CUTOFF)
         self.assertEqual(a,b)
         self.assertEqual(a["sha256"],digest({k:v for k,v in a.items() if k!="sha256"}))
+
+
+    def prior_season(self, db, *, season_id=2, fid=71, year="2023"):
+        db.execute("INSERT INTO fixtures VALUES (?,?,?,?,?,?,?,?)",
+                   (fid,season_id,10,20,f"{year}-08-01T18:00:00Z","FINISHED",3,0))
+        db.execute("INSERT INTO source_snapshots VALUES (?,?,?,?)",
+                   (f"s{fid}",f"{year}-08-02T12:00:00Z",
+                    f"{year}-08-01T22:00:00Z","VERIFIED_PREMATCH"))
+        db.execute("INSERT INTO fixture_provider_map VALUES (?,?,?,?,?)",
+                   (f"provider{fid}",fid,"STRICT","APPROVED",f"s{fid}"))
+
+    def test_carries_previous_season_without_retraining(self):
+        with sample() as db:
+            self.prior_season(db)
+            carry=build_features(db,4,cutoff_utc=CUTOFF)
+            reset=build_features(db,4,cutoff_utc=CUTOFF,
+                                 elo_params=EloParameters(season_retention=0))
+        self.assertEqual(carry["accepted_predecessor_count"],4)
+        self.assertEqual(carry["features"]["home_prior_seasons_games_available"],1)
+        self.assertNotEqual(carry["features"]["home_elo"],reset["features"]["home_elo"])
+        self.assertEqual(carry["elo_parameter_status"],"PROVISIONAL_NOT_FITTED")
+        self.assertEqual(carry["elo_parameters"]["season_retention"],0.85)
+        self.assertFalse(carry["training_allowed"])
+
+    def test_other_league_not_used_in_ratings_or_form(self):
+        with sample() as db:
+            baseline=build_features(db,4,cutoff_utc=CUTOFF)
+            self.prior_season(db,season_id=3,fid=73)
+            after=build_features(db,4,cutoff_utc=CUTOFF)
+        self.assertEqual(baseline["features"],after["features"])
+        self.assertEqual(baseline["accepted_predecessor_count"],3)
+
+    def test_future_season_not_used_even_with_wrong_early_kickoff(self):
+        with sample() as db:
+            baseline=build_features(db,4,cutoff_utc=CUTOFF)
+            self.prior_season(db,season_id=4,fid=74,year="2024")
+            after=build_features(db,4,cutoff_utc=CUTOFF)
+        self.assertEqual(baseline["features"],after["features"])
+
+    def test_interseason_decay_for_multiple_absent_years(self):
+        with sample() as db:
+            self.prior_season(db,year="2021")
+            db.execute("UPDATE seasons SET start_year=2021 WHERE season_id=2")
+            before=build_features(db,4,cutoff_utc=CUTOFF,
+                                  elo_params=EloParameters(season_retention=0.85))
+            zero=build_features(db,4,cutoff_utc=CUTOFF,
+                                elo_params=EloParameters(season_retention=0))
+        self.assertEqual(before["features"]["home_prior_seasons_games_available"],1)
+        self.assertNotEqual(before["features"]["home_elo"],zero["features"]["home_elo"])
+
+    def test_reject_invalid_elo_parameter_objects(self):
+        for kw in ({"k":0},{"k":-1},{"scale":0},{"season_retention":1.01},
+                   {"season_retention":-0.01},{"initial":float("nan")},
+                   {"home_advantage":float("inf")},{"k":True}):
+            with self.subTest(kw=kw):
+                with self.assertRaisesRegex(FeatureSafetyError,"INVALID_ELO_PARAMETERS"):
+                    EloParameters(**kw)
+        with sample() as db:
+            with self.assertRaisesRegex(FeatureSafetyError,"INVALID_ELO_PARAMETERS"):
+                build_features(db,4,cutoff_utc=CUTOFF,elo_params={"k":20})
+
+    def test_changing_elo_params_changes_hash_but_not_history(self):
+        with sample() as db:
+            x=build_features(db,4,cutoff_utc=CUTOFF)
+            y=build_features(db,4,cutoff_utc=CUTOFF,
+                             elo_params=EloParameters(k=12,home_advantage=35))
+        self.assertEqual(x["accepted_predecessor_count"],y["accepted_predecessor_count"])
+        self.assertNotEqual(x["sha256"],y["sha256"])
+        self.assertNotEqual(x["features"]["home_elo"],y["features"]["home_elo"])
+        self.assertFalse(y["training_allowed"])
+
 
 
 if __name__=="__main__":

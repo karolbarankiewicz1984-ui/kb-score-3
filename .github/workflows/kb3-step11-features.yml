@@ -1,10 +1,10 @@
 name: "KB3 Step 11 - Prematch Features No Lookahead"
 on:
   push:
-    branches: ["feature/step11-prematch-features"]
-    paths: ["src/kb3_features.py", "tests/test_step11_features.py", "scripts/step11_features_audit.py", ".github/workflows/kb3-step11-features.yml"]
+    branches: ["feature/step11-*", "main"]
+    paths: ["src/kb3_features.py", "tests/test_step11_features.py", "scripts/step11_features_audit.py", "scripts/step11_two_season_pilot.py", "scripts/step09_import_history.py", "tests/test_step11_two_seasons.py", ".github/workflows/kb3-step11-features.yml"]
   pull_request:
-    paths: ["src/kb3_features.py", "tests/test_step11_features.py", "scripts/step11_features_audit.py", ".github/workflows/kb3-step11-features.yml"]
+    paths: ["src/kb3_features.py", "tests/test_step11_features.py", "scripts/step11_features_audit.py", "scripts/step11_two_season_pilot.py", "scripts/step09_import_history.py", "tests/test_step11_two_seasons.py", ".github/workflows/kb3-step11-features.yml"]
   workflow_dispatch:
 permissions:
   contents: read
@@ -15,7 +15,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Step11 no-lookahead and missing-value tests
-        run: python -m unittest discover -s tests -p 'test_step11_features.py' -v
+        run: python -m unittest discover -s tests -p 'test_step11*.py' -v
       - name: Regression tests for previous storage and audit
         run: |
           python -m unittest discover -s tests -p 'test_step08_storage.py' -v
@@ -58,5 +58,38 @@ jobs:
         with:
           name: kb3-step11-aggregate
           path: audit/step11/STEP11_AGGREGATE.json
+          retention-days: 14
+          if-no-files-found: error
+
+  pilot-760:
+    if: github.event_name != 'pull_request'
+    needs: offline-tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - name: Two completed seasons PL 2023/24 and 2024/25 (ephemeral)
+        env:
+          API_FOOTBALL_KEY: ${{ secrets.API_FOOTBALL_KEY }}
+        run: |
+          set -euo pipefail
+          test -n "$API_FOOTBALL_KEY"
+          python -m scripts.step11_two_season_pilot --outdir audit/step11/two-season
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          x=json.loads(Path('audit/step11/two-season/STEP11_TWO_SEASON_AGGREGATE.json').read_text())
+          assert x['fixtures_total']==760
+          assert x['cross_season_prior_match_counts_sample'][0]>0
+          assert x['replay_only'] and not x['historical_point_in_time_certified']
+          assert not x['training_allowed'] and not x['trained_model']
+          assert x['archive_status']=='EPHEMERAL_CI_ONLY_NO_DURABLE_BACKUP'
+          print('STEP11_760_TWO_SEASON_REPLAY_ONLY_PASS')
+          PY
+      - name: Publish sanitized aggregate only
+        uses: actions/upload-artifact@v4
+        with:
+          name: kb3-step11-two-season-aggregate
+          path: audit/step11/two-season/STEP11_TWO_SEASON_AGGREGATE.json
           retention-days: 14
           if-no-files-found: error
