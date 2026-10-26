@@ -29,7 +29,7 @@ PINNED_CHAIN_SHA256 = "33c750f2db89a0df5faeba9348652a451f33548959839ff7bb0ca4921
 
 
 def _pinned_audit(root):
-    summary=_pinned_audit(root)
+    summary=json.loads((root/"data/audits/STEP11_PITCH_MULTISEASON_ELO_REAL_2026-10-26.json").read_text(encoding="utf8"))
     meta=summary["history"]
     if (meta["encrypted_zip_sha256"]!=PINNED_ZIP_SHA256
             or meta["cipher_sha256"]!=PINNED_CIPHER_SHA256
