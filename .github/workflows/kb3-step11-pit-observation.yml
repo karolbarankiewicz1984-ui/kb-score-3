@@ -1,7 +1,14 @@
 name: "KB3 Step11 - Real Point-in-Time Observation Receipt"
 on:
   push:
-    branches: ["feature/step11-pit-live-receipts-20261026"]
+    branches: ["feature/step11-*", "main"]
+    paths:
+      - "src/kb3_pit_ledger.py"
+      - "src/kb3_pit_archive.py"
+      - "tests/test_step11_pit_ledger.py"
+      - "scripts/step11_pit_capture_once.py"
+      - ".github/workflows/kb3-step11-pit-observation.yml"
+  pull_request:
     paths:
       - "src/kb3_pit_ledger.py"
       - "src/kb3_pit_archive.py"
@@ -12,7 +19,7 @@ on:
 permissions:
   contents: read
 jobs:
-  observe-one-snapshot:
+  offline-tests:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
@@ -20,7 +27,21 @@ jobs:
       - name: Install encrypted archive dependency
         run: python3 -m pip install --disable-pip-version-check 'cryptography>=42,<47'
       - name: Test no lookahead, immutability, hash chain and restore
-        run: python3 -m unittest discover -s tests -p 'test_step11_pit_ledger.py' -v
+        run: |
+          python3 -m unittest discover -s tests -p 'test_step11*.py' -v
+          python3 -m unittest discover -s tests -p 'test_step08_storage.py' -v
+          python3 -m unittest discover -s tests -p 'test_step09_import_history.py' -v
+          python3 -m unittest discover -s tests -p 'test_step10_quality_audit.py' -v
+
+  live-capture:
+    if: github.event_name == 'workflow_dispatch'
+    needs: offline-tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install encrypted archive dependency
+        run: python3 -m pip install --disable-pip-version-check 'cryptography>=42,<47'
       - name: Observe one live API-Football fixture list (PL 2026/27)
         env:
           API_FOOTBALL_KEY: ${{ secrets.API_FOOTBALL_KEY }}
