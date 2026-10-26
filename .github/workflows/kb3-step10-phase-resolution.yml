@@ -47,6 +47,7 @@ jobs:
             "Approved domestic regular season data: %s/10"%x["approved_regular_seasons"],
             "Seasons still quarantined: %s"%x["quarantined"],
             "Extra playoff records excluded: %s"%x["extra_fixtures_excluded"],
+            "Awarded domestic results quarantined: %s"%x["awarded_regular_results_quarantined"],
             "No player stats, xG or odds imported; no training permitted.",
             "",
             "| League | Season | Regular | Extra | Decision |",
