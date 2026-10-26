@@ -184,3 +184,9 @@ Następny krok:
 - [Actions #40291895443](https://github.com/karolbarankiewicz1984-ui/kb-score-3/actions/runs/40291895443) — **PitchAPI 12/12** kompletne xG obu drużyn w małej, celowej próbce PL 2023/24 i 2024/25; **8/12** dokładnych zgodnych par API-Football; **4/12** niezatwierdzone; 15 zapytań PitchAPI i 2 API-Football, 0 nowych zakupów.
 - Kontrola wykonana bez publikowania surowych xG, pełnej bazy, wyników pojedynczych spotkań czy kluczy. Nie posiadamy dowodu row-hash oraz historycznego czasu publikacji xG; **0/12** z certyfikacją historycznego PIT. Odczyt tych wartości teraz nie może zostać uznany za przeszły snapshot.
 - **GATE11 PENDING, 10/29**, brak treningu, historyczny zbiór 760 wyłącznie tymczasowy; starsze modele nietknięte.
+
+## GATE11 — ARCHIWUM 760: OFFSITE RESTORE PASS (26.10.2026)
+
+- [Actions #40293935946](https://github.com/karolbarankiewicz1984-ui/kb-score-3/actions/runs/40293935946): 6/6 testów szyfrowania i odtwarzania PASS, 760 rzeczywistych fixture w 2 sezonach, zaszyfrowane `KB3ENC2` + RSA-OAEP-SHA256/AES-256-GCM. Brak surowej bazy w artefaktach i logach; klucz prywatny przechowywany oddzielnie poza GitHub i Drive.
+- [Zaszyfrowane archiwum Google Drive](https://drive.google.com/file/d/1lA1Z2qNSWyGxn_6OcyFl3ZmK147BWsn-/view?usp=drivesdk) **pobrano ponownie z Drive**, niezależnie odszyfrowano i sprawdzono: zgodny SHA-256, `integrity_check=ok`, `foreign_key_check=0`, 760 map, 380+380 wyników. Manifest [SHA i ID](../data/audits/STEP11_760_OFFSITE_RESTORE_2026-10-26.json), [protokół](STEP_11_OFFSITE_ARCHIVE.md).
+- **GATE11 nadal PENDING, 10/29.** To trwała, poprawnie odtwarzana historia wyników, nie historyczne archiwum przedmeczowych obserwacji ani pełne xG. Rzeczywista dostępność dawnych wyników przed dawnymi meczami nadal nie jest certyfikowana. Nowych zakupów brak, ML zablokowany, starsze modele nietknięte.
