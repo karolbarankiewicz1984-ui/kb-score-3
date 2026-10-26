@@ -1,0 +1,70 @@
+name: "KB3 Step 10 - Phase-Aware Exceptions Gate"
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/kb3-step10-phase-resolution.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  resolve-real-playoffs:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - name: Checkout KB3 isolated repository
+        uses: actions/checkout@v4
+      - name: Verify synthetic phase classifiers and chronological gates
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m unittest discover -s tests -p 'test_step10_*.py' -v
+          python -m unittest discover -s tests -p 'test_step09_import_history.py' -v
+          python -m unittest discover -s tests -p 'test_step08_storage.py' -v
+      - name: Classify 10 historic exception seasons by actual round label
+        shell: bash
+        env:
+          API_FOOTBALL_KEY: ${{ secrets.API_FOOTBALL_KEY }}
+        run: |
+          set -euo pipefail
+          test -n "$API_FOOTBALL_KEY" || { echo "MISSING_API_FOOTBALL_KEY"; exit 1; }
+          python -m scripts.step10_phase_resolution --outdir audit/step10
+      - name: Write security-conscious QA summary
+        if: always()
+        shell: bash
+        run: |
+          if [ -f audit/step10/STEP10_PHASE_RESOLUTION.json ]; then
+            python - <<'PY'
+          import json,os
+          from pathlib import Path
+          x=json.loads(Path("audit/step10/STEP10_PHASE_RESOLUTION.json").read_text())
+          msg=[
+            "# KB3 Step10 phase-aware quarantine",
+            "Examined 10 previously anomalous historical league-seasons.",
+            "Approved domestic regular season data: %s/10"%x["approved_regular_seasons"],
+            "Seasons still quarantined: %s"%x["quarantined"],
+            "Extra playoff records excluded: %s"%x["extra_fixtures_excluded"],
+            "No player stats, xG or odds imported; no training permitted.",
+            "",
+            "| League | Season | Regular | Extra | Decision |",
+            "|---|---:|---:|---:|---|",
+          ]
+          for r in x["results"]:
+              msg.append("| %s | %s | %s | %s | %s |"%(
+                r["league"],r["season"],r["domestic_regular_fixtures"],
+                len(r["extra_phases_excluded_from_domestic_training"]),r["approval"]))
+          with open(os.environ["GITHUB_STEP_SUMMARY"],"a",encoding="utf-8") as w:
+              w.write("\n".join(msg)+"\n")
+          PY
+          fi
+      - name: Upload limited phase-review evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: kb3-step10-resolved-phase-evidence
+          path: audit/step10/STEP10_PHASE_RESOLUTION.json
+          if-no-files-found: warn
+          retention-days: 14
