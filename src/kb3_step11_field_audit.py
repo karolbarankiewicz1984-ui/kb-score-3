@@ -128,6 +128,8 @@ def feature_clock_map(target,history,values,missing_flags,*,cutoff,source_eviden
         allgames=[r for r in sorted_history
                   if team in (r["home_team_id"],r["away_team_id"])]
         homegames=[r for r in allgames if (r["home_team_id"]==team)==venue]
+        assign("missing:"+side+"_days_since_last_kickoff",
+               allgames,"HISTORY_COMPLETENESS")
         for suffix in ("elo","elo_games_available","prior_seasons_games_available",
                        "games_available","days_since_last_kickoff","venue_games_available"):
             assign(f"{side}_{suffix}",allgames if suffix!="venue_games_available" else homegames)
