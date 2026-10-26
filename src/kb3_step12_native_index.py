@@ -22,6 +22,16 @@ def index_receipts(receipts, *, allow_synthetic=False):
     if {r["resource"] for r in receipts} != expected:
         raise SplitSafetyError("STEP12_SOURCE_RESOURCE_MISMATCH")
     by_resource = {r["resource"]: r for r in receipts}
+    catalogue = by_resource["pitchapi:catalog"].get("payload")
+    leagues = catalogue.get("leagues") if isinstance(catalogue, dict) else None
+    candidates = [l for l in (leagues or [])
+                  if isinstance(l, dict)
+                  and str(l.get("name", "")).strip().casefold() == "premier league"
+                  and str(l.get("country_code", "")).upper() == "ENG"
+                  and all(season in (l.get("seasons") or [])
+                          for season in SEASONS)]
+    if len(candidates) != 1:
+        raise SplitSafetyError("STEP12_CATALOGUE_SEASON_IDENTITY_MISMATCH")
     rows, counts, seen = [], {}, set()
     previous_teams = None
     for season in SEASONS:
