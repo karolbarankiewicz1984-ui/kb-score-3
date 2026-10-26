@@ -9,7 +9,7 @@ import hashlib
 import json
 import math
 import sqlite3
-from datetime import timedelta
+from datetime import timedelta,datetime,timezone
 from src.kb3_pit_ledger import canonical,hexdigest,as_utc
 from scripts.pitchapi_step06_audit import parse_shots, find_af_match
 
@@ -80,6 +80,9 @@ def record_xg(db, match, shots_response, football_fixtures, *,
     started=as_utc(started_at_utc);completed=as_utc(completed_at_utc)
     if started>completed or (completed-started).total_seconds()>180:
         raise ValueError("XG_TIME_RANGE_INVALID")
+    host_clock=datetime.now(timezone.utc)
+    if (completed-host_clock).total_seconds()>10 or (host_clock-completed).total_seconds()>180:
+        raise ValueError("XG_NETWORK_CLOCK_NOT_CURRENT")
     if as_utc(match["time_utc"])+MIN_POSTMATCH_LAG>completed:
         raise ValueError("XG_CANNOT_BE_PREMATCH")
     mid=match["id"]
@@ -94,6 +97,14 @@ def record_xg(db, match, shots_response, football_fixtures, *,
     if state not in ("COMPLETE_SHOT_XG","PARTIAL_SHOT_XG","NO_SHOTS",
                      "NO_PERIOD_LIST","INVALID_RESPONSE","INCOMPLETE_PERIOD"):
         state="INVALID_RESPONSE"
+    matched=next((g for g in football_fixtures
+                  if (g.get("fixture") or {}).get("id")==link.get("api_football_fixture_id")),
+                 None)
+    match_finished=(matched is not None
+                    and (matched.get("fixture") or {}).get("status",{}).get("short")=="FT"
+                    and match.get("status")=="finished")
+    if link["state"]=="EXACT_NAMES_DATE_SCORE" and not match_finished:
+        link={"state":"RESULT_NOT_90MIN_FT","api_football_fixture_id":None}
     strict=(link["state"]=="EXACT_NAMES_DATE_SCORE" and state=="COMPLETE_SHOT_XG")
     xgh=result.get("home_xg_sum") if strict else None
     xga=result.get("away_xg_sum") if strict else None
