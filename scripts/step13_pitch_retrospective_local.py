@@ -13,6 +13,8 @@ import argparse
 import hashlib
 import json
 from pathlib import Path
+from tempfile import TemporaryDirectory
+from zipfile import ZipFile
 
 from src.kb3_split import freeze_manifest, sha
 from src.kb3_step13_fold_replay import real_schedule_probe
@@ -88,18 +90,57 @@ def research_local(*,cipher_path,manifest_path,private_key_path,root):
     return study
 
 
+def research_archive_zip_local(*,archive_zip,private_key_path,root):
+    """Accept the exact original Drive ZIP directly, with byte-for-byte pin."""
+    root=Path(root)
+    report=json.loads((root/"data/audits/STEP11_PITCH_MULTISEASON_ELO_REAL_2026-10-26.json").read_text())
+    expected=report["history"]["encrypted_zip_sha256"]
+    if hashlib.sha256(Path(archive_zip).read_bytes()).hexdigest()!=expected:
+        raise ValueError("STEP13_ARCHIVE_ZIP_NOT_PINNED")
+    cipher_name="KB3_PITCH_PL_HIST_2023_2026_NATIVE.enc"
+    manifest_name="KB3_PITCH_PL_HIST_2023_2026_NATIVE.manifest.json"
+    with ZipFile(archive_zip) as zipped:
+        listed=zipped.infolist()
+        if (sum(i.file_size for i in listed)>20_000_000 or
+                len([i for i in listed if Path(i.filename).name==cipher_name])!=1 or
+                len([i for i in listed if Path(i.filename).name==manifest_name])!=1):
+            raise ValueError("STEP13_ARCHIVE_CONTENTS_INVALID")
+        cipher=next(i for i in listed if Path(i.filename).name==cipher_name)
+        manifest=next(i for i in listed if Path(i.filename).name==manifest_name)
+        with TemporaryDirectory(prefix="kb3_step13_encrypted_inputs_") as tmp:
+            ct_path=Path(tmp)/cipher_name
+            man_path=Path(tmp)/manifest_name
+            ct_path.write_bytes(zipped.read(cipher))
+            man_path.write_bytes(zipped.read(manifest))
+            return research_local(cipher_path=ct_path,manifest_path=man_path,
+                                  private_key_path=private_key_path,root=root)
+
+
 def main():
     p=argparse.ArgumentParser()
-    for opt in ("cipher","manifest","private-key","output"):
+    for opt in ("private-key","output"):
         p.add_argument("--"+opt,required=True)
+    group=p.add_mutually_exclusive_group(required=True)
+    group.add_argument("--archive-zip",help="Exact sealed offsite ZIP, already downloaded")
+    group.add_argument("--cipher",help="Extracted ciphertext .enc; also provide --manifest")
+    p.add_argument("--manifest",help="Extracted sealed manifest for --cipher mode")
     p.add_argument("--research-policy",required=True,
                    choices=[POLICY],help="Explicit owner opt-in to non-PIT retrospective research")
     a=p.parse_args()
     try:
-        study=research_local(cipher_path=a.cipher,
-                             manifest_path=a.manifest,
-                             private_key_path=a.private_key,
-                             root=Path(__file__).resolve().parents[1])
+        if a.archive_zip:
+            if a.manifest:
+                raise ValueError("STEP13_MANIFEST_NOT_USED_WITH_ARCHIVE_ZIP")
+            study=research_archive_zip_local(
+                archive_zip=a.archive_zip,private_key_path=a.private_key,
+                root=Path(__file__).resolve().parents[1])
+        else:
+            if not a.manifest:
+                raise ValueError("STEP13_EXTRACTED_MANIFEST_REQUIRED")
+            study=research_local(cipher_path=a.cipher,
+                                 manifest_path=a.manifest,
+                                 private_key_path=a.private_key,
+                                 root=Path(__file__).resolve().parents[1])
         output=Path(a.output)
         print(freeze_manifest(study,output))
         print("STEP13_RETROSPECTIVE_RESEARCH_NOT_PIT",
