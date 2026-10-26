@@ -72,7 +72,7 @@ def build_observed_features(db, target_fixture_id, *, cutoff_utc,
         raise FeatureSafetyError("INVALID_TARGET_FIXTURE_ID")
     if (archive_manifest is None)!=(reviewed_crosswalk is None):
         raise FeatureSafetyError("XG_REVIEW_AND_ARCHIVE_EVIDENCE_REQUIRED_TOGETHER")
-    ledger_evidence=verify_chain(db)
+    verify_chain(db)
     has_xg=db.execute("""SELECT 1 FROM sqlite_master
                            WHERE type='table' AND name='pit_xg_observations'""").fetchone()
     if has_xg:
@@ -102,14 +102,18 @@ def build_observed_features(db, target_fixture_id, *, cutoff_utc,
           "https://github.com/karolbarankiewicz1984-ui/kb-score-3/commit/"):
             raise FeatureSafetyError("NO_REVIEW_APPROVAL_PROVENANCE")
         approval_time=utc_dt(approved_xg_since)
-        try:
-            xg_by_fixture=review(db,archive_manifest,reviewed_crosswalk)
-        except (ValueError,KeyError,TypeError) as exc:
-            raise FeatureSafetyError("XG_SOURCE_REVIEW_FAILED") from exc
-        review_source={"review_approval_not_before_utc":approved_xg_since,
-                       "review_approval_commit":commit,
-                       "encrypted_archive_sha256":archive_manifest["encrypted_sha256"],
-                       "reviewed_fixture_count":len(xg_by_fixture)}
+        if approval_time<=cutoff:
+            try:
+                xg_by_fixture=review(db,archive_manifest,reviewed_crosswalk)
+            except (ValueError,KeyError,TypeError) as exc:
+                raise FeatureSafetyError("XG_SOURCE_REVIEW_FAILED") from exc
+            review_source={"review_approval_not_before_utc":approved_xg_since,
+                           "review_approval_commit":commit,
+                           "encrypted_archive_sha256":archive_manifest["encrypted_sha256"],
+                           "reviewed_fixture_count":len(xg_by_fixture)}
+        else:
+            xg_by_fixture={}
+            approved_xg_since=None
     history=[]
     excluded=defaultdict(int)
     for fid,source in snapshots.items():
@@ -168,7 +172,7 @@ def build_observed_features(db, target_fixture_id, *, cutoff_utc,
         "source_class":"NETWORK_OBSERVED_NOT_PROVIDER_PUBLICATION_CERTIFIED",
         "source_scope":"API-Football Premier League season 2026",
         "source_capture":selected,
-        "all_captures_chain_evidence":ledger_evidence,
+        "asof_capture_chain_sha256":selected["chain_sha256"],
         "source_snapshot_rows":len(snapshots),
         "provider_first_publication_time_known":False,
         "historical_prematch_backtest_certified":False,
