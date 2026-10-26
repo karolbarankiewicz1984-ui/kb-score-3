@@ -250,3 +250,10 @@ Następny krok:
 - Dodano `kb3_pitch_native_drift.py`, `step11_pitch_native_drift_audit.py`: dwa zweryfikowane snapshoty PitchAPI można odtwarzać i porównywać po dokładnym provider-native ID, oddzielnie licząc zmiany dat/statusu/wyniku/nazwy. Identyfikatory drużyn i pełen skład ligi są chronione przed milczącą podmianą. Skrypt nie wywołuje API i nie udostępnia nazw/ID w raporcie.
 - [199/199 testów CI](https://github.com/karolbarankiewicz1984-ui/kb-score-3/actions/runs/40320084066) PASS. **Drugi autentyczny odczyt nie został wykonany, wielodniowy diff pozostaje PENDING**; nie generowano fikcyjnych snapshotów. [Raport](STEP_11_UEFA_NATIVE_XG_COVERAGE.md).
 - GATE11 **PENDING, 10/29**, trening i produkcja pozostają zablokowane.
+
+## GATE11 — DWIE NIEZALEŻNE AUTENTYCZNE OBSERWACJE PITCHAPI W JEDNYM DNIU (26.10.2026)
+
+- [Drugi realny run #40321588543](https://github.com/karolbarankiewicz1984-ui/kb-score-3/actions/runs/40321588543): 380 mecze PL 2026/27 i 5 shot xG; kolejna osobna hash-chained kopia z rzeczywistym timestampem 12:19 UTC, pierwsza 11:29 UTC. Siedem kontrolowanych zapytań PitchAPI, zero API-Football.
+- [Nowy szyfrowany backup Google Drive](https://drive.google.com/file/d/1X27ol04hWczbRCKin_pcKeiyVcLeF_x7/view) niezależnie ponownie pobrany, odtworzony prywatnym kluczem właściciela poza GitHubem, 385/385 SHA, pełny chain i integralność SQL PASS.
+- Porównanie 380 źródłowych meczów oraz pięciu powtórzonych xG: **zero różnic** w datach, wynikach, statusach, team ID i payloadach xG. SHA całych odpowiedzi fixture identyczny. [Szczegóły](STEP_11_NATIVE_SECOND_REAL_CAPTURE.md).
+- **Nie nazywać wyniku audytem wielodniowym.** GATE11 PENDING 10/29, bez produkcyjnego przełączenia i treningu, starsze modele bez zmian.

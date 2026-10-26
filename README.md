@@ -16,6 +16,7 @@
 - [Krok 11 — jedno sportowe źródło PitchAPI, 1140 fixture, UEFA/faule i natywny builder shadow](docs/STEP_11_SINGLE_PROVIDER_DECISION.md)
 - [Krok 11 — prawdziwe obserwacje PitchAPI 380+5, encrypted Drive oraz niezależne odtworzenie](docs/STEP_11_PITCH_NATIVE_PIT_ARCHIVE.md)
 - [Krok 11 — Liga Europy i Liga Konferencji: 12/12 natywne xG, niezależny restore Drive 15/15 i testy zmian źródła](docs/STEP_11_UEFA_NATIVE_XG_COVERAGE.md)
+- [Krok 11 — dwie prawdziwe obserwacje natywnego PitchAPI: 0/380 zmian PL i 0/5 xG, dwa odtworzone backupy Drive](docs/STEP_11_NATIVE_SECOND_REAL_CAPTURE.md)
 - [DANE — projekt bazy i źródeł](docs/DANE.md)
 - [MODEL — metodologia i testy](docs/MODEL.md)
 - [ZMIANY — rejestr decyzji i PASS/FAIL](docs/ZMIANY.md)
