@@ -6,8 +6,11 @@ on:
       - "src/kb3_step13_baseline.py"
       - "src/kb3_step13_reference_metrics.py"
       - "src/kb3_step13_reference_report.py"
+      - "src/kb3_step13_replay.py"
+      - "src/kb3_step13_replay_report.py"
       - "tests/test_step13_baseline.py"
       - "tests/test_step13_reference_metrics.py"
+      - "tests/test_step13_replay.py"
       - "docs/STEP_13_PROGRESS.md"
       - ".github/workflows/kb3-step13-elo-poisson.yml"
   pull_request:
@@ -15,8 +18,11 @@ on:
       - "src/kb3_step13_baseline.py"
       - "src/kb3_step13_reference_metrics.py"
       - "src/kb3_step13_reference_report.py"
+      - "src/kb3_step13_replay.py"
+      - "src/kb3_step13_replay_report.py"
       - "tests/test_step13_baseline.py"
       - "tests/test_step13_reference_metrics.py"
+      - "tests/test_step13_replay.py"
       - "docs/STEP_13_PROGRESS.md"
       - ".github/workflows/kb3-step13-elo-poisson.yml"
   workflow_dispatch:
@@ -36,6 +42,10 @@ jobs:
         run: |
           python3 -m src.kb3_step13_reference_report \
             --output data/audits/STEP13_M0_REFERENCE_2026-10-26.json
+      - name: Generate strictly synthetic chronological replay and two history variants
+        run: |
+          python3 -m src.kb3_step13_replay_report \
+            --out data/audits/STEP13_M0_SYNTHETIC_REPLAY_2026-10-26.json
       - name: Fail closed if someone advertises these results as history
         run: |
           python3 - <<'PY'
@@ -51,23 +61,32 @@ jobs:
           for x in j["mathematical_reference_forecasts"]:
             assert abs(sum(x["forecast"]["p_1x2"].values())-1)<1e-12
             assert x["forecast"]["parameters_status"]=="ILLUSTRATIVE_UNFITTED_NOT_FOR_BETTING"
-          print("STEP13_M0_MATH_PASS_HISTORICAL_EVIDENCE_PENDING")
+          replay=json.loads(Path("data/audits/STEP13_M0_SYNTHETIC_REPLAY_2026-10-26.json").read_text())
+          assert replay["report_sha256"]==sha({k:v for k,v in replay.items() if k!="report_sha256"})
+          assert replay["real_historical_matches_scored"]==0 and not replay["gate13_pass"]
+          assert replay["comparison"]["validation_paired"]
+          assert replay["comparison"]["expanding"]["training_synthetic_candidate_count"]==2
+          assert replay["comparison"]["rolling"]["training_synthetic_candidate_count"]==1
+          assert not replay["model_fitted"] and not replay["historical_training_allowed"]
+          print("STEP13_M0_REPLAY_SYNTHETIC_ONLY_HISTORICAL_EVIDENCE_PENDING")
           PY
       - uses: actions/upload-artifact@v4
         with:
           name: kb3-step13-illustrative-m0-math-20261026
-          path: data/audits/STEP13_M0_REFERENCE_2026-10-26.json
+          path: |
+            data/audits/STEP13_M0_REFERENCE_2026-10-26.json
+            data/audits/STEP13_M0_SYNTHETIC_REPLAY_2026-10-26.json
           if-no-files-found: error
           retention-days: 90
       - name: Freeze first candidate report in feature branch
-        if: github.ref == 'refs/heads/feature/step13-elo-poisson-baseline-v01'
+        if: github.ref == 'refs/heads/feature/step13-fold-replay-safety-v02'
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add data/audits/STEP13_M0_REFERENCE_2026-10-26.json
+          git add data/audits/STEP13_M0_REFERENCE_2026-10-26.json data/audits/STEP13_M0_SYNTHETIC_REPLAY_2026-10-26.json
           if ! git diff --cached --quiet; then
             git commit -m "Step13: immutable synthetic-only M0 mathematical reference"
-            git push origin "HEAD:feature/step13-elo-poisson-baseline-v01"
+            git push origin "HEAD:feature/step13-fold-replay-safety-v02"
           else
             echo "Existing report verified immutable"
           fi
