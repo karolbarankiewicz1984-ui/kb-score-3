@@ -1,0 +1,75 @@
+{
+  "acceptance_date": "2026-10-26",
+  "completed_steps": 12,
+  "folds": [
+    {
+      "expanding_schedule_candidates": 760,
+      "fold": 1,
+      "rolling_two_year_schedule_candidates": 760,
+      "shared_validation_fixtures": 60,
+      "test_overlap": 0,
+      "training_eligible": 0
+    },
+    {
+      "expanding_schedule_candidates": 820,
+      "fold": 2,
+      "rolling_two_year_schedule_candidates": 753,
+      "shared_validation_fixtures": 126,
+      "test_overlap": 0,
+      "training_eligible": 0
+    },
+    {
+      "expanding_schedule_candidates": 946,
+      "fold": 3,
+      "rolling_two_year_schedule_candidates": 750,
+      "shared_validation_fixtures": 123,
+      "test_overlap": 0,
+      "training_eligible": 0
+    },
+    {
+      "expanding_schedule_candidates": 1069,
+      "fold": 4,
+      "rolling_two_year_schedule_candidates": 776,
+      "shared_validation_fixtures": 71,
+      "test_overlap": 0,
+      "training_eligible": 0
+    }
+  ],
+  "frozen_dual_window_plan_sha256": "25242ed4a626aba2669ea86605b31664cb17bf10a6a74e4e3548470954c81198",
+  "heldout_test_fixtures": 380,
+  "method_variant_selected": [
+    "EXPANDING_FULL_AVAILABLE_HISTORY",
+    "ROLLING_LAST_24_CALENDAR_MONTHS"
+  ],
+  "methodology_gate": "PASS_SPLIT_PROTOCOL_ONLY",
+  "methodology_test_result": "PASS",
+  "next_step13_training_blocked_until": [
+    "VERIFIED_PREMATCH_FEATURE_PROVENANCE",
+    "VERIFIED_RESULT_AVAILABILITY_ASOF_FOLD",
+    "INDEPENDENT_DATA_QUALITY_APPROVAL"
+  ],
+  "original_split_method": "TRAIN 2023-2025, VALIDATION 2025-2026, TEST 2026-2027",
+  "owner_direction": "User agreed to proceed with the two-method proposal in chat; no model training was requested",
+  "paired_validation": true,
+  "partition_counts": {
+    "TEST": 380,
+    "TRAIN": 760,
+    "VALIDATION": 380
+  },
+  "primary_metric_when_scoring_permitted": "MULTICLASS_LOG_LOSS",
+  "project": "KB Score 3.0",
+  "real_historical_pit_verified": false,
+  "record_sha256": "0332edf73cd893f9848ffb23ea7821a09f5c183e6add77fc7cfdd7378959c5be",
+  "safe_schedule_source_sha256": "3b8da84b334d897e327c883b769944bf36016cb44daf1da041bfb7d16a7b11e7",
+  "schema": "kb3-step12-methodology-acceptance-v1",
+  "secondary_metrics_when_scoring_permitted": [
+    "MULTICLASS_BRIER",
+    "CALIBRATION"
+  ],
+  "step12_gate_pass": true,
+  "test_labels_accessed": false,
+  "total_steps": 29,
+  "training_allowed": false,
+  "validation_fixture_coverage": 380,
+  "validation_predictions_created": false
+}

@@ -1,6 +1,6 @@
 # KB Score 3.0 — Krok 12: podział TRAIN / VALIDATION / TEST
 
-**Rozpoczęto:** 26.10.2026 • **Stan:** W REALIZACJI / GATE12 PENDING • **Koszt nowych usług:** 0 zł.
+**Rozpoczęto:** 26.10.2026 • **Stan:** ZALICZONY — GATE12 PASS wyłącznie dla metodologii • **Koszt nowych usług:** 0 zł.
 
 **Zakres:** techniczna konstrukcja odtwarzalnego, chronologicznego i niemutowalnego podziału. **Nie uruchamiamy treningu, nie generujemy typów bukmacherskich, nie twierdzimy, że historyczne dane są prawdziwym PIT.** Krok 11 odebrany według pierwotnej bramki; jego `training_allowed=false` pozostaje w mocy.
 
@@ -46,3 +46,7 @@ Ponownie przeczytano oryginalny KROK 12: jest to **metodyka TRAIN / VALIDATION /
 ## 26.10.2026 — wariant EXPANDING vs ROLLING 24 miesięcy
 
 Po omówieniu dostępnych podziałów wdrożono porównanie dwóch metod historii na dokładnie tych samych kwartalnych walidacjach. Realne kandydatury TRAIN (tylko terminarz, nie certyfikowane próbki): **760/760**, **820/753**, **946/750**, **1069/776** odpowiednio dla EXPANDING/ROLLING. Validation 60/126/123/71 = 380. Trening wymaga jeszcze prawdziwych czasów dostępności wyniku i cech przed foldem. Żaden rekord TEST nie może wpływać na wybór strategii. Zasady i audyt: [Krok12 dual windows](STEP_12_DUAL_WINDOWS.md), [nowy niezmienny manifest](../data/splits/STEP12_DUAL_WINDOWS_REAL_2026-10-26.json), [raport](../data/audits/STEP12_DUAL_WINDOWS_AUDIT_2026-10-26.json); offline testy PASS https://github.com/karolbarankiewicz1984-ui/kb-score-3/actions/runs/40353630051 . Bez kolejnych wywołań PitchAPI, bez dopasowywania jakiegokolwiek modelu. Formalnie nadal GATE12 PENDING.
+
+## 26.10.2026 — KOŃCOWY ODBIÓR METODYKI KROKU 12
+
+**GATE12 PASS wyłącznie dla metodologii TRAIN/VALIDATION/TEST i porównania EXPANDING vs ROLLING.** [Samodzielny, zamrożony protokół odbioru](../data/audits/STEP12_METHOD_GATE_PASS_2026-10-26.json), rekord SHA `0332edf73cd893f9848ffb23ea7821a09f5c183e6add77fc7cfdd7378959c5be`. [Raport rzeczywistych blokad danych](../data/audits/STEP12_REAL_PIT_GAP_REPORT_2026-10-26.json): `1220` historycznych odczytów RETROSPECTIVE i `300` nadchodzących meczów z niezatwierdzonymi cechami; łącznie **0** dopuszczonych do treningu. Wcześniejsze wzmianki „PENDING” są zapisem stanu sprzed odbioru. Po potwierdzeniu przez użytkownika kontynuacji obu metod porównania i zaliczeniu testów programu protokół metody ma PASS, natomiast **`training_allowed=false`** i osobna bramka PIT pozostają w mocy. Krok 13 nie jest jeszcze rozpoczęty; dopasowywanie modeli, publikowanie prognoz lub fałszywe backtesty są zabronione.

@@ -1,0 +1,25 @@
+{
+  "eligible_training_examples": 0,
+  "model_fitted": false,
+  "next_action": "Certify source receipts and feature observed-at independently before training; do not infer historical pre-match availability from retrospective rows.",
+  "observation_time_utc": "2026-10-26T15:05:59.918386Z",
+  "original_data_changed": false,
+  "partition_reasons": {
+    "TEST:RETROSPECTIVE": 80,
+    "TEST:STEP11_FEATURE_TRAINING_NOT_APPROVED": 300,
+    "TRAIN:RETROSPECTIVE": 760,
+    "VALIDATION:RETROSPECTIVE": 380
+  },
+  "prospective_schedule_only_no_model_features": 300,
+  "real_fixture_count": 1520,
+  "reasons": {
+    "RETROSPECTIVE": 1220,
+    "STEP11_FEATURE_TRAINING_NOT_APPROVED": 300
+  },
+  "report_sha256": "2b9502d09bf40d4fc4b2bd8a09283e4ea56e055a36f5744e9b1ed2f1acb32998",
+  "retrospective_finished_not_historic_pit": 1220,
+  "schema": "kb3-step12-real-receipt-gap-audit-v1",
+  "source_manifest_sha256": "da387303645a9bb9476351044944e5465d178ddff689c96b579093c4fb4fce3a",
+  "training_allowed": false,
+  "untouched_test_fixture_count": 380
+}

@@ -39,3 +39,7 @@ W obu metodach mecz do kandydującej historii musi mieć kickoff i minimalne 3 g
 **Formalny następny krok:** zaakceptować pełny finalny protokół dwóch wariantów walk-forward i zachować `GATE12` oddzielony od późniejszego dopuszczenia danych do rzeczywistego treningu. Rozpoczęcie KROKU 13 nie może sugerować, że niezatwierdzona historia jest autentycznym dawnym PIT.
 
 **Krok12: metodologiczne testy PASS, formalnie GATE12 PENDING do zatwierdzenia; `training_allowed=false`.**
+
+## 26.10.2026 — KOŃCOWY ODBIÓR METODYKI KROKU 12
+
+**GATE12 PASS wyłącznie dla metodologii TRAIN/VALIDATION/TEST i porównania EXPANDING vs ROLLING.** [Samodzielny, zamrożony protokół odbioru](../data/audits/STEP12_METHOD_GATE_PASS_2026-10-26.json), rekord SHA `0332edf73cd893f9848ffb23ea7821a09f5c183e6add77fc7cfdd7378959c5be`. [Raport rzeczywistych blokad danych](../data/audits/STEP12_REAL_PIT_GAP_REPORT_2026-10-26.json): `1220` historycznych odczytów RETROSPECTIVE i `300` nadchodzących meczów z niezatwierdzonymi cechami; łącznie **0** dopuszczonych do treningu. Wcześniejsze wzmianki „PENDING” są zapisem stanu sprzed odbioru. Po potwierdzeniu przez użytkownika kontynuacji obu metod porównania i zaliczeniu testów programu protokół metody ma PASS, natomiast **`training_allowed=false`** i osobna bramka PIT pozostają w mocy. Krok 13 nie jest jeszcze rozpoczęty; dopasowywanie modeli, publikowanie prognoz lub fałszywe backtesty są zabronione.
