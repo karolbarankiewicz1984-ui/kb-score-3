@@ -1,6 +1,6 @@
 # KB Score 3.0 — krok 11: katalog cech i audyt rzeczywistego czasu dostępności
 
-**26.10.2026 • wersja kalkulatora `kb3-step11-v0.4` + nowa mapa `feature_availability` • GATE11 nadal PENDING (10/29).**
+**26.10.2026 • wersja kalkulatora `kb3-step11-v0.5` + nowa mapa `feature_availability` • GATE11 nadal PENDING (10/29).**
 
 ## Co dokładnie zostało sprawdzone
 
