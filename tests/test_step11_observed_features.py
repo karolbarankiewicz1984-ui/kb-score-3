@@ -63,8 +63,10 @@ class TestObservedFeatures(unittest.TestCase):
             started_at_utc=when(start),completed_at_utc=when(end),
             origin="NETWORK_OBSERVED")
 
-    def build(self,cutoff=5,**kw):
-        return build_observed_features(self.db,3002,cutoff_utc=when(cutoff),**kw)
+    def build(self,cutoff=5,cutoff_value=None,**kw):
+        return build_observed_features(self.db,3002,
+             cutoff_utc=cutoff_value if cutoff_value is not None else when(cutoff),
+             **kw)
 
     def add_reviewed_xg(self,approved=when(-2)):
         record_xg(self.db,pitch(),shots(),payload()["response"],
@@ -137,8 +139,9 @@ class TestObservedFeatures(unittest.TestCase):
 
     def test_before_review_approval_xg_stays_null(self):
         mf,cw=self.add_reviewed_xg(approved=when(100))
-        a=self.build(cutoff=5,archive_manifest=mf,reviewed_crosswalk=cw)
-        b=self.build(cutoff=5)
+        cutoff=when(5)
+        a=self.build(cutoff_value=cutoff,archive_manifest=mf,reviewed_crosswalk=cw)
+        b=self.build(cutoff_value=cutoff)
         self.assertEqual(a["sha256"],b["sha256"])
         self.assertEqual(a["features"]["home_all_5_xg_n"],0)
 
@@ -149,9 +152,10 @@ class TestObservedFeatures(unittest.TestCase):
             self.build(archive_manifest=mf,reviewed_crosswalk=cw)
 
     def test_cutoff_earlier_than_later_revised_source_stable(self):
-        first=self.build(cutoff=-2)
+        cutoff=when(-2)
+        first=self.build(cutoff_value=cutoff)
         self.add_capture(payload(past_status="PST"),-1,0)
-        still=self.build(cutoff=-2)
+        still=self.build(cutoff_value=cutoff)
         self.assertEqual(first,still)
         after=self.build(cutoff=5)
         self.assertEqual(after["accepted_predecessor_count"],1)
@@ -171,7 +175,6 @@ class TestObservedFeatures(unittest.TestCase):
         self.assertFalse(other["training_allowed"])
 
     def test_missing_history_before_provenance_never_auto_replayed(self):
-        self.db.execute("DELETE FROM capture_record_no_delete") if False else None
         no=build_observed_features(self.db,3002,cutoff_utc=when(4))
         self.assertEqual(no["source_evidence"]["source_class"],
                          "NETWORK_OBSERVED_NOT_PROVIDER_PUBLICATION_CERTIFIED")
