@@ -1,6 +1,6 @@
 # KB Score 3.0 — PLAN GŁÓWNY (kopia operacyjna GitHub)
 
-**Wersja źródłowa:** v1.1, Google Docs (aktualizowane po odbiorach). **Stan ostatniej synchronizacji:** 2026-10-26, **12/29 kroków zaliczonych** (01–12), kroki 11 i 12 ZALICZONE (GATE11 i GATE12 PASS według oryginalnych kryteriów), krok 13 NIE ROZPOCZĘTO; trening nadal ZABLOKOWANY z powodu osobnej bramki jakości historycznych danych. Statusy w tej kopii aktualizujemy po odbiorach, ale **źródłem prawdy pozostaje [oryginał na Dysku Google](https://docs.google.com/document/d/10wjHL3r3OAuxtezwcIeWztxS8lwjhYon5GM3BLhI0xE/edit)**.
+**Wersja źródłowa:** v1.1, Google Docs (aktualizowane po odbiorach). **Stan ostatniej synchronizacji:** 2026-10-26, **12/29 kroków zaliczonych** (01–12), kroki 11 i 12 ZALICZONE (GATE11 i GATE12 PASS według oryginalnych kryteriów), krok 13 W REALIZACJI (M0 matematyka PASS, historia PENDING); trening nadal ZABLOKOWANY z powodu osobnej bramki jakości historycznych danych. Statusy w tej kopii aktualizujemy po odbiorach, ale **źródłem prawdy pozostaje [oryginał na Dysku Google](https://docs.google.com/document/d/10wjHL3r3OAuxtezwcIeWztxS8lwjhYon5GM3BLhI0xE/edit)**.
 
 **Pozostałe dokumenty:** [DANE.md](DANE.md), [MODEL.md](MODEL.md), [ZMIANY.md](ZMIANY.md), [instrukcja bezpieczeństwa kroku 03](STEP_03_SECURITY_CHECKLIST.md). **Repozytorium:** https://github.com/karolbarankiewicz1984-ui/kb-score-3.
 
@@ -155,7 +155,7 @@
 
 ### Etap D. Modele i testy
 
-#### Krok 13 — Baseline ELO i Poisson  [NIE ROZPOCZĘTO]
+#### Krok 13 — Baseline ELO i Poisson  [W REALIZACJI]
 
 - **CO ZROBIĘ:** Zbudować prosty silnik prognoz 1X2 oraz goli, z odrębnym testem na historii.
 - **CO ROBISZ TY:** Przejrzeć pierwsze wyniki referencyjne.
@@ -163,7 +163,7 @@
 - **BRAMKA ODBIORU / TEST PASS:** P(1)+P(X)+P(2) sumują się do 1; prognozy nie korzystają z kursów; wzorcowe przykłady i testy historyczne przechodzą.
 - **DOWÓD ZALICZENIA:** Raport baseline z Brier, log loss, kalibracją, wersją danych i uruchomieniem testów.
 - **ZALEŻY OD:** Krok 12.
-- **STATUS:** NIE ROZPOCZĘTO | TEST: NIE URUCHOMIONO | LINK DOWODU: — | DATA ODBIORU: —
+- **STATUS:** W REALIZACJI od 2026-10-26. M0 ELO + niezależny Poisson: matematyka i syntetyczne przykłady PASS; prawdopodobieństwa 1X2 sumują się do 100%; parametry są ILLUSTRATIVE_NOT_FITTED. [Kod](../src/kb3_step13_baseline.py), [dokumentacja](STEP_13_PROGRESS.md), [zamrożona referencja](../data/audits/STEP13_M0_REFERENCE_2026-10-26.json), [CI](https://github.com/karolbarankiewicz1984-ui/kb-score-3/actions/runs/40375744613). **Nie ma prawdziwego testu historycznego ani wiarygodnych metryk Brier/logloss/kalibracji; 0/1520 gotowych próbek PIT. GATE13 PENDING; training_allowed=false, nadal 12/29 odebranych kroków.**
 
 #### Krok 14 — Pierwszy CatBoost 1X2  [NIE ROZPOCZĘTO]
 
