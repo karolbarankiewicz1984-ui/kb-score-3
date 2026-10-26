@@ -1,0 +1,63 @@
+{
+  "frozen_candidate": {
+    "data_kind": "SYNTHETIC_REFERENCE_ONLY",
+    "empirical_historical_performance": false,
+    "fit_role": "TRAIN_ONLY",
+    "fitted_parameters": {
+      "base_away_goals": 0.5,
+      "base_home_goals": 2.0,
+      "elo_goal_elasticity": 0.0,
+      "elo_home_advantage": 65.0,
+      "elo_k": 20.0,
+      "elo_scale": 400.0,
+      "initial_elo": 1500.0,
+      "poisson_max_goals": 64,
+      "poisson_tail_tolerance": 1e-12
+    },
+    "fixed_elasticity_grid": [
+      0.0,
+      0.1,
+      0.2,
+      0.3,
+      0.4,
+      0.5,
+      0.6
+    ],
+    "freeze_utc": "2025-10-01T00:00:00Z",
+    "gate13_pass": false,
+    "independent_pit_training_approval": false,
+    "parameter_selection": "TRAIN_POISSON_NLL_GRID_EXACT_PROFILE_MLE_V1",
+    "real_historical_model_fitted": false,
+    "report_sha256": "9e5390256d2083daa83023997a1ddc6b2cedbb0d6d7d2aa3150b029b16dca53a",
+    "schema": "kb3-step13-synthetic-poisson-train-v0.3",
+    "selected_train_nll_total": 27.462977349072986,
+    "synthetic_input_sha256": "a12981093d02992d55155a5c35feb7b079319f25953357a98076d5bfbd90d740",
+    "synthetic_train_mean_nll": 2.288581445756082,
+    "synthetic_train_n": 12,
+    "test_labels_read": false,
+    "training_allowed": false,
+    "validation_labels_read": false
+  },
+  "gate13_pass": false,
+  "historical_calibration_available": false,
+  "historical_m0_brier_available": false,
+  "historical_m0_logloss_available": false,
+  "model_promoted": false,
+  "next": "INDEPENDENT_REAL_SOURCE_PIT_OR_SEPARATELY_APPROVED_RETROSPECTIVE_RESEARCH_CONTRACT_REQUIRED",
+  "parameter_candidate_for_production": false,
+  "real_fitted_matches": 0,
+  "real_pit_eligible_training_count": 0,
+  "real_step12_gap_report_sha256": "2b9502d09bf40d4fc4b2bd8a09283e4ea56e055a36f5744e9b1ed2f1acb32998",
+  "real_step12_schedule_total": 1520,
+  "reference_train_data_kind": "SYNTHETIC_REFERENCE_ONLY",
+  "report_sha256": "55c28c220c140c00be0b3272c87053e2be13a580d3c58740e8fd506c9e9d3523",
+  "schema": "kb3-step13-poisson-fit-readiness-v0.3",
+  "synthetic_equal_elo_forecast": {
+    "1": 0.7309879399641509,
+    "2": 0.0818923036303518,
+    "X": 0.1871197564054973
+  },
+  "synthetic_parameters_status": "SYNTHETIC_FITTED_REFERENCE_ONLY_NOT_FOR_BETTING",
+  "test_labels_accessed": false,
+  "training_allowed": false
+}
