@@ -37,7 +37,7 @@ class Step11IntegratedImport(unittest.TestCase):
                 one=import_rows(path,rows,h,season=year)
                 two=import_rows(path,rows,h,season=year)
                 self.assertEqual((one["inserted"],two["reused"]),(3,3))
-                self.assertEqual(one["snapshot_id"].split("-")[3],str(year))
+                self.assertEqual(one["snapshot_id"].split("-")[4],str(year))
             with connect(path) as c:
                 self.assertEqual(c.execute("SELECT COUNT(*) FROM fixtures").fetchone()[0],6)
                 self.assertEqual(c.execute("SELECT COUNT(*) FROM teams").fetchone()[0],3)
