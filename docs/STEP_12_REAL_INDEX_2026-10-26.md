@@ -42,3 +42,7 @@ Pakiet pobrano ponownie z Google Drive (115 137 bajtów). Niezależny od GitHub 
 Nie odrzucamy sportowej użyteczności archiwum wyników; rozróżniamy prawdziwe wyniki od dowodu na historyczną dostępność każdego wejścia modelu. Brak certyfikowanych cech oznacza **brak uczciwego historycznego ML/kalibracji z tego manifestu**. Można rozwijać moduły technologiczne i dalej gromadzić prospektywne dane z timestampami, ale **nie deklarować gotowości treningu**.
 
 **GATE12 PENDING • training_allowed=false • completed_steps=11/29.**
+
+## Korekta zakresu wymagań kroku 12
+
+Oryginalny plan wymaga podziału, walk-forward, separacji informacji i wyniku, zamrożenia i zgody użytkownika. **Nie wymaga** ponownego pobierania całej historii, ani certyfikowania pełnego xG, aby metodologicznie przyjąć split. Żaden brak historycznej obserwacji nie staje się jednak fikcyjną zgodą na trening. Stary manifest z hashami zależnymi od wyniku jest **AUDIT-ONLY**; do algorytmów wyłącznie [target-free model view](../data/splits/STEP12_SAFE_MODEL_VIEW_2026-10-26.json). [Raport niezależny](../data/audits/STEP12_INDEPENDENT_METHODOLOGY_2026-10-26.json); walk-forward w realnym harmonogramie: 60,126,123,71 (łącznie 380 walidacyjnych), bez TEST. [Pełna metodyka do akceptacji](STEP_12_METHOD_DECISION.md). **GATE12 PENDING do zgody użytkownika, training_allowed=false.**
