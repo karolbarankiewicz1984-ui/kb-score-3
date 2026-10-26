@@ -26,5 +26,6 @@ jobs:
             src/kb3_xg_pit.py
             src/kb3_reviewed_xg.py
             src/kb3_identity_review.py
+            scripts/step11_observed_features_audit.py
             scripts/pitchapi_step06_audit.py
             config/step11_reviewed_pitch_fixture_crosswalk_20261026.json
