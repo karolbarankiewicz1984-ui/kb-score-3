@@ -16,12 +16,18 @@ jobs:
           python3 -m unittest discover -s tests -p 'test_step12_acceptance.py' -v
           python3 -m unittest discover -s tests -p 'test_step12_windows.py' -v
           python3 -m unittest discover -s tests -p 'test_step12_methodology.py' -v
+          python3 -m unittest discover -s tests -p 'test_step12_evidence_gap.py' -v
       - name: Freeze methodological PASS independent of training
         run: |
           python3 -m src.kb3_step12_acceptance \
             --safe-view data/splits/STEP12_SAFE_MODEL_VIEW_2026-10-26.json \
             --dual-plan data/splits/STEP12_DUAL_WINDOWS_REAL_2026-10-26.json \
             --out data/audits/STEP12_METHOD_GATE_PASS_2026-10-26.json
+      - name: Report real PIT data gaps without accessing labels
+        run: |
+          python3 -m src.kb3_step12_evidence_gap \
+            --source data/splits/STEP12_NATIVE_REAL_SPLIT_2026-10-26.json \
+            --out data/audits/STEP12_REAL_PIT_GAP_REPORT_2026-10-26.json
       - name: Inspect exact gate boundaries
         run: |
           python3 - <<'PY'
@@ -41,12 +47,14 @@ jobs:
       - uses: actions/upload-artifact@v4
         with:
           name: kb3-step12-methodology-only-acceptance-20261026
-          path: data/audits/STEP12_METHOD_GATE_PASS_2026-10-26.json
+          path: |
+            data/audits/STEP12_METHOD_GATE_PASS_2026-10-26.json
+            data/audits/STEP12_REAL_PIT_GAP_REPORT_2026-10-26.json
           retention-days: 90
       - name: Commit signed-off protocol evidence
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add data/audits/STEP12_METHOD_GATE_PASS_2026-10-26.json
+          git add data/audits/STEP12_METHOD_GATE_PASS_2026-10-26.json data/audits/STEP12_REAL_PIT_GAP_REPORT_2026-10-26.json
           git commit -m "Step12: methodology-only PASS; no training, PIT uncertified"
           git push origin "HEAD:feature/step12-asof-gate-and-acceptance-20261026"
