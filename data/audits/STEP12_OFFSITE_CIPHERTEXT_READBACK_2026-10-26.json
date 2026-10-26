@@ -1,0 +1,47 @@
+{
+  "schema": "kb3-step12-independent-drive-zip-readback-v1",
+  "date_utc": "2026-10-26",
+  "original_actions_run": "https://github.com/karolbarankiewicz1984-ui/kb-score-3/actions/runs/40345911294",
+  "original_artifact_id": 12661172568,
+  "drive_backup_url": "https://drive.google.com/file/d/1j56rqRA8SnVYi1g65dbfwPaXHH96GzhB/view",
+  "drive_folder_url": "https://drive.google.com/drive/folders/17NvQFKNkFd4eHZSqa-bNU0nFFSmHKTKo",
+  "drive_file_name": "KB3_STEP12_REAL_PITCH_NATIVE_20261026.zip",
+  "drive_download_raw_file_verified": true,
+  "drive_download_bytes": 115137,
+  "downloaded_zip_sha256": "191554843271756b0f472432719c00477c6a14bea255f403b25d17c6cfb9dbce",
+  "verified_zip_members": [
+    "STEP12_REAL_SOURCE.enc",
+    "STEP12_REAL_SOURCE.manifest.json",
+    "STEP12_NATIVE_SPLIT.json",
+    "STEP12_NATIVE_AUDIT.json"
+  ],
+  "encrypted_source_sha256": "70acaf4906bb1bc698e33d21f573afe11d588d20a9fe71fc039948b0ec91f299",
+  "source_manifest_ciphertext_hash_match": true,
+  "source_chain_manifest_link_match": true,
+  "split_manifest_sha256": "da387303645a9bb9476351044944e5465d178ddff689c96b579093c4fb4fce3a",
+  "split_manifest_embedded_self_hash_verified": true,
+  "source_audit_to_split_hash_match": true,
+  "unique_provider_fixture_ids": 1520,
+  "partition_counts": {
+    "TRAIN": 760,
+    "VALIDATION": 380,
+    "TEST": 380
+  },
+  "eligible_counts": {
+    "TRAIN": 0,
+    "VALIDATION": 0,
+    "TEST": 0
+  },
+  "retrospective_quarantine": true,
+  "historical_point_in_time_certified": false,
+  "offsite_ciphertext_readback_verified": true,
+  "independent_plaintext_restore_verified": false,
+  "owner_private_key_read": false,
+  "training_allowed": false,
+  "gate12_pass": false,
+  "limitations": [
+    "Downloaded Drive ZIP and independently verified encrypted ciphertext SHA256 and deterministic manifest integrity, but did not decrypt the original provider source because the owner's private RSA key is intentionally not available.",
+    "This is not independent certification of provider publication timestamps or of historical pre-match feature availability.",
+    "The 1520-record match index is immutable for this dataset version but not yet an eligible ML training dataset."
+  ]
+}
