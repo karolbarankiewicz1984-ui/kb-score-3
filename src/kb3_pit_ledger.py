@@ -49,6 +49,7 @@ def initialize(db):
         CHECK(source_published_at_state='UNAVAILABLE'),
       origin TEXT NOT NULL CHECK(origin IN ('NETWORK_OBSERVED','SYNTHETIC_TEST')),
       response_sha256 TEXT NOT NULL,
+      response_json TEXT NOT NULL,
       record_count INTEGER NOT NULL CHECK(record_count>0),
       prev_chain_sha256 TEXT NOT NULL,
       chain_sha256 TEXT NOT NULL UNIQUE,
@@ -136,9 +137,9 @@ def record_capture(db,payload,*,season,started_at_utc,completed_at_utc,
                  "record_hashes":[x[4] for x in body_rows]}
         chain=hexdigest(canonical(summary))
         capture_id=chain[:32]
-        db.execute("""INSERT INTO captures VALUES(?,?,?,?,?,?,?,?,?,?,?,?,0)""",
+        db.execute("""INSERT INTO captures VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,0)""",
                    (capture_id,"API-Football",resource,started_at_utc,completed_at_utc,
-                    None,"UNAVAILABLE",origin,response_hash,len(items),prev,chain))
+                    None,"UNAVAILABLE",origin,response_hash,canonical(payload).decode("utf8"),len(items),prev,chain))
         db.executemany("""INSERT INTO capture_records VALUES(?,?,?,?,?,?)""",
                        [(capture_id,fid,ko,st,h,b)
                         for fid,ko,st,b,h in body_rows])
@@ -156,23 +157,31 @@ def verify_chain(db):
     initialize(db)
     sessions=db.execute("""SELECT capture_id,provider,resource,started_at_utc,
       completed_at_utc,source_published_at_utc,source_published_at_state,
-      origin,response_sha256,record_count,prev_chain_sha256,chain_sha256
+      origin,response_sha256,response_json,record_count,prev_chain_sha256,chain_sha256
       FROM captures ORDER BY rowid""").fetchall()
     prev=GENESIS
     for row in sessions:
         (cid,provider,resource,started,completed,published,state,origin,
-         response_hash,count,prior,chain)=row
+         response_hash,response_json,count,prior,chain)=row
         if prior!=prev or provider!="API-Football" or published is not None or state!="UNAVAILABLE":
             raise ValueError("CAPTURE_CHAIN_METADATA_MISMATCH")
         if as_utc(start)>as_utc(completed):
             raise ValueError("REVERSED_CAPTURE_TIME")
+        if hexdigest(canonical(json.loads(response_json)))!=response_hash:
+            raise ValueError("TAMPERED_CAPTURE_RESPONSE")
         body=db.execute("""SELECT provider_fixture_id,record_json,record_sha256
                            FROM capture_records WHERE capture_id=?
                            ORDER BY provider_fixture_id""",(cid,)).fetchall()
         if len(body)!=count:
             raise ValueError("CAPTURE_ROW_COUNT_MISMATCH")
+        response_items=validate_response(json.loads(response_json),
+                            int(resource.split("season=")[-1]))
+        if [x["fixture"]["id"] for x in response_items]!=[x[0] for x in body]:
+            raise ValueError("RESPONSE_ROW_MISMATCH")
         hashes=[]
-        for fid,raw,h in body:
+        for rowidx,(fid,raw,h) in enumerate(body):
+            if canonical(response_items[rowidx]).decode("utf8")!=raw:
+                raise ValueError("RESPONSE_ROW_PAYLOAD_MISMATCH")
             data=json.loads(raw)
             if data["fixture"]["id"]!=fid or hexdigest(canonical(data))!=h:
                 raise ValueError("TAMPERED_CAPTURE_RECORD")
