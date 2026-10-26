@@ -1,0 +1,72 @@
+name: KB3 Step11 - ONE TIME PitchAPI Native Sealed PIT
+on:
+  push:
+    branches: ["feature/step11-pitch-native-encrypted-ledger-20261026"]
+    paths: [".github/workflows/kb3-step11-pitch-native-pit-once.yml"]
+permissions:
+  contents: read
+concurrency:
+  group: kb3-pitch-native-one-shot-20261026
+  cancel-in-progress: false
+jobs:
+  test-before-network:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Crypto for sealed archive tests
+        run: python3 -m pip install --disable-pip-version-check 'cryptography>=42,<47'
+      - name: Native PIT regression, no API
+        run: |
+          python3 -m unittest discover -s tests -p 'test_step11_pitch_native_ledger.py' -v
+          python3 -m unittest discover -s tests -p 'test_step11_pitch_native.py' -v
+  capture-once:
+    needs: test-before-network
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - name: SDK and crypto
+        run: python3 -m pip install --disable-pip-version-check 'pitchapi==0.1.6' 'cryptography>=42,<47'
+      - name: Exactly 7 PitchAPI requests, 0 API-Football
+        env:
+          PITCHAPI_API_KEY: ${{ secrets.PITCHAPI_API_KEY }}
+        run: |
+          set -euo pipefail
+          test -n "$PITCHAPI_API_KEY"
+          python3 -m scripts.step11_pitch_native_capture_once \
+            --outdir audit/step11/pitch-native \
+            --recipient config/step11_archive_recipient_public.pem
+      - name: Check one full real season and 5 immutable shot feeds
+        run: |
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          p=Path("audit/step11/pitch-native")
+          x=json.loads((p/"STEP11_PITCH_NATIVE_SAFE_RECEIPT.json").read_text())
+          m=json.loads((p/"KB3_PITCH_NATIVE_2026-27_PIT.manifest.json").read_text())
+          assert x["source"]=="PitchAPI" and x["fixture_count"]==380
+          assert x["shot_receipts"]==5 and x["captures"]==6 and x["records"]==385
+          assert x["provider_requests"]==7 and x["other_sports_provider_requests"]==0
+          assert m["schema"]=="kb3-pitch-native-sealed-observation-v1"
+          assert m["chain_evidence"]["last_chain_sha256"]==x["final_chain_sha256"]
+          assert m["chain_evidence"]["fixture_captures"]==1
+          assert m["chain_evidence"]["shot_captures"]==5
+          assert m["origin"]=="NETWORK_OBSERVED"
+          assert not m["original_publication_verified"]
+          assert not m["retrospective_pit_verified"]
+          assert not m["training_allowed"] and not m["production_switch_approved"]
+          assert not x["offsite_restore_verified"]
+          assert not (p/"PITCH_NATIVE_TEMP.sqlite3").exists()
+          print("KB3_NATIVE_PITCH_PIT_SEALED_FIRST_OBSERVATION_PASS")
+          PY
+      - name: Upload ONLY cipher + manifest + safe aggregate
+        uses: actions/upload-artifact@v4
+        with:
+          name: kb3-step11-pitch-native-sealed-20261026
+          path: |
+            audit/step11/pitch-native/KB3_PITCH_NATIVE_2026-27_PIT.enc
+            audit/step11/pitch-native/KB3_PITCH_NATIVE_2026-27_PIT.manifest.json
+            audit/step11/pitch-native/STEP11_PITCH_NATIVE_SAFE_RECEIPT.json
+          retention-days: 30
+          if-no-files-found: error
