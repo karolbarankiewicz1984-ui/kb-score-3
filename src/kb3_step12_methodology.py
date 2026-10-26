@@ -174,7 +174,9 @@ def safe_model_fixtures(projection, *, purpose, role):
         raise SplitSafetyError("STEP12_ACCESS_ROLE_INVALID")
     if role == "TEST" and purpose == "tuning":
         raise SplitSafetyError("STEP12_TEST_HOLDOUT_ACCESS_DENIED")
-    if purpose == "tuning" and projection.get("train_data_gate") != "ALLOWED":
+    if purpose == "tuning":
+        # Schedule-only projection can NEVER authorize tuning, even when the
+        # caller recomputes a modified JSON hash or toggles a policy flag.
         raise SplitSafetyError("STEP12_TUNING_NOT_YET_APPROVED")
     return tuple({k: row[k] for k in SAFE_KEYS} for row in projection["fixtures"]
                  if row["partition"] == role)
