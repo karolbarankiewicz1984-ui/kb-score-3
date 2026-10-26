@@ -143,6 +143,19 @@ class TestPitLedger(unittest.TestCase):
         with self.assertRaisesRegex(ValueError,"ENCRYPTED_CHECKSUM"):
             restore(dest,mf,priv,target)
 
+    def test_newer_postponed_revision_blocks_old_finished_result(self):
+        first=self.capture(origin="NETWORK_OBSERVED")
+        midpoint=iso(self.now)
+        self.now+=timedelta(seconds=2)
+        self.started=iso(self.now-timedelta(seconds=1))
+        self.finished=iso(self.now)
+        revised=payload(status="PST")
+        self.capture(origin="NETWORK_OBSERVED",data=revised)
+        self.assertIsNotNone(select_result_asof(self.db,1800000,midpoint))
+        self.assertIsNone(select_result_asof(
+            self.db,1800000,iso(self.now+timedelta(days=1))))
+        self.assertEqual(verify_chain(self.db)["sessions"],2)
+
     def test_no_synthetic_archive_can_claim_real_provenance(self):
         self.capture()
         pub=self.dir/"pub.pem";pub.write_bytes(self.pub)
