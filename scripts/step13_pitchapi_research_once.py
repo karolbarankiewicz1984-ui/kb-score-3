@@ -89,7 +89,7 @@ def extract_research_rows(seasons, *, safe_view):
 
 
 def assemble(seasons, *, safe_view, observed_at):
-    if safe_view.get("schema")!="kb3-step12-real-safe-model-view-v0.2":
+    if safe_view.get("schema")!="kb3-step12-methodology-v1":
         # This is a safety-critical contract: change only with review.
         raise ValueError("STEP13_RESEARCH_SAFE_VIEW_SCHEMA_CHANGED")
     records,season_hashes=extract_research_rows(seasons,safe_view=safe_view)
