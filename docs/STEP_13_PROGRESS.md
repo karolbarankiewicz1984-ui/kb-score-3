@@ -84,3 +84,31 @@ W odróżnieniu od istniejącego `kb3_step13_fold_replay.py`, który na potrzeby
 2. Osobno uzgodniony badawczy, wyraźnie opisany replay z wyników archiwalnych dostępnych obecnie, oparty wyłącznie na historycznej kolejności zdarzeń — może służyć do badań wstępnych, lecz **nie** daje dowodu historycznej wiedzy przed meczem i nie może automatycznie zaliczyć GATE13.
 
 **GATE13 PENDING**: nadal brak rzeczywistych historycznych metryk. **Stan projektu 12/29; produkcyjne training_allowed=false**.
+
+## 26.10.2026 — Kontynuacja ISTNIEJĄCEGO kroku 13: realny backtest badawczy offline (bez nowych etapów planu)
+
+**Decyzja właściciela:** wykorzystać istniejące archiwum PitchAPI w odrębnym eksperymencie `RECONSTRUCTED_EVENT_TIME_RESEARCH_NOT_VERIFIED_PIT`, równolegle zachowując budowę przyszłych prawdziwych przedmeczowych obserwacji. Nie dodajemy osobnej pozycji do harmonogramu 29 kroków i nie zmieniamy zadań 14–29.
+
+### Co jest wdrożone teraz
+- [Algorytm badań historycznych](../src/kb3_step13_retrospective.py): cztery istniejące kwartalne walidacje 2025/26, EXPANDING i ROLLING 24 miesiące, Elo aktualizowane z poprzednich wyników tylko po **symulowanym konserwatywnym embargo 48 godzin**. Ten hipotetyczny czas jest wyłącznie założeniem badawczym; **nie jest** oryginalnym `source_observed_at`. MLE bazowych stawek bramkowych i z góry ustalona siatka elasticities wybierane na okresie TRAIN; na początku każdego kwartału oceny i parametry zostają zamrożone. Wynik meczów VAL może zostać użyty dopiero w przyszłym foldzie. Wynik i identyfikator TEST całkowicie zablokowane. Dla obu metod wspólne mecze i osobne porównywalne metryki multiclass logloss, Brier sum3 i 5-koszykowa kalibracja top-class. Wartość ECE prezentowana jako **średnia ważona ECE foldów**, nie globalnie przeliczona na połączonych prognozach.
+- [Zaufany lokalny czytnik i uruchamiacz](../scripts/step13_pitch_retrospective_local.py): przyjmuje oryginalną zaszyfrowaną kopię Google Drive `KB3_PITCH_PL_2023_2026_NATIVE_20261026.zip`. Weryfikuje niezmienne SHA-256 ZIP `301bae69251d19a0192e12c2c033636b3f2822a15dcea2c4beaca28f4b45de2e`, szyfrogramu `e5e14a2320e65f945a2709c4cd8dfb49ed38d45ccca3502b3e5ba7c21f84d343`, łańcucha `33c750f2db89a0df5faeba9348652a451f33548959839ff7bb0ca49210c2b367` oraz prawdziwy moment źródłowej obserwacji `2026-10-26T13:17:47.692940Z`, niezależny `restore(...include_receipts=True)`, wszystkie 1140 autentyczne ID/ko z przypiętym, safe-only widokiem kroku 12. Wymaga kompletnych **760 TRAIN + 380 VALIDATION** i nie odczytuje żadnego TEST. Raport zawiera tylko zbiorcze liczby, parametry i metryki, nigdy nazw, wyników ani prywatnych kluczy.
+- [Testy algorytmu](../tests/test_step13_retrospective.py) i [testy obsługi archiwum](../tests/test_step13_local_archive.py) obejmują anty-lookahead, równe ID porównania, odmowę TEST, kursów, złego źródła/ZIP, ponawialność i przypadki graniczne. GitHub Actions może uruchamiać **wyłącznie te testy na danych syntetycznych**, nigdy odszyfrować prawdziwego ZIP.
+
+### Jak uruchomić lokalnie (z zachowaniem klucza prywatnego tylko u właściciela)
+
+1. Na komputerze właściciela z Pythonem i repozytorium KB Score 3.0 zainstalować zależność: `python -m pip install 'cryptography>=42,<47'`.
+2. Pobrać istniejące [zaszyfrowane archiwum PitchAPI](https://drive.google.com/file/d/1_wLVJtOSwjwQwHhjBa54-3f0-aCzhyqJ/view). Zachować oddzielnie oryginalny RSA private PEM — **nie przesyłać do czatu, GitHub Secrets ani Google Drive**.
+3. Uruchomić z katalogu repozytorium (zamieniając lokalne ścieżki na rzeczywiste):
+
+```bash
+python -m scripts.step13_pitch_retrospective_local \
+  --archive-zip /lokalna/sciezka/KB3_PITCH_PL_2023_2026_NATIVE_20261026.zip \
+  --private-key /bezpieczna/lokalna/sciezka/recipient_private.pem \
+  --research-policy RECONSTRUCTED_EVENT_TIME_RESEARCH_NOT_VERIFIED_PIT \
+  --output /lokalna/sciezka/STEP13_RETROSPECTIVE_RESEARCH_RESULT.json
+```
+
+4. Dopuszczony wynik to **wyłącznie raport badawczy** zawierający jawne `historical_pit_backtest_performed=false`, `training_allowed=false`, `gate13_pass=false`, cztery foldy i walidacyjne metryki. Przy niespójności danych/programu/klucza powstaje błąd, nie zastępczy raport. **Nie udostępniać surowej bazy ani klucza**.
+5. Prawidłowo wykonany raport będzie można przejrzeć, zweryfikować i następnie zdecydować, czy istnieją dostateczne podstawy do poprawiania algorytmu. Nie awansować do produkcji ani nie zaliczać pełnego kroku13 bez historycznej walidacji PIT/odrębnego odbioru.
+
+**Stan po wdrożeniu:** implementacja offline i testy automatyczne gotowe, **rzeczywisty backtest na odszyfrowanym archiwum JESZCZE NIE URUCHOMIONY** (brak prywatnego klucza w środowisku połączonym z GitHub). Nie wygenerowano jeszcze rzeczywistych metryk. Zaplanowane 29 kroków pozostaje bez zmian, aktualnie **12/29 odebranych; krok13 W REALIZACJI; GATE13 PENDING.** Koszt API: 0 zł.

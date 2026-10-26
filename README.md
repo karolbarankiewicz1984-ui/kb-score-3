@@ -65,3 +65,5 @@
 **Krok 13 — kontrola opóźnionych wyników:** [Dodatkowy test prequential w obrębie kwartału](docs/STEP_13_PROGRESS.md), [moduł](src/kb3_step13_replay.py) i [raport wyłącznie syntetyczny](data/audits/STEP13_M0_SYNTHETIC_REPLAY_2026-10-26.json). Nie zastępuje głównego modelu ze stałym zamrożeniem na początku folda. Nie testowano prawdziwej historii; GATE13 PENDING.
 
 **Krok 13 v0.3 — dopasowanie matematyczne TRAIN-only:** [wyjaśnienie i testy](docs/STEP_13_PROGRESS.md), [nieprodukcyjny raport syntetyczny](data/audits/STEP13_SYNTHETIC_POISSON_FIT_V03_2026-10-26.json). Wykonano MLE Poissona jedynie na 12 sztucznych meczach TRAIN, **nie na rzeczywistych wynikach**. Prawdziwe backtesty 1X2, Brier, log loss i kalibracja wciąż zablokowane; GATE13 PENDING i 12/29.
+
+**Krok 13 — eksperyment retrospektywny w dotychczasowym harmonogramie:** [opis, ograniczenia i lokalne uruchomienie](docs/STEP_13_PROGRESS.md), [algorytm 4 foldów i 2 okien](src/kb3_step13_retrospective.py). Wymaga prywatnego klucza wyłącznie na zaufanym komputerze do odszyfrowania istniejącego ZIP PitchAPI; rzeczywiste metryki JESZCZE NIE POLICZONE, GATE13 PENDING. Nie zwiększono 29 kroków.
