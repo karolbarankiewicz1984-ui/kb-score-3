@@ -133,3 +133,28 @@ Po zmianie konfiguracji/limitu na koncie GitHub przez właściciela ponowiono **
 - [Fold Replay Safety](https://github.com/karolbarankiewicz1984-ui/kb-score-3/actions/runs/40402094393) — **PASS**.
 
 To zastępuje starszą uwagę o nieuruchamialnym CI (prawdziwa przyczyna wcześniejszych automatycznych FAILURE: brak miesięcznych minut). **Nie** oznacza to, że 1140 prywatnych wyników historycznych zostało odszyfrowanych w CI, że wykonano realny backtest, ani że istnieją faktyczne przedmeczowe oceny modelu. Nadal konieczne lokalne odszyfrowanie oryginalnym prywatnym kluczem, a następnie badanie retrospektywne. **GATE13 PENDING, training_allowed=false, odbiór 12/29, krok14 nierozpoczęty, harmonogram 29 kroków bez zmian.**
+
+## 27.10.2026 — przygotowanie uruchomienia na ASUS / Windows 10 (ciągle KROK 13, bez nowej pozycji)
+
+**Stan techniczny:** użytkownik potwierdził przeniesienie prywatnego klucza RSA do laptopa ASUS. Nie podawano treści ani ścieżki klucza przez czat. ChatGPT ma dostęp do GitHub i zaszyfrowanego źródła, **nie** ma bezpośredniego dostępu do prywatnych plików Windows.
+
+Dodano pomocniczy [launcher PowerShell 5.1 Windows 10](../scripts/step13_windows_local_start.ps1). Pomaga uruchomić istniejący, zweryfikowany runner `scripts.step13_pitch_retrospective_local`, bez zmian w modelu, foldach, limitach API i 29-krokowym harmonogramie.
+
+### Instrukcja uruchomienia na laptopie
+
+1. Na ASUS-ie otworzyć własne repozytorium [kb-score-3](https://github.com/karolbarankiewicz1984-ui/kb-score-3) w zalogowanej przeglądarce, pobrać aktualny **Code → Download ZIP** i rozpakować do dowolnego zwykłego folderu (bez klucza prywatnego!). Jeśli repo jest już sklonowane lokalnie, wystarczy zaktualizować `main`. Nie otwierać ZIP repo jako archiwum — potrzebna jest rozpakowana struktura folderów `src`, `scripts`, `data`.
+2. Pobrać istniejący [oryginalny ZIP PitchAPI z Google Drive](https://drive.google.com/file/d/1_wLVJtOSwjwQwHhjBa54-3f0-aCzhyqJ/view) do `Pobrane`, bez rozpakowywania go. Oczekiwany SHA256: `301bae69251d19a0192e12c2c033636b3f2822a15dcea2c4beaca28f4b45de2e`.
+3. Zapisać klucz PEM/KEY w `%LOCALAPPDATA%\KB3-Private` **poza** folderem repo i synchronizacją OneDrive; zachować kopię na telefonie. Nie wysyłać zawartości klucza do ChatGPT ani na GitHub.
+4. Otworzyć rozpakowany folder repo w Eksploratorze, wpisać w pasku adresu `powershell` i nacisnąć Enter. W otwartym oknie uruchomić:
+
+```powershell
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\scripts\step13_windows_local_start.ps1
+```
+
+To ustawienie ExecutionPolicy dotyczy **tylko uruchamianego procesu**, nie zmienia trwale polityki komputera. Skrypt pochodzi z repozytorium właściciela; należy zawsze otworzyć/obejrzeć plik przed uruchomieniem.
+5. W dwóch oknach wybrać najpierw **oryginalny ZIP PitchAPI**, potem **swój prywatny klucz**. Skrypt sprawdzi pochodzenie ZIP, wykona testy offline, przygotuje oddzielne środowisko Python w folderze prywatnym; jeśli brakuje biblioteki `cryptography`, instaluje ją do tego środowiska z PyPI (jedyny sieciowy etap przygotowania). Gdy Python 3 nie jest zainstalowany, zatrzymuje się i pokazuje komunikat. Następnie lokalnie odszyfruje archiwum i wykona **retrospektywne badanie** przy ochronie TEST.
+6. Wynik zbiorczy pojawi się w konsoli. Kopia JSON zostanie zapisana pod ścieżką `%LOCALAPPDATA%\KB3-Private\STEP13_RETROSPECTIVE_RESEARCH_RESULT.json`, NIE w repozytorium. Do rozmowy wystarczą tylko zagregowane metryki EXPANDING i ROLLING oraz status; **nigdy nie przesyłać prywatnego klucza**, nie przesyłać zaszyfrowanej ani odszyfrowanej bazy.
+
+Runner poprawnie odrzuca nieoryginalny ZIP, nieprawidłowy nagłówek klucza, lokalizację klucza wewnątrz repo/OneDrive, brak Pythona, błędy integralności czy niespójne 760/380/0. Przy kluczu chronionym hasłem przerywa wykonanie; nie prosi o hasło. Weryfikację składni PowerShell i brak sieciowej transmisji klucza dodano do **istniejącego** workflow Step13. Program nie wykonuje zakładów ani realnego zatwierdzenia GATE13.
+
+**Nawet po udanym wykonaniu:** oznaczenie `RECONSTRUCTED_EVENT_TIME_RESEARCH_NOT_VERIFIED_PIT`, `training_allowed=false`, `gate13_pass=false`; wyniki logloss/Brier z retrospekcji nie są niezależnym dowodem autentycznych dawnych prognoz. Rzeczywistego uruchomienia na laptopie przez ChatGPT nie można potwierdzić przed otrzymaniem jego raportu. **KROK13 W REALIZACJI; 12/29; KROK14 nierozpoczęty.**
