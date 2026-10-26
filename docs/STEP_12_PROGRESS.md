@@ -34,3 +34,7 @@ Kontrola 90 minut: wynik H/D/A musi być obserwowany nie wcześniej niż kickoff
 **Do odbioru GATE12:** (1) wskazać rzeczywisty, zamrożony, pełny indeks fixture ID wraz z fingerprintami źródeł; (2) zapisać manifest z liczebnościami i SHA oraz sprawdzić jego niezależne odtworzenie; (3) pokazać zielone testy CI oraz oddzielne potwierdzenie braku przecieku; (4) uzyskać akceptację metodologii przed treningiem. Jeśli brak rzeczywistego PIT, wynik to uczciwe `GATE12 PENDING`, a nie fikcyjne zaliczenie.
 
 **Własne starsze modele KB2.1, API Market i MultiModel:** nietknięte. **Nowe koszty:** 0 zł.
+
+## 26.10.2026 — rzeczywisty indeks 1520 i kopia niezależna
+
+Pierwszy rzeczywisty, kompletny indeks czterech sezonów PitchAPI został utworzony, 1520/1520 native match IDs, TRAIN 760 / VALIDATION 380 / TEST 380. Wszystkie 1520 rekordów pozostają poza ML z powodu historycznej klasyfikacji RETROSPECTIVE albo braku zatwierdzenia pełnych prospektywnych cech; nie fałszujemy prematch-PIT. [Rzeczywiste CI PASS](https://github.com/karolbarankiewicz1984-ui/kb-score-3/actions/runs/40345911294), [manifest](../data/splits/STEP12_NATIVE_REAL_SPLIT_2026-10-26.json), [raport](STEP_12_REAL_INDEX_2026-10-26.md), [kopia na Google Drive](https://drive.google.com/file/d/1j56rqRA8SnVYi1g65dbfwPaXHH96GzhB/view). Po pobraniu kopii z Drive niezależnie zweryfikowano hashe źródłowego ciphertext i splitu, bez prywatnego klucza i bez RSA decrypt. Wciąż GATE12 PENDING i training_allowed=false.
