@@ -82,9 +82,12 @@ class Step12SplitTests(unittest.TestCase):
 
     def test_future_cutoff_cannot_be_claimed_as_observed(self):
         with self.assertRaisesRegex(SplitSafetyError, "FEATURE_CUTOFF_AFTER_EXPORT"):
-            build([item(mid="future", kickoff="2026-11-20T20:00:00Z",
-                        cutoff="2026-11-20T08:00:00Z",
-                        observed="2026-11-20T07:00:00Z")])
+            future = item(mid="future", kickoff="2026-11-20T20:00:00Z",
+                          cutoff="2026-11-20T08:00:00Z",
+                          observed="2026-11-20T07:00:00Z")
+            future["label_90m"] = None
+            future["label_observed_at_utc"] = None
+            build([future])
 
     def test_future_feature_receipt_rejected(self):
         with self.assertRaisesRegex(SplitSafetyError, "FEATURE_OBSERVED_AFTER_CUTOFF"):
