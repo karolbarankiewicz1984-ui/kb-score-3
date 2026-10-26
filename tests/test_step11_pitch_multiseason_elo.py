@@ -60,10 +60,11 @@ class NativeHistoricalEloTests(unittest.TestCase):
                completed_at_utc=clock(-8),origin="NETWORK_OBSERVED")
         self.target=self.current[-1]["id"]
         self.past=past_receipts()
+        self.cutoff=clock(1)
 
     def build(self,**kwargs):
         return build_native_observed(self.db,self.target,
-           cutoff_utc=clock(1),historical_receipts=self.past,**kwargs)
+           cutoff_utc=self.cutoff,historical_receipts=self.past,**kwargs)
 
     def test_full_3_historical_seasons_enrich_elo_without_xg_fabrication(self):
         r=self.build()
@@ -80,7 +81,7 @@ class NativeHistoricalEloTests(unittest.TestCase):
            "RETROSPECTIVE_HISTORY_OBSERVED_BEFORE_TARGET_CUTOFF")
 
     def test_missing_historical_input_keeps_single_season_behavior(self):
-        r=build_native_observed(self.db,self.target,cutoff_utc=clock(1))
+        r=build_native_observed(self.db,self.target,cutoff_utc=self.cutoff)
         self.assertEqual(r["accepted_predecessor_count"],80)
         self.assertEqual(r["features"]["home_prior_seasons_games_available"],0)
         self.assertEqual(r["source_evidence"]["multiseason_elo_status"],
