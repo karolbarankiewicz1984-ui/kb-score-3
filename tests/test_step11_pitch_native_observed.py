@@ -5,7 +5,7 @@ import unittest
 from src.kb3_pitch_native_ledger import record
 from src.kb3_pitch_native_observed_features import build_native_observed
 from src.kb3_features import FeatureSafetyError,digest
-from tests.test_step11_pitch_native_ledger import season,shots
+from test_step11_pitch_native_ledger import season,shots
 
 def t(offset):
     return (datetime.now(timezone.utc)+timedelta(seconds=offset)).isoformat().replace("+00:00","Z")
