@@ -6,6 +6,7 @@ on:
       - "src/kb3_step13_retrospective.py"
       - "scripts/step13_pitch_retrospective_local.py"
       - "tests/test_step13_retrospective.py"
+      - "tests/test_step13_local_archive.py"
       - "docs/STEP_13_PROGRESS.md"
       - ".github/workflows/kb3-step13-retrospective.yml"
   pull_request:
@@ -13,6 +14,7 @@ on:
       - "src/kb3_step13_retrospective.py"
       - "scripts/step13_pitch_retrospective_local.py"
       - "tests/test_step13_retrospective.py"
+      - "tests/test_step13_local_archive.py"
       - "docs/STEP_13_PROGRESS.md"
       - ".github/workflows/kb3-step13-retrospective.yml"
   workflow_dispatch:
@@ -24,6 +26,8 @@ jobs:
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
+      - name: Install fixed crypto library for sealed archive interface tests
+        run: python3 -m pip install --disable-pip-version-check 'cryptography>=42,<47'
       - name: Run offline model and anti-leakage regression tests
         run: |
           python3 -m unittest discover -s tests -p 'test_step13*.py' -v
