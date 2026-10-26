@@ -1,0 +1,40 @@
+{
+  "schema": "kb3-step11-two-pit-independent-drive-restore-v1",
+  "first_capture_completed_at_utc": "2026-10-26T09:01:49.018457Z",
+  "second_capture_completed_at_utc": "2026-10-26T09:20:47.665981Z",
+  "first_offsite_drive_id": "1wvFMLiSQHUP06-r95iNwp9nyBfYbsBoP",
+  "second_offsite_drive_id": "1yOQUgJeccTYWwPRMBSIqZijY1DtGS-4D",
+  "first_zip_sha256": "04b7e3927186a4ef1412ae48954716619b57a2e5eac697f692458edfb9cd4845",
+  "second_zip_sha256": "67221399576adde0da9cf41dc6c4f90fe8bcc6e58aefcb8dbc0da0b89f3e68bf",
+  "first_chain_sha256": "d602b4fe6a7c073ab1f8cbe08c727bb437013576fb2515688a5c840113e468ee",
+  "second_chain_sha256": "51dfff065b339ea74901e97d6582a59b5f6889e19dd4c2a8101c1d56a62f46ac",
+  "matched_fixtures": 380,
+  "unchanged_payload_fixtures": 380,
+  "changed_payload_fixtures": 0,
+  "status_changes": 0,
+  "score_changes": 0,
+  "kickoff_changes": 0,
+  "xg_captured": 3,
+  "xg_identity_classes": {
+    "AMBIGUOUS_OR_UNMATCHED": 2,
+    "ALIAS_CANDIDATE_UNVERIFIED": 1
+  },
+  "xg_states": {
+    "COMPLETE_SHOT_XG": 3
+  },
+  "xg_strict_and_complete": 0,
+  "xg_quarantined": 3,
+  "pitchapi_calls": 5,
+  "api_football_calls": 1,
+  "sqlite_integrity": "ok",
+  "sqlite_foreign_key_violations": 0,
+  "offsite_restored": true,
+  "provider_published_time_known": false,
+  "historical_pit_certified": false,
+  "training_allowed": false,
+  "trained_model": false,
+  "first_run": "https://github.com/karolbarankiewicz1984-ui/kb-score-3/actions/runs/40296430026",
+  "second_run": "https://github.com/karolbarankiewicz1984-ui/kb-score-3/actions/runs/40298805124",
+  "offline_ci_run": "https://github.com/karolbarankiewicz1984-ui/kb-score-3/actions/runs/40298663945",
+  "scope_limit": "Two short-interval snapshots; no actual match status changed. Three shot feeds only; cannot infer full league xG coverage."
+}
