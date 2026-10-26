@@ -1,0 +1,63 @@
+name: "KB3 Step11 - ONE-TIME Second PIT plus xG"
+on:
+  push:
+    branches: ["feature/step11-second-pit-and-xg-20261026"]
+    paths:
+      - ".github/workflows/kb3-step11-second-pit-once.yml"
+permissions:
+  contents: read
+concurrency:
+  group: kb3-step11-second-pit-once-20261026
+  cancel-in-progress: false
+jobs:
+  single-bounded-two-source-observation:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - name: Pinned PitchAPI SDK and cryptography
+        run: |
+          python -m pip install --disable-pip-version-check 'pitchapi==0.1.6' 'cryptography>=42,<47'
+      - name: One current-season fixture call + max six PitchAPI calls, encrypted
+        env:
+          API_FOOTBALL_KEY: ${{ secrets.API_FOOTBALL_KEY }}
+          PITCHAPI_API_KEY: ${{ secrets.PITCHAPI_API_KEY }}
+        run: |
+          set -euo pipefail
+          test -n "$API_FOOTBALL_KEY"
+          test -n "$PITCHAPI_API_KEY"
+          python -m scripts.step11_second_live_capture \
+            --outdir audit/step11/second-pit \
+            --public-key config/step11_archive_recipient_public.pem
+      - name: Enforce strict observed-at and request budgets
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import json
+          root=Path('audit/step11/second-pit')
+          r=json.loads((root/'STEP11_SECOND_PIT_SANITIZED.json').read_text())
+          m=json.loads((root/'KB3_PL_2026-27_SECOND_PIT_AND_XG.manifest.json').read_text())
+          assert r['fixture_records']==380
+          assert r['api_football_calls']==1
+          assert r['pitchapi_calls']<=6
+          assert r['sample_selected']==3
+          assert 0<=r['xg_audit']['strict_complete']<=3
+          assert m['ledger_evidence']['fixture_records']==380
+          assert m['xg_evidence']==r['xg_audit']
+          assert not m['provider_publication_certified']
+          assert not m['training_allowed']
+          assert not r['training_allowed'] and not r['trained_model']
+          assert not r['offsite_restore_verified']
+          assert not (root/'EPHEMERAL_TWO_SOURCE_PIT.sqlite3').exists()
+          print('STEP11_SECOND_PIT_TWO_SOURCE_REPLAY_BLOCKED_PASS')
+          PY
+      - name: Export only sealed ciphertext and aggregate receipt
+        uses: actions/upload-artifact@v4
+        with:
+          name: kb3-step11-second-pit-plus-xg-20261026
+          path: |
+            audit/step11/second-pit/KB3_PL_2026-27_SECOND_PIT_AND_XG.enc
+            audit/step11/second-pit/KB3_PL_2026-27_SECOND_PIT_AND_XG.manifest.json
+            audit/step11/second-pit/STEP11_SECOND_PIT_SANITIZED.json
+          retention-days: 30
+          if-no-files-found: error
