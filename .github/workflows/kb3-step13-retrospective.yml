@@ -1,19 +1,25 @@
 name: "KB3 Step 13 - Retrospective Research Contract"
 on:
   push:
-    branches: ["feature/step13-real-retrospective-research-v04", "main"]
+    branches: ["feature/step13-*", "main"]
     paths:
       - "src/kb3_step13_retrospective.py"
+      - "src/kb3_step13_archive_preflight.py"
+      - "data/audits/STEP13_ORIGINAL_SEALED_ZIP_PREFLIGHT_2026-10-26.json"
       - "scripts/step13_pitch_retrospective_local.py"
       - "tests/test_step13_retrospective.py"
+      - "tests/test_step13_archive_preflight.py"
       - "tests/test_step13_local_archive.py"
       - "docs/STEP_13_PROGRESS.md"
       - ".github/workflows/kb3-step13-retrospective.yml"
   pull_request:
     paths:
       - "src/kb3_step13_retrospective.py"
+      - "src/kb3_step13_archive_preflight.py"
+      - "data/audits/STEP13_ORIGINAL_SEALED_ZIP_PREFLIGHT_2026-10-26.json"
       - "scripts/step13_pitch_retrospective_local.py"
       - "tests/test_step13_retrospective.py"
+      - "tests/test_step13_archive_preflight.py"
       - "tests/test_step13_local_archive.py"
       - "docs/STEP_13_PROGRESS.md"
       - ".github/workflows/kb3-step13-retrospective.yml"
@@ -43,4 +49,24 @@ jobs:
               assert "EXPLICIT_POLICY_REQUIRED" in str(exc)
           assert POLICY == "RECONSTRUCTED_EVENT_TIME_RESEARCH_NOT_VERIFIED_PIT"
           print("STEP13_RESEARCH_ONLY_POLICY_PASS_NO_REAL_MATCHES_OR_PRIVATE_KEYS")
+          PY
+      - name: Verify frozen evidence report was a real ZIP-only check, not a backtest
+        run: |
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          from src.kb3_split import sha
+          from src.kb3_step13_archive_preflight import ZIP_SHA,CIPHER_SHA,CHAIN_SHA
+          report=json.loads(Path("data/audits/STEP13_ORIGINAL_SEALED_ZIP_PREFLIGHT_2026-10-26.json").read_text())
+          assert report["report_sha256"]==sha({k:v for k,v in report.items() if k!="report_sha256"})
+          assert report["zip_sha256"]==ZIP_SHA and report["cipher_sha256"]==CIPHER_SHA
+          assert report["source_provenance_chain_sha256"]==CHAIN_SHA
+          assert report["zip_size_bytes"]==31907 and report["cipher_size_bytes"]==30168
+          assert report["historical_fixture_count_declared"]==1140
+          assert report["archive_zip_integrity_verified"]
+          assert not report["archive_decrypted"] and not report["real_backtest_performed"]
+          assert not report["real_fit_performed"] and not report["real_backtest_metrics_available"]
+          assert not report["historical_prematch_pit_proven"]
+          assert not report["training_allowed"] and not report["gate13_pass"]
+          print("STEP13_ORIGINAL_ENCRYPTED_ZIP_AUDIT_PINNED_NO_DECRYPTION")
           PY

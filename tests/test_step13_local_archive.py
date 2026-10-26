@@ -43,14 +43,18 @@ class TrustedArchivePolicyTests(TestCase):
     def test_real_archive_cannot_be_substituted(self):
         with TemporaryDirectory() as tmp:
             root,path,_=setup(tmp)
-            with self.assertRaisesRegex(ValueError,"SOURCE_AUDIT_CHANGED"):
-                local.research_archive_zip_local(
+            with mock.patch.object(local,"verify_original_zip",
+                    return_value={"report_sha256":"SYNTHETIC_ONLY"}):
+                with self.assertRaisesRegex(ValueError,"SOURCE_AUDIT_CHANGED"):
+                    local.research_archive_zip_local(
                     archive_zip=path,private_key_path="NEVER_USED",root=root)
 
     def test_zip_missing_expected_crypto_receipts_rejected(self):
         with TemporaryDirectory() as tmp:
             root,path,digest=setup(tmp,duplicate=True)
-            with mock.patch.object(local,"PINNED_ZIP_SHA256",digest):
+            with mock.patch.object(local,"PINNED_ZIP_SHA256",digest),mock.patch.object(
+                    local,"verify_original_zip",
+                    return_value={"report_sha256":"SYNTHETIC_ONLY"}):
                 with self.assertRaisesRegex(ValueError,"ARCHIVE_CONTENTS_INVALID"):
                     local.research_archive_zip_local(
                         archive_zip=path,private_key_path="NEVER_USED",root=root)
@@ -65,10 +69,16 @@ class TrustedArchivePolicyTests(TestCase):
                 self.assertNotEqual(Path(cipher_path).parent,Path(private_key_path).parent)
                 return {"test_only":"NO_REAL_RESTORE_PERFORMED"}
             with mock.patch.object(local,"PINNED_ZIP_SHA256",digest),mock.patch.object(
+                    local,"verify_original_zip",
+                    return_value={"report_sha256":"SYNTHETIC_ONLY"}),mock.patch.object(
                     local,"research_local",side_effect=only_encrypted) as fn:
                 result=local.research_archive_zip_local(
                     archive_zip=path,private_key_path="SECRET_FILE_PATH_NOT_REAL",root=root)
-            self.assertEqual(result,{"test_only":"NO_REAL_RESTORE_PERFORMED"})
+            self.assertEqual(result["test_only"],"NO_REAL_RESTORE_PERFORMED")
+            self.assertEqual(result["original_encrypted_archive_preflight_sha256"],
+                             "SYNTHETIC_ONLY")
+            self.assertEqual(result["report_sha256"],local.sha(
+                {k:v for k,v in result.items() if k!="report_sha256"}))
             self.assertEqual(fn.call_count,1)
 
     def test_unknown_policy_no_override(self):
