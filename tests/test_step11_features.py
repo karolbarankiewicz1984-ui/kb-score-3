@@ -184,7 +184,7 @@ class Step11Features(unittest.TestCase):
 
     def test_interseason_decay_for_multiple_absent_years(self):
         with sample() as db:
-            self.prior_season(db)
+            self.prior_season(db,year="2021")
             db.execute("UPDATE seasons SET start_year=2021 WHERE season_id=2")
             before=build_features(db,4,cutoff_utc=CUTOFF,
                                   elo_params=EloParameters(season_retention=0.85))
