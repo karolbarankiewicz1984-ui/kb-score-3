@@ -39,3 +39,10 @@ Wynik potwierdza **stałość dwóch autentycznie pobranych źródłowych obraz�
 Nie dowodzi stabilności między różnymi dniami, oryginalnego czasu pierwszego opublikowania danych przez PitchAPI, kompletności xG wszystkich lig, licencyjnej gotowości produkcyjnej ani wiarygodności historycznych symulacji przedmeczowych 2023–2025. Nie uruchomiono kalibracji ELO, treningu, generowania typów lub migracji produkcyjnej. Starsze archiwa API-Football i inne modele bez zmian.
 
 **Stan: GATE11 PENDING, 10/29 formalnie zaliczonych, `training_allowed=false`.** Następne zadanie: nowa rzeczywista obserwacja z innego dnia i jej porównanie z niniejszym materiałem oraz końcowy audyt jakości cech, bez datowania wstecznego.
+
+## Dodatek: bezpieczne, powtarzalne odtwarzanie dwóch archiwów (26.10.2026)
+
+- `src/kb3_pitch_native_ledger.py`: usunięto próbę wykonywania DDL (`CREATE TABLE IF NOT EXISTS`) wewnątrz `verify`, bo SQLite otwarty w `mode=ro` może zgłaszać `attempt to write a readonly database` nawet przy już istniejących tabelach. **Weryfikacja jest teraz wyłącznie odczytowa**, bez modyfikacji hash-chain ani polityki PIT. Dodano realny test odczytu pliku SQLite w trybie `mode=ro`.
+- `scripts/step11_pitch_native_compare_offsite_zip.py` — lokalny skrypt do weryfikacji dwóch osobnych zaszyfrowanych archiwów. Akceptuje tylko trzy znane elementy ZIP, ogranicza ich rozmiar, blokuje `../` i dodatkowe pliki w rodzaju jawnej SQLite. Następnie **niezależnie odszyfrowuje każdą kopię z użyciem prywatnego klucza wyłącznie lokalnie**, weryfikuje manifest, AES-GCM, SQLite i SHA-chain, wylicza zagregowany audyt zmian. Rozpakowane bazy są usuwane po zakończeniu; raport nie zawiera nazw/ID klubów ani kluczy.
+- Dodano 6 testów formatów ZIP oraz 1 test bezstratnej weryfikacji `mode=ro`. [Pełna regresja 206/206 PASS](https://github.com/karolbarankiewicz1984-ui/kb-score-3/actions/runs/40322588669) (167 testów kroku 11 + 39 starszych). Do nowych testów nie wykonano dodatkowego wywołania dostawcy.
+- Wnioski z wcześniejszych dwóch realnych odczytów **nie zostały zmienione**: dane 380 meczów zgodne tego samego dnia. Wielodniowy PIT i pełne pokrycie wszystkich xG pozostają PENDING.
