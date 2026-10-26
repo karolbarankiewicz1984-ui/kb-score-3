@@ -1,0 +1,49 @@
+{
+  "all_validation_count": 380,
+  "comparison_sha256": "25242ed4a626aba2669ea86605b31664cb17bf10a6a74e4e3548470954c81198",
+  "eligible_training_count": 0,
+  "folds": [
+    {
+      "expanding_history_candidates": 760,
+      "fold": 1,
+      "rolling_2y_history_candidates": 760,
+      "rolling_is_subset_of_expanding": true,
+      "validation_count": 60,
+      "validation_ids_same_for_both": true
+    },
+    {
+      "expanding_history_candidates": 820,
+      "fold": 2,
+      "rolling_2y_history_candidates": 753,
+      "rolling_is_subset_of_expanding": true,
+      "validation_count": 126,
+      "validation_ids_same_for_both": true
+    },
+    {
+      "expanding_history_candidates": 946,
+      "fold": 3,
+      "rolling_2y_history_candidates": 750,
+      "rolling_is_subset_of_expanding": true,
+      "validation_count": 123,
+      "validation_ids_same_for_both": true
+    },
+    {
+      "expanding_history_candidates": 1069,
+      "fold": 4,
+      "rolling_2y_history_candidates": 776,
+      "rolling_is_subset_of_expanding": true,
+      "validation_count": 71,
+      "validation_ids_same_for_both": true
+    }
+  ],
+  "gate12_pass": false,
+  "model_scores_generated": false,
+  "safe_view_sha256": "3b8da84b334d897e327c883b769944bf36016cb44daf1da041bfb7d16a7b11e7",
+  "schema": "kb3-step12-dual-window-independent-real-audit-v1",
+  "test_outcomes_accessed": false,
+  "train_test_overlap_count": 0,
+  "trained_model": false,
+  "training_allowed": false,
+  "validation_test_overlap_count": 0,
+  "validity": "SCHEDULE_ONLY_NOT_MODEL_EVALUATION"
+}
