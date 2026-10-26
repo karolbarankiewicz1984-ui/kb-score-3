@@ -1,12 +1,12 @@
 name: KB3 Step11 - ONE TIME PitchAPI Native Sealed PIT
 on:
   push:
-    branches: ["feature/step11-pitch-native-encrypted-ledger-20261026"]
+    branches: ["feature/step11-native-archive-drift-20261026"]
     paths: [".github/workflows/kb3-step11-pitch-native-pit-once.yml"]
 permissions:
   contents: read
 concurrency:
-  group: kb3-pitch-native-one-shot-20261026
+  group: kb3-pitch-native-independent-second-20261026
   cancel-in-progress: false
 jobs:
   test-before-network:
@@ -63,7 +63,7 @@ jobs:
       - name: Upload ONLY cipher + manifest + safe aggregate
         uses: actions/upload-artifact@v4
         with:
-          name: kb3-step11-pitch-native-sealed-20261026
+          name: kb3-step11-pitch-native-second-sealed-20261026
           path: |
             audit/step11/pitch-native/KB3_PITCH_NATIVE_2026-27_PIT.enc
             audit/step11/pitch-native/KB3_PITCH_NATIVE_2026-27_PIT.manifest.json
