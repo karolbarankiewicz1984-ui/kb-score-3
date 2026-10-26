@@ -142,3 +142,12 @@ Następny krok:
 - **Dowód trwałości:** zaszyfrowana AES-256-GCM baza w [prywatnym Google Drive](https://drive.google.com/file/d/1S1blIbulStO8TZBvwu8JgVERPU-WsdDU/view). Ponownie pobrano plik z Drive, sprawdzono identyczny hash bajtów, odszyfrowano, uzyskano SHA-256 oryginalnego SQLite, integrity_check=ok, foreign_key_check=0, odczytano 380 meczów. [Manifest](../data/audits/STEP09_IMPORT_2026-10-26.json), [GATE09 protokół](STEP_09_ACCEPTANCE.md).
 - **Ograniczenia:** punktowy pilot 1 liga/1 sezon; zero ML, brak kursów, xG i statystyk drużyn; odzyskiwanie wymaga oddzielnego klucza przekazanego użytkownikowi jako osobny plik, którego bezpieczne zachowanie nie jest jeszcze potwierdzone. Szyfrowane backupy cykliczne i rotacja kluczy nie są uruchomione. Nierozstrzygniętych 22 par PitchAPI nie zatwierdzano.
 - **Odbiór:** PASS techniczny zgodnie z bramką kroku 09; **postęp 9/29**. Nowe zakupy 0 zł. Następny krok 10 — dane: jakość i chronologia, **NIE ROZPOCZĘTO**.
+
+
+## GATE 10 — START / W REALIZACJI — 26.10.2026
+
+- **Zależność:** GATE09 odebrany, istnieje pełny pilotażowy sezon Premier League 2024/25; trening KB3 nadal nieuruchomiony.
+- **Utworzono:** [audyt](../scripts/step10_quality_audit.py), [16 testów](../tests/test_step10_quality_audit.py), [workflow](../.github/workflows/kb3-step10-quality-gate.yml), [Issue #2](https://github.com/karolbarankiewicz1984-ui/kb-score-3/issues/2).
+- **Test na rzeczywistych danych:** [Actions #40278994874](https://github.com/karolbarankiewicz1984-ui/kb-score-3/actions/runs/40278994874) — SUCCESS. 35/35 unit+regression PASS (16+10+9), cztery błędy w kopiach prawdziwej bazy rozpoznane i zablokowane, 380/380 meczów, 20 zespołów, bez naruszeń chronologii terminarza i unikatowych identyfikatorów.
+- **Wynik:** `PASS_WITH_COVERAGE_WARNINGS` dla jednego sezonu. Krytyczne błędy: 0. Brak zaimportowanych statystyk, kursów, zdarzeń i potwierdzonych snapshotów sprzed meczu. Trening: `training_allowed=false`. [Raport](STEP_10_PROGRESS.md), [QA JSON](../data/audits/STEP10_QUALITY_2026-10-26.json), [próby negatywne](../data/audits/STEP10_NEGATIVE_TESTS_2026-10-26.json).
+- **Decyzja:** **GATE10 NADAL W REALIZACJI**, bo pierwszy audyt nie potwierdza całego docelowego zakresu lig ani jakości pozostałych źródeł. Nie udajemy PASS produkcyjnego. **Postęp: 9/29**, bez zakupów i modyfikacji KB2.1. Kolejne prace: zakres lig, pokrycie pól oraz weryfikacja chronologii dla danych używanych w przyszłych cechach.
