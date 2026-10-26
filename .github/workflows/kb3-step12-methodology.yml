@@ -4,7 +4,7 @@ on:
     branches: ["feature/step12-strict-methodology-20261026"]
     paths: [".github/workflows/kb3-step12-methodology.yml"]
 permissions:
-  contents: read
+  contents: write
 jobs:
   independent-review:
     runs-on: ubuntu-latest
@@ -24,3 +24,11 @@ jobs:
             data/audits/STEP12_INDEPENDENT_METHODOLOGY_2026-10-26.json
           retention-days: 90
           if-no-files-found: error
+      - name: Commit immutable schedule-only projection
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/splits/STEP12_SAFE_MODEL_VIEW_2026-10-26.json data/audits/STEP12_INDEPENDENT_METHODOLOGY_2026-10-26.json
+          git commit -m "Step12: freeze independently verified 1520-row target-free model view"
+          git push origin "HEAD:feature/step12-strict-methodology-20261026"
