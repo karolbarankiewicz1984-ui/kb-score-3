@@ -22,7 +22,7 @@ jobs:
           python -m unittest discover -s tests -p 'test_step09_import_history.py' -v
           python -m unittest discover -s tests -p 'test_step10_quality_audit.py' -v
   pilot-380:
-    if: github.event_name != 'pull_request'
+    if: github.event_name == 'workflow_dispatch'
     needs: offline-tests
     runs-on: ubuntu-latest
     timeout-minutes: 20
@@ -62,7 +62,7 @@ jobs:
           if-no-files-found: error
 
   pilot-760:
-    if: github.event_name != 'pull_request'
+    if: github.event_name == 'workflow_dispatch'
     needs: offline-tests
     runs-on: ubuntu-latest
     timeout-minutes: 20
