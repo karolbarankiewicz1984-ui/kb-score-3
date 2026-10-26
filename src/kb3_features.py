@@ -14,7 +14,7 @@ import math
 from pathlib import Path
 import sqlite3
 
-FEATURE_VERSION = "kb3-step11-v0.4"
+FEATURE_VERSION = "kb3-step11-v0.5"
 # Defaults are provisional, not fitted. Tune only after Step12 chronological split.
 @dataclass(frozen=True)
 class EloParameters:
@@ -207,6 +207,13 @@ def build_features(db, target_id, *, cutoff_utc, mode="verified", elo_params=Non
 def _compose_features(target, history, *, cutoff, kickoff, target_id, mode, params,
                       excluded, source_evidence=None):
     """Pure shared Elo/form/xG aggregation; observed mode uses *real* source receipts."""
+    if mode=="observed":
+        from src.kb3_step11_field_audit import validate_observed_rows,TemporalEvidenceError
+        try:
+            validate_observed_rows(history,cutoff=cutoff,kickoff=kickoff,
+                                   target_id=target_id,target=target)
+        except TemporalEvidenceError as exc:
+            raise FeatureSafetyError(str(exc)) from exc
     history.sort(key=lambda r:(r["date"],r["fixture_id"]))
     ratings = {}
     last_elo_season = {}
@@ -330,6 +337,17 @@ def _compose_features(target, history, *, cutoff, kickoff, target_id, mode, para
                else "Recorder-observed values only. Provider initial publication unknown; no training." if mode=="observed"
                else "Only timestamp-qualified predecessor history; target unverified."),
         "source_evidence":source_evidence if mode=="observed" else None}
+    if mode=="observed":
+        from src.kb3_step11_field_audit import feature_clock_map,TemporalEvidenceError
+        try:
+            out["feature_availability"] = feature_clock_map(
+                target,history,values,missing,cutoff=cutoff,
+                source_evidence=source_evidence)
+        except TemporalEvidenceError as exc:
+            raise FeatureSafetyError(str(exc)) from exc
+    else:
+        # Retrospective replay cannot supply certified historical timestamps.
+        out["feature_availability"] = None
     out["sha256"] = digest(out)
     return out
 
