@@ -17,7 +17,7 @@ on:
       - ".github/workflows/kb3-step13-poisson-train.yml"
   workflow_dispatch:
 permissions:
-  contents: read
+  contents: write
 jobs:
   train-only-guards:
     runs-on: ubuntu-latest
@@ -57,3 +57,13 @@ jobs:
           path: data/audits/STEP13_SYNTHETIC_POISSON_FIT_V03_2026-10-26.json
           if-no-files-found: error
           retention-days: 90
+      - name: Freeze and commit stable report on feature branch
+        if: github.ref == 'refs/heads/feature/step13-poisson-train-policy-v03'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/audits/STEP13_SYNTHETIC_POISSON_FIT_V03_2026-10-26.json
+          if ! git diff --cached --quiet; then
+            git commit -m "Step13: freeze nonproduction synthetic Poisson train reference"
+            git push origin "HEAD:feature/step13-poisson-train-policy-v03"
+          fi
