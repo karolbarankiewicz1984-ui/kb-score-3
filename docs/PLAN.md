@@ -118,7 +118,7 @@
 - **ZALEŻY OD:** Kroki 5–8.
 - **STATUS:** ZALICZONO | TEST: PASS TECHNICZNY — Premier League 2024/25 380/380, 0 duplikatów, wznowienie po 17, 19/19 testów, zaszyfrowany backup odtworzony po ponownym pobraniu z Google Drive | DOWÓD: [GATE09](STEP_09_ACCEPTANCE.md) | DATA ODBIORU: 26.10.2026
 
-#### Krok 10 — Weryfikacja jakości i chronologii danych  [NIE ROZPOCZĘTO]
+#### Krok 10 — Weryfikacja jakości i chronologii danych  [W REALIZACJI]
 
 - **CO ZROBIĘ:** Zidentyfikować braki, powielone wydarzenia, niemożliwe daty, błędy źródeł i przyszłą wiedzę.
 - **CO ROBISZ TY:** Przejrzeć podsumowanie jakości, jeśli potrzebna decyzja o wyłączeniu ligi.
@@ -126,7 +126,7 @@
 - **BRAMKA ODBIORU / TEST PASS:** Testy poprawności i no-lookahead przechodzą na przykładach pozytywnych i celowo błędnych; każda liga ma raport jakości; błędy krytyczne blokują trening.
 - **DOWÓD ZALICZENIA:** Raport QA, wykaz odrzuconych rekordów i wynik testu negatywnego.
 - **ZALEŻY OD:** Krok 9.
-- **STATUS:** NIE ROZPOCZĘTO | TEST: NIE URUCHOMIONO | LINK DOWODU: — | DATA ODBIORU: —
+- **STATUS:** W REALIZACJI | TEST: 35/35 unit/regression PASS + 4/4 kontrolowane uszkodzenia bazy zatrzymane; rzeczywiste 380 meczów PASS_WITH_COVERAGE_WARNINGS; brak statystyk/odds/prematch, ML zablokowany | DOWÓD: [raport GATE10](STEP_10_PROGRESS.md), [workflow](https://github.com/karolbarankiewicz1984-ui/kb-score-3/actions/runs/40278994874), [issue #2](https://github.com/karolbarankiewicz1984-ui/kb-score-3/issues/2) | DATA ODBIORU: —
 
 ### Etap C. Cechy i chronologia
 
@@ -355,3 +355,8 @@ W nowej rozmowie wystarczy: „Otwórz plan KB Score 3.0 na Dysku Google; podaj 
 ## Krok 09 — dodatkowy dowód odbioru
 
 **09 PASS TECHNICZNY (26.10.2026):** [protokół](STEP_09_ACCEPTANCE.md), [manifest](../data/audits/STEP09_IMPORT_2026-10-26.json), [test na rzeczywistych danych](https://github.com/karolbarankiewicz1984-ui/kb-score-3/actions/runs/40277192712). Prywatna, zaszyfrowana kopia na Drive została niezależnie pobrana i przywrócona; właściciel powinien zabezpieczyć wydany plik klucza odzyskiwania. Kolejny etap — 10.
+
+
+## Krok 10 — dowody częściowe (nie końcowy odbiór)
+
+**26.10.2026:** [16 nowych testów, 19 testów regresji, 4/4 negatywne scenariusze na rzeczywistej bazie](https://github.com/karolbarankiewicz1984-ui/kb-score-3/actions/runs/40278994874) — bez błędów krytycznych na 380 spotkaniach. [Raport i ograniczenia](STEP_10_PROGRESS.md). W bazie nie ma jeszcze xG, statystyk, kursów i wiarygodnych prematch snapshots, dlatego trening pozostaje zablokowany. Ogólny postęp projektu nadal **9/29**.
