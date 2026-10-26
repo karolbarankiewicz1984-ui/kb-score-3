@@ -1,0 +1,81 @@
+name: "KB3 Step12 ONE TIME native PitchAPI index"
+on:
+  push:
+    branches: ["feature/step12-real-index-20261026"]
+    paths: [".github/workflows/kb3-step12-native-real-once.yml"]
+permissions:
+  contents: write
+concurrency:
+  group: kb3-step12-real-once-20261026
+  cancel-in-progress: false
+jobs:
+  offline-safety:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install source integrity dependency
+        run: python3 -m pip install --disable-pip-version-check 'cryptography>=42,<47'
+      - name: Synthetic complete fixture-index and previous safeguards
+        run: |
+          python3 -m unittest discover -s tests -p 'test_step12*.py' -v
+          python3 -m unittest discover -s tests -p 'test_step11_original_acceptance.py' -v
+  capture-real-index:
+    needs: offline-safety
+    runs-on: ubuntu-latest
+    timeout-minutes: 18
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install pre-existing provider SDK and crypto
+        run: python3 -m pip install --disable-pip-version-check 'pitchapi==0.1.6' 'cryptography>=42,<47'
+      - name: ONE catalog + FOUR complete season requests
+        env:
+          PITCHAPI_API_KEY: ${{ secrets.PITCHAPI_API_KEY }}
+        run: |
+          set -euo pipefail
+          test -n "$PITCHAPI_API_KEY"
+          python3 -m scripts.step12_pitch_index_once --out audit/step12/real
+      - name: Verify sealed / immutable / all 1520 quarantined
+        run: |
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          from src.kb3_split import sha
+          root=Path('audit/step12/real')
+          manifest=json.loads((root/'STEP12_NATIVE_SPLIT.json').read_text())
+          audit=json.loads((root/'STEP12_NATIVE_AUDIT.json').read_text())
+          sealed=json.loads((root/'STEP12_REAL_SOURCE.manifest.json').read_text())
+          assert len(manifest['rows'])==1520
+          assert audit['calls']==5
+          assert audit['partition_counts']=={'TRAIN':760,'VALIDATION':380,'TEST':380}
+          assert audit['eligible_counts']=={'TRAIN':0,'VALIDATION':0,'TEST':0}
+          assert audit['quarantined']==1520
+          assert manifest['manifest_sha256']==sha({k:v for k,v in manifest.items() if k!='manifest_sha256'})
+          assert manifest['source_chain_sha256']==sealed['proof']['final_chain_sha256']
+          assert manifest['sealed_source_sha256']==sealed['ciphertext_sha256']
+          assert not audit['training_allowed'] and not audit['gate12_pass']
+          assert not audit['offsite_restore_verified']
+          print('STEP12_REAL_INDEX_1520_SEALED_ALL_QUARANTINED_PASS')
+          PY
+      - name: Retain encrypted source and safe index only
+        uses: actions/upload-artifact@v4
+        with:
+          name: kb3-step12-native-real-20261026
+          path: |
+            audit/step12/real/STEP12_REAL_SOURCE.enc
+            audit/step12/real/STEP12_REAL_SOURCE.manifest.json
+            audit/step12/real/STEP12_NATIVE_SPLIT.json
+            audit/step12/real/STEP12_NATIVE_AUDIT.json
+          retention-days: 90
+          if-no-files-found: error
+      - name: Commit sanitized real evidence, not raw receipts
+        run: |
+          set -euo pipefail
+          mkdir -p data/splits data/audits
+          cp audit/step12/real/STEP12_NATIVE_SPLIT.json data/splits/STEP12_NATIVE_REAL_SPLIT_2026-10-26.json
+          cp audit/step12/real/STEP12_NATIVE_AUDIT.json data/audits/STEP12_NATIVE_REAL_AUDIT_2026-10-26.json
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/splits/STEP12_NATIVE_REAL_SPLIT_2026-10-26.json data/audits/STEP12_NATIVE_REAL_AUDIT_2026-10-26.json
+          git commit -m "Step12: freeze real PitchAPI 1520 fixture metadata, all PIT-ineligible"
+          git push origin "HEAD:feature/step12-real-index-20261026"
