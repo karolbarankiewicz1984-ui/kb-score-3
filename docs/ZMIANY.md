@@ -162,3 +162,11 @@ Następny krok:
 - Negatywne przypadki dowodzą blokad: brak dowodu czasu zakończenia meczu źródłowego, informacja po cutoff, wynik badanego spotkania w jego własnej cesze, błędne daty, brak wyniku i uszkodzone mapowanie. Prematch xG/stats/odds brak w aktualnej bazie; **trening_allowed=false, brak ML i typów KB3**.
 - Raporty pełne: [prywatne Drive – 30 sezonów](https://drive.google.com/file/d/1duA2TFr00dggF0zCcOVLAHlF2RpJjJIH/view) i [prywatne Drive – wykluczenia faz](https://drive.google.com/file/d/1Lu44F_j8fNugCIJICx12nJpxtkK4ZoEN/view).
 - **GATE10 = PASS. Postęp 10/29. Krok 11 — NIE ROZPOCZĘTO. Nowe zakupy 0 zł.** Projekt KB2.1/API Market/MultiModel nietknięty.
+
+## GATE 11 — START / W REALIZACJI (26.10.2026)
+
+- **Zakres:** cechy przedmeczowe ELO, forma 5/10/15, home/away, siła przeciwnika, gole, opcjonalne rzeczywiste xG; jawne timestampy, lineage i maski NULL.
+- **Implementacja:** [src/kb3_features.py](../src/kb3_features.py), [testy](../tests/test_step11_features.py), [pilot](../scripts/step11_features_audit.py), [katalog](STEP_11_PROGRESS.md).
+- **Test CI:** [Actions #40283222459](https://github.com/karolbarankiewicz1984-ui/kb-score-3/actions/runs/40283222459) — SUCCESS; 11/11 nowego modułu + 39/39 regresyjnych = **50/50 PASS**. Rzeczywisty import kontrolny: 380/380 meczów PL 2024/25.
+- **Audyt:** 371/380 meczów miało wcześniejszą historię przy *retrospektywnym replay*; **0** historycznych obserwacji spełniło pełny wymóg publikacji/przechwycenia przed dawnym meczem. System nie oznacza retrospektywnej historii jako certyfikowanego prematch.
+- **Klasyfikacja:** GATE 11 **PENDING / W REALIZACJI**, postęp **10/29**. Parametry ELO tylko robocze; brak ML, źródłowych historycznych snapshotów xG, nowych zakupów i zmian KB2.1/API Market/MultiModel. Dalszy niezależny odbiór dowodów i akceptacja katalogu przed PASS.
