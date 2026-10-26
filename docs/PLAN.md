@@ -1,6 +1,6 @@
 # KB Score 3.0 — PLAN GŁÓWNY (kopia operacyjna GitHub)
 
-**Wersja źródłowa:** v1.1, Google Docs (aktualizowane po odbiorach). **Stan ostatniej synchronizacji:** 2026-10-26, **10/29 kroków zaliczonych** (01–10), krok 11 NIE ROZPOCZĘTO. Statusy w tej kopii aktualizujemy po odbiorach, ale **źródłem prawdy pozostaje [oryginał na Dysku Google](https://docs.google.com/document/d/10wjHL3r3OAuxtezwcIeWztxS8lwjhYon5GM3BLhI0xE/edit)**.
+**Wersja źródłowa:** v1.1, Google Docs (aktualizowane po odbiorach). **Stan ostatniej synchronizacji:** 2026-10-26, **10/29 kroków zaliczonych** (01–10), krok 11 W REALIZACJI (GATE11 PENDING). Statusy w tej kopii aktualizujemy po odbiorach, ale **źródłem prawdy pozostaje [oryginał na Dysku Google](https://docs.google.com/document/d/10wjHL3r3OAuxtezwcIeWztxS8lwjhYon5GM3BLhI0xE/edit)**.
 
 **Pozostałe dokumenty:** [DANE.md](DANE.md), [MODEL.md](MODEL.md), [ZMIANY.md](ZMIANY.md), [instrukcja bezpieczeństwa kroku 03](STEP_03_SECURITY_CHECKLIST.md). **Repozytorium:** https://github.com/karolbarankiewicz1984-ui/kb-score-3.
 
@@ -130,7 +130,7 @@
 
 ### Etap C. Cechy i chronologia
 
-#### Krok 11 — Cechy przedmeczowe  [NIE ROZPOCZĘTO]
+#### Krok 11 — Cechy przedmeczowe  [W REALIZACJI]
 
 - **CO ZROBIĘ:** Wyliczać ELO, formę 5/10/15, siłę przeciwników, dom/wyjazd, gole, xG gdy dostępne i kontekst potwierdzony przed meczem.
 - **CO ROBISZ TY:** Nie musisz liczyć wskaźników.
@@ -138,7 +138,7 @@
 - **BRAMKA ODBIORU / TEST PASS:** Każda cecha ma opis i znacznik daty dostępności; test odcina przyszły mecz i pokazuje brak przecieku; brak xG nie jest zamieniany na fikcyjną wartość.
 - **DOWÓD ZALICZENIA:** Katalog cech z źródłem, datą i wynikiem testów no-lookahead.
 - **ZALEŻY OD:** Krok 10.
-- **STATUS:** NIE ROZPOCZĘTO | TEST: NIE URUCHOMIONO | LINK DOWODU: — | DATA ODBIORU: —
+- **STATUS:** W REALIZACJI | GATE11: PENDING | TEST: 50/50 PASS na pilotowej implementacji (11 Step11 + 39 regresyjnych); 380/380 badanych meczów, 371/380 retrospektywnie z historią; 0 certyfikowanych archiwalnych obserwacji prematch | DOWÓD: [run #40283222459](https://github.com/karolbarankiewicz1984-ui/kb-score-3/actions/runs/40283222459), [katalog i blokady](STEP_11_PROGRESS.md) | START: 26.10.2026, ODBIÓR: —
 
 #### Krok 12 — Podział TRAIN / VALIDATION / TEST  [NIE ROZPOCZĘTO]
 
