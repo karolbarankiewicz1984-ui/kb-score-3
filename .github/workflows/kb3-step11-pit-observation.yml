@@ -1,0 +1,64 @@
+name: "KB3 Step11 - Real Point-in-Time Observation Receipt"
+on:
+  push:
+    branches: ["feature/step11-pit-live-receipts-20261026"]
+    paths:
+      - "src/kb3_pit_ledger.py"
+      - "src/kb3_pit_archive.py"
+      - "tests/test_step11_pit_ledger.py"
+      - "scripts/step11_pit_capture_once.py"
+      - ".github/workflows/kb3-step11-pit-observation.yml"
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  observe-one-snapshot:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install encrypted archive dependency
+        run: python3 -m pip install --disable-pip-version-check 'cryptography>=42,<47'
+      - name: Test no lookahead, immutability, hash chain and restore
+        run: python3 -m unittest discover -s tests -p 'test_step11_pit_ledger.py' -v
+      - name: Observe one live API-Football fixture list (PL 2026/27)
+        env:
+          API_FOOTBALL_KEY: ${{ secrets.API_FOOTBALL_KEY }}
+        run: |
+          set -euo pipefail
+          test -n "$API_FOOTBALL_KEY"
+          python -m scripts.step11_pit_capture_once \
+            --outdir audit/step11/pit \
+            --public-key config/step11_archive_recipient_public.pem
+      - name: Enforce no backdating or training claims
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          root=Path("audit/step11/pit")
+          p=json.loads((root/"STEP11_PIT_SANITIZED_RECEIPT.json").read_text())
+          m=json.loads((root/"KB3_PL_2026-27_PIT_CAPTURE.manifest.json").read_text())
+          assert p["record_count"]==380
+          assert p["source_publication_time_known"] is False
+          assert p["historical_before_observation_certified"] is False
+          assert p["training_allowed"] is False and p["trained_model"] is False
+          assert m["ledger_evidence"]["fixture_records"]==380
+          assert m["ledger_evidence"]["final_chain_sha256"]==p["chain_sha256"]
+          assert m["origin"]=="NETWORK_OBSERVED"
+          assert not m["historical_before_observation_certified"]
+          assert not m["provider_publication_certified"]
+          assert not m["training_allowed"]
+          assert not (root/"EPHEMERAL_PIT_LEDGER.sqlite3").exists()
+          print("KB3_PIT_RECEIPT_REAL_OBSERVED_NOT_HISTORICAL_CERTIFIED")
+          PY
+      - name: Upload sealed ledger and sanitized receipt ONLY
+        uses: actions/upload-artifact@v4
+        with:
+          name: kb3-step11-pit-observation-20261026
+          path: |
+            audit/step11/pit/KB3_PL_2026-27_PIT_CAPTURE.enc
+            audit/step11/pit/KB3_PL_2026-27_PIT_CAPTURE.manifest.json
+            audit/step11/pit/STEP11_PIT_SANITIZED_RECEIPT.json
+          retention-days: 30
+          if-no-files-found: error
