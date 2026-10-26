@@ -44,9 +44,10 @@ def audit():
     found_names=[(str(l.get("name") or "")) for l in catalog]
     # Other leagues: informational only, never assume xG completeness.
     indicative={
-        "top_five_candidate_names":sum(any(token in norm(n) for n in
-          ("premier league","la liga","serie a","bundesliga","ligue 1"))
-          for name in found_names for n in [name]),
+        "top_five_candidate_names":sum(
+            any(token in norm(name) for token in
+                ("premier league","la liga","serie a","bundesliga","ligue 1"))
+            for name in found_names),
         "uefa_europa_name_hits":sum("europa" in norm(name) for name in found_names),
         "uefa_conference_name_hits":sum("conference" in norm(name) for name in found_names),
     }
