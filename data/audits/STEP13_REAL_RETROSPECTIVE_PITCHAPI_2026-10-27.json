@@ -1,0 +1,489 @@
+{
+  "actual_historical_prematch_receipts_certified": false,
+  "event_time_lag_assumption_hours": 48,
+  "folds": [
+    {
+      "fold": 1,
+      "methods": {
+        "EXPANDING": {
+          "fitted_parameters": {
+            "base_away_goals": 1.4370968890275349,
+            "base_home_goals": 1.63733387301664,
+            "elo_goal_elasticity": 0.6,
+            "elo_home_advantage": 65.0,
+            "elo_k": 20.0,
+            "elo_scale": 400.0,
+            "initial_elo": 1500.0,
+            "poisson_max_goals": 64,
+            "poisson_tail_tolerance": 1e-12
+          },
+          "metrics": {
+            "calibration_bins": [
+              {
+                "accuracy": null,
+                "confidence": null,
+                "n": 0
+              },
+              {
+                "accuracy": 0.6,
+                "confidence": 0.39151201997471474,
+                "n": 5
+              },
+              {
+                "accuracy": 0.49019607843137253,
+                "confidence": 0.46803510804021814,
+                "n": 51
+              },
+              {
+                "accuracy": 0.75,
+                "confidence": 0.6489941562887602,
+                "n": 4
+              },
+              {
+                "accuracy": null,
+                "confidence": null,
+                "n": 0
+              }
+            ],
+            "multiclass_brier_sum3": 0.6127159160243363,
+            "multiclass_logloss": 1.028276079829045,
+            "n": 60,
+            "top_class_ece_5bin": 0.04294454608200432
+          },
+          "parameters_frozen_before_validation": true,
+          "training_rows": 760,
+          "validation_fixture_ids_sha256": "cb03533d0bdbf1322dfaa1ad3276eef2e0bc1c965cbc2d2bb5dbe182295e7347",
+          "validation_labels_used_for_fitting": false
+        },
+        "ROLLING_24_CALENDAR_MONTHS": {
+          "fitted_parameters": {
+            "base_away_goals": 1.4370968890275349,
+            "base_home_goals": 1.63733387301664,
+            "elo_goal_elasticity": 0.6,
+            "elo_home_advantage": 65.0,
+            "elo_k": 20.0,
+            "elo_scale": 400.0,
+            "initial_elo": 1500.0,
+            "poisson_max_goals": 64,
+            "poisson_tail_tolerance": 1e-12
+          },
+          "metrics": {
+            "calibration_bins": [
+              {
+                "accuracy": null,
+                "confidence": null,
+                "n": 0
+              },
+              {
+                "accuracy": 0.6,
+                "confidence": 0.39151201997471474,
+                "n": 5
+              },
+              {
+                "accuracy": 0.49019607843137253,
+                "confidence": 0.46803510804021814,
+                "n": 51
+              },
+              {
+                "accuracy": 0.75,
+                "confidence": 0.6489941562887602,
+                "n": 4
+              },
+              {
+                "accuracy": null,
+                "confidence": null,
+                "n": 0
+              }
+            ],
+            "multiclass_brier_sum3": 0.6127159160243363,
+            "multiclass_logloss": 1.028276079829045,
+            "n": 60,
+            "top_class_ece_5bin": 0.04294454608200432
+          },
+          "parameters_frozen_before_validation": true,
+          "training_rows": 760,
+          "validation_fixture_ids_sha256": "cb03533d0bdbf1322dfaa1ad3276eef2e0bc1c965cbc2d2bb5dbe182295e7347",
+          "validation_labels_used_for_fitting": false
+        }
+      },
+      "validation_count": 60,
+      "validation_from_utc": "2025-07-01T00:00:00Z",
+      "validation_to_exclusive_utc": "2025-10-01T00:00:00Z"
+    },
+    {
+      "fold": 2,
+      "methods": {
+        "EXPANDING": {
+          "fitted_parameters": {
+            "base_away_goals": 1.4152414626783856,
+            "base_home_goals": 1.6245631722125589,
+            "elo_goal_elasticity": 0.6,
+            "elo_home_advantage": 65.0,
+            "elo_k": 20.0,
+            "elo_scale": 400.0,
+            "initial_elo": 1500.0,
+            "poisson_max_goals": 64,
+            "poisson_tail_tolerance": 1e-12
+          },
+          "metrics": {
+            "calibration_bins": [
+              {
+                "accuracy": null,
+                "confidence": null,
+                "n": 0
+              },
+              {
+                "accuracy": 0.5555555555555556,
+                "confidence": 0.3877565861826546,
+                "n": 18
+              },
+              {
+                "accuracy": 0.5520833333333334,
+                "confidence": 0.4775948374298203,
+                "n": 96
+              },
+              {
+                "accuracy": 0.75,
+                "confidence": 0.6390237318665364,
+                "n": 12
+              },
+              {
+                "accuracy": null,
+                "confidence": null,
+                "n": 0
+              }
+            ],
+            "multiclass_brier_sum3": 0.5716180010387021,
+            "multiclass_logloss": 0.9657054329178626,
+            "n": 126,
+            "top_class_ece_5bin": 0.09129358946865902
+          },
+          "parameters_frozen_before_validation": true,
+          "training_rows": 819,
+          "validation_fixture_ids_sha256": "a4a4acd2fd5dfdf3425d22253d1fa9570602ea4a2a7c7d37fc0e7bea158018c3",
+          "validation_labels_used_for_fitting": false
+        },
+        "ROLLING_24_CALENDAR_MONTHS": {
+          "fitted_parameters": {
+            "base_away_goals": 1.4120711703336615,
+            "base_home_goals": 1.631421250169983,
+            "elo_goal_elasticity": 0.6,
+            "elo_home_advantage": 65.0,
+            "elo_k": 20.0,
+            "elo_scale": 400.0,
+            "initial_elo": 1500.0,
+            "poisson_max_goals": 64,
+            "poisson_tail_tolerance": 1e-12
+          },
+          "metrics": {
+            "calibration_bins": [
+              {
+                "accuracy": null,
+                "confidence": null,
+                "n": 0
+              },
+              {
+                "accuracy": 0.5,
+                "confidence": 0.38903755991657113,
+                "n": 20
+              },
+              {
+                "accuracy": 0.5670103092783505,
+                "confidence": 0.47970980143691566,
+                "n": 97
+              },
+              {
+                "accuracy": 0.7777777777777778,
+                "confidence": 0.6417876547940081,
+                "n": 9
+              },
+              {
+                "accuracy": null,
+                "confidence": null,
+                "n": 0
+              }
+            ],
+            "multiclass_brier_sum3": 0.5737711069436445,
+            "multiclass_logloss": 0.9686770314511407,
+            "n": 126,
+            "top_class_ece_5bin": 0.09453419975509272
+          },
+          "parameters_frozen_before_validation": true,
+          "training_rows": 752,
+          "validation_fixture_ids_sha256": "a4a4acd2fd5dfdf3425d22253d1fa9570602ea4a2a7c7d37fc0e7bea158018c3",
+          "validation_labels_used_for_fitting": false
+        }
+      },
+      "validation_count": 126,
+      "validation_from_utc": "2025-10-01T00:00:00Z",
+      "validation_to_exclusive_utc": "2026-01-01T00:00:00Z"
+    },
+    {
+      "fold": 3,
+      "methods": {
+        "EXPANDING": {
+          "fitted_parameters": {
+            "base_away_goals": 1.3898824722371468,
+            "base_home_goals": 1.6229544633005664,
+            "elo_goal_elasticity": 0.6,
+            "elo_home_advantage": 65.0,
+            "elo_k": 20.0,
+            "elo_scale": 400.0,
+            "initial_elo": 1500.0,
+            "poisson_max_goals": 64,
+            "poisson_tail_tolerance": 1e-12
+          },
+          "metrics": {
+            "calibration_bins": [
+              {
+                "accuracy": null,
+                "confidence": null,
+                "n": 0
+              },
+              {
+                "accuracy": 0.3333333333333333,
+                "confidence": 0.391039708981616,
+                "n": 12
+              },
+              {
+                "accuracy": 0.37362637362637363,
+                "confidence": 0.48090543151732523,
+                "n": 91
+              },
+              {
+                "accuracy": 0.5,
+                "confidence": 0.6350658657566434,
+                "n": 20
+              },
+              {
+                "accuracy": null,
+                "confidence": null,
+                "n": 0
+              }
+            ],
+            "multiclass_brier_sum3": 0.6744583232280549,
+            "multiclass_logloss": 1.1084727346280925,
+            "n": 123,
+            "top_class_ece_5bin": 0.10696087878852728
+          },
+          "parameters_frozen_before_validation": true,
+          "training_rows": 940,
+          "validation_fixture_ids_sha256": "95df9dace4a1cf4d31ead11fd82250c015df0b6a0150fa6510765e934eb9902f",
+          "validation_labels_used_for_fitting": false
+        },
+        "ROLLING_24_CALENDAR_MONTHS": {
+          "fitted_parameters": {
+            "base_away_goals": 1.4007928563442678,
+            "base_home_goals": 1.6006382248926072,
+            "elo_goal_elasticity": 0.6,
+            "elo_home_advantage": 65.0,
+            "elo_k": 20.0,
+            "elo_scale": 400.0,
+            "initial_elo": 1500.0,
+            "poisson_max_goals": 64,
+            "poisson_tail_tolerance": 1e-12
+          },
+          "metrics": {
+            "calibration_bins": [
+              {
+                "accuracy": null,
+                "confidence": null,
+                "n": 0
+              },
+              {
+                "accuracy": 0.35714285714285715,
+                "confidence": 0.39200623511327565,
+                "n": 14
+              },
+              {
+                "accuracy": 0.3979591836734694,
+                "confidence": 0.48417638735641333,
+                "n": 98
+              },
+              {
+                "accuracy": 0.36363636363636365,
+                "confidence": 0.6393575700430051,
+                "n": 11
+              },
+              {
+                "accuracy": null,
+                "confidence": null,
+                "n": 0
+              }
+            ],
+            "multiclass_brier_sum3": 0.6721746433855047,
+            "multiclass_logloss": 1.1059170922219144,
+            "n": 123,
+            "top_class_ece_5bin": 0.09731956522754
+          },
+          "parameters_frozen_before_validation": true,
+          "training_rows": 744,
+          "validation_fixture_ids_sha256": "95df9dace4a1cf4d31ead11fd82250c015df0b6a0150fa6510765e934eb9902f",
+          "validation_labels_used_for_fitting": false
+        }
+      },
+      "validation_count": 123,
+      "validation_from_utc": "2026-01-01T00:00:00Z",
+      "validation_to_exclusive_utc": "2026-04-01T00:00:00Z"
+    },
+    {
+      "fold": 4,
+      "methods": {
+        "EXPANDING": {
+          "fitted_parameters": {
+            "base_away_goals": 1.372819132753717,
+            "base_home_goals": 1.5904168238715495,
+            "elo_goal_elasticity": 0.6,
+            "elo_home_advantage": 65.0,
+            "elo_k": 20.0,
+            "elo_scale": 400.0,
+            "initial_elo": 1500.0,
+            "poisson_max_goals": 64,
+            "poisson_tail_tolerance": 1e-12
+          },
+          "metrics": {
+            "calibration_bins": [
+              {
+                "accuracy": null,
+                "confidence": null,
+                "n": 0
+              },
+              {
+                "accuracy": 0.4166666666666667,
+                "confidence": 0.38695253526071766,
+                "n": 12
+              },
+              {
+                "accuracy": 0.4716981132075472,
+                "confidence": 0.4789505444608996,
+                "n": 53
+              },
+              {
+                "accuracy": 0.6666666666666666,
+                "confidence": 0.6457522040320486,
+                "n": 6
+              },
+              {
+                "accuracy": null,
+                "confidence": null,
+                "n": 0
+              }
+            ],
+            "multiclass_brier_sum3": 0.6098425817136282,
+            "multiclass_logloss": 1.0237234597169778,
+            "n": 71,
+            "top_class_ece_5bin": 0.012203312804320757
+          },
+          "parameters_frozen_before_validation": true,
+          "training_rows": 1069,
+          "validation_fixture_ids_sha256": "af11ea90cc510635ea0dc74f9450e3b7dcb931fc111a3cbf711d2b8bef84804c",
+          "validation_labels_used_for_fitting": false
+        },
+        "ROLLING_24_CALENDAR_MONTHS": {
+          "fitted_parameters": {
+            "base_away_goals": 1.344038222804517,
+            "base_home_goals": 1.5379426955562905,
+            "elo_goal_elasticity": 0.6,
+            "elo_home_advantage": 65.0,
+            "elo_k": 20.0,
+            "elo_scale": 400.0,
+            "initial_elo": 1500.0,
+            "poisson_max_goals": 64,
+            "poisson_tail_tolerance": 1e-12
+          },
+          "metrics": {
+            "calibration_bins": [
+              {
+                "accuracy": null,
+                "confidence": null,
+                "n": 0
+              },
+              {
+                "accuracy": 0.3333333333333333,
+                "confidence": 0.38482663064951644,
+                "n": 12
+              },
+              {
+                "accuracy": 0.47368421052631576,
+                "confidence": 0.47540631497951763,
+                "n": 57
+              },
+              {
+                "accuracy": 1.0,
+                "confidence": 0.657142332114705,
+                "n": 2
+              },
+              {
+                "accuracy": null,
+                "confidence": null,
+                "n": 0
+              }
+            ],
+            "multiclass_brier_sum3": 0.616139541871601,
+            "multiclass_logloss": 1.0322095008581402,
+            "n": 71,
+            "top_class_ece_5bin": 0.019743589540806957
+          },
+          "parameters_frozen_before_validation": true,
+          "training_rows": 776,
+          "validation_fixture_ids_sha256": "af11ea90cc510635ea0dc74f9450e3b7dcb931fc111a3cbf711d2b8bef84804c",
+          "validation_labels_used_for_fitting": false
+        }
+      },
+      "validation_count": 71,
+      "validation_from_utc": "2026-04-01T00:00:00Z",
+      "validation_to_exclusive_utc": "2026-07-01T00:00:00Z"
+    }
+  ],
+  "frozen_safe_view_sha256": "3b8da84b334d897e327c883b769944bf36016cb44daf1da041bfb7d16a7b11e7",
+  "gate13_pass": false,
+  "historical_original_provider_pubtime_certified": false,
+  "historical_pit_backtest_performed": false,
+  "holdout_test_untouched": true,
+  "match_data_sha256": "204683f0948ba83ba52e742b29dbea4bab07cdefbdf1675d226328d541fad2e7",
+  "model_production_eligible": false,
+  "offline_synthetic_reference_only": false,
+  "original_provider_publication_at_matchtime_known": false,
+  "overall": {
+    "EXPANDING": {
+      "multiclass_brier_sum3_fold_weighted": 0.6185368951343552,
+      "multiclass_logloss_fold_weighted": 1.032636740359353,
+      "top_class_ece_5bin_fold_weighted": 0.07395339036333402,
+      "validation_n": 380
+    },
+    "ROLLING_24_CALENDAR_MONTHS": {
+      "multiclass_brier_sum3_fold_weighted": 0.6196881659096319,
+      "multiclass_logloss_fold_weighted": 1.0343803885705523,
+      "top_class_ece_5bin_fold_weighted": 0.07331600872222804,
+      "validation_n": 380
+    }
+  },
+  "owner_private_rsa_key_used": false,
+  "produced_real_historical_research_metrics": true,
+  "provider": "PitchAPI",
+  "provider_native_league_id": "l_4WFCIZ",
+  "provider_read_at_utc": "2026-10-26T23:49:21.170204Z",
+  "provider_requests_exactly": 3,
+  "real_match_outcomes_used_for_research": true,
+  "report_sha256": "3d950fff30b57c94a6f71462c7521cfda2cb0b27c666d59d09d274261efca803",
+  "research_policy": "RECONSTRUCTED_EVENT_TIME_RESEARCH_NOT_VERIFIED_PIT",
+  "schema": "kb3-step13-live-reread-research-v0.5",
+  "season_native_match_digests": {
+    "2023/2024": "39348c5643eafd57532a8ba0d355f0e0d478390544bcb9bd2884664d47c29340",
+    "2024/2025": "fd1c3436b55fb48d89bc315f8f91075d884ae8bb38592befbd4e430d880219e6",
+    "2025/2026": "1748b98a114c3cb0824e2044a9f3f86edf827b02d2276b6686379f3700dbe50d"
+  },
+  "seasons_historical": [
+    "2023/2024",
+    "2024/2025",
+    "2025/2026"
+  ],
+  "source_category": "REAL_PROVIDER_RETRIEVED_NOW_RETROSPECTIVE_EVENTTIME_ONLY",
+  "source_scores_in_report": false,
+  "test_partition_data_requested": false,
+  "test_rows_processed": 0,
+  "train_partition_rows": 760,
+  "training_allowed": false,
+  "training_data_origin": "ARCHIVE_RETRIEVED_AFTER_ALL_TRAIN_AND_VALIDATION_MATCHES",
+  "validation_partition_rows": 380
+}
