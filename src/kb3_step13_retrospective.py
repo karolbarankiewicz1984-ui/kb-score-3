@@ -70,6 +70,9 @@ def _historical_states(checked, *, boundary, lower):
         ko=match["_date"]
         if ko>=boundary:
             break
+        if ko<lower:
+            # Rolling must exclude older matches for Elo too, not just fit.
+            continue
         while pending and pending[0][0]<ko:
             _,_,hid,aid,dh,da=heapq.heappop(pending)
             ratings[hid]=ratings.get(hid,p.initial_elo)+dh
