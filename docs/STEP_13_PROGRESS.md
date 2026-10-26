@@ -122,3 +122,14 @@ Z pobranej ponownie [oryginalnej kopii na Google Drive](https://drive.google.com
 **Bardzo ważne granice dowodu:** `archive_decrypted=false`, `archive_plaintext_integrity_verified_in_this_run=false`, `real_backtest_performed=false`, `real_backtest_metrics_available=false`, `training_allowed=false`, `gate13_pass=false`. Zawartości 1140 meczów nie odszyfrowano ani nie wykorzystano do treningu. Ostatnie GitHub Actions mają status FAILURE, ponieważ GitHub wysłał powiadomienie o wykorzystaniu **100% miesięcznych 2000 minut Actions**; najnowsze uruchomienie nie miało nawet dostępnych logów kroków zadania. **Nie określam tych uruchomień jako PASS.** Prawidłowe testy wykonano lokalnie na pliku ZIP i kopiach celowo zmodyfikowanych, bez nowych wywołań API.
 
 **Następne bezpośrednie zadanie w tym samym kroku 13:** właściciel wykonuje lokalnie `scripts.step13_pitch_retrospective_local` z oryginalnym prywatnym kluczem RSA, bez udostępniania klucza komukolwiek; dopiero wtedy powstanie rzeczywisty raport badawczy 760 TRAIN / 380 VALIDATION. Dotychczasowy harmonogram nadal obejmuje **29 kroków**; zakończone **12/29**. Kroku14 nie rozpoczęto.
+
+## 26.10.2026 — GitHub Actions działa ponownie: ponowiony audyt PR #34 na main
+
+Po zmianie konfiguracji/limitu na koncie GitHub przez właściciela ponowiono **cztery dotychczasowe, zakończone wcześniej przez brak minut przebiegi** na niezmiennym merge commicie `72e08315f99fe0e763fcb367b686a6a6c317dba2` (PR #34). Wszystkie zakończyły się **SUCCESS** przy próbie nr 2:
+
+- [Retrospective Research Contract, w tym kontrola rzeczywistego zamrożonego raportu szyfrogramu](https://github.com/karolbarankiewicz1984-ui/kb-score-3/actions/runs/40402095894) — **PASS**, łącznie z testami offline anty-leakage, preflight i zabezpieczeniem bramki not-PIT.
+- [Train-Only Poisson Fit Safety](https://github.com/karolbarankiewicz1984-ui/kb-score-3/actions/runs/40402094465) — **PASS**.
+- [ELO Poisson M0 Offline Math](https://github.com/karolbarankiewicz1984-ui/kb-score-3/actions/runs/40402094411) — **PASS**.
+- [Fold Replay Safety](https://github.com/karolbarankiewicz1984-ui/kb-score-3/actions/runs/40402094393) — **PASS**.
+
+To zastępuje starszą uwagę o nieuruchamialnym CI (prawdziwa przyczyna wcześniejszych automatycznych FAILURE: brak miesięcznych minut). **Nie** oznacza to, że 1140 prywatnych wyników historycznych zostało odszyfrowanych w CI, że wykonano realny backtest, ani że istnieją faktyczne przedmeczowe oceny modelu. Nadal konieczne lokalne odszyfrowanie oryginalnym prywatnym kluczem, a następnie badanie retrospektywne. **GATE13 PENDING, training_allowed=false, odbiór 12/29, krok14 nierozpoczęty, harmonogram 29 kroków bez zmian.**
