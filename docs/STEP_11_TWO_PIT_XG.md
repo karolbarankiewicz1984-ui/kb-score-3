@@ -1,0 +1,20 @@
+# KB Score 3.0 — GATE11: dwie obserwacje PIT i pierwsze prawdziwe xG
+
+**Data:** 26.10.2026. **Status:** test techniczny PASS, **GATE11 nadal PENDING, 10/29**. Dwa prawdziwe odczyty API-Football + próbka 3 meczów PitchAPI. Brak prognoz i treningu.
+
+## Przebieg
+
+1. **Pierwszy snapshot** z PL 2026/27: [Actions #40296430026](https://github.com/karolbarankiewicz1984-ui/kb-score-3/actions/runs/40296430026), odczyt zakończony `2026-10-26T09:01:49.018457Z`; 380 meczów, 80 wyników FT, 300 przed rozpoczęciem.
+2. **Drugi snapshot** z PL 2026/27: [Actions #40298805124](https://github.com/karolbarankiewicz1984-ui/kb-score-3/actions/runs/40298805124), zakończony `2026-10-26T09:20:47.665981Z`; 380 meczów. Hash źródłowej odpowiedzi identyczny jak pierwszy: `a3520fe9e3dceed787015c667ca162773eb4d13595a2a9907ba0dc00b9bc1f18`.
+3. **Limitowane xG:** w ramach drugiego pobrania wykonano **5 zapytań PitchAPI** (katalog, lista spotkań, trzy feedy strzałów) oraz **jedno API-Football**. Wszystkie 3 feedy zawierały kompletne liczbowe xG, ale **0/3** spełniało rygorystyczny warunek dokładnego dopasowania nazwy-daty-wyniku: **2 AMBIGUOUS_OR_UNMATCHED**, **1 ALIAS_CANDIDATE_UNVERIFIED**. Z tego powodu żadnego xG nie przypisano do kanonicznego meczu. Nie wpisano zera w miejsce braku; nie promowano alternatywnych nazw.
+4. **Szyfrowane offsite:** [Pierwsza kopia na Google Drive](https://drive.google.com/file/d/1wvFMLiSQHUP06-r95iNwp9nyBfYbsBoP/view?usp=drivesdk) i [druga kopia na Google Drive](https://drive.google.com/file/d/1yOQUgJeccTYWwPRMBSIqZijY1DtGS-4D/view?usp=drivesdk) zostały niezależnie pobrane. Drugi ZIP **64 624 B** zawiera tylko ciphertext, agregaty i manifest. Klucz prywatny nie trafił do GitHub ani Google Drive.
+5. **Niezależny restore i porównanie:** zgodne SHA obu ZIP i obu szyfrogramów, odszyfrowanie dotychczasowym kluczem, `PRAGMA integrity_check=ok`, `foreign_key_check=0`, 380/380 zweryfikowanych hashy rekordów w każdej kopii. Zmiany: **0 meczów, 0 statusów, 0 terminów, 0 wyników**. Zmiana jakiegokolwiek rekordu bez uaktualnienia dowodów jest wykrywana przez łańcuch hashy. Zbiorcze wyniki: [data/audits/STEP11_TWO_PIT_XG_2026-10-26.json](../data/audits/STEP11_TWO_PIT_XG_2026-10-26.json).
+6. **Testy:** [Actions #40298663945](https://github.com/karolbarankiewicz1984-ui/kb-score-3/actions/runs/40298663945): **91/91 PASS** (52 Step11, 39 GATE08–10). Testy obejmują cofnięcie czasu, dwie wersje rzeczywistej odpowiedzi, nowy wynik, brak danych, wartości NULL, próby wstrzyknięcia xG przed meczem, nieścisłe ID i zniszczony szyfrogram. Żadna akcja CI nie uruchamia treningu.
+
+## Architektura i znane granice
+
+- `src/kb3_pit_compare.py`: dwa *niezależne* dzienniki porównywane tylko po restore z zaszyfrowanego offsite. Zapisuje liczby zmian, nie publikuje danych indywidualnych meczów. Gdy identyfikatory nie pokrywają się, **odmawia** automatycznego łączenia.
+- `src/kb3_xg_pit.py`: append-only obserwacje PitchAPI z `raw_sha256`, czasem faktycznego pobrania, kontrolą `FT` i dat, NULL dla nieścisłego mapowania, dostępnością tylko **po** zarejestrowanym odczycie. xG danego meczu nigdy nie może służyć do jego prognozy przed kickoff. xG może być dostępne jako **historia do późniejszego spotkania** dopiero po osobnym audycie.
+- `src/kb3_pit_archive.py`: kontrola hashu xG dołączona do już istniejącego szyfrowanego rejestru, bez przechowywania klucza prywatnego w CI.
+- Czas `captured_at` jest potwierdzeniem odczytu **dziś**, nie znanym pierwotnym `published_at` dostawcy. Brak automatycznego awansu całego historycznego zbioru do VERIFIED_PREMATCH. W trakcie tych dwóch krótkich sesji nie zmienił się żaden status; poprawność na realnej zmianie w czasie nadal wymaga obserwacji podczas następnej kolejki spotkań. Testy syntetyczne sprawdzają odpowiednią logikę.
+- **GATE11 PENDING**, `training_allowed=false`. Dalsze zadania: rozwiązać aliasy i identyfikatory PitchAPI (bez automatycznego akceptowania przybliżeń), objąć więcej spotkań rzeczywistym xG, zebrać kilka obserwacji w różnych dniach i wykonać końcowy audyt integralności i czasu. Nie wprowadzono nowych płatnych usług, nie zmieniano KB2.1/API Market/MultiModel.
