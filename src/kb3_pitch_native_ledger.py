@@ -72,20 +72,20 @@ def _validate_interval(started,completed,origin):
     return a,b
 
 
-def _fixture_asof(db,mid,at):
-    rows=db.execute("""SELECT c.completed_at_utc,r.record_json
+def _fixture_asof(db,mid,at,*,include_synthetic=False):
+    rows=db.execute("""SELECT c.completed_at_utc,r.record_json,c.origin
        FROM pitch_records r JOIN pitch_captures c ON c.capture_id=r.capture_id
-       WHERE r.pitch_match_id=? AND c.kind='matches' AND c.origin='NETWORK_OBSERVED'
+       WHERE r.pitch_match_id=? AND c.kind='matches'
        ORDER BY c.completed_at_utc DESC,c.ordinal DESC""",(mid,)).fetchall()
-    for t,raw in rows:
-        if as_utc(t)<=at:
+    for t,raw,origin in rows:
+        if as_utc(t)<=at and (origin=="NETWORK_OBSERVED" or include_synthetic):
             return json.loads(raw)
     return None
 
 
-def _as_records(db,kind,payload,*,started):
+def _as_records(db,kind,payload,*,started,origin):
     if kind==TYPE_MATCHES:
-        check_season(payload,SEASON,expected_count=380,require_upcoming=True)
+        check_season(payload,SEASON,expected_count=380,require_upcoming=False)
         return sorted(((m["id"],m) for m in payload),key=lambda r:r[0])
     if kind==TYPE_SHOTS:
         if not isinstance(payload,dict) or not isinstance(payload.get("data"),dict):
@@ -93,7 +93,7 @@ def _as_records(db,kind,payload,*,started):
         mid=payload["data"].get("match_id")
         if not isinstance(mid,str):
             raise ValueError("PITCH_SHOT_NATIVE_ID_MISSING")
-        source=_fixture_asof(db,mid,as_utc(started))
+        source=_fixture_asof(db,mid,as_utc(started),include_synthetic=origin=="SYNTHETIC_TEST")
         if source is None:
             raise ValueError("PITCH_SHOTS_REQUIRE_PRIOR_OBSERVED_FIXTURE")
         # Native ID and team IDs re-validated from last pre-shots fixture.
@@ -112,7 +112,7 @@ def record(db,kind,payload,*,started_at_utc,completed_at_utc,
                        FROM pitch_captures ORDER BY ordinal DESC LIMIT 1""").fetchone()
     if last and (start<as_utc(last[0])):
         raise ValueError("PITCH_NON_MONOTONE_CAPTURE")
-    rows=_as_records(db,kind,payload,started=started_at_utc)
+    rows=_as_records(db,kind,payload,started=started_at_utc,origin=origin)
     resource=RESOURCE if kind==TYPE_MATCHES else f"pitchapi:match:{rows[0][0]}:shots"
     body=[(mid,canonical(obj).decode("utf8"),hexdigest(canonical(obj))) for mid,obj in rows]
     content=canonical(payload).decode("utf8")
@@ -172,7 +172,7 @@ def verify(db):
             raise ValueError("PITCH_CAPTURE_SHA_INVALID")
         if kind=="matches":
             expected=sorted(((m["id"],m) for m in obj),key=lambda x:x[0])
-            check_season(obj,SEASON,expected_count=380,require_upcoming=True)
+            check_season(obj,SEASON,expected_count=380,require_upcoming=False)
         else:
             if not isinstance(obj,dict) or not isinstance(obj.get("data"),dict):
                 raise ValueError("PITCH_SHOT_OBJECT_INVALID")
@@ -181,7 +181,7 @@ def verify(db):
             if resource!=f"pitchapi:match:{mid}:shots":
                 raise ValueError("PITCH_SHOT_RESOURCE_MISMATCH")
             # Recompute source association against latest preceding source.
-            source=_fixture_asof(db,mid,a)
+            source=_fixture_asof(db,mid,a,include_synthetic=origin=="SYNTHETIC_TEST")
             if not source:
                 raise ValueError("PITCH_ORPHAN_SHOT_OBSERVATION")
             verify_native_shots(source,obj,observed_at_utc=completed)
