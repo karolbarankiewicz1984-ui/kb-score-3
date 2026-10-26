@@ -243,3 +243,10 @@ Następny krok:
 - [15-call realny audyt #40318301119](https://github.com/karolbarankiewicz1984-ui/kb-score-3/actions/runs/40318301119): **6/6** Liga Europy i **6/6** Liga Konferencji 2026/27, kompletne xG tylko z natywnych meczów PitchAPI, zero API-Football. Próbki są rozłożone odpowiednio na 4/2 daty, nie poświadczają pełnego pokrycia ligi.
 - 15 pełnych odpowiedzi + rzeczywiste czasy + SHA-chain zaszyfrowano. [Kopia na Google Drive](https://drive.google.com/file/d/1LdmMRLmtaObUK7gs9r55D6950jTMCwxF/view) została pobrana drugi raz; SHA ZIP i szyfrogramu PASS. **Odtworzenie prywatnym kluczem jeszcze nie wykonane**.
 - [187/187 PASS](https://github.com/karolbarankiewicz1984-ui/kb-score-3/actions/runs/40318219204). [Pełny protokół](STEP_11_UEFA_NATIVE_XG_COVERAGE.md). **GATE11 PENDING 10/29**, brak autoryzacji treningu i zmiany produkcji.
+
+## GATE11 — INDEPENDENT RESTORE UEFA ZAMKNIĘTY, KONTROLA REWIZJI PITCHAPI (26.10.2026)
+
+- Ponownie pobrana [zaszyfrowana kopia UEFA na Google Drive](https://drive.google.com/file/d/1LdmMRLmtaObUK7gs9r55D6950jTMCwxF/view) została **rzeczywiście odtworzona** posiadanym kluczem właściciela poza GitHubem. SHA ZIP i szyfrogramu, fingerprint odbiorcy, RSA-OAEP, uwierzytelnianie AES-GCM, SHA rozpakowanej treści, **15/15** oryginalnych SHA odpowiedzi oraz pełny hash-chain **PASS**.
+- Dodano `kb3_pitch_native_drift.py`, `step11_pitch_native_drift_audit.py`: dwa zweryfikowane snapshoty PitchAPI można odtwarzać i porównywać po dokładnym provider-native ID, oddzielnie licząc zmiany dat/statusu/wyniku/nazwy. Identyfikatory drużyn i pełen skład ligi są chronione przed milczącą podmianą. Skrypt nie wywołuje API i nie udostępnia nazw/ID w raporcie.
+- [199/199 testów CI](https://github.com/karolbarankiewicz1984-ui/kb-score-3/actions/runs/40320084066) PASS. **Drugi autentyczny odczyt nie został wykonany, wielodniowy diff pozostaje PENDING**; nie generowano fikcyjnych snapshotów. [Raport](STEP_11_UEFA_NATIVE_XG_COVERAGE.md).
+- GATE11 **PENDING, 10/29**, trening i produkcja pozostają zablokowane.
