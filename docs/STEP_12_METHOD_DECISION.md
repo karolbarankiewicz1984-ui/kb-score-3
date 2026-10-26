@@ -2,7 +2,7 @@
 
 **Źródło nadrzędne:** Google Docs „KB Score 3.0 — plan”, sekcja „KROK 12 — Podział TRAIN / VALIDATION / TEST”.  
 **Oryginalne kryteria:** chronologia; walk-forward; rozdzielenie tożsamości spotkań/drużyn, czasu informacji i wyniku; brak przecieków; niezmienność podziału dla wersji; akceptacja właściciela **przed treningiem**. Koszt realizacji: **0 zł**.  
-**Status:** metodologia przygotowana do akceptacji; **GATE12 PENDING**, nie uruchamiać treningu. Liczba zaliczonych kroków: **11/29**.
+**Status:** metodologia zaakceptowana do kontynuacji; **GATE12 PASS tylko dla metodyki**, nie uruchamiać treningu. Liczba zaliczonych kroków: **11/29**.
 
 ## 1. Decyzje metodologiczne — wersja `step12-methodology-v1`
 
@@ -52,3 +52,7 @@ Podział `safe_model_fixtures(..., purpose='tuning', ...)` odrzuca **każde** ż
 W rozmowie uzgodniono kontynuację kroku 12 z porównaniem dwóch sposobów doboru przeszłych meczów: rozszerzająca historia od 01.07.2023 (EXPANDING) oraz zmieniające się 24 miesiące kalendarzowe (ROLLING). Kluczowe: **ten sam kwartalny VALIDATION** w każdym wariancie. Rzeczywiste liczności TRAIN-kandydatów EXPANDING/ROLLING: 760/760, 820/753, 946/750, 1069/776. Walidacja kwartalna 60/126/123/71 (łącznie 380). Każdy kandydat historyczny ma kickoff co najmniej 3 godziny przed granicą folda, ale bez rzeczywistych receipts label/feature **nadal jest niedopuszczony do treningu**. Nigdy nie wolno dobierać długości historii z użyciem TEST.
 
 Przygotowano [niezmienny protokół obu okien](../data/splits/STEP12_DUAL_WINDOWS_REAL_2026-10-26.json) i [jego niezależny audyt](../data/audits/STEP12_DUAL_WINDOWS_AUDIT_2026-10-26.json), [pełne wyjaśnienie](STEP_12_DUAL_WINDOWS.md), SHA protokołu `25242ed4a626aba2669ea86605b31664cb17bf10a6a74e4e3548470954c81198`, [testy offline PASS](https://github.com/karolbarankiewicz1984-ui/kb-score-3/actions/runs/40353630051). Przed wybraniem zwycięskiej metody, po uzyskaniu osobnego certyfikatu danych, porównać na tych samych meczach wieloklasowy log loss, Brier i kalibrację; żadnych wyników takiego porównania dziś nie ma. Decyzja użytkownika pozwoliła **wdrożyć proponowany wariant**, ale ostateczna formalna akceptacja GATE12 nie jest jeszcze osobno odnotowana. `training_allowed=false`.
+
+## 26.10.2026 — KOŃCOWY ODBIÓR METODYKI KROKU 12
+
+**GATE12 PASS wyłącznie dla metodologii TRAIN/VALIDATION/TEST i porównania EXPANDING vs ROLLING.** [Samodzielny, zamrożony protokół odbioru](../data/audits/STEP12_METHOD_GATE_PASS_2026-10-26.json), rekord SHA `0332edf73cd893f9848ffb23ea7821a09f5c183e6add77fc7cfdd7378959c5be`. [Raport rzeczywistych blokad danych](../data/audits/STEP12_REAL_PIT_GAP_REPORT_2026-10-26.json): `1220` historycznych odczytów RETROSPECTIVE i `300` nadchodzących meczów z niezatwierdzonymi cechami; łącznie **0** dopuszczonych do treningu. Wcześniejsze wzmianki „PENDING” są zapisem stanu sprzed odbioru. Po potwierdzeniu przez użytkownika kontynuacji obu metod porównania i zaliczeniu testów programu protokół metody ma PASS, natomiast **`training_allowed=false`** i osobna bramka PIT pozostają w mocy. Krok 13 nie jest jeszcze rozpoczęty; dopasowywanie modeli, publikowanie prognoz lub fałszywe backtesty są zabronione.
