@@ -1,0 +1,72 @@
+{
+  "schema": "kb3-step09-acceptance-evidence-v1",
+  "date_local": "2026-10-26",
+  "gate": "09",
+  "result": "PASS_TECHNICAL",
+  "phase": "CONTROLLED_ONE_LEAGUE_ONE_SEASON",
+  "dataset": {
+    "league": "Premier League",
+    "league_id": 39,
+    "season_start": 2024,
+    "fixtures": 380,
+    "finished_90m": 380,
+    "unique_external_ids": 380
+  },
+  "source": {
+    "provider": "API-Football",
+    "classification": "RETROSPECTIVE_NOT_PREMATCH",
+    "response_sha256": "b8cd15e5d83522aca0f0a8bae5109787690a93400c901ea53acee01d3eab0c8e",
+    "normalized_sha256": "e0f0955c8c2d73c8d8bea00538cfd6152c34181b0776425ccc041a46569725be",
+    "raw_api_response_retained": false
+  },
+  "run": {
+    "url": "https://github.com/karolbarankiewicz1984-ui/kb-score-3/actions/runs/40277192712",
+    "commit_sha": "a0c8ddd21517b02a8f797138db5657458c2f948c",
+    "test_step09_pass": 10,
+    "test_step08_regression_pass": 9,
+    "first_import_new": 380,
+    "second_import_new": 0,
+    "second_import_reused": 380,
+    "interrupted_after": 17,
+    "resumed_new": 363,
+    "resumed_reused": 17
+  },
+  "sqlite": {
+    "schema_version": 1,
+    "sha256": "fc3f0ae2fe9fb4c89bbaf561571906fb35b23d3b1f03b7131a462f9dfe179fc4",
+    "size_bytes": 385024,
+    "integrity_check": "ok",
+    "foreign_key_violations": 0,
+    "fixture_provider_map_count": 380
+  },
+  "offsite": {
+    "encrypted_archive_url": "https://drive.google.com/file/d/1S1blIbulStO8TZBvwu8JgVERPU-WsdDU/view",
+    "drive_folder_url": "https://drive.google.com/drive/folders/17NvQFKNkFd4eHZSqa-bNU0nFFSmHKTKo",
+    "format": "KB3ENC1+AES-256-GCM+gzip",
+    "cipher_sha256": "231c6bab3154e973cebf9814bee0c4da7846ae584fdca6271f3ddf977007aa13",
+    "size_bytes": 31846,
+    "drive_visibility": "private owner only at verification",
+    "downloaded_back_from_drive": true,
+    "encrypted_bytes_sha256_reverified": true,
+    "authentication_decrypt": "PASS",
+    "restored_sqlite_sha256": "MATCH",
+    "sqlite_integrity_after_restore": "ok",
+    "foreign_key_violations_after_restore": 0,
+    "restored_fixtures": 380
+  },
+  "recovery": {
+    "key_not_in_repo_or_drive": true,
+    "one_time_user_recovery_file_provided": true,
+    "user_secured_custody_confirmed": false,
+    "loss_of_key_means_backup_unrecoverable": true
+  },
+  "limits": [
+    "Pilot demonstrates one historical league/season, not all leagues.",
+    "No prematch features, xG or odds imported.",
+    "No ML training or production report job.",
+    "Regular encrypted backup rotation and automated uploads still need implementation.",
+    "Historical xG matching REVIEW queue 22 not auto-promoted.",
+    "Raw API response body not separately archived; only canonical normalized rows in SQLite."
+  ],
+  "next_step": "10 data quality and chronology QA, after key custody confirmation and planned expansion"
+}
