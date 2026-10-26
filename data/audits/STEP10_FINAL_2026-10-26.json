@@ -1,0 +1,73 @@
+{
+  "schema": "kb3-step10-final-acceptance-v1",
+  "date": "2026-10-26",
+  "gate": "10",
+  "status": "PASS_DATA_QUALITY_GATE_WITH_QUARANTINES",
+  "scope": "Retrospective fixtures/results and point-in-time policy, NOT full training readiness",
+  "prior_gate": "09 PASS",
+  "next_gate": "11 NOT_STARTED",
+  "completed_steps": 10,
+  "total_steps": 29,
+  "checked": {
+    "leagues": 5,
+    "league_season_combinations": 30,
+    "completed_seasons": 25,
+    "active_seasons": 5,
+    "fixture_entries_api": 10679,
+    "global_provider_critical_errors": 0
+  },
+  "completed": {
+    "ordinary_domestic_schedule_entries": 8908,
+    "already_awarded_regular_quarantined": 1,
+    "ordinary_played_result_candidates": 8907,
+    "extra_playoff_or_decider_fixtures_excluded": 19,
+    "exception_seasons_reviewed": 10,
+    "exception_seasons_phase_explained": 10,
+    "unresolved_critical_season_cases": 0,
+    "training_candidate_disclaimer": "8907 are source-only prospective label candidates, not imported SQLite records and not validated prematch features."
+  },
+  "database": {
+    "league": "Premier League",
+    "season": 2024,
+    "imported_finished_fixtures": 380,
+    "qa_critical_errors": 0,
+    "regression_and_mutation_pass": true
+  },
+  "evidence": {
+    "base_audit": "https://github.com/karolbarankiewicz1984-ui/kb-score-3/actions/runs/40278994874",
+    "full_30_season_audit": "https://github.com/karolbarankiewicz1984-ui/kb-score-3/actions/runs/40280361413",
+    "phase_resolution": "https://github.com/karolbarankiewicz1984-ui/kb-score-3/actions/runs/40280931156",
+    "offsite_30_season_summary": "https://drive.google.com/file/d/1duA2TFr00dggF0zCcOVLAHlF2RpJjJIH/view",
+    "offsite_phase_exception_summary": "https://drive.google.com/file/d/1Lu44F_j8fNugCIJICx12nJpxtkK4ZoEN/view",
+    "persisted_detailed_pilot_qa": "https://github.com/karolbarankiewicz1984-ui/kb-score-3/blob/main/data/audits/STEP10_QUALITY_2026-10-26.json",
+    "archived_catalog": "https://github.com/karolbarankiewicz1984-ui/kb-score-3/blob/main/data/audits/API_FOOTBALL_STEP05_2026-10-25.json"
+  },
+  "tests": {
+    "latest_step10_units": 35,
+    "regression_step09": 10,
+    "regression_step08": 9,
+    "passed_total_latest": 54,
+    "real_sqlite_negative_mutations_blocked": 4
+  },
+  "exclusion_policy": {
+    "source_2026_active_seasons": "CANNOT_TREAT_SCHEDULED_AS_FINISHED",
+    "nonregular_postseason": "MUST_NOT_MIX_IN_REGULAR_SEASON_LABELS",
+    "awarded_regular": "EXPLICIT_QUARANTINE; API fixture 1388000, Ligue1 season 2025",
+    "unapproved_cross_provider_IDs": "REVIEW/PENDING remain unresolved; no auto-promotion",
+    "result_in_target_match_feature": "FORBIDDEN",
+    "source_match_result_as_prior_feature": "Requires source finish <= cutoff and actual availability proof",
+    "feature_rows_needing_verified_historical_snapshot": "BLOCKED without verified observed/published timestamps",
+    "impossible_or_unknown_rows": "FAIL/QUARANTINE, never silent correction"
+  },
+  "coverage_gaps": {
+    "stats_rows_in_imported_db": 0,
+    "events_rows_in_imported_db": 0,
+    "odds_rows_in_imported_db": 0,
+    "verified_prematch_snapshot_count": 0,
+    "xg_full_coverage": "NOT_ESTABLISHED",
+    "training_allowed": false,
+    "reason": "No point-in-time feature provenance built (Step11), source labels alone do not permit ML training; additional leagues not yet imported into SQLite."
+  },
+  "spend_new_pln": 0,
+  "docs": "docs/STEP_10_ACCEPTANCE.md"
+}
