@@ -268,3 +268,9 @@ Następny krok:
 - `src/kb3_step11_field_audit.py` + wspólny `_compose_features`: dla wszystkich cech `observed` i flag missingness zapisuje konserwatywny, oryginalnie zaobserwowany czas danych, zakres i hash źródła; sprawdza wszystkie rezultaty, xG i approval przed cutoff. Retrospektywne `replay` ma `feature_availability=null`, nie certyfikację.
 - [217/217 CI PASS](https://github.com/karolbarankiewicz1984-ui/kb-score-3/actions/runs/40325431132), 11 nowych testów czasu / odrzucania leak i 39 wcześniejszych regresji. [Katalog pola-po-polu](STEP_11_FIELD_PROVENANCE_GATE.md).
 - Ograniczenie: `PitchAPI-native` obecnie liczy ELO tylko z sezonu 2026/27, nie z importu sezonów wcześniejszych; potrzebne jest jawne rozszerzenie, bez udawania historycznego PIT. GATE11 nadal PENDING, 10/29. Produkcja, trening, starsze modele bez zmian.
+
+## GATE11 — API-Football HISTORYCZNE PILOTY TYLKO RĘCZNIE (26.10.2026)
+
+- Po scaleniu zmian do głównego kalkulatora stary workflow ponownie pobierał dane API-Football dla pilotów 380 i 760, choć nowy system ma korzystać z samego PitchAPI. Zmieniono `.github/workflows/kb3-step11-features.yml`: joby `pilot-380` i `pilot-760` mają teraz warunek **wyłącznie `github.event_name == 'workflow_dispatch'`**. Historyczne testy zostają zachowane do świadomego uruchomienia; na push/PR działają tylko testy offline.
+- [Rzeczywisty CI #40326752798](https://github.com/karolbarankiewicz1984-ui/kb-score-3/actions/runs/40326752798): **220/220 testów offline PASS**, oba zadania wymagające API-Football **SKIPPED**. Dodano 3 testy zabezpieczające taką politykę na przyszłość.
+- Bez nowego abonamentu, bez zakupów, bez produkcyjnej migracji i treningu. GATE11 **PENDING 10/29**.
