@@ -93,6 +93,7 @@ def method_review(real, *, expected_source_sha256=PINNED_REAL_MANIFEST_SHA256):
     for left, right in zip(safe_rows, safe_rows[1:]):
         if timestamp(left["kickoff_utc"]) > timestamp(right["kickoff_utc"]):
             raise SplitSafetyError("STEP12_NONCHRONOLOGICAL_ROWS")
+    role_by_id = {r["fixture_id"]: r["partition"] for r in safe_rows}
     folds = []
     for number, (start, stop) in enumerate(WALK_FORWARD, 1):
         lo, hi = timestamp(start), timestamp(stop)
@@ -103,8 +104,7 @@ def method_review(real, *, expected_source_sha256=PINNED_REAL_MANIFEST_SHA256):
                  and lo <= timestamp(r["kickoff_utc"]) < hi]
         if set(train) & set(valid):
             raise SplitSafetyError("STEP12_WALK_FORWARD_OVERLAP")
-        if any(next(r["partition"] for r in safe_rows
-                    if r["fixture_id"] == ident) == "TEST" for ident in train + valid):
+        if any(role_by_id[ident] == "TEST" for ident in train + valid):
             raise SplitSafetyError("STEP12_TEST_IN_WALK_FORWARD")
         folds.append({
             "fold": number,
