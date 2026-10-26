@@ -140,13 +140,9 @@ def feature_clock_map(target,history,values,missing_flags,*,cutoff,source_eviden
                 assign(prefix+"_n",group)
                 for suffix in ("points_avg","gf_avg","ga_avg","opponent_elo_avg"):
                     assign(prefix+"_"+suffix,group)
-                for key,src_key in (("xg","xgh_source" if side=="home" else "xga_source"),
-                                    ("xga","xga_source" if side=="home" else "xgh_source")):
-                    # A team may be away in any history row: choose the correct
-                    # xG direction *per match*, not according to target side.
-                    true_key="xgh_source" if key=="xg" else "xga_source"
-                    if side=="away":
-                        true_key="xga_source" if key=="xg" else "xgh_source"
+                for key in ("xg","xga"):
+                    # Source direction is picked for each historical fixture,
+                    # because a target home team also played away in history.
                     # Per-row source is selected from team home/away orientation.
                     for suffix in ("_n","_avg"):
                         assign(prefix+"_"+key+suffix,group,"XG_OBSERVATIONS_AND_RESULTS",
