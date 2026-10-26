@@ -1,0 +1,35 @@
+name: "KB3 Step11 - Code-Only Independent Native Elo Reproduction"
+on:
+  push:
+    branches: ["feature/step11-native-multiseason-elo-20261026"]
+    paths: [".github/workflows/kb3-step11-native-history-code-export.yml"]
+permissions:
+  contents: read
+jobs:
+  safe-code-export:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Export only open-source Python modules used to reproduce on owner's local archives
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          from pathlib import Path
+          import zipfile
+          src=list(Path('src').glob('*.py'))+list(Path('scripts').glob('*.py'))
+          assert len(src)>15
+          with zipfile.ZipFile('KB3_NATIVE_MULTISEASON_CODE_ONLY.zip','w',
+                               compression=zipfile.ZIP_DEFLATED) as z:
+              for f in sorted(src):
+                  assert f.suffix=='.py' and not f.is_symlink()
+                  z.write(f,arcname=f.as_posix())
+          print('CODE_ONLY_MODULES',len(src))
+          PY
+      - name: Upload no API keys, no fixtures, no decryption private keys
+        uses: actions/upload-artifact@v4
+        with:
+          name: kb3-step11-native-multiseason-code-only-20261026
+          path: KB3_NATIVE_MULTISEASON_CODE_ONLY.zip
+          retention-days: 7
+          if-no-files-found: error
