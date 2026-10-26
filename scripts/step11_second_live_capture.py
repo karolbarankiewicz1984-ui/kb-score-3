@@ -90,13 +90,19 @@ def capture(outdir,public_key,api_key):
     if sealed["ledger_evidence"]!=ledger or sealed["xg_evidence"]!=xg:
         raise ValueError("SOURCE_SEAL_MISMATCH")
     db_path.unlink()
-    return {"schema":"kb3-step11-second-pit-plus-xg-v1",
+    # Only aggregate diagnostic categories leave the encrypted raw source file.
+    from collections import Counter
+    identity_counts=dict(sorted(Counter(x["identity_state"] for x in samples).items()))
+    return {"schema":"kb3-step11-second-pit-plus-xg-v2",
         "observation_started_at_utc":start,
         "observation_completed_at_utc":end,
         "fixture_records":capture_event["records"],
         "fixture_chain_sha256":capture_event["chain_sha256"],
         "fixture_source_sha256":capture_event["response_sha256"],
         "xg_audit":xg,
+        "xg_match_review_reason_counts":identity_counts,
+        "match_source_metadata_in_sealed_archive":True,
+        "aliases_auto_approved":0,
         "pitchapi_calls":pitch.calls,"pitchapi_hard_ceiling":PITCH_CALL_LIMIT,
         "api_football_calls":1,"sample_selected":len(picked),
         "provider_errors_count":len(pitch.errors),

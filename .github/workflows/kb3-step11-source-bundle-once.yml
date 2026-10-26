@@ -1,0 +1,30 @@
+name: "KB3 Step11 - Source Bundle for Offline Archive Check"
+on:
+  push:
+    branches: ["feature/step11-xg-identity-audit-20261026"]
+    paths: [".github/workflows/kb3-step11-source-bundle-once.yml"]
+permissions:
+  contents: read
+jobs:
+  source-bundle-no-data-no-secrets:
+    runs-on: ubuntu-latest
+    timeout-minutes: 7
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run curated evidence and identity tests
+        run: |
+          python -m unittest discover -s tests -p 'test_step11_reviewed_xg.py' -v
+          python -m unittest discover -s tests -p 'test_step11_identity_review.py' -v
+      - name: Publish review source ONLY; never encrypted archive or key
+        uses: actions/upload-artifact@v4
+        with:
+          name: kb3-step11-review-source-20261026
+          path: |
+            src/kb3_reviewed_xg.py
+            src/kb3_identity_review.py
+            src/kb3_xg_pit.py
+            src/kb3_pit_ledger.py
+            scripts/pitchapi_step06_audit.py
+            config/step11_reviewed_pitch_fixture_crosswalk_20261026.json
+          retention-days: 3
+          if-no-files-found: error
