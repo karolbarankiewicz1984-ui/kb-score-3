@@ -1,6 +1,6 @@
 # KB Score 3.0 — PLAN GŁÓWNY (kopia operacyjna GitHub)
 
-**Wersja źródłowa:** v1.1, Google Docs (aktualizowane po odbiorach). **Stan ostatniej synchronizacji:** 2026-10-26, **9/29 kroków zaliczonych** (01–09), krok 10 NIE ROZPOCZĘTO. Statusy w tej kopii aktualizujemy po odbiorach, ale **źródłem prawdy pozostaje [oryginał na Dysku Google](https://docs.google.com/document/d/10wjHL3r3OAuxtezwcIeWztxS8lwjhYon5GM3BLhI0xE/edit)**.
+**Wersja źródłowa:** v1.1, Google Docs (aktualizowane po odbiorach). **Stan ostatniej synchronizacji:** 2026-10-26, **10/29 kroków zaliczonych** (01–10), krok 11 NIE ROZPOCZĘTO. Statusy w tej kopii aktualizujemy po odbiorach, ale **źródłem prawdy pozostaje [oryginał na Dysku Google](https://docs.google.com/document/d/10wjHL3r3OAuxtezwcIeWztxS8lwjhYon5GM3BLhI0xE/edit)**.
 
 **Pozostałe dokumenty:** [DANE.md](DANE.md), [MODEL.md](MODEL.md), [ZMIANY.md](ZMIANY.md), [instrukcja bezpieczeństwa kroku 03](STEP_03_SECURITY_CHECKLIST.md). **Repozytorium:** https://github.com/karolbarankiewicz1984-ui/kb-score-3.
 
@@ -118,7 +118,7 @@
 - **ZALEŻY OD:** Kroki 5–8.
 - **STATUS:** ZALICZONO | TEST: PASS TECHNICZNY — Premier League 2024/25 380/380, 0 duplikatów, wznowienie po 17, 19/19 testów, zaszyfrowany backup odtworzony po ponownym pobraniu z Google Drive | DOWÓD: [GATE09](STEP_09_ACCEPTANCE.md) | DATA ODBIORU: 26.10.2026
 
-#### Krok 10 — Weryfikacja jakości i chronologii danych  [W REALIZACJI]
+#### Krok 10 — Weryfikacja jakości i chronologii danych  [ZALICZONO]
 
 - **CO ZROBIĘ:** Zidentyfikować braki, powielone wydarzenia, niemożliwe daty, błędy źródeł i przyszłą wiedzę.
 - **CO ROBISZ TY:** Przejrzeć podsumowanie jakości, jeśli potrzebna decyzja o wyłączeniu ligi.
@@ -126,7 +126,7 @@
 - **BRAMKA ODBIORU / TEST PASS:** Testy poprawności i no-lookahead przechodzą na przykładach pozytywnych i celowo błędnych; każda liga ma raport jakości; błędy krytyczne blokują trening.
 - **DOWÓD ZALICZENIA:** Raport QA, wykaz odrzuconych rekordów i wynik testu negatywnego.
 - **ZALEŻY OD:** Krok 9.
-- **STATUS:** W REALIZACJI | TEST: 35/35 unit/regression PASS + 4/4 kontrolowane uszkodzenia bazy zatrzymane; rzeczywiste 380 meczów PASS_WITH_COVERAGE_WARNINGS; brak statystyk/odds/prematch, ML zablokowany | DOWÓD: [raport GATE10](STEP_10_PROGRESS.md), [workflow](https://github.com/karolbarankiewicz1984-ui/kb-score-3/actions/runs/40278994874), [issue #2](https://github.com/karolbarankiewicz1984-ui/kb-score-3/issues/2) | DATA ODBIORU: —
+- **STATUS:** ZALICZONO | TEST: PASS — 30/30 kombinacji liga×sezon, 10 679 wpisów meczowych, 0 krytycznych błędów źródła, 10/10 wyjątkowych sezonów rozróżnionych na rundę zasadniczą i baraże; 19 meczów pucharowych/barażowych oddzielonych, 1 wynik AWD w kwarantannie; 54/54 testów PASS + 4/4 mutacje negatywne blokują, no-lookahead. Trening pozostaje ZABLOKOWANY do etapu cech i potwierdzenia point-in-time | DOWÓD: [protokół GATE10](STEP_10_ACCEPTANCE.md), [manifest](../data/audits/STEP10_FINAL_2026-10-26.json), [pełny przebieg](https://github.com/karolbarankiewicz1984-ui/kb-score-3/actions/runs/40280931156) | DATA ODBIORU: 26.10.2026
 
 ### Etap C. Cechy i chronologia
 
@@ -357,6 +357,6 @@ W nowej rozmowie wystarczy: „Otwórz plan KB Score 3.0 na Dysku Google; podaj 
 **09 PASS TECHNICZNY (26.10.2026):** [protokół](STEP_09_ACCEPTANCE.md), [manifest](../data/audits/STEP09_IMPORT_2026-10-26.json), [test na rzeczywistych danych](https://github.com/karolbarankiewicz1984-ui/kb-score-3/actions/runs/40277192712). Prywatna, zaszyfrowana kopia na Drive została niezależnie pobrana i przywrócona; właściciel powinien zabezpieczyć wydany plik klucza odzyskiwania. Kolejny etap — 10.
 
 
-## Krok 10 — dowody częściowe (nie końcowy odbiór)
+## Krok 10 — odbiór końcowy (26.10.2026)
 
-**26.10.2026:** [16 nowych testów, 19 testów regresji, 4/4 negatywne scenariusze na rzeczywistej bazie](https://github.com/karolbarankiewicz1984-ui/kb-score-3/actions/runs/40278994874) — bez błędów krytycznych na 380 spotkaniach. [Raport i ograniczenia](STEP_10_PROGRESS.md). W bazie nie ma jeszcze xG, statystyk, kursów i wiarygodnych prematch snapshots, dlatego trening pozostaje zablokowany. Ogólny postęp projektu nadal **9/29**.
+**PASS / ZALICZONO:** [pełny protokół](STEP_10_ACCEPTANCE.md), [manifest odbioru](../data/audits/STEP10_FINAL_2026-10-26.json). Pięć lig, 30 kombinacji liga×sezon i 10 679 wpisów; 10 sezonów z nadmiarowymi meczami przeanalizowano po nazwach rund. 19 baraży oddzielono, jeden mecz z wynikiem AWD wyłączono z normalnych etykiet, 54/54 testów PASS. Statystyki/xG/odds i chronologia realnych prematch snapshots nie są jeszcze gotowe: **trening zablokowany**, prace przy cechach w kroku 11. Postęp **10/29**.
