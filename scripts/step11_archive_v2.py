@@ -20,7 +20,7 @@ from cryptography.hazmat.primitives import serialization, hashes
 from cryptography.hazmat.primitives.asymmetric import padding, rsa
 from cryptography.hazmat.primitives.ciphers.aead import AESGCM
 
-MAGIC = b"KB3ENC2\\n"
+MAGIC = b"KB3ENC2\n"
 AAD = b"KB3-STEP11-REPLAY-ARCHIVE-V2"
 MAX_DB_BYTES = 64 * 1024 * 1024
 
@@ -98,7 +98,7 @@ def encrypt(source, recipient_public_key, output, manifest, *,
         with output.open("xb") as stream:stream.write(blob)
         with manifest.open("x",encoding="utf8") as stream:
             json.dump(metadata,stream,sort_keys=True,indent=2)
-            stream.write("\\n")
+            stream.write("\n")
     except BaseException:
         output.unlink(missing_ok=True)
         manifest.unlink(missing_ok=True)
