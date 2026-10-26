@@ -197,3 +197,10 @@ Następny krok:
 - [Zaszyfrowany backup obserwacji](https://drive.google.com/file/d/1wvFMLiSQHUP06-r95iNwp9nyBfYbsBoP/view?usp=drivesdk) przesłano do prywatnego Google Drive i pobrano ponownie. Dekryptacja tym samym kluczem użytkownika i walidacja 380 rekordów, SHA, SQLite oraz kluczy obcych zakończone sukcesem. [Manifest](../data/audits/STEP11_PIT_LIVE_CAPTURE_2026-10-26.json).
 - [CI offline #40296978637](https://github.com/karolbarankiewicz1984-ui/kb-score-3/actions/runs/40296978637) **82/82 PASS**. Usunięto możliwość podłożenia starego wyniku FT w miejscu nowszej korekty; nowa rzeczywista sesja API wymaga osobnego ręcznego uruchomienia. Nie ma automatycznego harmonogramu API.
 - **GATE11 PENDING / 10/29**, brak ML i typów, starsze modele bez zmian. [Opis](STEP_11_PIT_OBSERVATION.md).
+
+## GATE11 — DWIE OBSERWACJE I xG W KWARANTANNIE (26.10.2026)
+
+- Dwa odczyty `API-Football fixtures?league=39&season=2026`: **380/380** tych samych meczów, 0 zmienionych hashy rekordów między 09:01:49 UTC i 09:20:47 UTC. Oba odrębne zaszyfrowane archiwa pobrane z Google Drive, odszyfrowane dotychczasowym kluczem prywatnym, SQLite integrity=ok / FK=0. [Manifest](../data/audits/STEP11_TWO_PIT_XG_2026-10-26.json).
+- W drugim snapshotcie **3/3** kompletne feedy xG PitchAPI, ale **0/3** dokładnych par, z czego 2 AMBIGUOUS_OR_UNMATCHED, 1 ALIAS_CANDIDATE_UNVERIFIED. Kwarantanna, bez ręcznego przypisania lub imputowania zera.
+- [91/91 offline PASS](https://github.com/karolbarankiewicz1984-ui/kb-score-3/actions/runs/40298663945). [Rzeczywisty drugi zapis](https://github.com/karolbarankiewicz1984-ui/kb-score-3/actions/runs/40298805124). [Protokół](STEP_11_TWO_PIT_XG.md).
+- `GATE11 PENDING`, 10/29; `training_allowed=false`; brak nowego abonamentu i zmian w starszych modelach.
