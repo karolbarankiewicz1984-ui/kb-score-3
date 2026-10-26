@@ -204,3 +204,9 @@ Następny krok:
 - W drugim snapshotcie **3/3** kompletne feedy xG PitchAPI, ale **0/3** dokładnych par, z czego 2 AMBIGUOUS_OR_UNMATCHED, 1 ALIAS_CANDIDATE_UNVERIFIED. Kwarantanna, bez ręcznego przypisania lub imputowania zera.
 - [91/91 offline PASS](https://github.com/karolbarankiewicz1984-ui/kb-score-3/actions/runs/40298663945). [Rzeczywisty drugi zapis](https://github.com/karolbarankiewicz1984-ui/kb-score-3/actions/runs/40298805124). [Protokół](STEP_11_TWO_PIT_XG.md).
 - `GATE11 PENDING`, 10/29; `training_allowed=false`; brak nowego abonamentu i zmian w starszych modelach.
+
+## GATE11 — 3/3 XG IDENTITY REVIEW (26.10.2026)
+
+- [Realny audyt źródłowy #40301238526](https://github.com/karolbarankiewicz1984-ui/kb-score-3/actions/runs/40301238526): brak błędów dostawcy, 3/3 feedy xG kompletne; po inspekcji hashy, czasu, wyników i ID obu drużyn zdefiniowano **3 konkretne powiązania** w [zamrożonym manifeście](../config/step11_reviewed_pitch_fixture_crosswalk_20261026.json), z zakazem promowania ogólnych aliasów.
+- Dziennik źródłowy pozostał w kwarantannie i bez modyfikacji. Dopiero oddzielna audytowalna warstwa pochodna `kb3_reviewed_xg` dała **3/3 zatwierdzone mapowania historycznej obserwacji** na rzeczywistym odszyfrowanym archiwum Drive, bez przyszłych przecieków. [Protokół](STEP_11_XG_IDENTITY_REVIEW.md), [dowód](../data/audits/STEP11_XG_MATCHBOUND_REVIEW_2026-10-26.json).
+- [111/111 testów PASS](https://github.com/karolbarankiewicz1984-ui/kb-score-3/actions/runs/40302235918). Pierwotny `published_at` dostawcy nadal nieznany, pełne pokrycie brak, `GATE11 PENDING`, 10/29, ML/trening/typy zablokowane; brak zmian w starych modelach i nowych zakupów.
