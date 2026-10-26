@@ -81,7 +81,7 @@ class TestObservedFeatures(unittest.TestCase):
           "source_encrypted_sha256":"SYNTHETIC_SEALED_DIGEST",
           "source_fixture_chain_sha256":verify_chain(self.db)["final_chain_sha256"],
           "review_approval_not_before_utc":approved,
-          "review_approval_commit":"https://github.com/karolbarankiewicz1984-ui/kb-score-3/commit/test-only",
+          "review_approval_commit":"https://github.com/karolbarankiewicz1984-ui/kb-score-3/commit/1f6032d4562d457e9bcb92381bf28a6cfa56a120",
           "reviewed":[{
             "pitch_match_id":"m_QATEST","pitch_observation_id":src[0],
             "raw_sha256":src[1],"api_fixture_id":3001,
@@ -149,6 +149,17 @@ class TestObservedFeatures(unittest.TestCase):
         mf,cw=self.add_reviewed_xg()
         cw["source_encrypted_sha256"]="tampered"
         with self.assertRaisesRegex(FeatureSafetyError,"XG_SOURCE_REVIEW_FAILED"):
+            self.build(archive_manifest=mf,reviewed_crosswalk=cw)
+
+    def test_cannot_falsely_claim_review_before_public_merge(self):
+        mf,cw=self.add_reviewed_xg(approved="2026-10-26T09:00:00Z")
+        with self.assertRaisesRegex(FeatureSafetyError,"REVIEW_APPROVAL_REFERENCE_INVALID"):
+            self.build(archive_manifest=mf,reviewed_crosswalk=cw)
+
+    def test_unrecognized_review_commit_is_rejected(self):
+        mf,cw=self.add_reviewed_xg()
+        cw["review_approval_commit"]="https://github.com/karolbarankiewicz1984-ui/kb-score-3/commit/forged"
+        with self.assertRaisesRegex(FeatureSafetyError,"REVIEW_APPROVAL_REFERENCE_INVALID"):
             self.build(archive_manifest=mf,reviewed_crosswalk=cw)
 
     def test_cutoff_earlier_than_later_revised_source_stable(self):
