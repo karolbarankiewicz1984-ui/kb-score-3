@@ -134,3 +134,11 @@ Następny krok:
 - **Kryteria:** realny odczyt i zapis do SQLite v1, manifest z checksumami i stanami, uzgodnienie liczebności, drugi import bez duplikatów, wznowienie po przerwaniu. Odmienione lub sprzeczne identyfikatory kierować do REVIEW. Realne dane nie mogą trafiać do niezaszyfrowanego backupu testowego.
 - **Status:** W REALIZACJI, GATE09 **PENDING**. Utworzono zadanie i rozpoczęto przygotowanie; **nie wykonano jeszcze importu**, dlatego nie wolno oznaczać PASS.
 - **Koszt:** 0 zł nowych zakupów; brak zmian KB Score 2.1, brak uruchomienia ML i raportów produkcyjnych.
+
+## GATE 09 — PASS TECHNICZNY / ZALICZONO (26.10.2026)
+
+- **Próba:** Premier League 2024/25 (API-Football ID 39), 380/380 spotkań, 380 zakończonych, 380 unikatowych identyfikatorów źródłowych. [Run #40277192712](https://github.com/karolbarankiewicz1984-ui/kb-score-3/actions/runs/40277192712) — SUCCESS.
+- **Test odbioru:** 10/10 testów nowego importu + 9/9 regresji bazy (19/19 PASS); pierwszy import 380 nowych, powtórny 0 nowych/380 rozpoznanych; przerwanie po 17, następnie 363 dodane/17 rozpoznanych. Tabele SQLite 380 meczów i 380 map API-Football. Dane tylko RETROSPECTIVE.
+- **Dowód trwałości:** zaszyfrowana AES-256-GCM baza w [prywatnym Google Drive](https://drive.google.com/file/d/1S1blIbulStO8TZBvwu8JgVERPU-WsdDU/view). Ponownie pobrano plik z Drive, sprawdzono identyczny hash bajtów, odszyfrowano, uzyskano SHA-256 oryginalnego SQLite, integrity_check=ok, foreign_key_check=0, odczytano 380 meczów. [Manifest](../data/audits/STEP09_IMPORT_2026-10-26.json), [GATE09 protokół](STEP_09_ACCEPTANCE.md).
+- **Ograniczenia:** punktowy pilot 1 liga/1 sezon; zero ML, brak kursów, xG i statystyk drużyn; odzyskiwanie wymaga oddzielnego klucza przekazanego użytkownikowi jako osobny plik, którego bezpieczne zachowanie nie jest jeszcze potwierdzone. Szyfrowane backupy cykliczne i rotacja kluczy nie są uruchomione. Nierozstrzygniętych 22 par PitchAPI nie zatwierdzano.
+- **Odbiór:** PASS techniczny zgodnie z bramką kroku 09; **postęp 9/29**. Nowe zakupy 0 zł. Następny krok 10 — dane: jakość i chronologia, **NIE ROZPOCZĘTO**.
