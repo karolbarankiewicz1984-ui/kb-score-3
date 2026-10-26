@@ -1,7 +1,7 @@
 name: "KB3 Step 13 - Retrospective Research Contract"
 on:
   push:
-    branches: ["feature/step13-real-retrospective-research-v04", "main"]
+    branches: ["feature/step13-*", "main"]
     paths:
       - "src/kb3_step13_retrospective.py"
       - "src/kb3_step13_archive_preflight.py"
