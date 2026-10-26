@@ -1,6 +1,6 @@
 # KB Score 3.0 — PLAN GŁÓWNY (kopia operacyjna GitHub)
 
-**Wersja źródłowa:** v1.1, Google Docs (aktualizowane po odbiorach). **Stan ostatniej synchronizacji:** 2026-10-25, **8/29 kroków zaliczonych** (01–08), krok 09 NIE ROZPOCZĘTO. Statusy w tej kopii aktualizujemy po odbiorach, ale **źródłem prawdy pozostaje [oryginał na Dysku Google](https://docs.google.com/document/d/10wjHL3r3OAuxtezwcIeWztxS8lwjhYon5GM3BLhI0xE/edit)**.
+**Wersja źródłowa:** v1.1, Google Docs (aktualizowane po odbiorach). **Stan ostatniej synchronizacji:** 2026-10-25, **8/29 kroków zaliczonych** (01–08), krok 09 W REALIZACJI od 26.10.2026. Statusy w tej kopii aktualizujemy po odbiorach, ale **źródłem prawdy pozostaje [oryginał na Dysku Google](https://docs.google.com/document/d/10wjHL3r3OAuxtezwcIeWztxS8lwjhYon5GM3BLhI0xE/edit)**.
 
 **Pozostałe dokumenty:** [DANE.md](DANE.md), [MODEL.md](MODEL.md), [ZMIANY.md](ZMIANY.md), [instrukcja bezpieczeństwa kroku 03](STEP_03_SECURITY_CHECKLIST.md). **Repozytorium:** https://github.com/karolbarankiewicz1984-ui/kb-score-3.
 
@@ -108,7 +108,7 @@
 - **ZALEŻY OD:** Krok 7.
 - **STATUS:** ZALICZONO | TEST: PASS — 9/9 testów SQLite, UNIQUE, immutability i backup→restore + niezależny restore z Google Drive | DOWÓD: [protokół GATE08](STEP_08_ACCEPTANCE.md), [Actions 40241611841](https://github.com/karolbarankiewicz1984-ui/kb-score-3/actions/runs/40241611841), [manifest Drive](../data/audits/STEP08_BACKUP_MANIFEST_2026-10-25.json) | DATA ODBIORU: 25.10.2026
 
-#### Krok 09 — Pobranie pierwszej historii, potem rozszerzenie  [NIE ROZPOCZĘTO]
+#### Krok 09 — Pobranie pierwszej historii, potem rozszerzenie  [W REALIZACJI]
 
 - **CO ZROBIĘ:** Pobrać kontrolnie 1 ligę/1 sezon, zweryfikować import i rozszerzać na sezony/ligi mające dane.
 - **CO ROBISZ TY:** Nie trzeba nic robić, chyba że plan API limituje import.
@@ -116,7 +116,7 @@
 - **BRAMKA ODBIORU / TEST PASS:** Liczba importowanych meczów uzgodniona z kontrolnym terminarzem; powtórny import nie powiela danych; skrypt potrafi bezpiecznie wznowić przerwany import.
 - **DOWÓD ZALICZENIA:** Plik manifestu z ligami, sezonami, liczebnościami, checksumami i logiem kontrolnym.
 - **ZALEŻY OD:** Kroki 5–8.
-- **STATUS:** NIE ROZPOCZĘTO | TEST: NIE URUCHOMIONO | LINK DOWODU: — | DATA ODBIORU: —
+- **STATUS:** W REALIZACJI | TEST: PRZYGOTOWANIE / PENDING | LINK DOWODU: https://github.com/karolbarankiewicz1984-ui/kb-score-3/issues/1 | DATA ODBIORU: —
 
 #### Krok 10 — Weryfikacja jakości i chronologii danych  [NIE ROZPOCZĘTO]
 
