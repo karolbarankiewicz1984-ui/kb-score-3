@@ -1,7 +1,7 @@
 name: "KB3 Step 11 - Prematch Features No Lookahead"
 on:
   push:
-    branches: ["feature/step11-prematch-features"]
+    branches: ["feature/step11-*", "main"]
     paths: ["src/kb3_features.py", "tests/test_step11_features.py", "scripts/step11_features_audit.py", ".github/workflows/kb3-step11-features.yml"]
   pull_request:
     paths: ["src/kb3_features.py", "tests/test_step11_features.py", "scripts/step11_features_audit.py", ".github/workflows/kb3-step11-features.yml"]
