@@ -257,3 +257,8 @@ Następny krok:
 - [Nowy szyfrowany backup Google Drive](https://drive.google.com/file/d/1X27ol04hWczbRCKin_pcKeiyVcLeF_x7/view) niezależnie ponownie pobrany, odtworzony prywatnym kluczem właściciela poza GitHubem, 385/385 SHA, pełny chain i integralność SQL PASS.
 - Porównanie 380 źródłowych meczów oraz pięciu powtórzonych xG: **zero różnic** w datach, wynikach, statusach, team ID i payloadach xG. SHA całych odpowiedzi fixture identyczny. [Szczegóły](STEP_11_NATIVE_SECOND_REAL_CAPTURE.md).
 - **Nie nazywać wyniku audytem wielodniowym.** GATE11 PENDING 10/29, bez produkcyjnego przełączenia i treningu, starsze modele bez zmian.
+
+## GATE11 — naprawa read-only i bezpieczne otwieranie dwóch szyfrowanych źródeł (26.10.2026)
+
+- `kb3_pitch_native_ledger.verify` nie wykonuje już DDL na otwartym `mode=ro`, co zapobiega fałszywemu błędowi podczas sprawdzania niezależnie odszyfrowanych archiwów. `step11_pitch_native_compare_offsite_zip.py` wykonuje lokalny restore dwóch szyfrogramów i porównanie po natywnych PitchAPI ID, z kontrolą whitelist ZIP i bez drukowania klucza prywatnego.
+- [206/206 testów offline PASS](https://github.com/karolbarankiewicz1984-ui/kb-score-3/actions/runs/40322588669): 167 Step11 +39 regresyjnych, w tym 7 nowych przypadków ZIP/readonly. Prawdziwy drugi odczyt i brak zmian w 380 meczach dokumentowano wcześniej w [raporcie](STEP_11_NATIVE_SECOND_REAL_CAPTURE.md). GATE11 wciąż PENDING, 10/29, bez treningu.
