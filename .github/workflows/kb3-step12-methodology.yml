@@ -1,0 +1,34 @@
+name: "KB3 Step12 Independent Methodology"
+on:
+  push:
+    branches: ["feature/step12-strict-methodology-20261026"]
+    paths: [".github/workflows/kb3-step12-methodology.yml"]
+permissions:
+  contents: write
+jobs:
+  independent-review:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - name: Real split protocol tests
+        run: python3 -m unittest discover -s tests -p 'test_step12_methodology.py' -v
+      - name: Generate immutable target-free split projection and report
+        run: |
+          python3 -m src.kb3_step12_methodology --source data/splits/STEP12_NATIVE_REAL_SPLIT_2026-10-26.json --projection data/splits/STEP12_SAFE_MODEL_VIEW_2026-10-26.json --audit data/audits/STEP12_INDEPENDENT_METHODOLOGY_2026-10-26.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: kb3-step12-real-safe-split-20261026
+          path: |
+            data/splits/STEP12_SAFE_MODEL_VIEW_2026-10-26.json
+            data/audits/STEP12_INDEPENDENT_METHODOLOGY_2026-10-26.json
+          retention-days: 90
+          if-no-files-found: error
+      - name: Commit immutable schedule-only projection
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/splits/STEP12_SAFE_MODEL_VIEW_2026-10-26.json data/audits/STEP12_INDEPENDENT_METHODOLOGY_2026-10-26.json
+          git commit -m "Step12: freeze independently verified 1520-row target-free model view"
+          git push origin "HEAD:feature/step12-strict-methodology-20261026"

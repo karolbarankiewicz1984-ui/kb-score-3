@@ -5,19 +5,29 @@ on:
     paths:
       - "src/kb3_split.py"
       - "src/kb3_step12_native_index.py"
+      - "src/kb3_step12_methodology.py"
       - "scripts/step12_pitch_index_once.py"
       - "tests/test_step12_split.py"
       - "tests/test_step12_native_index.py"
+      - "tests/test_step12_methodology.py"
       - "docs/STEP_12_PROGRESS.md"
+      - "docs/STEP_12_METHOD_DECISION.md"
+      - "data/splits/STEP12_SAFE_MODEL_VIEW_2026-10-26.json"
+      - "data/audits/STEP12_INDEPENDENT_METHODOLOGY_2026-10-26.json"
       - ".github/workflows/kb3-step12-split.yml"
   pull_request:
     paths:
       - "src/kb3_split.py"
       - "src/kb3_step12_native_index.py"
+      - "src/kb3_step12_methodology.py"
       - "scripts/step12_pitch_index_once.py"
       - "tests/test_step12_split.py"
       - "tests/test_step12_native_index.py"
+      - "tests/test_step12_methodology.py"
       - "docs/STEP_12_PROGRESS.md"
+      - "docs/STEP_12_METHOD_DECISION.md"
+      - "data/splits/STEP12_SAFE_MODEL_VIEW_2026-10-26.json"
+      - "data/audits/STEP12_INDEPENDENT_METHODOLOGY_2026-10-26.json"
       - ".github/workflows/kb3-step12-split.yml"
   workflow_dispatch:
 permissions:
@@ -28,10 +38,10 @@ jobs:
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
-      - name: Test step12 chronological and immutable data gates
-        run: python -m unittest discover -s tests -p 'test_step12*.py' -v
       - name: Install fixed crypto dependency for receipt verification
         run: python -m pip install --disable-pip-version-check 'cryptography>=42,<47'
+      - name: Test step12 chronological and immutable data gates
+        run: python -m unittest discover -s tests -p 'test_step12*.py' -v
       - name: Regression step11 historical and PIT guards
         run: python -m unittest discover -s tests -p 'test_step11_original_acceptance.py' -v
       - name: Confirm no training or API reads

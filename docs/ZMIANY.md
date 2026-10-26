@@ -307,3 +307,10 @@ Następny krok:
 - SHA splitu `da387303645a9bb9476351044944e5465d178ddff689c96b579093c4fb4fce3a`, [manifest](../data/splits/STEP12_NATIVE_REAL_SPLIT_2026-10-26.json), [źródłowy audyt](../data/audits/STEP12_NATIVE_REAL_AUDIT_2026-10-26.json); rzeczywiste historyczne odczyty RETROSPECTIVE, brak iluzji historycznej informacji prematch.
 - [Pakiet RSA+AES w folderze Google Drive](https://drive.google.com/file/d/1j56rqRA8SnVYi1g65dbfwPaXHH96GzhB/view): pobrany ponownie, ZIP 115137 B, SHA ZIP `191554843271756b0f472432719c00477c6a14bea255f403b25d17c6cfb9dbce`. Zgodność ciphertext SHA / wewnętrznego manifestu / manifestu splitu oraz 1520 IDs [PASS](../data/audits/STEP12_OFFSITE_CIPHERTEXT_READBACK_2026-10-26.json); surowy RSA restore **NIE** wykonywany bez prywatnego klucza.
 - **Stan po:** nadal **11/29**, krok 12 **W REALIZACJI / GATE12 PENDING**, ponieważ **0** rekordów spełnia historyczne kryteria PIT dla treningu. Nie uruchomiono ELO/Poissona/ML, nie było żadnego zakupu ani zmian innych modeli.
+
+## Krok 12 — 26.10.2026, niezależna ocena oryginalnych wymagań
+
+- Przeczytano raz jeszcze plan Google Docs i GitHub: odbiór dotyczy podziału i walk-forward, integralności oraz separacji wyników; pełna historyczna dostępność xG NIE jest dopisana do pierwotnej bramki kroku 12.
+- Oryginalny plik metadanych zachowany, wykryty weń hash zależny od wyników: wyłącznie do audytu. [Zamrożony bezpieczny widok modelu](../data/splits/STEP12_SAFE_MODEL_VIEW_2026-10-26.json) nie ujawnia wyników ani tych hashy, [kontrola wersji](../data/audits/STEP12_INDEPENDENT_METHODOLOGY_2026-10-26.json).
+- Rzeczywiste 1520 meczów w 3 częściach 760/380/380, 4 foldy 60/126/123/71 (razem 380 walidacyjnych), brak TEST w train/validation. [Protokół dla właściciela](STEP_12_METHOD_DECISION.md).
+- **Stan:** metodologia przygotowana do akceptacji, brak zgody właściciela -> GATE12 PENDING, brak PIT -> `training_allowed=false`, wciąż 11/29. Starsze modele nietknięte.

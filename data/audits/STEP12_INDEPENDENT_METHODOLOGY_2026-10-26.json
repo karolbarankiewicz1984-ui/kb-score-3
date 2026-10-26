@@ -1,0 +1,43 @@
+{
+  "all_records_quarantined": true,
+  "candidate_count": 1520,
+  "gate12_pass": false,
+  "methodology_review": "READY_FOR_OWNER_APPROVAL",
+  "never_supply_privileged_source_to_model": true,
+  "partition_counts": {
+    "TEST": 380,
+    "TRAIN": 760,
+    "VALIDATION": 380
+  },
+  "privileged_source_manifest_sha256": "da387303645a9bb9476351044944e5465d178ddff689c96b579093c4fb4fce3a",
+  "projection_is_target_free": true,
+  "projection_sha256": "3b8da84b334d897e327c883b769944bf36016cb44daf1da041bfb7d16a7b11e7",
+  "reason": "Original step12 only requires split/walk-forward boundaries, no leakage, immutable version, owner approval before fitting. PIT readiness is a separate downstream constraint.",
+  "schema": "kb3-step12-independent-real-split-audit-v1",
+  "source_has_label_dependent_row_hashes": true,
+  "test_in_train_or_validation_folds": false,
+  "training_allowed": false,
+  "validation_fold_total": 380,
+  "walk_forward_fold_candidate_counts": [
+    {
+      "fold": 1,
+      "schedule_train_candidates": 760,
+      "schedule_validation_candidates": 60
+    },
+    {
+      "fold": 2,
+      "schedule_train_candidates": 820,
+      "schedule_validation_candidates": 126
+    },
+    {
+      "fold": 3,
+      "schedule_train_candidates": 946,
+      "schedule_validation_candidates": 123
+    },
+    {
+      "fold": 4,
+      "schedule_train_candidates": 1069,
+      "schedule_validation_candidates": 71
+    }
+  ]
+}
