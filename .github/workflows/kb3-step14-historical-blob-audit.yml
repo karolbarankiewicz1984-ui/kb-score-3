@@ -1,0 +1,72 @@
+name: KB3 Step14 Historical Blob + Crosswalk Evidence (A)
+on:
+  push:
+    branches:
+      - audit/step14-historical-blob-identity-20261027
+    paths:
+      - "src/kb3_step14_blob_identity.py"
+      - "src/kb3_step14_publication_probe.py"
+      - "tests/test_step14_blob_identity.py"
+      - ".github/workflows/kb3-step14-historical-blob-audit.yml"
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: kb3-step14-historical-blob-crosswalk-research
+  cancel-in-progress: false
+jobs:
+  source-verification:
+    runs-on: ubuntu-latest
+    timeout-minutes: 13
+    env:
+      PYTHONPATH: "."
+      PYTHONDONTWRITEBYTECODE: "1"
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Offline guard tests including UK DST and no false PitchAPI link
+        run: python -m unittest discover -s tests -p "test_step14_blob_identity.py" -v
+      - name: Inspect actual historical Git content for all 60 safe IDs
+        run: |
+          python -m src.kb3_step14_blob_identity --output data/audits/STEP14_HISTORICAL_BLOB_60_2026-10-27.json
+      - name: Attempt independent Wayback archived publication clock
+        run: |
+          python -m src.kb3_step14_publication_probe --output data/audits/STEP14_WAYBACK_PUBCLOCK_2026-10-27.json
+      - name: Fail closed for provider identity and proof of PIT
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          blob=json.loads(Path("data/audits/STEP14_HISTORICAL_BLOB_60_2026-10-27.json").read_text())
+          clock=json.loads(Path("data/audits/STEP14_WAYBACK_PUBCLOCK_2026-10-27.json").read_text())
+          assert len(blob["records"])==60
+          assert blob["sampled_train"]==40 and blob["sampled_validation"]==20 and blob["sampled_test"]==0
+          assert sum(blob["status_totals"].values())==60
+          assert blob["official_pitchapi_training_records_certified"]==0
+          assert not blob["historical_publication_time_independently_verified"]
+          assert not blob["official_pitchapi_native_team_pair_identity_verified"]
+          assert not blob["production_train_allowed"] and not blob["gate14_pass"]
+          assert not clock["independent_capture_matched_to_historical_blobs"]
+          assert not clock["gate14_pass"]
+          assert all(not r["official_train_eligible"] for r in blob["records"])
+          print("REAL_BLOB_CONTENT_INSPECTED_AND_UTC_MATCHES_AUDITED; OFFICIAL_PIT_NOT_CERTIFIED")
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: step14-historical-blob-identity-verification-audit-only
+          path: |
+            data/audits/STEP14_HISTORICAL_BLOB_60_2026-10-27.json
+            data/audits/STEP14_WAYBACK_PUBCLOCK_2026-10-27.json
+          retention-days: 14
+      - name: Freeze final signed-source audit reports on current research branch only
+        if: github.ref == 'refs/heads/audit/step14-historical-blob-identity-20261027'
+        run: |
+          git config user.name "kb3-historical-audit"
+          git config user.email "kb3-historical-audit@users.noreply.github.com"
+          git add data/audits/STEP14_HISTORICAL_BLOB_60_2026-10-27.json data/audits/STEP14_WAYBACK_PUBCLOCK_2026-10-27.json
+          git commit -m "audit: freeze 60 historical content matches and independent archive clock status"
+          git push origin HEAD:audit/step14-historical-blob-identity-20261027
