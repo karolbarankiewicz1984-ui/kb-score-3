@@ -121,7 +121,7 @@ def parse_openfootball(raw,source):
                 raise SourceAuditError("FUTURE_RESULT_IN_HISTORICAL_BLOB")
             counted+=1
         cleaned.append({"home":pair[0],"away":pair[1],
-                        "kickoff":kickoff, "ft_published":exists})
+                        "day":m.get("date"),"kickoff":kickoff, "ft_published":exists})
     if counted!=source["ft"]:
         raise SourceAuditError("HISTORIC_FT_COUNT_CHANGED")
     return cleaned
@@ -135,9 +135,14 @@ def form5_openfootball(records,source,target):
     ids={}
     for side,team in (("home",target["home"]),("away",target["away"])):
         matches=[r for r in records if team in (r["home"],r["away"]) and r is not target]
-        if any(r["kickoff"] is None for r in matches):
+        # An undated TIME on a strictly *later calendar date* does not
+        # invalidate a past-five reconstruction. Missing time on same/prior
+        # dates does: such a fixture could have preceded this target.
+        target_day=ko.astimezone(ZoneInfo("Europe/London")).date().isoformat()
+        if any(r["kickoff"] is None and (not r.get("day") or r["day"]<=target_day)
+               for r in matches):
             return "UNKNOWN_TEAM_SCHEDULE",None
-        earlier=[r for r in matches if r["kickoff"]<ko]
+        earlier=[r for r in matches if r["kickoff"] is not None and r["kickoff"]<ko]
         if any(not r["ft_published"] or r["kickoff"]>=utc(source["push"]) for r in earlier):
             return "INTERVENING_RESULT_NOT_IN_SNAPSHOT",None
         earlier.sort(key=lambda r:r["kickoff"],reverse=True)
