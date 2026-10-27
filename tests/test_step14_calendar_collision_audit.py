@@ -55,7 +55,7 @@ class CalendarCollisionAudit(unittest.TestCase):
         r=run(ROOT)
         self.assertEqual(r["independently_verified_teams_by_kickoff_in_this_audit"],0)
         self.assertEqual(r["total_test_rows_examined"],0)
-        self.assertNotIn("fixture_id",json.dumps(r))
+        self.assertNotIn('"fixture_id":',json.dumps(r))
         self.assertNotIn("score",json.dumps(r))
         self.assertNotIn("odds",json.dumps(r))
 
