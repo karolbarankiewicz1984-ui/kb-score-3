@@ -50,9 +50,11 @@ def verify_public_elo_math(raw,verified_source,params=None):
             ko=utc(row["kickoff_time"])
             if ko>=utc(source["push"]):raise ChainError("PREMATURE_ELO_RESULT")
             try:
-                h,a=int(row["team_h_score"]),int(row["team_a_score"])
-            except ValueError as exc:raise ChainError("INVALID_ELO_SCORE") from exc
-            if min(h,a)<0:raise ChainError("INVALID_ELO_SCORE")
+                numbers=[float(row["team_h_score"]),float(row["team_a_score"])]
+            except (ValueError,TypeError) as exc:raise ChainError("INVALID_ELO_SCORE") from exc
+            if not all(math.isfinite(z) and 0<=z<=30 and z.is_integer() for z in numbers):
+                raise ChainError("INVALID_ELO_SCORE")
+            h,a=map(int,numbers)
             done.append((ko,str(row["id"]),str(row["team_h"]),str(row["team_a"]),h,a))
         elif row["finished"]=="False":
             if row["team_h_score"] or row["team_a_score"]:
