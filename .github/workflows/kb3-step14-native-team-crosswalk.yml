@@ -2,7 +2,9 @@ name: KB3 Step14 Offline Native Team ID Crosswalk Contract
 on:
   push:
     branches:
+      - main
       - audit/step14-native-pitch-teamids-local-20261027
+      - fix/step14-dated-reschedule-crosswalk-20261027
     paths:
       - src/kb3_step14_native_team_crosswalk.py
       - scripts/step14_native_pitch_teamids_local.py
