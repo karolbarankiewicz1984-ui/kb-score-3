@@ -26,6 +26,8 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
+      - name: Install public source-chain verification dependency, no private keys
+        run: python -m pip install --disable-pip-version-check cryptography
       - name: Seven source-bound synthetic 1139+1 tests, originally-scheduled strict cutoff
         run: python -m unittest discover -s tests -p test_step14_verified_kickoff_delay.py -v
       - name: Verify event evidence is documentation only, never production M1 or TEST
