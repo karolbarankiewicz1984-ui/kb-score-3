@@ -13,6 +13,8 @@ class LeakAuditTests(unittest.TestCase):
         self.assertEqual(a["query_statuses_static"],["played","upcoming"])
         self.assertFalse(a["historical_pit_proven"])
         self.assertFalse(a["gate13_pass"])
+    def test_next_second_cohort_provider_query_also_plays_only_train_and_upcoming_test(self):
+        self.assertEqual(sorted(source_policy_scan("scripts/step13_second_prematch_once.py")),["played","upcoming"])
     def test_missing_upcoming_guard_refused(self):
         import tempfile
         with tempfile.TemporaryDirectory() as d:
