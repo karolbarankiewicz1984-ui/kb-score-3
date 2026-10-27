@@ -24,6 +24,8 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
+      - name: Python crypto dependency for verified source adapters only, no keys
+        run: python -m pip install --disable-pip-version-check cryptography
       - name: 7 tests -- GH Archive proof, target-result refusal and no PIT promotion
         run: python -m unittest discover -s tests -p "test_step14_partial_public_scores.py" -v
       - name: Real exact-SHA historical source replay with independent public GH push clock
