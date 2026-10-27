@@ -1,0 +1,35 @@
+name: KB3 Step13 Secure Postmatch Evaluation Offline Proof Once
+on:
+  push:
+    branches: ["feature/step13-four-controls-math-leak-forward-eval-20261027"]
+    paths: [".github/workflows/kb3-step13-postmatch-preflight-once.yml"]
+permissions:
+  contents: read
+jobs:
+  no-network-protocol-only:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - name: Existing RSA crypto library for synthetic encrypted-evidence tests
+        run: python3 -m pip install --disable-pip-version-check 'cryptography>=42,<47'
+      - name: Exact ten-only future observation chain, score, encryption test
+        run: |
+          python3 -m unittest discover -s tests -p 'test_step13_secure_postmatch_collector.py' -v
+          python3 -m unittest discover -s tests -p 'test_step13_forward_score.py' -v
+      - name: Ensure manual-only workflow cannot run before future finals
+        run: |
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          from src.kb3_pit_ledger import utc_now
+          from src.kb3_step13_baseline import BaselineSafetyError
+          from scripts.step13_first_ten_secure_postmatch_once import check_earliest_frozen
+          p=Path("data/forecasts/STEP13_FIRST_PROSPECTIVE_PREMATCH_2026-10-27.json")
+          try:
+              check_earliest_frozen(json.loads(p.read_text()),utc_now())
+              raise AssertionError("WAS_ABLE_TO_READ_REAL_TEST_EARLY")
+          except BaselineSafetyError as e:
+              assert "NO_ACCESS_BEFORE_ALL_FINAL_LAG" in str(e)
+          print("STEP13_POSTMATCH_REAL_TEST_LABEL_ACCESS_NOT_YET_ALLOWED_PASS")
+          PY
