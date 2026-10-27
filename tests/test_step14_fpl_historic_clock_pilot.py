@@ -45,15 +45,19 @@ class FPL2023EvidenceTests(unittest.TestCase):
                  "repository":REPO,"ref":"refs/heads/master","shas":[sha]}]}
         out=audit(read_archived_csv=lambda commit:make_csv(next(s[2] for s in SAMPLES if s[1]==commit)),
                   read_hour=reader)
-        self.assertEqual(out["verified_snapshots"],3)
+        self.assertEqual(out["archived_snapshot_contents_checked"],3)
+        self.assertEqual(out["independent_public_push_verified_snapshots"],3)
         self.assertEqual([r["finished_ft_records_available_at_historical_source_publication"] for r in out["records"]],[10,70,90])
         self.assertFalse(out["gate14_pass"])
         self.assertFalse(out["native_pitchapi_team_pair_joined"])
 
     def test_github_committer_date_alone_not_accepted(self):
-        with self.assertRaisesRegex(FPLSourceError,"EXACT_SHA_PUBLIC"):
-            audit(read_archived_csv=lambda sha:make_csv(10),
-                read_hour=lambda hr:{"status":"READ_OK","hour":hr,"events":[]})
+        result=audit(read_archived_csv=lambda sha:make_csv(next(s[2] for s in SAMPLES if s[1]==sha)),
+            read_hour=lambda hr:{"status":"READ_OK","hour":hr,"events":[]})
+        self.assertEqual(result["independent_public_push_verified_snapshots"],0)
+        self.assertEqual(result["unverified_publication_snapshots"],3)
+        self.assertTrue(all(not x["original_publication_timestamp_externally_corroborated"] for x in result["records"]))
+        self.assertFalse(result["official_M1_train_allowed"])
 
     def test_incorrect_source_same_archive_hour_rejected(self):
         def reader(hour):
