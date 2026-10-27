@@ -54,6 +54,30 @@ REQUIRED={
     },
 }
 
+# Official dated fixture amendments, separate from stale OpenFootball July 30 blob.
+# Verified directly against both independent issuer pages on 27 Oct 2026:
+#   PL: https://www.premierleague.com/en/news/4406114
+#   NUFC: https://www.newcastleunited.com/en/news/new-date-and-kick-off-time-for-magpies-bournemouth-trip
+# Both say: changed 03 Sep 2025 from Sat 20 Sep, 15:00 BST to
+# Sun 21 Sep, 14:00 BST (13:00 UTC). Published editorial dates are NOT
+# independent proof of first online publication or historical model-feature PIT.
+# Keep the exact original July archived old schedule candidate for provenance.
+OFFICIAL_FIXTURE_AMENDMENT = {
+    "fixture_id": "m_0JJdwI",
+    "home": "AFC Bournemouth",
+    "away": "Newcastle United",
+    "kickoff_utc": "2025-09-21T13:00:00Z",
+    "original_public_home": "Sunderland AFC",
+    "original_public_away": "Aston Villa",
+    "official_editorial_date": "2025-09-03",
+    "league_url": "https://www.premierleague.com/en/news/4406114",
+    "club_url": "https://www.newcastleunited.com/en/news/new-date-and-kick-off-time-for-magpies-bournemouth-trip",
+    "originally_scheduled_date": "2025-09-20",
+    "originally_scheduled_time_BST": "15:00",
+    "revised_time_BST": "14:00",
+    "proof_type": "OFFICIAL_LEAGUE_PLUS_CLUB_DATED_CORRECTION_NOT_INDEPENDENT_PIT_CAPTURE",
+}
+
 class NativeCrosswalkError(ValueError):
     pass
 
@@ -186,8 +210,23 @@ def audit_crosswalk(*,safe,blob,clock,receipts,archive_zip_sha=ARCHIVE_ZIP_SHA,
         if len(set(pair_ids))!=2:
             raise NativeCrosswalkError("IDENTICAL_TEAM_IDS")
         kickoff_match=r["kickoff_utc"]==expect["kickoff_utc"]
-        name_match=(canonical_team_name(r["pitch_home_name"])==canonical_team_name(expect["home"]) and
-                    canonical_team_name(r["pitch_away_name"])==canonical_team_name(expect["away"]))
+        # The previously downloaded OpenFootball SHA is immutable and must NOT
+        # be rewritten: on 30 July it listed another 21 Sept fixture at 14 BST
+        # and still had Bournemouth v Newcastle on 20 Sept. The league and
+        # Newcastle announced a subsequent reschedule on 03 Sept.
+        amendment=OFFICIAL_FIXTURE_AMENDMENT if ident==OFFICIAL_FIXTURE_AMENDMENT["fixture_id"] else None
+        target_home=amendment["home"] if amendment else expect["home"]
+        target_away=amendment["away"] if amendment else expect["away"]
+        if amendment and (amendment["kickoff_utc"]!=expect["kickoff_utc"]
+                          or amendment["original_public_home"]!=expect["home"]
+                          or amendment["original_public_away"]!=expect["away"]):
+            raise NativeCrosswalkError("OFFICIAL_AMENDMENT_PROVENANCE_CHANGED")
+        name_match=(canonical_team_name(r["pitch_home_name"])==canonical_team_name(target_home) and
+                    canonical_team_name(r["pitch_away_name"])==canonical_team_name(target_away))
+        prior_archive_name_match=(
+            canonical_team_name(r["pitch_home_name"])==canonical_team_name(expect["home"]) and
+            canonical_team_name(r["pitch_away_name"])==canonical_team_name(expect["away"])
+        )
         role_match=r["season"]==expect["season"]
         valid=kickoff_match and name_match and role_match
         results.append({
@@ -199,6 +238,12 @@ def audit_crosswalk(*,safe,blob,clock,receipts,archive_zip_sha=ARCHIVE_ZIP_SHA,
             "pitch_away_name":r["pitch_away_name"],
             "public_candidate_home_name":expect["home"],
             "public_candidate_away_name":expect["away"],
+            "archival_july_schedule_team_pair_match":prior_archive_name_match,
+            "official_revised_fixture_home_name":target_home,
+            "official_revised_fixture_away_name":target_away,
+            "used_official_september_reschedule_evidence":bool(amendment),
+            "official_reschedule_evidence":dict(amendment) if amendment else None,
+            "official_article_editorial_date_is_independent_PIT_receipt":False,
             "kickoff_utc":expect["kickoff_utc"],
             "native_kickoff_exact":kickoff_match,
             "both_native_team_names_match_public_candidate":name_match,
@@ -219,6 +264,9 @@ def audit_crosswalk(*,safe,blob,clock,receipts,archive_zip_sha=ARCHIVE_ZIP_SHA,
         "original_safe_split_sha256":SAFE_SHA,
         "total_checked":len(results),
         "identity_crosswalk_verified_count":sum(x["external_fixture_identity_crosswalk_confirmed"] for x in results),
+        "official_fixture_amendments_considered":sum(x["used_official_september_reschedule_evidence"] for x in results),
+        "archived_july_schedule_not_silently_rewritten":True,
+        "external_dated_articles_not_cryptographic_PIT_capture":True,
         "train_verified_identity_count":sum(x["external_fixture_identity_crosswalk_confirmed"] and x["official_partition"]=="TRAIN" for x in results),
         "validation_verified_identity_count":sum(x["external_fixture_identity_crosswalk_confirmed"] and x["official_partition"]=="VALIDATION" for x in results),
         "test_records_accessed":0,"sports_provider_requests":0,
