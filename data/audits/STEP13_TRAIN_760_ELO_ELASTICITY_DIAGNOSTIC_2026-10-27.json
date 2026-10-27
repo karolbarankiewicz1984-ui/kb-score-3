@@ -1,0 +1,335 @@
+{
+  "api_key_or_rsa_exported": false,
+  "diagnostic_grid_best_train_elasticity": 1.0,
+  "existing_model_parameters_unchanged": true,
+  "exploratory_train_only_grid": [
+    0.0,
+    0.1,
+    0.2,
+    0.3,
+    0.4,
+    0.5,
+    0.6,
+    0.7,
+    0.8,
+    0.9,
+    1.0,
+    1.1,
+    1.2
+  ],
+  "gate13_pass": false,
+  "input_digest_sha256": "5b1f46592457a648a3761d30ae3f519065470af06d6bf5f8505808b7c09dfac7",
+  "match_scores_exported": false,
+  "native_match_digests": {
+    "2023/2024": "39348c5643eafd57532a8ba0d355f0e0d478390544bcb9bd2884664d47c29340",
+    "2024/2025": "fd1c3436b55fb48d89bc315f8f91075d884ae8bb38592befbd4e430d880219e6"
+  },
+  "no_validation_in_grid_choice": true,
+  "original_grid_best_train_elasticity": 0.6,
+  "original_model_grid": [
+    0.0,
+    0.1,
+    0.2,
+    0.3,
+    0.4,
+    0.5,
+    0.6
+  ],
+  "production_model_promoted": false,
+  "profile_metric": "POISSON_TWO_GOAL_TRAIN_NLL_NOT_1X2_LOGLOSS",
+  "profiles": {
+    "TRAIN_2023_24": [
+      {
+        "elasticity": 0.0,
+        "train_base_away_goals": 1.4789473684210526,
+        "train_base_home_goals": 1.8,
+        "train_goal_nll": 1222.4330709008943,
+        "train_goal_nll_mean": 3.216929133949722
+      },
+      {
+        "elasticity": 0.1,
+        "train_base_away_goals": 1.4789583314211527,
+        "train_base_home_goals": 1.7993379398943414,
+        "train_goal_nll": 1216.647835440345,
+        "train_goal_nll_mean": 3.2017048301061712
+      },
+      {
+        "elasticity": 0.2,
+        "train_base_away_goals": 1.4784374803391844,
+        "train_base_home_goals": 1.7980263438392825,
+        "train_goal_nll": 1211.3118652845258,
+        "train_goal_nll_mean": 3.187662803380331
+      },
+      {
+        "elasticity": 0.3,
+        "train_base_away_goals": 1.4773865301101612,
+        "train_base_home_goals": 1.7960650357583465,
+        "train_goal_nll": 1206.4253299086847,
+        "train_goal_nll_mean": 3.1748034997596966
+      },
+      {
+        "elasticity": 0.4,
+        "train_base_away_goals": 1.4758077088808355,
+        "train_base_home_goals": 1.7934544869328977,
+        "train_goal_nll": 1201.9884434411258,
+        "train_goal_nll_mean": 3.163127482739805
+      },
+      {
+        "elasticity": 0.5,
+        "train_base_away_goals": 1.473703752076363,
+        "train_base_home_goals": 1.7901958200447552,
+        "train_goal_nll": 1198.0014641324549,
+        "train_goal_nll_mean": 3.152635431927513
+      },
+      {
+        "elasticity": 0.6,
+        "train_base_away_goals": 1.4710778959906639,
+        "train_base_home_goals": 1.7862908125136259,
+        "train_goal_nll": 1194.4646936372853,
+        "train_goal_nll_mean": 3.143328141150751
+      },
+      {
+        "elasticity": 0.7,
+        "train_base_away_goals": 1.4679338709122185,
+        "train_base_home_goals": 1.7817418991019163,
+        "train_goal_nll": 1191.3784761095178,
+        "train_goal_nll_mean": 3.1352065160776785
+      },
+      {
+        "elasticity": 0.8,
+        "train_base_away_goals": 1.4642758937955844,
+        "train_base_home_goals": 1.776552173757813,
+        "train_goal_nll": 1188.7431971127019,
+        "train_goal_nll_mean": 3.1282715713492153
+      },
+      {
+        "elasticity": 0.9,
+        "train_base_away_goals": 1.4601086604875513,
+        "train_base_home_goals": 1.7707253906659883,
+        "train_goal_nll": 1186.559282347389,
+        "train_goal_nll_mean": 3.122524427229971
+      },
+      {
+        "elasticity": 1.0,
+        "train_base_away_goals": 1.455437337515578,
+        "train_base_home_goals": 1.7642659644739362,
+        "train_goal_nll": 1184.8271961977928,
+        "train_goal_nll_mean": 3.117966305783665
+      },
+      {
+        "elasticity": 1.1,
+        "train_base_away_goals": 1.4502675534449934,
+        "train_base_home_goals": 1.757178969660792,
+        "train_goal_nll": 1183.5474401004844,
+        "train_goal_nll_mean": 3.114598526580222
+      },
+      {
+        "elasticity": 1.2,
+        "train_base_away_goals": 1.4446053898104017,
+        "train_base_home_goals": 1.7494701390145673,
+        "train_goal_nll": 1182.72055073827,
+        "train_goal_nll_mean": 3.1124225019428158
+      }
+    ],
+    "TRAIN_2024_25": [
+      {
+        "elasticity": 0.0,
+        "train_base_away_goals": 1.4210526315789473,
+        "train_base_home_goals": 1.513157894736842,
+        "train_goal_nll": 1166.571095731107,
+        "train_goal_nll_mean": 3.0699239361344923
+      },
+      {
+        "elasticity": 0.1,
+        "train_base_away_goals": 1.4208826603506832,
+        "train_base_home_goals": 1.512152125656484,
+        "train_goal_nll": 1159.053750793328,
+        "train_goal_nll_mean": 3.050141449456126
+      },
+      {
+        "elasticity": 0.2,
+        "train_base_away_goals": 1.419596748453167,
+        "train_base_home_goals": 1.5099639689975968,
+        "train_goal_nll": 1152.41107502254,
+        "train_goal_nll_mean": 3.0326607237435264
+      },
+      {
+        "elasticity": 0.3,
+        "train_base_away_goals": 1.417196167748221,
+        "train_base_home_goals": 1.5066006278783,
+        "train_goal_nll": 1146.642948573824,
+        "train_goal_nll_mean": 3.0174814436153263
+      },
+      {
+        "elasticity": 0.4,
+        "train_base_away_goals": 1.4136848831537268,
+        "train_base_home_goals": 1.5020721056355417,
+        "train_goal_nll": 1141.749201427594,
+        "train_goal_nll_mean": 3.004603161651563
+      },
+      {
+        "elasticity": 0.5,
+        "train_base_away_goals": 1.4090695422562236,
+        "train_base_home_goals": 1.49639116139355,
+        "train_goal_nll": 1137.7296123666424,
+        "train_goal_nll_mean": 2.9940252957016904
+      },
+      {
+        "elasticity": 0.6,
+        "train_base_away_goals": 1.403359454490673,
+        "train_base_home_goals": 1.489573254915768,
+        "train_goal_nll": 1134.5839075777913,
+        "train_goal_nll_mean": 2.9857471252047136
+      },
+      {
+        "elasticity": 0.7,
+        "train_base_away_goals": 1.396566559995603,
+        "train_base_home_goals": 1.4816364809948646,
+        "train_goal_nll": 1132.3117588881187,
+        "train_goal_nll_mean": 2.9797677865476806
+      },
+      {
+        "elasticity": 0.8,
+        "train_base_away_goals": 1.3887053882972462,
+        "train_base_home_goals": 1.472601493690547,
+        "train_goal_nll": 1130.912781648143,
+        "train_goal_nll_mean": 2.976086267495113
+      },
+      {
+        "elasticity": 0.9,
+        "train_base_away_goals": 1.3797930070203928,
+        "train_base_home_goals": 1.4624914207796986,
+        "train_goal_nll": 1130.3865322766678,
+        "train_goal_nll_mean": 2.9747014007280734
+      },
+      {
+        "elasticity": 1.0,
+        "train_base_away_goals": 1.369848960866525,
+        "train_base_home_goals": 1.451331768837439,
+        "train_goal_nll": 1130.7325054842267,
+        "train_goal_nll_mean": 2.975611856537439
+      },
+      {
+        "elasticity": 1.1,
+        "train_base_away_goals": 1.358895201141328,
+        "train_base_home_goals": 1.4391503194205981,
+        "train_goal_nll": 1131.9501311941679,
+        "train_goal_nll_mean": 2.9788161347214945
+      },
+      {
+        "elasticity": 1.2,
+        "train_base_away_goals": 1.3469560061539507,
+        "train_base_home_goals": 1.4259770168763204,
+        "train_goal_nll": 1134.0387711824085,
+        "train_goal_nll_mean": 2.98431255574318
+      }
+    ],
+    "TRAIN_760": [
+      {
+        "elasticity": 0.0,
+        "train_base_away_goals": 1.45,
+        "train_base_home_goals": 1.6565789473684212,
+        "train_goal_nll": 2393.948121522676,
+        "train_goal_nll_mean": 3.1499317388456265
+      },
+      {
+        "elasticity": 0.1,
+        "train_base_away_goals": 1.4499186515592104,
+        "train_base_home_goals": 1.6557237074809743,
+        "train_goal_nll": 2380.663142379464,
+        "train_goal_nll_mean": 3.1324515031308735
+      },
+      {
+        "elasticity": 0.2,
+        "train_base_away_goals": 1.449007108355216,
+        "train_base_home_goals": 1.6539219942050953,
+        "train_goal_nll": 2368.7299714343185,
+        "train_goal_nll_mean": 3.116749962413577
+      },
+      {
+        "elasticity": 0.3,
+        "train_base_away_goals": 1.4472663463318585,
+        "train_base_home_goals": 1.651176924128009,
+        "train_goal_nll": 2358.1490378681297,
+        "train_goal_nll_mean": 3.102827681405434
+      },
+      {
+        "elasticity": 0.4,
+        "train_base_away_goals": 1.4446985695557586,
+        "train_base_home_goals": 1.6474930244612513,
+        "train_goal_nll": 2348.921076631497,
+        "train_goal_nll_mean": 3.0906856271467062
+      },
+      {
+        "elasticity": 0.5,
+        "train_base_away_goals": 1.4413072039086678,
+        "train_base_home_goals": 1.6428762292294246,
+        "train_goal_nll": 2341.047125760555,
+        "train_goal_nll_mean": 3.0803251654744144
+      },
+      {
+        "elasticity": 0.6,
+        "train_base_away_goals": 1.4370968890275349,
+        "train_base_home_goals": 1.63733387301664,
+        "train_goal_nll": 2334.528522835918,
+        "train_goal_nll_mean": 3.07174805636305
+      },
+      {
+        "elasticity": 0.7,
+        "train_base_away_goals": 1.432073468536791,
+        "train_base_home_goals": 1.6308746821836264,
+        "train_goal_nll": 2329.366900590253,
+        "train_goal_nll_mean": 3.0649564481450695
+      },
+      {
+        "elasticity": 0.8,
+        "train_base_away_goals": 1.4262439786101682,
+        "train_base_home_goals": 1.6235087634678498,
+        "train_goal_nll": 2325.5641816710017,
+        "train_goal_nll_mean": 3.059952870619739
+      },
+      {
+        "elasticity": 0.9,
+        "train_base_away_goals": 1.4196166348918475,
+        "train_base_home_goals": 1.6152475898798067,
+        "train_goal_nll": 2323.1225725658223,
+        "train_goal_nll_mean": 3.0567402270602924
+      },
+      {
+        "elasticity": 1.0,
+        "train_base_away_goals": 1.412200817799076,
+        "train_base_home_goals": 1.6061039838109852,
+        "train_goal_nll": 2322.044556699399,
+        "train_goal_nll_mean": 3.055321785130788
+      },
+      {
+        "elasticity": 1.1,
+        "train_base_away_goals": 1.404007056220627,
+        "train_base_home_goals": 1.5960920972729313,
+        "train_goal_nll": 2322.3328867113914,
+        "train_goal_nll_mean": 3.055701166725515
+      },
+      {
+        "elasticity": 1.2,
+        "train_base_away_goals": 1.3950470096178331,
+        "train_base_home_goals": 1.5852273891924065,
+        "train_goal_nll": 2323.99057592646,
+        "train_goal_nll_mean": 3.0578823367453425
+      }
+    ]
+  },
+  "provider": "PitchAPI",
+  "provider_calls": 2,
+  "report_sha256": "abaeaa142a6ab75301e964973724ce6f20cbf3efe137bd0b6c38e78a3412e846",
+  "retrospective_not_observed_asof": true,
+  "safe_view_sha256": "3b8da84b334d897e327c883b769944bf36016cb44daf1da041bfb7d16a7b11e7",
+  "schema": "kb3-step13-real-train-only-elo-sensitivity-v0.7",
+  "simulated_lag_hours": 48,
+  "source_observed_at_utc": "2026-10-27T00:16:49.261781Z",
+  "source_type": "RETROSPECTIVE_TRAIN_RESEARCH_NOT_PIT",
+  "test_rows_read": 0,
+  "train_nll_difference_original_minus_diagnostic": 12.48396613651903,
+  "train_rows": 760,
+  "training_allowed": false,
+  "validation_rows_read": 0
+}

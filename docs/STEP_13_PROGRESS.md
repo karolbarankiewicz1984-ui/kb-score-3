@@ -209,3 +209,20 @@ Zgodnie z wcześniej zamrożonymi wynikami EXPANDING minimalnie wygrywa log loss
 **Zabezpieczenia:** [testy](../tests/test_step13_stability_audit.py) odrzucają podmieniony podpis raportu, niezgodność miar lub naruszenie danych walidacyjnych. [GitHub Actions — komplet testów i generator raportu](https://github.com/karolbarankiewicz1984-ui/kb-score-3/actions/runs/40423988185) **SUCCESS**, wygenerowany raport zapisany na gałęzi audytowej, bez zapytań sieciowych do dostawców sportowych.
 
 **Stan:** kroki 1–12 pozostają odebrane, **krok 13 nadal w realizacji**, GATE13 **PENDING**, training_allowed=false, historyczny PIT **nieudowodniony**, TEST **nieczytany**, harmonogram **29 pozycji bez zmian**, krok14 CatBoost **nie rozpoczęty**. W ramach tego kroku pozostaje przygotowanie przyszłego rzeczywistego testu forward/PIT i ustalona z góry diagnostyka wpływu Elo wyłącznie na TRAIN — nie automatyczna korekta na podstawie walidacji.
+
+## 27.10.2026 — Diagnostyka tylko TRAIN: elastyczność ELO (wciąż krok 13)
+
+Przeprowadzono jednorazowy eksperyment na **760 rzeczywistych wynikach TRAIN z sezonów 2023/24 i 2024/25**, zgodnych z przypiętym podziałem Step12. Źródło: 2 darmowe odczyty PitchAPI; wyniki pobrano retrospektywnie 2026-10-27 00:16:49 UTC. Nie odczytano VALIDATION ani TEST. Obliczono profilowe MLE średnich bramek Poissona na oryginalnej siatce 0.0–0.6 i oddzielnej siatce **diagnostycznej tylko na TRAIN** 0.0–1.2 co 0.1. Cel to dwubramkowy Poisson NLL na TRAIN, **nie log loss prognoz 1X2 na walidacji**.
+
+| Próbka TRAIN | liczba | Najlepsza elastyczność na siatce diagnostycznej | Średni NLL |
+|---|---:|---:|---:|
+| sezon 2023/24 | 380 | 1.2 — górna krawędź | 3.112423 |
+| sezon 2024/25 | 380 | 0.9 | 2.974701 |
+| oba sezony | 760 | 1.0 | 3.055322 |
+| oba sezony — stara siatka | 760 | 0.6 — górna krawędź | 3.071748 |
+
+Na całym TRAIN cel bramkowy poprawił się względem starej granicy o 12.483966 NLL sumarycznie. Zmienne optimum pomiędzy sezonami nie gwarantuje generalizacji. **Nie zmieniono parametrów istniejącego M0 ani walidacji; nie wybrano zwycięzcy do produkcji.**
+
+Źródła: [kod](../src/kb3_step13_train_elo_sensitivity.py), [testy](../tests/test_step13_train_elo_sensitivity.py), [agregat](../data/audits/STEP13_TRAIN_760_ELO_ELASTICITY_DIAGNOSTIC_2026-10-27.json), SHA256 `abaeaa142a6ab75301e964973724ce6f20cbf3efe137bd0b6c38e78a3412e846`, [GitHub Actions SUCCESS](https://github.com/karolbarankiewicz1984-ui/kb-score-3/actions/runs/40425365353). Pierwszy bieg odrzucono na poziomie sztucznego testu granicznego przed wywołaniem API; poprawiono tylko dane testowe, nie zasady bezpieczeństwa.
+
+**Formalnie 12/29 ukończonych; krok13 w toku, GATE13 PENDING, training_allowed=false, krok14 nierozpoczęty.** Nie zmieniamy harmonogramu 29 kroków.
