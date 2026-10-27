@@ -10,6 +10,7 @@ The original October 2026 receipt must NOT be backdated to 2023-2026.
 from __future__ import annotations
 from collections import Counter, defaultdict
 from datetime import datetime, timezone
+from zoneinfo import ZoneInfo
 import re
 
 from src.kb3_pitch_native import MATCH_ID,TEAM_ID
@@ -207,12 +208,80 @@ def _public_sample(native,blob,clock):
             "source_commit_dates_only_never_promoted":True,
             "historical_reschedule_not_backdated":True}
 
+def _independent_public_1140(native,reference):
+    """Compare all 1140 private native name pairs with public target-free
+    2026-current historical seasons. This is IDENTITY evidence only, never PIT.
+    """
+    if reference is None:
+        return {"status":"NO_PUBLIC_1140_REFERENCE",
+                "checked":0,"counts":{},"source_is_historical_pit":False}
+    from src.kb3_step14_public_1140_fixtures import SCHEMA as REF_SCHEMA
+    if (reference.get("schema")!=REF_SCHEMA or
+        reference.get("training_allowed") is not False or
+        reference.get("gate14_pass") is not False or
+        reference.get("observation_is_retrospective_not_2023_2026_pit") is not True or
+        reference.get("full_coverage_historical_season_fixtures")!=1140 or
+        reference.get("result_labels_in_projection") is not False or
+        reference.get("projection_sha256")!=sha({k:v for k,v in reference.items() if k!="projection_sha256"})):
+        raise FullNativeAuditError("PUBLIC_1140_REFERENCE_NOT_AUTHENTIC_TARGETFREE")
+    source=reference.get("source_seasons")
+    if not isinstance(source,dict) or set(source)!= {"2023-24","2024-25","2025-26"}:
+        raise FullNativeAuditError("PUBLIC_1140_SEASONS_CHANGED")
+    pairs={}
+    for season,doc in source.items():
+        matches=doc.get("fixtures_target_free")
+        if not isinstance(matches,list) or len(matches)!=380:
+            raise FullNativeAuditError("PUBLIC_1140_INCOMPLETE")
+        for x in matches:
+            if not isinstance(x,dict) or set(x)!={"date","time_london","home_name","away_name"}:
+                raise FullNativeAuditError("PUBLIC_1140_UNSAFE_FIELDS")
+            key=(season,canonical_team_name(x["home_name"]),canonical_team_name(x["away_name"]))
+            if key in pairs:
+                raise FullNativeAuditError("PUBLIC_1140_DUPLICATE_TEAM_PAIR")
+            time=x["time_london"]
+            try:
+                utc=(datetime.fromisoformat(x["date"]+"T"+time)
+                     .replace(tzinfo=ZoneInfo("Europe/London")).astimezone(timezone.utc)
+                     if time is not None else None)
+            except ValueError:
+                raise FullNativeAuditError("PUBLIC_1140_BAD_DATE_OR_TIME")
+            pairs[key]=utc
+    if len(pairs)!=1140:
+        raise FullNativeAuditError("PUBLIC_1140_NOT_ALL_PRESENT")
+    counts=Counter()
+    for n in native.values():
+        key=(n["season"],canonical_team_name(n["home_name"]),canonical_team_name(n["away_name"]))
+        if key not in pairs:
+            counts["NO_EXACT_PUBLIC_TEAM_PAIR_SAME_SEASON"]+=1
+        elif pairs[key] is None:
+            counts["PUBLIC_KICKOFF_TIME_UNAVAILABLE"]+=1
+        elif _utc(n["kickoff_utc"])==pairs[key]:
+            counts["EXACT_PUBLIC_TEAM_PAIR_AND_UTC_KICKOFF"]+=1
+        else:
+            # Reschedules / source feed disagreement must be investigated:
+            # NEVER substitute an external fixture based on kickoff only.
+            counts["SAME_PUBLIC_TEAM_PAIR_DIFFERENT_UTC_KICKOFF"]+=1
+    if sum(counts.values())!=1140:
+        raise FullNativeAuditError("PUBLIC_1140_MATCH_CLASSIFICATION_INCOMPLETE")
+    return {
+        "status":"RETROSPECTIVE_PUBLIC_1140_IDENTITY_CROSSCHECK_ONLY",
+        "checked":1140,
+        "counts":dict(sorted(counts.items())),
+        "public_source_capture_utc":reference["actual_observed_at_utc"],
+        "target_free_reference_sha256":reference["projection_sha256"],
+        "source_is_historical_pit":False,
+        "identical_kickoff_without_team_pair_never_matches":True,
+        "external_correction_never_overwrites_original_safe_projection":True,
+    }
+
+
 def audit_1140(*,safe,receipts,zip_sha=ARCHIVE_ZIP_SHA,
-               chain_sha=ARCHIVE_CHAIN_SHA,blob=None,clock=None):
+               chain_sha=ARCHIVE_CHAIN_SHA,blob=None,clock=None,public_reference=None):
     idx=_validate_safe(safe)
     native,per_season,team_sets=_validate_native(receipts,idx,
         zip_sha=zip_sha,chain_sha=chain_sha)
     public=_public_sample(native,blob,clock)
+    public_full=_independent_public_1140(native,public_reference)
     ftypes=Counter(_feature_family(key) for key in EXPECTED_FEATURES)
     flags=Counter(_feature_family(key) for key in EXPECTED_MISSING)
     role_counts=Counter(row["role"] for row in native.values())
@@ -234,6 +303,7 @@ def audit_1140(*,safe,receipts,zip_sha=ARCHIVE_ZIP_SHA,
         "native_home_away_duplicate_matches":0,
         "native_identity_within_pitchapi_sealed_source_verified":1140,
         "external_archive_crosswalk_sample":public,
+        "external_full_1140_targetfree_crosscheck":public_full,
         "original_retrospective_source_observed_after_target_kickoff":post_match,
         "actual_historical_first_publication_for_full_features_proven":0,
         "feature_contract_numeric_nullable_field_count":len(EXPECTED_FEATURES),
