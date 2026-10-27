@@ -87,8 +87,8 @@ class ForwardPrematchTests(TestCase):
         with patch("scripts.step13_prematch_forward_once.train_only",mock_train_only):
             with self.assertRaisesRegex(BaselineSafetyError,"TARGET_COUNT"):
                 build_first_snapshot(train_seasons={},upcoming_payload=upcoming,safe=safe,
-                                     observed_at="2026-10-30T20:00:00Z",
-                                     completed_at="2026-10-30T20:01:00Z")
+                                     observed_at="2026-11-01T21:00:00Z",
+                                     completed_at="2026-11-01T21:01:00Z")
 
     def test_late_freeze_refused(self):
         safe,upcoming=synthetic_source()
