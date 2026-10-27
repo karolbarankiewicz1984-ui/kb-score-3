@@ -78,7 +78,7 @@ class Step13TrainElasticityOnly(unittest.TestCase):
             diagnose(rows,bad,"2026-10-27T01:00:00Z")
 
     def test_profile_pure_and_bounded(self):
-        pts=[(float(i-15)/6,(i%4)+1,i%2) for i in range(30)]
+        pts=[(float(i-15)/30,(i%4)+1,i%2) for i in range(30)]
         r=profile(pts)
         self.assertEqual(r,profile(pts))
         self.assertEqual([x["elasticity"] for x in r],[i/10 for i in range(13)])
