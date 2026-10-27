@@ -226,4 +226,4 @@ if __name__=="__main__":
     dest=Path(args.report)
     dest.parent.mkdir(parents=True,exist_ok=True)
     dest.write_text(json.dumps(out,sort_keys=True,ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
-    print(json.dumps({k:out[k] for k in ("train_rows","validation_rows","catboost_research_validation","train_frequency_reference","gate14_pass","production_approved")},sort_keys=True))
+    print(json.dumps({k:out[k] for k in ("train_rows","validation_rows","catboost_research_validation","train_frequency_reference","source_sha256","model_sha256","gate14_pass","production_approved")},sort_keys=True))
