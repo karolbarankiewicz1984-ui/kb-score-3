@@ -9,6 +9,8 @@ on:
       - "scripts/step14_full_native_identity_pit_local.py"
       - "tests/test_step14_full_identity_pit_audit.py"
       - "scripts/step14_real_1140_field_gap.py"
+      - "src/kb3_step14_public_1140_fixtures.py"
+      - "tests/test_step14_public_1140_fixtures.py"
       - ".github/workflows/kb3-step14-1140-local-audit.yml"
   workflow_dispatch:
 permissions:
@@ -31,6 +33,25 @@ jobs:
         run: python -m pip install --disable-pip-version-check cryptography
       - name: Synthetic/mock 1140 immutable identity and asof field classification tests
         run: python -m unittest discover -s tests -p "test_step14_full_identity_pit_audit.py" -v
+      - name: Offline public 1140 pairing and target-free projection tests
+        run: python -m unittest discover -s tests -p "test_step14_public_1140_fixtures.py" -v
+      - name: Capture CC0 public 3-season schedules 1140 without scores (research reference only)
+        run: |
+          python -m src.kb3_step14_public_1140_fixtures --output data/research/STEP14_OPENFOOTBALL_1140_TARGETFREE_2026-10-27.json
+      - name: Verify all public projection record fields contain no labels, scores or odds
+        run: |
+          python - <<'PY'
+          import json
+          j=json.load(open("data/research/STEP14_OPENFOOTBALL_1140_TARGETFREE_2026-10-27.json"))
+          assert j["full_coverage_historical_season_fixtures"]==1140
+          assert set(j["source_seasons"])=={"2023-24","2024-25","2025-26"}
+          assert all(len(v["fixtures_target_free"])==380 for v in j["source_seasons"].values())
+          assert all(set(row)=={"date","time_london","home_name","away_name"}
+             for v in j["source_seasons"].values() for row in v["fixtures_target_free"])
+          assert j["test_2026_2027_not_downloaded"] is True
+          assert not j["training_allowed"] and not j["gate14_pass"]
+          print("PUBLIC_1140_SCHEDULE_TARGET_FREE_ONLY_NOT_PREMATCH_ASOF_PROOF")
+          PY
       - name: Check syntax of owner-local decrypt runner (do not execute)
         run: python -m py_compile scripts/step14_full_native_identity_pit_local.py
       - name: Real signed TRAIN+VALIDATION 1140 source metadata and field PIT receipts audit
@@ -57,9 +78,13 @@ jobs:
         run: |
           git config user.name "kb3-audit-bot"
           git config user.email "kb3-audit-bot@users.noreply.github.com"
-          git add data/audits/STEP14_FULL_1140_PIT_GAP_2026-10-27.json
-          git commit -m "audit: freeze actual 1140 historical PIT feature evidence gaps only"
-          git push origin HEAD:audit/step14-full-1140-identity-field-pit-20261027
+          git add data/audits/STEP14_FULL_1140_PIT_GAP_2026-10-27.json data/research/STEP14_OPENFOOTBALL_1140_TARGETFREE_2026-10-27.json
+          if git diff --cached --quiet; then
+            echo "Independent audit sources already frozen."
+          else
+            git commit -m "audit: freeze 1140 historical PIT gaps and score-free external identity schedule"
+            git push origin HEAD:audit/step14-full-1140-identity-field-pit-20261027
+          fi
       - name: Enforce no claim of real 1140 private-archive read by this CI
         run: |
           python - <<'PY'
