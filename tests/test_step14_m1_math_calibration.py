@@ -7,7 +7,7 @@ import unittest
 from src.kb3_step14_m1_math_calibration import (
     M1MathError,stable_softmax,order_probability,score_one,
     score_predictions,temperature_probabilities,fit_temperature,
-    evaluate_calibrated_holdout,freeze_forecast,audit_frozen_settlements,
+    evaluate_calibrated_holdout,freeze_forecast,audit_frozen_settlements,prepare_future_calibration_candidate,
 )
 
 def example():
@@ -131,5 +131,55 @@ class MulticlassMathCalibrationTests(unittest.TestCase):
         x["target"]="1"
         with self.assertRaisesRegex(M1MathError,"INVALID_FROZEN_RECORD"):
             audit_frozen_settlements([x],[],cutoff_utc="2026-10-28T00:00:00Z")
+
+
+class ProspectiveReadiness(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        base=datetime(2027,1,1,tzinfo=timezone.utc)
+        cls.before=(base+timedelta(days=110)).isoformat().replace("+00:00","Z")
+        cls.review=(base+timedelta(days=200)).isoformat().replace("+00:00","Z")
+        cls.forecasts=[];cls.settlements=[]
+        for i in range(165):
+            kickoff=base+timedelta(days=i,hours=12)
+            forecast=freeze_forecast(
+                forecast_id=f"FUTURE_DEMO_{i:03d}",
+                frozen_at_utc=(kickoff-timedelta(days=1)).isoformat().replace("+00:00","Z"),
+                kickoff_utc=kickoff.isoformat().replace("+00:00","Z"),
+                model_version="SYNTHETIC_LEDGER_ONLY",
+                variant="NO_XG",probabilities={"1":.43,"X":.27,"2":.30})
+            cls.forecasts.append(forecast)
+            cls.settlements.append({
+                "forecast_id":forecast["forecast_id"],
+                "settled_at_utc":(kickoff+timedelta(hours=3)).isoformat().replace("+00:00","Z"),
+                "label_1x2":("1","X","2")[i%3]})
+
+    def candidate(self,limit):
+        return prepare_future_calibration_candidate(
+            forecasts=self.forecasts[:limit],settlements=self.settlements[:limit],
+            model_version="SYNTHETIC_LEDGER_ONLY",
+            variant="NO_XG",calibration_cutoff_utc=self.before,
+            review_cutoff_utc=self.review)
+
+    def test_minimum_100_past_plus_50_later_with_no_auto_approval(self):
+        r=self.candidate(165)
+        self.assertEqual(r["calibration_training_count"],110)
+        self.assertEqual(r["independent_later_evaluation_count"],55)
+        self.assertFalse(r["auto_activation"])
+        self.assertFalse(r["forecast_capture_origin_independently_verified"])
+        self.assertFalse(r["gate14_pass"])
+        self.assertEqual(r["later_not_used_in_fit"]["raw"]["n"],55)
+
+    def test_39_later_evaluation_rows_fail_minimum50(self):
+        with self.assertRaisesRegex(M1MathError,"NOT_ENOUGH_INDEPENDENT"):
+            self.candidate(149)
+
+    def test_other_variant_cannot_inherit_model_calibration(self):
+        with self.assertRaisesRegex(M1MathError,"NOT_ENOUGH_INDEPENDENT"):
+            prepare_future_calibration_candidate(
+                forecasts=self.forecasts,settlements=self.settlements,
+                model_version="SYNTHETIC_LEDGER_ONLY",
+                variant="WITH_XG_MASKS",calibration_cutoff_utc=self.before,
+                review_cutoff_utc=self.review)
 
 if __name__=="__main__":unittest.main()
