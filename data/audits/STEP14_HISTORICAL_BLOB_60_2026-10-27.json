@@ -1,0 +1,1376 @@
+{
+  "by_season": {
+    "2023-24": {
+      "NO_COMMIT_BEFORE_CUTOFF": 20
+    },
+    "2024-25": {
+      "AMBIGUOUS_SAME_KICKOFF_PUBLIC_FIXTURES": 10,
+      "NO_COMMIT_BEFORE_CUTOFF": 1,
+      "ONE_PUBLIC_SCHEDULE_MATCH_BY_KICKOFF_ONLY": 9
+    },
+    "2025-26": {
+      "AMBIGUOUS_SAME_KICKOFF_PUBLIC_FIXTURES": 7,
+      "NO_EXACT_SCHEDULE_MATCH_AT_COMMIT": 5,
+      "ONE_PUBLIC_SCHEDULE_MATCH_BY_KICKOFF_ONLY": 8
+    }
+  },
+  "gate14_pass": false,
+  "git_committer_timestamp_proves_publication": false,
+  "historical_publication_time_independently_verified": false,
+  "historical_source_blob_sha256_recorded": true,
+  "historical_source_blob_unique_commits_downloaded": 25,
+  "official_pitchapi_native_team_pair_identity_verified": false,
+  "official_pitchapi_training_records_certified": 0,
+  "paid_pitchapi_calls": 0,
+  "production_train_allowed": false,
+  "public_blob_content_inspected": true,
+  "public_candidate_commit_dates_inspected": 39,
+  "records": [
+    {
+      "candidate_commit_sha": null,
+      "candidate_time_not_independent": null,
+      "independently_verified_first_publication": false,
+      "kickoff_utc": "2023-08-14T19:00:00Z",
+      "match_by_exact_uk_local_to_utc_kickoff": [],
+      "native_pitchapi_team_pair_verified": false,
+      "official_train_eligible": false,
+      "partition": "TRAIN",
+      "pitch_fixture_id": "m_2AMDH3",
+      "public_file_sha256": null,
+      "season": "2023-24",
+      "status": "NO_COMMIT_BEFORE_CUTOFF"
+    },
+    {
+      "candidate_commit_sha": null,
+      "candidate_time_not_independent": null,
+      "independently_verified_first_publication": false,
+      "kickoff_utc": "2023-08-27T15:30:00Z",
+      "match_by_exact_uk_local_to_utc_kickoff": [],
+      "native_pitchapi_team_pair_verified": false,
+      "official_train_eligible": false,
+      "partition": "TRAIN",
+      "pitch_fixture_id": "m_1bWMqX",
+      "public_file_sha256": null,
+      "season": "2023-24",
+      "status": "NO_COMMIT_BEFORE_CUTOFF"
+    },
+    {
+      "candidate_commit_sha": null,
+      "candidate_time_not_independent": null,
+      "independently_verified_first_publication": false,
+      "kickoff_utc": "2023-09-17T15:30:00Z",
+      "match_by_exact_uk_local_to_utc_kickoff": [],
+      "native_pitchapi_team_pair_verified": false,
+      "official_train_eligible": false,
+      "partition": "TRAIN",
+      "pitch_fixture_id": "m_3RPUOt",
+      "public_file_sha256": null,
+      "season": "2023-24",
+      "status": "NO_COMMIT_BEFORE_CUTOFF"
+    },
+    {
+      "candidate_commit_sha": null,
+      "candidate_time_not_independent": null,
+      "independently_verified_first_publication": false,
+      "kickoff_utc": "2023-09-30T16:30:00Z",
+      "match_by_exact_uk_local_to_utc_kickoff": [],
+      "native_pitchapi_team_pair_verified": false,
+      "official_train_eligible": false,
+      "partition": "TRAIN",
+      "pitch_fixture_id": "m_32y8SF",
+      "public_file_sha256": null,
+      "season": "2023-24",
+      "status": "NO_COMMIT_BEFORE_CUTOFF"
+    },
+    {
+      "candidate_commit_sha": null,
+      "candidate_time_not_independent": null,
+      "independently_verified_first_publication": false,
+      "kickoff_utc": "2023-10-21T14:00:00Z",
+      "match_by_exact_uk_local_to_utc_kickoff": [],
+      "native_pitchapi_team_pair_verified": false,
+      "official_train_eligible": false,
+      "partition": "TRAIN",
+      "pitch_fixture_id": "m_4JMw9K",
+      "public_file_sha256": null,
+      "season": "2023-24",
+      "status": "NO_COMMIT_BEFORE_CUTOFF"
+    },
+    {
+      "candidate_commit_sha": null,
+      "candidate_time_not_independent": null,
+      "independently_verified_first_publication": false,
+      "kickoff_utc": "2023-11-04T15:00:00Z",
+      "match_by_exact_uk_local_to_utc_kickoff": [],
+      "native_pitchapi_team_pair_verified": false,
+      "official_train_eligible": false,
+      "partition": "TRAIN",
+      "pitch_fixture_id": "m_4BPPGF",
+      "public_file_sha256": null,
+      "season": "2023-24",
+      "status": "NO_COMMIT_BEFORE_CUTOFF"
+    },
+    {
+      "candidate_commit_sha": null,
+      "candidate_time_not_independent": null,
+      "independently_verified_first_publication": false,
+      "kickoff_utc": "2023-11-25T15:00:00Z",
+      "match_by_exact_uk_local_to_utc_kickoff": [],
+      "native_pitchapi_team_pair_verified": false,
+      "official_train_eligible": false,
+      "partition": "TRAIN",
+      "pitch_fixture_id": "m_2IebRt",
+      "public_file_sha256": null,
+      "season": "2023-24",
+      "status": "NO_COMMIT_BEFORE_CUTOFF"
+    },
+    {
+      "candidate_commit_sha": null,
+      "candidate_time_not_independent": null,
+      "independently_verified_first_publication": false,
+      "kickoff_utc": "2023-12-06T19:30:00Z",
+      "match_by_exact_uk_local_to_utc_kickoff": [],
+      "native_pitchapi_team_pair_verified": false,
+      "official_train_eligible": false,
+      "partition": "TRAIN",
+      "pitch_fixture_id": "m_03CQW9",
+      "public_file_sha256": null,
+      "season": "2023-24",
+      "status": "NO_COMMIT_BEFORE_CUTOFF"
+    },
+    {
+      "candidate_commit_sha": null,
+      "candidate_time_not_independent": null,
+      "independently_verified_first_publication": false,
+      "kickoff_utc": "2023-12-16T15:00:00Z",
+      "match_by_exact_uk_local_to_utc_kickoff": [],
+      "native_pitchapi_team_pair_verified": false,
+      "official_train_eligible": false,
+      "partition": "TRAIN",
+      "pitch_fixture_id": "m_1U4bT2",
+      "public_file_sha256": null,
+      "season": "2023-24",
+      "status": "NO_COMMIT_BEFORE_CUTOFF"
+    },
+    {
+      "candidate_commit_sha": null,
+      "candidate_time_not_independent": null,
+      "independently_verified_first_publication": false,
+      "kickoff_utc": "2023-12-26T15:00:00Z",
+      "match_by_exact_uk_local_to_utc_kickoff": [],
+      "native_pitchapi_team_pair_verified": false,
+      "official_train_eligible": false,
+      "partition": "TRAIN",
+      "pitch_fixture_id": "m_3RjFem",
+      "public_file_sha256": null,
+      "season": "2023-24",
+      "status": "NO_COMMIT_BEFORE_CUTOFF"
+    },
+    {
+      "candidate_commit_sha": null,
+      "candidate_time_not_independent": null,
+      "independently_verified_first_publication": false,
+      "kickoff_utc": "2024-01-13T12:30:00Z",
+      "match_by_exact_uk_local_to_utc_kickoff": [],
+      "native_pitchapi_team_pair_verified": false,
+      "official_train_eligible": false,
+      "partition": "TRAIN",
+      "pitch_fixture_id": "m_4FxHNS",
+      "public_file_sha256": null,
+      "season": "2023-24",
+      "status": "NO_COMMIT_BEFORE_CUTOFF"
+    },
+    {
+      "candidate_commit_sha": null,
+      "candidate_time_not_independent": null,
+      "independently_verified_first_publication": false,
+      "kickoff_utc": "2024-02-03T12:30:00Z",
+      "match_by_exact_uk_local_to_utc_kickoff": [],
+      "native_pitchapi_team_pair_verified": false,
+      "official_train_eligible": false,
+      "partition": "TRAIN",
+      "pitch_fixture_id": "m_38RTSl",
+      "public_file_sha256": null,
+      "season": "2023-24",
+      "status": "NO_COMMIT_BEFORE_CUTOFF"
+    },
+    {
+      "candidate_commit_sha": null,
+      "candidate_time_not_independent": null,
+      "independently_verified_first_publication": false,
+      "kickoff_utc": "2024-02-12T20:00:00Z",
+      "match_by_exact_uk_local_to_utc_kickoff": [],
+      "native_pitchapi_team_pair_verified": false,
+      "official_train_eligible": false,
+      "partition": "TRAIN",
+      "pitch_fixture_id": "m_2kUJK5",
+      "public_file_sha256": null,
+      "season": "2023-24",
+      "status": "NO_COMMIT_BEFORE_CUTOFF"
+    },
+    {
+      "candidate_commit_sha": null,
+      "candidate_time_not_independent": null,
+      "independently_verified_first_publication": false,
+      "kickoff_utc": "2024-02-25T13:30:00Z",
+      "match_by_exact_uk_local_to_utc_kickoff": [],
+      "native_pitchapi_team_pair_verified": false,
+      "official_train_eligible": false,
+      "partition": "TRAIN",
+      "pitch_fixture_id": "m_4Pfqa8",
+      "public_file_sha256": null,
+      "season": "2023-24",
+      "status": "NO_COMMIT_BEFORE_CUTOFF"
+    },
+    {
+      "candidate_commit_sha": null,
+      "candidate_time_not_independent": null,
+      "independently_verified_first_publication": false,
+      "kickoff_utc": "2024-03-10T14:00:00Z",
+      "match_by_exact_uk_local_to_utc_kickoff": [],
+      "native_pitchapi_team_pair_verified": false,
+      "official_train_eligible": false,
+      "partition": "TRAIN",
+      "pitch_fixture_id": "m_3Or36t",
+      "public_file_sha256": null,
+      "season": "2023-24",
+      "status": "NO_COMMIT_BEFORE_CUTOFF"
+    },
+    {
+      "candidate_commit_sha": null,
+      "candidate_time_not_independent": null,
+      "independently_verified_first_publication": false,
+      "kickoff_utc": "2024-04-02T18:30:00Z",
+      "match_by_exact_uk_local_to_utc_kickoff": [],
+      "native_pitchapi_team_pair_verified": false,
+      "official_train_eligible": false,
+      "partition": "TRAIN",
+      "pitch_fixture_id": "m_4cZbsn",
+      "public_file_sha256": null,
+      "season": "2023-24",
+      "status": "NO_COMMIT_BEFORE_CUTOFF"
+    },
+    {
+      "candidate_commit_sha": null,
+      "candidate_time_not_independent": null,
+      "independently_verified_first_publication": false,
+      "kickoff_utc": "2024-04-13T11:30:00Z",
+      "match_by_exact_uk_local_to_utc_kickoff": [],
+      "native_pitchapi_team_pair_verified": false,
+      "official_train_eligible": false,
+      "partition": "TRAIN",
+      "pitch_fixture_id": "m_1uwhQK",
+      "public_file_sha256": null,
+      "season": "2023-24",
+      "status": "NO_COMMIT_BEFORE_CUTOFF"
+    },
+    {
+      "candidate_commit_sha": null,
+      "candidate_time_not_independent": null,
+      "independently_verified_first_publication": false,
+      "kickoff_utc": "2024-04-24T19:00:00Z",
+      "match_by_exact_uk_local_to_utc_kickoff": [],
+      "native_pitchapi_team_pair_verified": false,
+      "official_train_eligible": false,
+      "partition": "TRAIN",
+      "pitch_fixture_id": "m_1PMyxf",
+      "public_file_sha256": null,
+      "season": "2023-24",
+      "status": "NO_COMMIT_BEFORE_CUTOFF"
+    },
+    {
+      "candidate_commit_sha": null,
+      "candidate_time_not_independent": null,
+      "independently_verified_first_publication": false,
+      "kickoff_utc": "2024-05-04T14:00:00Z",
+      "match_by_exact_uk_local_to_utc_kickoff": [],
+      "native_pitchapi_team_pair_verified": false,
+      "official_train_eligible": false,
+      "partition": "TRAIN",
+      "pitch_fixture_id": "m_41FcMT",
+      "public_file_sha256": null,
+      "season": "2023-24",
+      "status": "NO_COMMIT_BEFORE_CUTOFF"
+    },
+    {
+      "candidate_commit_sha": null,
+      "candidate_time_not_independent": null,
+      "independently_verified_first_publication": false,
+      "kickoff_utc": "2024-05-19T15:00:00Z",
+      "match_by_exact_uk_local_to_utc_kickoff": [],
+      "native_pitchapi_team_pair_verified": false,
+      "official_train_eligible": false,
+      "partition": "TRAIN",
+      "pitch_fixture_id": "m_0Za6mO",
+      "public_file_sha256": null,
+      "season": "2023-24",
+      "status": "NO_COMMIT_BEFORE_CUTOFF"
+    },
+    {
+      "candidate_commit_sha": null,
+      "candidate_time_not_independent": null,
+      "independently_verified_first_publication": false,
+      "kickoff_utc": "2024-08-19T19:00:00Z",
+      "match_by_exact_uk_local_to_utc_kickoff": [],
+      "native_pitchapi_team_pair_verified": false,
+      "official_train_eligible": false,
+      "partition": "TRAIN",
+      "pitch_fixture_id": "m_3JrCLN",
+      "public_file_sha256": null,
+      "season": "2024-25",
+      "status": "NO_COMMIT_BEFORE_CUTOFF"
+    },
+    {
+      "candidate_commit_sha": "1391504f1de79e5712b582be4273b3beca97ed5f",
+      "candidate_commit_timestamp_utc_not_publication_proof": "2024-08-28T16:12:20Z",
+      "independently_verified_first_publication": false,
+      "kickoff_utc": "2024-09-01T12:30:00Z",
+      "match_by_exact_uk_local_to_utc_kickoff": [
+        {
+          "away_name_openfootball": "Crystal Palace FC",
+          "home_name_openfootball": "Chelsea FC",
+          "score_present_in_prematch_candidate_blob": false
+        },
+        {
+          "away_name_openfootball": "Tottenham Hotspur FC",
+          "home_name_openfootball": "Newcastle United FC",
+          "score_present_in_prematch_candidate_blob": false
+        }
+      ],
+      "native_pitchapi_team_pair_verified": false,
+      "official_train_eligible": false,
+      "partition": "TRAIN",
+      "pitch_fixture_id": "m_489nRK",
+      "public_file_sha256": "67c6f6109b51041a070d8b8676c0951473f76955dde73fea91146919f45226ec",
+      "season": "2024-25",
+      "status": "AMBIGUOUS_SAME_KICKOFF_PUBLIC_FIXTURES"
+    },
+    {
+      "candidate_commit_sha": "1391504f1de79e5712b582be4273b3beca97ed5f",
+      "candidate_commit_timestamp_utc_not_publication_proof": "2024-08-28T16:12:20Z",
+      "independently_verified_first_publication": false,
+      "kickoff_utc": "2024-09-21T16:30:00Z",
+      "match_by_exact_uk_local_to_utc_kickoff": [
+        {
+          "away_name_openfootball": "Manchester United FC",
+          "home_name_openfootball": "Crystal Palace FC",
+          "score_present_in_prematch_candidate_blob": false
+        }
+      ],
+      "native_pitchapi_team_pair_verified": false,
+      "official_train_eligible": false,
+      "partition": "TRAIN",
+      "pitch_fixture_id": "m_3SLMkR",
+      "public_file_sha256": "67c6f6109b51041a070d8b8676c0951473f76955dde73fea91146919f45226ec",
+      "season": "2024-25",
+      "status": "ONE_PUBLIC_SCHEDULE_MATCH_BY_KICKOFF_ONLY"
+    },
+    {
+      "candidate_commit_sha": "5f777dc6e2cd02cdafd1520e81b7e338284fb7a7",
+      "candidate_commit_timestamp_utc_not_publication_proof": "2024-10-02T13:52:43Z",
+      "independently_verified_first_publication": false,
+      "kickoff_utc": "2024-10-05T16:30:00Z",
+      "match_by_exact_uk_local_to_utc_kickoff": [
+        {
+          "away_name_openfootball": "Newcastle United FC",
+          "home_name_openfootball": "Everton FC",
+          "score_present_in_prematch_candidate_blob": false
+        }
+      ],
+      "native_pitchapi_team_pair_verified": false,
+      "official_train_eligible": false,
+      "partition": "TRAIN",
+      "pitch_fixture_id": "m_3AMymS",
+      "public_file_sha256": "6687e626fd7361ae771308920b289392229c36f6bdffee0b56b7e9235815e3de",
+      "season": "2024-25",
+      "status": "ONE_PUBLIC_SCHEDULE_MATCH_BY_KICKOFF_ONLY"
+    },
+    {
+      "candidate_commit_sha": "d01ea3e43ea265b3a9fa4fe59f5fe77a817b482a",
+      "candidate_commit_timestamp_utc_not_publication_proof": "2024-10-22T05:11:00Z",
+      "independently_verified_first_publication": false,
+      "kickoff_utc": "2024-10-26T16:30:00Z",
+      "match_by_exact_uk_local_to_utc_kickoff": [
+        {
+          "away_name_openfootball": "Fulham FC",
+          "home_name_openfootball": "Everton FC",
+          "score_present_in_prematch_candidate_blob": false
+        }
+      ],
+      "native_pitchapi_team_pair_verified": false,
+      "official_train_eligible": false,
+      "partition": "TRAIN",
+      "pitch_fixture_id": "m_2pnf3Z",
+      "public_file_sha256": "4340b13e2cde8abf03ab79cd29bccee2ce9d989742e1ea3239960ca430bf2704",
+      "season": "2024-25",
+      "status": "ONE_PUBLIC_SCHEDULE_MATCH_BY_KICKOFF_ONLY"
+    },
+    {
+      "candidate_commit_sha": "d0a780d5a22b34375f320a51e52e723814d59aff",
+      "candidate_commit_timestamp_utc_not_publication_proof": "2024-11-05T05:10:39Z",
+      "independently_verified_first_publication": false,
+      "kickoff_utc": "2024-11-09T17:30:00Z",
+      "match_by_exact_uk_local_to_utc_kickoff": [
+        {
+          "away_name_openfootball": "Manchester City FC",
+          "home_name_openfootball": "Brighton & Hove Albion FC",
+          "score_present_in_prematch_candidate_blob": false
+        }
+      ],
+      "native_pitchapi_team_pair_verified": false,
+      "official_train_eligible": false,
+      "partition": "TRAIN",
+      "pitch_fixture_id": "m_2IJhgL",
+      "public_file_sha256": "ecd1a392b85249ab570ee4e97a49107e8a3cb4f39c4256cafb918c1efc981312",
+      "season": "2024-25",
+      "status": "ONE_PUBLIC_SCHEDULE_MATCH_BY_KICKOFF_ONLY"
+    },
+    {
+      "candidate_commit_sha": "b0968803941524592d8d368fc3caf3789f961f19",
+      "candidate_commit_timestamp_utc_not_publication_proof": "2024-11-21T05:11:01Z",
+      "independently_verified_first_publication": false,
+      "kickoff_utc": "2024-11-30T15:00:00Z",
+      "match_by_exact_uk_local_to_utc_kickoff": [
+        {
+          "away_name_openfootball": "Leicester City FC",
+          "home_name_openfootball": "Brentford FC",
+          "score_present_in_prematch_candidate_blob": false
+        },
+        {
+          "away_name_openfootball": "Newcastle United FC",
+          "home_name_openfootball": "Crystal Palace FC",
+          "score_present_in_prematch_candidate_blob": false
+        },
+        {
+          "away_name_openfootball": "Ipswich Town FC",
+          "home_name_openfootball": "Nottingham Forest FC",
+          "score_present_in_prematch_candidate_blob": false
+        },
+        {
+          "away_name_openfootball": "AFC Bournemouth",
+          "home_name_openfootball": "Wolverhampton Wanderers FC",
+          "score_present_in_prematch_candidate_blob": false
+        }
+      ],
+      "native_pitchapi_team_pair_verified": false,
+      "official_train_eligible": false,
+      "partition": "TRAIN",
+      "pitch_fixture_id": "m_1AmWFs",
+      "public_file_sha256": "fcba6eb7b7af6313c6b658d33e594555a0bbd43941ddf896eacb9c8afde605c0",
+      "season": "2024-25",
+      "status": "AMBIGUOUS_SAME_KICKOFF_PUBLIC_FIXTURES"
+    },
+    {
+      "candidate_commit_sha": "b0968803941524592d8d368fc3caf3789f961f19",
+      "candidate_commit_timestamp_utc_not_publication_proof": "2024-11-21T05:11:01Z",
+      "independently_verified_first_publication": false,
+      "kickoff_utc": "2024-12-07T15:00:00Z",
+      "match_by_exact_uk_local_to_utc_kickoff": [
+        {
+          "away_name_openfootball": "Southampton FC",
+          "home_name_openfootball": "Aston Villa FC",
+          "score_present_in_prematch_candidate_blob": false
+        },
+        {
+          "away_name_openfootball": "Newcastle United FC",
+          "home_name_openfootball": "Brentford FC",
+          "score_present_in_prematch_candidate_blob": false
+        },
+        {
+          "away_name_openfootball": "Manchester City FC",
+          "home_name_openfootball": "Crystal Palace FC",
+          "score_present_in_prematch_candidate_blob": false
+        }
+      ],
+      "native_pitchapi_team_pair_verified": false,
+      "official_train_eligible": false,
+      "partition": "TRAIN",
+      "pitch_fixture_id": "m_4Nyk6q",
+      "public_file_sha256": "fcba6eb7b7af6313c6b658d33e594555a0bbd43941ddf896eacb9c8afde605c0",
+      "season": "2024-25",
+      "status": "AMBIGUOUS_SAME_KICKOFF_PUBLIC_FIXTURES"
+    },
+    {
+      "candidate_commit_sha": "b0968803941524592d8d368fc3caf3789f961f19",
+      "candidate_commit_timestamp_utc_not_publication_proof": "2024-11-21T05:11:01Z",
+      "independently_verified_first_publication": false,
+      "kickoff_utc": "2024-12-21T15:00:00Z",
+      "match_by_exact_uk_local_to_utc_kickoff": [
+        {
+          "away_name_openfootball": "Nottingham Forest FC",
+          "home_name_openfootball": "Brentford FC",
+          "score_present_in_prematch_candidate_blob": false
+        },
+        {
+          "away_name_openfootball": "Newcastle United FC",
+          "home_name_openfootball": "Ipswich Town FC",
+          "score_present_in_prematch_candidate_blob": false
+        },
+        {
+          "away_name_openfootball": "AFC Bournemouth",
+          "home_name_openfootball": "Manchester United FC",
+          "score_present_in_prematch_candidate_blob": false
+        },
+        {
+          "away_name_openfootball": "Brighton & Hove Albion FC",
+          "home_name_openfootball": "West Ham United FC",
+          "score_present_in_prematch_candidate_blob": false
+        }
+      ],
+      "native_pitchapi_team_pair_verified": false,
+      "official_train_eligible": false,
+      "partition": "TRAIN",
+      "pitch_fixture_id": "m_2Xjinj",
+      "public_file_sha256": "fcba6eb7b7af6313c6b658d33e594555a0bbd43941ddf896eacb9c8afde605c0",
+      "season": "2024-25",
+      "status": "AMBIGUOUS_SAME_KICKOFF_PUBLIC_FIXTURES"
+    },
+    {
+      "candidate_commit_sha": "b0968803941524592d8d368fc3caf3789f961f19",
+      "candidate_commit_timestamp_utc_not_publication_proof": "2024-11-21T05:11:01Z",
+      "independently_verified_first_publication": false,
+      "kickoff_utc": "2024-12-29T15:00:00Z",
+      "match_by_exact_uk_local_to_utc_kickoff": [
+        {
+          "away_name_openfootball": "Southampton FC",
+          "home_name_openfootball": "Crystal Palace FC",
+          "score_present_in_prematch_candidate_blob": false
+        },
+        {
+          "away_name_openfootball": "Nottingham Forest FC",
+          "home_name_openfootball": "Everton FC",
+          "score_present_in_prematch_candidate_blob": false
+        },
+        {
+          "away_name_openfootball": "AFC Bournemouth",
+          "home_name_openfootball": "Fulham FC",
+          "score_present_in_prematch_candidate_blob": false
+        },
+        {
+          "away_name_openfootball": "Wolverhampton Wanderers FC",
+          "home_name_openfootball": "Tottenham Hotspur FC",
+          "score_present_in_prematch_candidate_blob": false
+        }
+      ],
+      "native_pitchapi_team_pair_verified": false,
+      "official_train_eligible": false,
+      "partition": "TRAIN",
+      "pitch_fixture_id": "m_1HkbKV",
+      "public_file_sha256": "fcba6eb7b7af6313c6b658d33e594555a0bbd43941ddf896eacb9c8afde605c0",
+      "season": "2024-25",
+      "status": "AMBIGUOUS_SAME_KICKOFF_PUBLIC_FIXTURES"
+    },
+    {
+      "candidate_commit_sha": "47353f1e2c31baed5841d4e72ec532ca94b02a38",
+      "candidate_commit_timestamp_utc_not_publication_proof": "2025-01-08T05:10:52Z",
+      "independently_verified_first_publication": false,
+      "kickoff_utc": "2025-01-14T19:30:00Z",
+      "match_by_exact_uk_local_to_utc_kickoff": [
+        {
+          "away_name_openfootball": "Fulham FC",
+          "home_name_openfootball": "West Ham United FC",
+          "score_present_in_prematch_candidate_blob": false
+        },
+        {
+          "away_name_openfootball": "Manchester City FC",
+          "home_name_openfootball": "Brentford FC",
+          "score_present_in_prematch_candidate_blob": false
+        },
+        {
+          "away_name_openfootball": "AFC Bournemouth",
+          "home_name_openfootball": "Chelsea FC",
+          "score_present_in_prematch_candidate_blob": false
+        }
+      ],
+      "native_pitchapi_team_pair_verified": false,
+      "official_train_eligible": false,
+      "partition": "TRAIN",
+      "pitch_fixture_id": "m_17le1w",
+      "public_file_sha256": "c47c0f5d85a2cefb80ad9cbc0b70b823e408a3f080f7da7d1589b545eae0a2ca",
+      "season": "2024-25",
+      "status": "AMBIGUOUS_SAME_KICKOFF_PUBLIC_FIXTURES"
+    },
+    {
+      "candidate_commit_sha": "97a50f4d2ba526666bbbe1d0a2e14315f22a53ee",
+      "candidate_commit_timestamp_utc_not_publication_proof": "2025-01-18T19:26:27Z",
+      "independently_verified_first_publication": false,
+      "kickoff_utc": "2025-01-20T20:00:00Z",
+      "match_by_exact_uk_local_to_utc_kickoff": [
+        {
+          "away_name_openfootball": "Wolverhampton Wanderers FC",
+          "home_name_openfootball": "Chelsea FC",
+          "score_present_in_prematch_candidate_blob": false
+        }
+      ],
+      "native_pitchapi_team_pair_verified": false,
+      "official_train_eligible": false,
+      "partition": "TRAIN",
+      "pitch_fixture_id": "m_1IZ7nv",
+      "public_file_sha256": "645e072a972c829f8c874fef8a3d7c7b859bd1257f9caccaa9e464fb36d11d57",
+      "season": "2024-25",
+      "status": "ONE_PUBLIC_SCHEDULE_MATCH_BY_KICKOFF_ONLY"
+    },
+    {
+      "candidate_commit_sha": "831bb41621b99b7081f9942ff294fb3c91165448",
+      "candidate_commit_timestamp_utc_not_publication_proof": "2025-01-29T05:22:01Z",
+      "independently_verified_first_publication": false,
+      "kickoff_utc": "2025-02-02T16:30:00Z",
+      "match_by_exact_uk_local_to_utc_kickoff": [
+        {
+          "away_name_openfootball": "Manchester City FC",
+          "home_name_openfootball": "Arsenal FC",
+          "score_present_in_prematch_candidate_blob": false
+        }
+      ],
+      "native_pitchapi_team_pair_verified": false,
+      "official_train_eligible": false,
+      "partition": "TRAIN",
+      "pitch_fixture_id": "m_2g5x00",
+      "public_file_sha256": "db7359cdc0d3e39d39ebc52d046c357ea89baa2832d2d600221eafdfaf789bd4",
+      "season": "2024-25",
+      "status": "ONE_PUBLIC_SCHEDULE_MATCH_BY_KICKOFF_ONLY"
+    },
+    {
+      "candidate_commit_sha": "3cfb8829897c894ce7b865c60f4b150b8886e9f5",
+      "candidate_commit_timestamp_utc_not_publication_proof": "2025-02-19T05:22:56Z",
+      "independently_verified_first_publication": false,
+      "kickoff_utc": "2025-02-22T15:00:00Z",
+      "match_by_exact_uk_local_to_utc_kickoff": [
+        {
+          "away_name_openfootball": "Tottenham Hotspur FC",
+          "home_name_openfootball": "Ipswich Town FC",
+          "score_present_in_prematch_candidate_blob": false
+        },
+        {
+          "away_name_openfootball": "Crystal Palace FC",
+          "home_name_openfootball": "Fulham FC",
+          "score_present_in_prematch_candidate_blob": false
+        },
+        {
+          "away_name_openfootball": "West Ham United FC",
+          "home_name_openfootball": "Arsenal FC",
+          "score_present_in_prematch_candidate_blob": false
+        },
+        {
+          "away_name_openfootball": "Wolverhampton Wanderers FC",
+          "home_name_openfootball": "AFC Bournemouth",
+          "score_present_in_prematch_candidate_blob": false
+        },
+        {
+          "away_name_openfootball": "Brighton & Hove Albion FC",
+          "home_name_openfootball": "Southampton FC",
+          "score_present_in_prematch_candidate_blob": false
+        }
+      ],
+      "native_pitchapi_team_pair_verified": false,
+      "official_train_eligible": false,
+      "partition": "TRAIN",
+      "pitch_fixture_id": "m_31bRmB",
+      "public_file_sha256": "fc0ba54ee33913d4218dafe0044bf6792439caed492fcf2a9b319955e5d95d72",
+      "season": "2024-25",
+      "status": "AMBIGUOUS_SAME_KICKOFF_PUBLIC_FIXTURES"
+    },
+    {
+      "candidate_commit_sha": "8b0756d2a1af4fbeb7285d5db87b4958aa14e18b",
+      "candidate_commit_timestamp_utc_not_publication_proof": "2025-03-05T05:41:04Z",
+      "independently_verified_first_publication": false,
+      "kickoff_utc": "2025-03-08T17:30:00Z",
+      "match_by_exact_uk_local_to_utc_kickoff": [
+        {
+          "away_name_openfootball": "Aston Villa FC",
+          "home_name_openfootball": "Brentford FC",
+          "score_present_in_prematch_candidate_blob": false
+        }
+      ],
+      "native_pitchapi_team_pair_verified": false,
+      "official_train_eligible": false,
+      "partition": "TRAIN",
+      "pitch_fixture_id": "m_4Me4X1",
+      "public_file_sha256": "ef821ad2730d4f67a4a7abd18fe963a8924927725a93b86cb96d1e1532483e18",
+      "season": "2024-25",
+      "status": "ONE_PUBLIC_SCHEDULE_MATCH_BY_KICKOFF_ONLY"
+    },
+    {
+      "candidate_commit_sha": "38fb06c226b268868d89312fd44ae7b5fbe56079",
+      "candidate_commit_timestamp_utc_not_publication_proof": "2025-03-26T05:24:39Z",
+      "independently_verified_first_publication": false,
+      "kickoff_utc": "2025-04-02T18:45:00Z",
+      "match_by_exact_uk_local_to_utc_kickoff": [
+        {
+          "away_name_openfootball": "Ipswich Town FC",
+          "home_name_openfootball": "AFC Bournemouth",
+          "score_present_in_prematch_candidate_blob": false
+        },
+        {
+          "away_name_openfootball": "Aston Villa FC",
+          "home_name_openfootball": "Brighton & Hove Albion FC",
+          "score_present_in_prematch_candidate_blob": false
+        },
+        {
+          "away_name_openfootball": "Leicester City FC",
+          "home_name_openfootball": "Manchester City FC",
+          "score_present_in_prematch_candidate_blob": false
+        },
+        {
+          "away_name_openfootball": "Brentford FC",
+          "home_name_openfootball": "Newcastle United FC",
+          "score_present_in_prematch_candidate_blob": false
+        },
+        {
+          "away_name_openfootball": "Crystal Palace FC",
+          "home_name_openfootball": "Southampton FC",
+          "score_present_in_prematch_candidate_blob": false
+        }
+      ],
+      "native_pitchapi_team_pair_verified": false,
+      "official_train_eligible": false,
+      "partition": "TRAIN",
+      "pitch_fixture_id": "m_0amcdi",
+      "public_file_sha256": "b77e72f9dcdbaa3d232a1a99776b85e82622304c7bef82085be9a56c42434f48",
+      "season": "2024-25",
+      "status": "AMBIGUOUS_SAME_KICKOFF_PUBLIC_FIXTURES"
+    },
+    {
+      "candidate_commit_sha": "a05fe6f091a1011e237068d73859e223e04af711",
+      "candidate_commit_timestamp_utc_not_publication_proof": "2025-04-08T05:25:48Z",
+      "independently_verified_first_publication": false,
+      "kickoff_utc": "2025-04-12T16:30:00Z",
+      "match_by_exact_uk_local_to_utc_kickoff": [
+        {
+          "away_name_openfootball": "Brentford FC",
+          "home_name_openfootball": "Arsenal FC",
+          "score_present_in_prematch_candidate_blob": false
+        }
+      ],
+      "native_pitchapi_team_pair_verified": false,
+      "official_train_eligible": false,
+      "partition": "TRAIN",
+      "pitch_fixture_id": "m_22Luwy",
+      "public_file_sha256": "4463ae21a46911d8e347c5a7ac2dac6c6dc94d45292f5c2b6ccc1eb433b90e75",
+      "season": "2024-25",
+      "status": "ONE_PUBLIC_SCHEDULE_MATCH_BY_KICKOFF_ONLY"
+    },
+    {
+      "candidate_commit_sha": "abbe4d33bc2234c895d36654c542b10066856b4e",
+      "candidate_commit_timestamp_utc_not_publication_proof": "2025-04-21T05:26:28Z",
+      "independently_verified_first_publication": false,
+      "kickoff_utc": "2025-04-26T11:30:00Z",
+      "match_by_exact_uk_local_to_utc_kickoff": [
+        {
+          "away_name_openfootball": "Everton FC",
+          "home_name_openfootball": "Chelsea FC",
+          "score_present_in_prematch_candidate_blob": false
+        }
+      ],
+      "native_pitchapi_team_pair_verified": false,
+      "official_train_eligible": false,
+      "partition": "TRAIN",
+      "pitch_fixture_id": "m_1uFOdV",
+      "public_file_sha256": "efe6f039d7f237ff6210966791a4b3d6280423e5d672e1d1cda3a965b9e5bb6d",
+      "season": "2024-25",
+      "status": "ONE_PUBLIC_SCHEDULE_MATCH_BY_KICKOFF_ONLY"
+    },
+    {
+      "candidate_commit_sha": "16bdb87ac144d09f039f588df9f983bb0dd2f497",
+      "candidate_commit_timestamp_utc_not_publication_proof": "2025-05-06T05:26:42Z",
+      "independently_verified_first_publication": false,
+      "kickoff_utc": "2025-05-10T14:00:00Z",
+      "match_by_exact_uk_local_to_utc_kickoff": [
+        {
+          "away_name_openfootball": "Everton FC",
+          "home_name_openfootball": "Fulham FC",
+          "score_present_in_prematch_candidate_blob": false
+        },
+        {
+          "away_name_openfootball": "Brentford FC",
+          "home_name_openfootball": "Ipswich Town FC",
+          "score_present_in_prematch_candidate_blob": false
+        },
+        {
+          "away_name_openfootball": "Manchester City FC",
+          "home_name_openfootball": "Southampton FC",
+          "score_present_in_prematch_candidate_blob": false
+        },
+        {
+          "away_name_openfootball": "Brighton & Hove Albion FC",
+          "home_name_openfootball": "Wolverhampton Wanderers FC",
+          "score_present_in_prematch_candidate_blob": false
+        }
+      ],
+      "native_pitchapi_team_pair_verified": false,
+      "official_train_eligible": false,
+      "partition": "TRAIN",
+      "pitch_fixture_id": "m_21gURA",
+      "public_file_sha256": "26796bfd84424de312c6709456a56c385f60ade38decafb8148e3a87d6fac72c",
+      "season": "2024-25",
+      "status": "AMBIGUOUS_SAME_KICKOFF_PUBLIC_FIXTURES"
+    },
+    {
+      "candidate_commit_sha": "bd189ea365936c8e9c6c64261fcdd608e3cec3c5",
+      "candidate_commit_timestamp_utc_not_publication_proof": "2025-05-21T05:26:48Z",
+      "independently_verified_first_publication": false,
+      "kickoff_utc": "2025-05-25T15:00:00Z",
+      "match_by_exact_uk_local_to_utc_kickoff": [
+        {
+          "away_name_openfootball": "Leicester City FC",
+          "home_name_openfootball": "AFC Bournemouth",
+          "score_present_in_prematch_candidate_blob": false
+        },
+        {
+          "away_name_openfootball": "Manchester City FC",
+          "home_name_openfootball": "Fulham FC",
+          "score_present_in_prematch_candidate_blob": false
+        },
+        {
+          "away_name_openfootball": "West Ham United FC",
+          "home_name_openfootball": "Ipswich Town FC",
+          "score_present_in_prematch_candidate_blob": false
+        },
+        {
+          "away_name_openfootball": "Crystal Palace FC",
+          "home_name_openfootball": "Liverpool FC",
+          "score_present_in_prematch_candidate_blob": false
+        },
+        {
+          "away_name_openfootball": "Aston Villa FC",
+          "home_name_openfootball": "Manchester United FC",
+          "score_present_in_prematch_candidate_blob": false
+        },
+        {
+          "away_name_openfootball": "Everton FC",
+          "home_name_openfootball": "Newcastle United FC",
+          "score_present_in_prematch_candidate_blob": false
+        },
+        {
+          "away_name_openfootball": "Chelsea FC",
+          "home_name_openfootball": "Nottingham Forest FC",
+          "score_present_in_prematch_candidate_blob": false
+        },
+        {
+          "away_name_openfootball": "Arsenal FC",
+          "home_name_openfootball": "Southampton FC",
+          "score_present_in_prematch_candidate_blob": false
+        },
+        {
+          "away_name_openfootball": "Brighton & Hove Albion FC",
+          "home_name_openfootball": "Tottenham Hotspur FC",
+          "score_present_in_prematch_candidate_blob": false
+        },
+        {
+          "away_name_openfootball": "Brentford FC",
+          "home_name_openfootball": "Wolverhampton Wanderers FC",
+          "score_present_in_prematch_candidate_blob": false
+        }
+      ],
+      "native_pitchapi_team_pair_verified": false,
+      "official_train_eligible": false,
+      "partition": "TRAIN",
+      "pitch_fixture_id": "m_04WbdP",
+      "public_file_sha256": "d37507f29336570676b0ac2e0cad06f3b29d6b7704fadbc1ae009e07f4a444ca",
+      "season": "2024-25",
+      "status": "AMBIGUOUS_SAME_KICKOFF_PUBLIC_FIXTURES"
+    },
+    {
+      "candidate_commit_sha": "fdca227e6fc8284865254f009e987ce7a70935a0",
+      "candidate_commit_timestamp_utc_not_publication_proof": "2025-07-30T16:20:51Z",
+      "independently_verified_first_publication": false,
+      "kickoff_utc": "2025-08-18T19:00:00Z",
+      "match_by_exact_uk_local_to_utc_kickoff": [
+        {
+          "away_name_openfootball": "Everton FC",
+          "home_name_openfootball": "Leeds United",
+          "score_present_in_prematch_candidate_blob": false
+        }
+      ],
+      "native_pitchapi_team_pair_verified": false,
+      "official_train_eligible": false,
+      "partition": "VALIDATION",
+      "pitch_fixture_id": "m_4AseJ9",
+      "public_file_sha256": "ba32190faf6aad0558d9e919344db6be6abe6e4ce733168b7efc40427771962b",
+      "season": "2025-26",
+      "status": "ONE_PUBLIC_SCHEDULE_MATCH_BY_KICKOFF_ONLY"
+    },
+    {
+      "candidate_commit_sha": "fdca227e6fc8284865254f009e987ce7a70935a0",
+      "candidate_commit_timestamp_utc_not_publication_proof": "2025-07-30T16:20:51Z",
+      "independently_verified_first_publication": false,
+      "kickoff_utc": "2025-08-31T15:30:00Z",
+      "match_by_exact_uk_local_to_utc_kickoff": [
+        {
+          "away_name_openfootball": "Arsenal FC",
+          "home_name_openfootball": "Liverpool FC",
+          "score_present_in_prematch_candidate_blob": false
+        }
+      ],
+      "native_pitchapi_team_pair_verified": false,
+      "official_train_eligible": false,
+      "partition": "VALIDATION",
+      "pitch_fixture_id": "m_0lzfjT",
+      "public_file_sha256": "ba32190faf6aad0558d9e919344db6be6abe6e4ce733168b7efc40427771962b",
+      "season": "2025-26",
+      "status": "ONE_PUBLIC_SCHEDULE_MATCH_BY_KICKOFF_ONLY"
+    },
+    {
+      "candidate_commit_sha": "fdca227e6fc8284865254f009e987ce7a70935a0",
+      "candidate_commit_timestamp_utc_not_publication_proof": "2025-07-30T16:20:51Z",
+      "independently_verified_first_publication": false,
+      "kickoff_utc": "2025-09-21T13:00:00Z",
+      "match_by_exact_uk_local_to_utc_kickoff": [
+        {
+          "away_name_openfootball": "Aston Villa",
+          "home_name_openfootball": "Sunderland AFC",
+          "score_present_in_prematch_candidate_blob": false
+        }
+      ],
+      "native_pitchapi_team_pair_verified": false,
+      "official_train_eligible": false,
+      "partition": "VALIDATION",
+      "pitch_fixture_id": "m_0JJdwI",
+      "public_file_sha256": "ba32190faf6aad0558d9e919344db6be6abe6e4ce733168b7efc40427771962b",
+      "season": "2025-26",
+      "status": "ONE_PUBLIC_SCHEDULE_MATCH_BY_KICKOFF_ONLY"
+    },
+    {
+      "candidate_commit_sha": "fdca227e6fc8284865254f009e987ce7a70935a0",
+      "candidate_commit_timestamp_utc_not_publication_proof": "2025-07-30T16:20:51Z",
+      "independently_verified_first_publication": false,
+      "kickoff_utc": "2025-10-05T13:00:00Z",
+      "match_by_exact_uk_local_to_utc_kickoff": [],
+      "native_pitchapi_team_pair_verified": false,
+      "official_train_eligible": false,
+      "partition": "VALIDATION",
+      "pitch_fixture_id": "m_3HX0Rm",
+      "public_file_sha256": "ba32190faf6aad0558d9e919344db6be6abe6e4ce733168b7efc40427771962b",
+      "season": "2025-26",
+      "status": "NO_EXACT_SCHEDULE_MATCH_AT_COMMIT"
+    },
+    {
+      "candidate_commit_sha": "fdca227e6fc8284865254f009e987ce7a70935a0",
+      "candidate_commit_timestamp_utc_not_publication_proof": "2025-07-30T16:20:51Z",
+      "independently_verified_first_publication": false,
+      "kickoff_utc": "2025-10-26T14:00:00Z",
+      "match_by_exact_uk_local_to_utc_kickoff": [],
+      "native_pitchapi_team_pair_verified": false,
+      "official_train_eligible": false,
+      "partition": "VALIDATION",
+      "pitch_fixture_id": "m_1L3wwP",
+      "public_file_sha256": "ba32190faf6aad0558d9e919344db6be6abe6e4ce733168b7efc40427771962b",
+      "season": "2025-26",
+      "status": "NO_EXACT_SCHEDULE_MATCH_AT_COMMIT"
+    },
+    {
+      "candidate_commit_sha": "e7b38d4a48ea5aac061104f696e3a9eadc99e7ee",
+      "candidate_commit_timestamp_utc_not_publication_proof": "2025-11-04T14:50:42Z",
+      "independently_verified_first_publication": false,
+      "kickoff_utc": "2025-11-08T20:00:00Z",
+      "match_by_exact_uk_local_to_utc_kickoff": [
+        {
+          "away_name_openfootball": "Wolverhampton Wanderers FC",
+          "home_name_openfootball": "Chelsea FC",
+          "score_present_in_prematch_candidate_blob": false
+        }
+      ],
+      "native_pitchapi_team_pair_verified": false,
+      "official_train_eligible": false,
+      "partition": "VALIDATION",
+      "pitch_fixture_id": "m_0bp90o",
+      "public_file_sha256": "a0ce5b3230cd358a3f095da76cdb0ad818a7b0b196718adef19bb95e1720fbd9",
+      "season": "2025-26",
+      "status": "ONE_PUBLIC_SCHEDULE_MATCH_BY_KICKOFF_ONLY"
+    },
+    {
+      "candidate_commit_sha": "268e8237611c5fbc5854bda16c3206af49701beb",
+      "candidate_commit_timestamp_utc_not_publication_proof": "2025-11-12T05:20:03Z",
+      "independently_verified_first_publication": false,
+      "kickoff_utc": "2025-11-29T17:30:00Z",
+      "match_by_exact_uk_local_to_utc_kickoff": [
+        {
+          "away_name_openfootball": "Newcastle United FC",
+          "home_name_openfootball": "Everton FC",
+          "score_present_in_prematch_candidate_blob": false
+        }
+      ],
+      "native_pitchapi_team_pair_verified": false,
+      "official_train_eligible": false,
+      "partition": "VALIDATION",
+      "pitch_fixture_id": "m_3oVAGV",
+      "public_file_sha256": "3733085da076d32e3d078e2d7a21a3b585f2429212f7cd6ccc120c51e394aa2d",
+      "season": "2025-26",
+      "status": "ONE_PUBLIC_SCHEDULE_MATCH_BY_KICKOFF_ONLY"
+    },
+    {
+      "candidate_commit_sha": "268e8237611c5fbc5854bda16c3206af49701beb",
+      "candidate_commit_timestamp_utc_not_publication_proof": "2025-11-12T05:20:03Z",
+      "independently_verified_first_publication": false,
+      "kickoff_utc": "2025-12-06T15:00:00Z",
+      "match_by_exact_uk_local_to_utc_kickoff": [
+        {
+          "away_name_openfootball": "Chelsea FC",
+          "home_name_openfootball": "AFC Bournemouth",
+          "score_present_in_prematch_candidate_blob": false
+        },
+        {
+          "away_name_openfootball": "Nottingham Forest FC",
+          "home_name_openfootball": "Everton FC",
+          "score_present_in_prematch_candidate_blob": false
+        },
+        {
+          "away_name_openfootball": "Sunderland AFC",
+          "home_name_openfootball": "Manchester City FC",
+          "score_present_in_prematch_candidate_blob": false
+        },
+        {
+          "away_name_openfootball": "Burnley FC",
+          "home_name_openfootball": "Newcastle United FC",
+          "score_present_in_prematch_candidate_blob": false
+        },
+        {
+          "away_name_openfootball": "Brentford FC",
+          "home_name_openfootball": "Tottenham Hotspur FC",
+          "score_present_in_prematch_candidate_blob": false
+        }
+      ],
+      "native_pitchapi_team_pair_verified": false,
+      "official_train_eligible": false,
+      "partition": "VALIDATION",
+      "pitch_fixture_id": "m_3pdM3D",
+      "public_file_sha256": "3733085da076d32e3d078e2d7a21a3b585f2429212f7cd6ccc120c51e394aa2d",
+      "season": "2025-26",
+      "status": "AMBIGUOUS_SAME_KICKOFF_PUBLIC_FIXTURES"
+    },
+    {
+      "candidate_commit_sha": "6bae9dea07e9a5064fb3989ef66af852494d4284",
+      "candidate_commit_timestamp_utc_not_publication_proof": "2025-12-09T15:06:23Z",
+      "independently_verified_first_publication": false,
+      "kickoff_utc": "2025-12-20T15:00:00Z",
+      "match_by_exact_uk_local_to_utc_kickoff": [
+        {
+          "away_name_openfootball": "Burnley FC",
+          "home_name_openfootball": "AFC Bournemouth",
+          "score_present_in_prematch_candidate_blob": false
+        },
+        {
+          "away_name_openfootball": "Sunderland AFC",
+          "home_name_openfootball": "Brighton & Hove Albion FC",
+          "score_present_in_prematch_candidate_blob": false
+        },
+        {
+          "away_name_openfootball": "West Ham United FC",
+          "home_name_openfootball": "Manchester City FC",
+          "score_present_in_prematch_candidate_blob": false
+        },
+        {
+          "away_name_openfootball": "Brentford FC",
+          "home_name_openfootball": "Wolverhampton Wanderers FC",
+          "score_present_in_prematch_candidate_blob": false
+        }
+      ],
+      "native_pitchapi_team_pair_verified": false,
+      "official_train_eligible": false,
+      "partition": "VALIDATION",
+      "pitch_fixture_id": "m_09qRw9",
+      "public_file_sha256": "926801ff253e25c515a9d74e652b0e8e98cd9034bb0c0322fbbdc6489ea65da6",
+      "season": "2025-26",
+      "status": "AMBIGUOUS_SAME_KICKOFF_PUBLIC_FIXTURES"
+    },
+    {
+      "candidate_commit_sha": "6bae9dea07e9a5064fb3989ef66af852494d4284",
+      "candidate_commit_timestamp_utc_not_publication_proof": "2025-12-09T15:06:23Z",
+      "independently_verified_first_publication": false,
+      "kickoff_utc": "2025-12-30T19:30:00Z",
+      "match_by_exact_uk_local_to_utc_kickoff": [
+        {
+          "away_name_openfootball": "Newcastle United FC",
+          "home_name_openfootball": "Burnley FC",
+          "score_present_in_prematch_candidate_blob": false
+        },
+        {
+          "away_name_openfootball": "AFC Bournemouth",
+          "home_name_openfootball": "Chelsea FC",
+          "score_present_in_prematch_candidate_blob": false
+        },
+        {
+          "away_name_openfootball": "Everton FC",
+          "home_name_openfootball": "Nottingham Forest FC",
+          "score_present_in_prematch_candidate_blob": false
+        },
+        {
+          "away_name_openfootball": "Brighton & Hove Albion FC",
+          "home_name_openfootball": "West Ham United FC",
+          "score_present_in_prematch_candidate_blob": false
+        }
+      ],
+      "native_pitchapi_team_pair_verified": false,
+      "official_train_eligible": false,
+      "partition": "VALIDATION",
+      "pitch_fixture_id": "m_0kmBgc",
+      "public_file_sha256": "926801ff253e25c515a9d74e652b0e8e98cd9034bb0c0322fbbdc6489ea65da6",
+      "season": "2025-26",
+      "status": "AMBIGUOUS_SAME_KICKOFF_PUBLIC_FIXTURES"
+    },
+    {
+      "candidate_commit_sha": "6bae9dea07e9a5064fb3989ef66af852494d4284",
+      "candidate_commit_timestamp_utc_not_publication_proof": "2025-12-09T15:06:23Z",
+      "independently_verified_first_publication": false,
+      "kickoff_utc": "2026-01-04T17:30:00Z",
+      "match_by_exact_uk_local_to_utc_kickoff": [
+        {
+          "away_name_openfootball": "Chelsea FC",
+          "home_name_openfootball": "Manchester City FC",
+          "score_present_in_prematch_candidate_blob": false
+        }
+      ],
+      "native_pitchapi_team_pair_verified": false,
+      "official_train_eligible": false,
+      "partition": "VALIDATION",
+      "pitch_fixture_id": "m_0A2hDi",
+      "public_file_sha256": "926801ff253e25c515a9d74e652b0e8e98cd9034bb0c0322fbbdc6489ea65da6",
+      "season": "2025-26",
+      "status": "ONE_PUBLIC_SCHEDULE_MATCH_BY_KICKOFF_ONLY"
+    },
+    {
+      "candidate_commit_sha": "4a843cdd1008cd13498a7274501cfc16a37c76b4",
+      "candidate_commit_timestamp_utc_not_publication_proof": "2026-01-08T05:19:34Z",
+      "independently_verified_first_publication": false,
+      "kickoff_utc": "2026-01-18T16:30:00Z",
+      "match_by_exact_uk_local_to_utc_kickoff": [],
+      "native_pitchapi_team_pair_verified": false,
+      "official_train_eligible": false,
+      "partition": "VALIDATION",
+      "pitch_fixture_id": "m_2Qj9ic",
+      "public_file_sha256": "078f71eac6b0b7f6ac62821cb049e22e2b1d3881a0c2cca8b57ed2df5bf1779b",
+      "season": "2025-26",
+      "status": "NO_EXACT_SCHEDULE_MATCH_AT_COMMIT"
+    },
+    {
+      "candidate_commit_sha": "4a843cdd1008cd13498a7274501cfc16a37c76b4",
+      "candidate_commit_timestamp_utc_not_publication_proof": "2026-01-08T05:19:34Z",
+      "independently_verified_first_publication": false,
+      "kickoff_utc": "2026-02-01T14:00:00Z",
+      "match_by_exact_uk_local_to_utc_kickoff": [],
+      "native_pitchapi_team_pair_verified": false,
+      "official_train_eligible": false,
+      "partition": "VALIDATION",
+      "pitch_fixture_id": "m_4McelU",
+      "public_file_sha256": "078f71eac6b0b7f6ac62821cb049e22e2b1d3881a0c2cca8b57ed2df5bf1779b",
+      "season": "2025-26",
+      "status": "NO_EXACT_SCHEDULE_MATCH_AT_COMMIT"
+    },
+    {
+      "candidate_commit_sha": "4a843cdd1008cd13498a7274501cfc16a37c76b4",
+      "candidate_commit_timestamp_utc_not_publication_proof": "2026-01-08T05:19:34Z",
+      "independently_verified_first_publication": false,
+      "kickoff_utc": "2026-02-11T19:30:00Z",
+      "match_by_exact_uk_local_to_utc_kickoff": [],
+      "native_pitchapi_team_pair_verified": false,
+      "official_train_eligible": false,
+      "partition": "VALIDATION",
+      "pitch_fixture_id": "m_4f5B97",
+      "public_file_sha256": "078f71eac6b0b7f6ac62821cb049e22e2b1d3881a0c2cca8b57ed2df5bf1779b",
+      "season": "2025-26",
+      "status": "NO_EXACT_SCHEDULE_MATCH_AT_COMMIT"
+    },
+    {
+      "candidate_commit_sha": "ad52387228577edea2a85da18be6fd7d3033f005",
+      "candidate_commit_timestamp_utc_not_publication_proof": "2026-02-26T05:53:42Z",
+      "independently_verified_first_publication": false,
+      "kickoff_utc": "2026-02-28T15:00:00Z",
+      "match_by_exact_uk_local_to_utc_kickoff": [
+        {
+          "away_name_openfootball": "Brentford FC",
+          "home_name_openfootball": "Burnley FC",
+          "score_present_in_prematch_candidate_blob": false
+        },
+        {
+          "away_name_openfootball": "West Ham United FC",
+          "home_name_openfootball": "Liverpool FC",
+          "score_present_in_prematch_candidate_blob": false
+        },
+        {
+          "away_name_openfootball": "Everton FC",
+          "home_name_openfootball": "Newcastle United FC",
+          "score_present_in_prematch_candidate_blob": false
+        }
+      ],
+      "native_pitchapi_team_pair_verified": false,
+      "official_train_eligible": false,
+      "partition": "VALIDATION",
+      "pitch_fixture_id": "m_45vz0Q",
+      "public_file_sha256": "8be50d146fe013962725828f8d2c4b5ff558b406395b69538e7bb776a3eef840",
+      "season": "2025-26",
+      "status": "AMBIGUOUS_SAME_KICKOFF_PUBLIC_FIXTURES"
+    },
+    {
+      "candidate_commit_sha": "d6d5f37a2cb319f38c87d4f12b8a708fc61089e3",
+      "candidate_commit_timestamp_utc_not_publication_proof": "2026-03-04T05:38:46Z",
+      "independently_verified_first_publication": false,
+      "kickoff_utc": "2026-03-14T17:30:00Z",
+      "match_by_exact_uk_local_to_utc_kickoff": [
+        {
+          "away_name_openfootball": "Everton FC",
+          "home_name_openfootball": "Arsenal FC",
+          "score_present_in_prematch_candidate_blob": false
+        },
+        {
+          "away_name_openfootball": "Newcastle United FC",
+          "home_name_openfootball": "Chelsea FC",
+          "score_present_in_prematch_candidate_blob": false
+        }
+      ],
+      "native_pitchapi_team_pair_verified": false,
+      "official_train_eligible": false,
+      "partition": "VALIDATION",
+      "pitch_fixture_id": "m_0aQZpr",
+      "public_file_sha256": "271a58884862b77ff09c066debfa57f032c1eff6abc9b1c005ec85df5119fcda",
+      "season": "2025-26",
+      "status": "AMBIGUOUS_SAME_KICKOFF_PUBLIC_FIXTURES"
+    },
+    {
+      "candidate_commit_sha": "25cfaf102954ebbcdc48f9c2984198b71d48610d",
+      "candidate_commit_timestamp_utc_not_publication_proof": "2026-03-13T05:43:14Z",
+      "independently_verified_first_publication": false,
+      "kickoff_utc": "2026-04-11T16:30:00Z",
+      "match_by_exact_uk_local_to_utc_kickoff": [
+        {
+          "away_name_openfootball": "Fulham FC",
+          "home_name_openfootball": "Liverpool FC",
+          "score_present_in_prematch_candidate_blob": false
+        }
+      ],
+      "native_pitchapi_team_pair_verified": false,
+      "official_train_eligible": false,
+      "partition": "VALIDATION",
+      "pitch_fixture_id": "m_29pQsp",
+      "public_file_sha256": "8e591d771d5bb6c1f6deb0efa6a4cff7fc3bb25e7615af31277dcff10a55a53d",
+      "season": "2025-26",
+      "status": "ONE_PUBLIC_SCHEDULE_MATCH_BY_KICKOFF_ONLY"
+    },
+    {
+      "candidate_commit_sha": "25cfaf102954ebbcdc48f9c2984198b71d48610d",
+      "candidate_commit_timestamp_utc_not_publication_proof": "2026-03-13T05:43:14Z",
+      "independently_verified_first_publication": false,
+      "kickoff_utc": "2026-04-24T19:00:00Z",
+      "match_by_exact_uk_local_to_utc_kickoff": [
+        {
+          "away_name_openfootball": "Nottingham Forest FC",
+          "home_name_openfootball": "Sunderland AFC",
+          "score_present_in_prematch_candidate_blob": false
+        }
+      ],
+      "native_pitchapi_team_pair_verified": false,
+      "official_train_eligible": false,
+      "partition": "VALIDATION",
+      "pitch_fixture_id": "m_1E5opu",
+      "public_file_sha256": "8e591d771d5bb6c1f6deb0efa6a4cff7fc3bb25e7615af31277dcff10a55a53d",
+      "season": "2025-26",
+      "status": "ONE_PUBLIC_SCHEDULE_MATCH_BY_KICKOFF_ONLY"
+    },
+    {
+      "candidate_commit_sha": "b039b5ab26b8197cda1d32260d1707036e9eac81",
+      "candidate_commit_timestamp_utc_not_publication_proof": "2026-05-06T07:30:12Z",
+      "independently_verified_first_publication": false,
+      "kickoff_utc": "2026-05-09T14:00:00Z",
+      "match_by_exact_uk_local_to_utc_kickoff": [
+        {
+          "away_name_openfootball": "Manchester United FC",
+          "home_name_openfootball": "Sunderland AFC",
+          "score_present_in_prematch_candidate_blob": false
+        },
+        {
+          "away_name_openfootball": "Wolverhampton Wanderers FC",
+          "home_name_openfootball": "Brighton & Hove Albion FC",
+          "score_present_in_prematch_candidate_blob": false
+        },
+        {
+          "away_name_openfootball": "AFC Bournemouth",
+          "home_name_openfootball": "Fulham FC",
+          "score_present_in_prematch_candidate_blob": false
+        }
+      ],
+      "native_pitchapi_team_pair_verified": false,
+      "official_train_eligible": false,
+      "partition": "VALIDATION",
+      "pitch_fixture_id": "m_3KrkOr",
+      "public_file_sha256": "dd52c44ab30629b46c7d8f0ba71f1f8c516abcbde35edfb0d574c904adf49799",
+      "season": "2025-26",
+      "status": "AMBIGUOUS_SAME_KICKOFF_PUBLIC_FIXTURES"
+    },
+    {
+      "candidate_commit_sha": "f8d1dcec91c82d2bce1269a8459327801fc24a52",
+      "candidate_commit_timestamp_utc_not_publication_proof": "2026-05-22T08:16:20Z",
+      "independently_verified_first_publication": false,
+      "kickoff_utc": "2026-05-24T15:00:00Z",
+      "match_by_exact_uk_local_to_utc_kickoff": [
+        {
+          "away_name_openfootball": "Chelsea FC",
+          "home_name_openfootball": "Sunderland AFC",
+          "score_present_in_prematch_candidate_blob": false
+        },
+        {
+          "away_name_openfootball": "Manchester United FC",
+          "home_name_openfootball": "Brighton & Hove Albion FC",
+          "score_present_in_prematch_candidate_blob": false
+        },
+        {
+          "away_name_openfootball": "Arsenal FC",
+          "home_name_openfootball": "Crystal Palace FC",
+          "score_present_in_prematch_candidate_blob": false
+        },
+        {
+          "away_name_openfootball": "Wolverhampton Wanderers FC",
+          "home_name_openfootball": "Burnley FC",
+          "score_present_in_prematch_candidate_blob": false
+        },
+        {
+          "away_name_openfootball": "Newcastle United FC",
+          "home_name_openfootball": "Fulham FC",
+          "score_present_in_prematch_candidate_blob": false
+        },
+        {
+          "away_name_openfootball": "Brentford FC",
+          "home_name_openfootball": "Liverpool FC",
+          "score_present_in_prematch_candidate_blob": false
+        },
+        {
+          "away_name_openfootball": "Aston Villa FC",
+          "home_name_openfootball": "Manchester City FC",
+          "score_present_in_prematch_candidate_blob": false
+        },
+        {
+          "away_name_openfootball": "AFC Bournemouth",
+          "home_name_openfootball": "Nottingham Forest FC",
+          "score_present_in_prematch_candidate_blob": false
+        },
+        {
+          "away_name_openfootball": "Everton FC",
+          "home_name_openfootball": "Tottenham Hotspur FC",
+          "score_present_in_prematch_candidate_blob": false
+        },
+        {
+          "away_name_openfootball": "Leeds United FC",
+          "home_name_openfootball": "West Ham United FC",
+          "score_present_in_prematch_candidate_blob": false
+        }
+      ],
+      "native_pitchapi_team_pair_verified": false,
+      "official_train_eligible": false,
+      "partition": "VALIDATION",
+      "pitch_fixture_id": "m_0RzVJW",
+      "public_file_sha256": "949816dc2c397803e18e9bb19405d0d871844361efba6eece294e71e9820cdce",
+      "season": "2025-26",
+      "status": "AMBIGUOUS_SAME_KICKOFF_PUBLIC_FIXTURES"
+    }
+  ],
+  "sampled_test": 0,
+  "sampled_train": 40,
+  "sampled_validation": 20,
+  "schema": "kb3-step14-historical-blob-clock-crosswalk-audit-v1",
+  "source": "openfootball/football.json",
+  "status_totals": {
+    "AMBIGUOUS_SAME_KICKOFF_PUBLIC_FIXTURES": 17,
+    "NO_COMMIT_BEFORE_CUTOFF": 21,
+    "NO_EXACT_SCHEDULE_MATCH_AT_COMMIT": 5,
+    "ONE_PUBLIC_SCHEDULE_MATCH_BY_KICKOFF_ONLY": 17
+  },
+  "test_match_result_labels_read": 0
+}
