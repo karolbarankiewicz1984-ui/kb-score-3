@@ -172,16 +172,33 @@ def run_synthetic_catboost(*, use_xg=False):
         logloss -= math.log(max(p[row["label_1x2"]], 1e-15)) / len(valid)
         brier += sum((p[label] - (label == row["label_1x2"])) ** 2 for label in LABELS) / len(valid)
     canonical = json.dumps(rows, sort_keys=True, separators=(",", ":"), allow_nan=False)
+    # Check that .cbm can be reloaded and returns the *same* class probabilities.
+    # This does not validate real forecasting performance.
     with TemporaryDirectory(prefix="kb3_step14_synthetic_") as work:
         destination = Path(work) / "NOT_FOR_PRODUCTION.cbm"
         model.save_model(str(destination))
         model_hash = hashlib.sha256(destination.read_bytes()).hexdigest()
+        restored = CatBoostClassifier()
+        restored.load_model(str(destination))
+        restored_classes = [str(v) for v in restored.classes_]
+        if restored_classes != classes:
+            raise Step14SafetyError("CBM_RELOAD_CLASS_ORDER_CHANGED")
+        roundtrip = restored.predict_proba(Pool(x_valid, feature_names=list(names)))
+        max_roundtrip_error = max(
+            abs(float(a) - float(b))
+            for original, reloaded in zip(raw, roundtrip)
+            for a, b in zip(original, reloaded)
+        )
+        if max_roundtrip_error > 1e-12:
+            raise Step14SafetyError("CBM_RELOAD_PROBABILITIES_DIFFER")
     return {
         "experiment": "KB3_STEP14_CPU_SYNTHETIC_ONLY",
         "feature_variant": "WITH_XG_MASKS" if use_xg else "NO_XG",
         "feature_names": list(names), "seed": SEED, "config": config,
         "synthetic_data_sha256": hashlib.sha256(canonical.encode()).hexdigest(),
         "ephemeral_synthetic_model_sha256": model_hash,
+        "cbm_reload_checked": True,
+        "cbm_reload_max_absolute_probability_difference": max_roundtrip_error,
         "synthetic_train_count": len(train), "synthetic_validation_count": len(valid),
         "synthetic_log_loss": logloss, "synthetic_brier_sum3": brier,
         "synthetic_pipeline_ready": True,
