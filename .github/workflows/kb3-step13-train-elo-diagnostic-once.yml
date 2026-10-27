@@ -2,7 +2,9 @@ name: "KB3 Step13 - One-time TRAIN-only Elo Elasticity Diagnostic"
 on:
   push:
     branches: ["feature/step13-train-only-elo-elasticity-v07"]
-    paths: [".github/workflows/kb3-step13-train-elo-diagnostic-once.yml"]
+    paths:
+      - ".github/workflows/kb3-step13-train-elo-diagnostic-once.yml"
+      - "tests/test_step13_train_elo_sensitivity.py"
 permissions:
   contents: write
 concurrency:
