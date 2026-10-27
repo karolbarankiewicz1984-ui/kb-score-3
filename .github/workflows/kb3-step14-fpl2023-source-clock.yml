@@ -1,0 +1,57 @@
+name: KB3 Step14 Historic 2023-24 FPL Independent Public Push Proof (Research, No Fit)
+on:
+  push:
+    branches:
+      - research/step14-fpl-2023-24-real-publish-clock-20261027
+    paths:
+      - "src/kb3_step14_fpl_historic_clock_pilot.py"
+      - "tests/test_step14_fpl_historic_clock_pilot.py"
+      - ".github/workflows/kb3-step14-fpl2023-source-clock.yml"
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  authentic-historical-source:
+    runs-on: ubuntu-latest
+    timeout-minutes: 14
+    env:
+      PYTHONPATH: "."
+      PYTHONDONTWRITEBYTECODE: "1"
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Seven negative/positive offline contracts - no private keys
+        run: python -m unittest discover -s tests -p "test_step14_fpl_historic_clock_pilot.py" -v
+      - name: Independently verify real 2023/24 FPL pregame archived CSV against GH Archive events
+        run: |
+          python -m src.kb3_step14_fpl_historic_clock_pilot --output data/audits/STEP14_FPL_2023_PREMATCH_PUBLIC_SNAPSHOT_PILOT_2026-10-27.json
+      - name: Permit partial public predecessor score evidence ONLY, never PitchAPI PIT
+        run: |
+          python - <<'PY'
+          import json
+          p="data/audits/STEP14_FPL_2023_PREMATCH_PUBLIC_SNAPSHOT_PILOT_2026-10-27.json"
+          r=json.load(open(p))
+          assert r["verified_snapshots"]==3
+          assert [v["finished_ft_records_available_at_historical_source_publication"] for v in r["records"]]==[10,70,90]
+          assert all(v["unplayed_rows_have_null_scores"]==380-v["finished_ft_records_available_at_historical_source_publication"] for v in r["records"])
+          assert not r["gate14_pass"] and not r["official_M1_train_allowed"]
+          assert not r["native_pitchapi_team_pair_joined"] and not r["xg_input_certified"]
+          assert r["test_rows_examined"]==0 and not r["odds_used"]
+          print("FPL_2023_REAL_GHARCHIVE_PREMATCH_FT_PROVEN__PITCHAPI_159_FIELDS_STILL_UNPROVEN")
+          PY
+      - name: Freeze safe provenance summary on isolated research branch
+        if: github.ref == 'refs/heads/research/step14-fpl-2023-24-real-publish-clock-20261027'
+        run: |
+          git config user.name "kb3-audit-bot"
+          git config user.email "kb3-audit-bot@users.noreply.github.com"
+          git add data/audits/STEP14_FPL_2023_PREMATCH_PUBLIC_SNAPSHOT_PILOT_2026-10-27.json
+          if git diff --cached --quiet; then
+            echo "Already frozen."
+          else
+            git commit -m "research: preserve authentic 2023/24 FPL public FT availability proof without values"
+            git push origin HEAD:research/step14-fpl-2023-24-real-publish-clock-20261027
+          fi
