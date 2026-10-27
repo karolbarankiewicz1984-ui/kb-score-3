@@ -1,0 +1,389 @@
+{
+  "first_snapshot_match_count": 10,
+  "fit_parameters": {
+    "base_away_goals": 1.4370968890275349,
+    "base_home_goals": 1.63733387301664,
+    "elo_goal_elasticity": 0.6,
+    "elo_home_advantage": 65.0,
+    "elo_k": 20.0,
+    "elo_scale": 400.0,
+    "initial_elo": 1500.0
+  },
+  "forecast_frozen_at_utc": "2026-10-27T06:12:08.707287Z",
+  "forecasts": [
+    {
+      "away_team_id": "t_2I313i",
+      "away_team_name": "Manchester United",
+      "eligible_for_betting": false,
+      "elo_at_forecast": {
+        "away": 1472.4960154373562,
+        "home": 1604.1878725501665
+      },
+      "expected_goals": {
+        "away": 1.1794960177832896,
+        "home": 1.9949261207628255
+      },
+      "fixture_id": "m_0C3yM3",
+      "forecast_frozen_at_utc": "2026-10-27T06:12:08.707287Z",
+      "highest_probability_scoreline": {
+        "away": 1,
+        "home": 1,
+        "probability": 0.09839868120333639
+      },
+      "home_team_id": "t_4R934X",
+      "home_team_name": "Chelsea",
+      "kickoff_utc": "2026-10-31T12:30:00Z",
+      "probabilities_1x2": {
+        "1": 0.5626901969085063,
+        "2": 0.22162697332921266,
+        "X": 0.21568282976228104
+      },
+      "scores_at_source": {
+        "away": null,
+        "home": null
+      },
+      "source_observed_at_utc": "2026-10-27T06:12:08.686916Z",
+      "target_result_known_before_forecast": false
+    },
+    {
+      "away_team_id": "t_2xPV6y",
+      "away_team_name": "Sunderland",
+      "eligible_for_betting": false,
+      "elo_at_forecast": {
+        "away": 1500.0,
+        "home": 1500.0
+      },
+      "expected_goals": {
+        "away": 1.4370968890275349,
+        "home": 1.63733387301664
+      },
+      "fixture_id": "m_0IHgwr",
+      "forecast_frozen_at_utc": "2026-10-27T06:12:08.707287Z",
+      "highest_probability_scoreline": {
+        "away": 1,
+        "home": 1,
+        "probability": 0.10874642306428432
+      },
+      "home_team_id": "t_0C4xyR",
+      "home_team_name": "Coventry City",
+      "kickoff_utc": "2026-10-31T15:00:00Z",
+      "probabilities_1x2": {
+        "1": 0.4243045358941449,
+        "2": 0.33733112866763026,
+        "X": 0.23836433543822488
+      },
+      "scores_at_source": {
+        "away": null,
+        "home": null
+      },
+      "source_observed_at_utc": "2026-10-27T06:12:08.686916Z",
+      "target_result_known_before_forecast": false
+    },
+    {
+      "away_team_id": "t_19Nr9K",
+      "away_team_name": "Leeds United",
+      "eligible_for_betting": false,
+      "elo_at_forecast": {
+        "away": 1500.0,
+        "home": 1519.5784791411363
+      },
+      "expected_goals": {
+        "away": 1.3955063308852254,
+        "home": 1.6861316664317902
+      },
+      "fixture_id": "m_0bXUBx",
+      "forecast_frozen_at_utc": "2026-10-27T06:12:08.707287Z",
+      "highest_probability_scoreline": {
+        "away": 1,
+        "home": 1,
+        "probability": 0.10796547961024297
+      },
+      "home_team_id": "t_1iaglr",
+      "home_team_name": "AFC Bournemouth",
+      "kickoff_utc": "2026-10-31T15:00:00Z",
+      "probabilities_1x2": {
+        "1": 0.444617408776092,
+        "2": 0.31873002765083547,
+        "X": 0.23665256357307254
+      },
+      "scores_at_source": {
+        "away": null,
+        "home": null
+      },
+      "source_observed_at_utc": "2026-10-27T06:12:08.686916Z",
+      "target_result_known_before_forecast": false
+    },
+    {
+      "away_team_id": "t_2C9laO",
+      "away_team_name": "Ipswich Town",
+      "eligible_for_betting": false,
+      "elo_at_forecast": {
+        "away": 1376.8141277355894,
+        "home": 1500.0
+      },
+      "expected_goals": {
+        "away": 1.194641596249292,
+        "home": 1.969634593838974
+      },
+      "fixture_id": "m_0n3Keu",
+      "forecast_frozen_at_utc": "2026-10-27T06:12:08.707287Z",
+      "highest_probability_scoreline": {
+        "away": 1,
+        "home": 1,
+        "probability": 0.09940211091645107
+      },
+      "home_team_id": "t_0HV3k6",
+      "home_team_name": "Hull City",
+      "kickoff_utc": "2026-10-31T15:00:00Z",
+      "probabilities_1x2": {
+        "1": 0.5537498088275272,
+        "2": 0.22836791567224624,
+        "X": 0.21788227550022654
+      },
+      "scores_at_source": {
+        "away": null,
+        "home": null
+      },
+      "source_observed_at_utc": "2026-10-27T06:12:08.686916Z",
+      "target_result_known_before_forecast": false
+    },
+    {
+      "away_team_id": "t_0msSwp",
+      "away_team_name": "Nottingham Forest",
+      "eligible_for_betting": false,
+      "elo_at_forecast": {
+        "away": 1528.3907980758686,
+        "home": 1515.446168025075
+      },
+      "expected_goals": {
+        "away": 1.4652735878435317,
+        "home": 1.6058485150712227
+      },
+      "fixture_id": "m_1Gc5Hh",
+      "forecast_frozen_at_utc": "2026-10-27T06:12:08.707287Z",
+      "highest_probability_scoreline": {
+        "away": 1,
+        "home": 1,
+        "probability": 0.10910682380256825
+      },
+      "home_team_id": "t_2ihyjC",
+      "home_team_name": "Brentford",
+      "kickoff_utc": "2026-10-31T15:00:00Z",
+      "probabilities_1x2": {
+        "1": 0.41099095451222545,
+        "2": 0.3498547375607835,
+        "X": 0.23915430792699105
+      },
+      "scores_at_source": {
+        "away": null,
+        "home": null
+      },
+      "source_observed_at_utc": "2026-10-27T06:12:08.686916Z",
+      "target_result_known_before_forecast": false
+    },
+    {
+      "away_team_id": "t_3eV7Ev",
+      "away_team_name": "Brighton & Hove Albion",
+      "eligible_for_betting": false,
+      "elo_at_forecast": {
+        "away": 1551.1846580722047,
+        "home": 1654.6556745887356
+      },
+      "expected_goals": {
+        "away": 1.2304974328287708,
+        "home": 1.9122408161407758
+      },
+      "fixture_id": "m_4RvJ1j",
+      "forecast_frozen_at_utc": "2026-10-27T06:12:08.707287Z",
+      "highest_probability_scoreline": {
+        "away": 1,
+        "home": 1,
+        "probability": 0.10156624961611811
+      },
+      "home_team_id": "t_0UCNPX",
+      "home_team_name": "Manchester City",
+      "kickoff_utc": "2026-10-31T15:00:00Z",
+      "probabilities_1x2": {
+        "1": 0.5329635849351934,
+        "2": 0.24441050323699867,
+        "X": 0.22262591182780797
+      },
+      "scores_at_source": {
+        "away": null,
+        "home": null
+      },
+      "source_observed_at_utc": "2026-10-27T06:12:08.686916Z",
+      "target_result_known_before_forecast": false
+    },
+    {
+      "away_team_id": "t_4bz4EP",
+      "away_team_name": "Crystal Palace",
+      "eligible_for_betting": false,
+      "elo_at_forecast": {
+        "away": 1545.7012255760862,
+        "home": 1439.9062192965528
+      },
+      "expected_goals": {
+        "away": 1.6842452468835416,
+        "home": 1.3970693517262567
+      },
+      "fixture_id": "m_0GIRbd",
+      "forecast_frozen_at_utc": "2026-10-27T06:12:08.707287Z",
+      "highest_probability_scoreline": {
+        "away": 1,
+        "home": 1,
+        "probability": 0.10800040115325928
+      },
+      "home_team_id": "t_4A7FfD",
+      "home_team_name": "Tottenham Hotspur",
+      "kickoff_utc": "2026-10-31T17:30:00Z",
+      "probabilities_1x2": {
+        "1": 0.319431171150203,
+        "2": 0.4438397197669137,
+        "X": 0.23672910908288333
+      },
+      "scores_at_source": {
+        "away": null,
+        "home": null
+      },
+      "source_observed_at_utc": "2026-10-27T06:12:08.686916Z",
+      "target_result_known_before_forecast": false
+    },
+    {
+      "away_team_id": "t_1c1ZPD",
+      "away_team_name": "Fulham",
+      "eligible_for_betting": false,
+      "elo_at_forecast": {
+        "away": 1507.1987616530346,
+        "home": 1592.2353829515675
+      },
+      "expected_goals": {
+        "away": 1.2649974386449034,
+        "home": 1.8600886794934683
+      },
+      "fixture_id": "m_14WeHI",
+      "forecast_frozen_at_utc": "2026-10-27T06:12:08.707287Z",
+      "highest_probability_scoreline": {
+        "away": 1,
+        "home": 1,
+        "probability": 0.10337502776933387
+      },
+      "home_team_id": "t_4RqKpo",
+      "home_team_name": "Aston Villa",
+      "kickoff_utc": "2026-10-31T20:00:00Z",
+      "probabilities_1x2": {
+        "1": 0.5134834665259012,
+        "2": 0.25992591006960214,
+        "X": 0.2265906234044967
+      },
+      "scores_at_source": {
+        "away": null,
+        "home": null
+      },
+      "source_observed_at_utc": "2026-10-27T06:12:08.686916Z",
+      "target_result_known_before_forecast": false
+    },
+    {
+      "away_team_id": "t_1gkhxH",
+      "away_team_name": "Arsenal",
+      "eligible_for_betting": false,
+      "elo_at_forecast": {
+        "away": 1662.9840950855719,
+        "home": 1672.3368236223669
+      },
+      "expected_goals": {
+        "away": 1.4170764858079998,
+        "home": 1.6604660643070102
+      },
+      "fixture_id": "m_1cQmo2",
+      "forecast_frozen_at_utc": "2026-10-27T06:12:08.707287Z",
+      "highest_probability_scoreline": {
+        "away": 1,
+        "home": 1,
+        "probability": 0.10840855320458478
+      },
+      "home_team_id": "t_0BrMnM",
+      "home_team_name": "Liverpool",
+      "kickoff_utc": "2026-11-01T16:30:00Z",
+      "probabilities_1x2": {
+        "1": 0.4339838383397129,
+        "2": 0.3283924126459879,
+        "X": 0.23762374901429922
+      },
+      "scores_at_source": {
+        "away": null,
+        "home": null
+      },
+      "source_observed_at_utc": "2026-10-27T06:12:08.686916Z",
+      "target_result_known_before_forecast": false
+    },
+    {
+      "away_team_id": "t_21IR9d",
+      "away_team_name": "Everton",
+      "eligible_for_betting": false,
+      "elo_at_forecast": {
+        "away": 1522.1127569143687,
+        "home": 1571.6377158943676
+      },
+      "expected_goals": {
+        "away": 1.3342076444212903,
+        "home": 1.7635991107158062
+      },
+      "fixture_id": "m_0eAA1g",
+      "forecast_frozen_at_utc": "2026-10-27T06:12:08.707287Z",
+      "highest_probability_scoreline": {
+        "away": 1,
+        "home": 1,
+        "probability": 0.10623384880178938
+      },
+      "home_team_id": "t_2eQl9k",
+      "home_team_name": "Newcastle United",
+      "kickoff_utc": "2026-11-02T20:00:00Z",
+      "probabilities_1x2": {
+        "1": 0.47599906820148613,
+        "2": 0.2911439783728887,
+        "X": 0.23285695342562523
+      },
+      "scores_at_source": {
+        "away": null,
+        "home": null
+      },
+      "source_observed_at_utc": "2026-10-27T06:12:08.686916Z",
+      "target_result_known_before_forecast": false
+    }
+  ],
+  "frozen_step12_safe_view_sha256": "3b8da84b334d897e327c883b769944bf36016cb44daf1da041bfb7d16a7b11e7",
+  "gate13_pass": false,
+  "genuinely_pre_kickoff_observation_and_forecast": true,
+  "historical_2023_2026_prematch_pit_certified": false,
+  "historical_train_native_season_hashes": {
+    "2023/2024": "39348c5643eafd57532a8ba0d355f0e0d478390544bcb9bd2884664d47c29340",
+    "2024/2025": "fd1c3436b55fb48d89bc315f8f91075d884ae8bb38592befbd4e430d880219e6"
+  },
+  "historical_train_seasons": [
+    "2023/2024",
+    "2024/2025"
+  ],
+  "immutable_predictions_pending_future_results": true,
+  "initial_elo_history_omits_2025_2026_validation_and_2026_2027_test_outcomes": true,
+  "no_model_champion_selected": true,
+  "no_odds_or_market_inputs": true,
+  "observed_at_utc": "2026-10-27T06:12:08.686916Z",
+  "original_provider_publication_time_proven": false,
+  "original_retro_validation_report_sha256": "3d950fff30b57c94a6f71462c7521cfda2cb0b27c666d59d09d274261efca803",
+  "provider_request_policy": "2_FINISHED_HISTORICAL_TRAIN_LISTS_PLUS_1_UPCOMING_ONLY_TEST_SCHEDULE",
+  "provider_requests": 3,
+  "rating_limitation": "OUTDATED_ELO_AS_OF_2025_07_01_NO_CURRENT_SEASON_RESULTS",
+  "report_sha256": "9c346f79b1868fd1cb0d4d4ffa066f6f1629e09bbc6ce0454c5c8901e7645389",
+  "research_shadow_only": true,
+  "schema": "kb3-step13-prospective-first-frozen-shadow-v0.9",
+  "source": "PitchAPI",
+  "step14_started": false,
+  "target_season": "2026/2027",
+  "test_future_fixture_metadata_used": 10,
+  "test_results_accessed": 0,
+  "train_input_sha256": "5b1f46592457a648a3761d30ae3f519065470af06d6bf5f8505808b7c09dfac7",
+  "train_rows_admitted": 760,
+  "training_allowed": false,
+  "validation_rows_admitted": 0
+}
