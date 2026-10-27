@@ -173,6 +173,9 @@
 
 **DIAGNOSTYKA TYLKO TRAIN, 27.10.2026 (w ramach KROKU13):** [raport 760 rzeczywistych meczów](../data/audits/STEP13_TRAIN_760_ELO_ELASTICITY_DIAGNOSTIC_2026-10-27.json). W dodatkowej siatce ELO 0.0–1.2 tylko na TRAIN bramkowy Poisson NLL minimalny przy 1.0 (3.055322); w pierwotnej siatce 0.0–0.6 minimum 0.6 (3.071748). Dla 2023/24 minimum badanej siatki 1.2 (brzeg), dla 2024/25 0.9 — niestabilność między sezonami. To NIE log loss 1X2 z VALIDATION i nie podstawa do aktualizacji modelu. Pobranie: tylko 2 sezony TRAIN, zero VALIDATION, zero TEST. [CI PASS](https://github.com/karolbarankiewicz1984-ui/kb-score-3/actions/runs/40425365353). **GATE13 PENDING, training_allowed=false, 12/29; bez zmiany kroków14–29.**
 
+
+**PRAWIDŁOWA KONTROLA ISTOTNOŚCI PORÓWNANIA 27.10.2026 (nadal KROK13):** [sparowany raport 380 meczów z 3000 resamplingów tygodniowych](../data/audits/STEP13_REAL_PAIRED_UNCERTAINTY_2026-10-27.json), [GitHub Actions PASS](https://github.com/karolbarankiewicz1984-ui/kb-score-3/actions/runs/40457581450). Delta logloss ROLL−EXP **+0,001744**, bootstrap 95% **[−0,000379, +0,003835]**; delta Brier **+0,001151**, bootstrap 95% **[−0,000496, +0,002724]**. Oba przedziały obejmują zero — nie wybierać zwycięzcy, nie promować parametrów, nie dodawać modelu. Kontrola wszystkich 4 foldów zgodna z podpisanym źródłowym raportem, TEST=0, historyczny prematch PIT nieudowodniony. **GATE13 PENDING; training_allowed=false; 12/29; krok14 nierozpoczęty.**
+
 #### Krok 14 — Pierwszy CatBoost 1X2  [NIE ROZPOCZĘTO]
 
 - **CO ZROBIĘ:** Wytrenować niezależny ML dla 1/X/2 na cechach przedmeczowych.

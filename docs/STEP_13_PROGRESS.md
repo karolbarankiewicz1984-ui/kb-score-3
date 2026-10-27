@@ -226,3 +226,20 @@ Na całym TRAIN cel bramkowy poprawił się względem starej granicy o 12.483966
 Źródła: [kod](../src/kb3_step13_train_elo_sensitivity.py), [testy](../tests/test_step13_train_elo_sensitivity.py), [agregat](../data/audits/STEP13_TRAIN_760_ELO_ELASTICITY_DIAGNOSTIC_2026-10-27.json), SHA256 `abaeaa142a6ab75301e964973724ce6f20cbf3efe137bd0b6c38e78a3412e846`, [GitHub Actions SUCCESS](https://github.com/karolbarankiewicz1984-ui/kb-score-3/actions/runs/40425365353). Pierwszy bieg odrzucono na poziomie sztucznego testu granicznego przed wywołaniem API; poprawiono tylko dane testowe, nie zasady bezpieczeństwa.
 
 **Formalnie 12/29 ukończonych; krok13 w toku, GATE13 PENDING, training_allowed=false, krok14 nierozpoczęty.** Nie zmieniamy harmonogramu 29 kroków.
+
+## 27.10.2026 — rzeczywista sparowana niepewność EXPANDING vs ROLLING: brak wiarygodnego zwycięzcy (KROK13)
+
+W ramach niezmienionego **kroku 13** wykonano [jednorazowe rzeczywiste porównanie sparowanych błędów 380 meczów walidacyjnych](https://github.com/karolbarankiewicz1984-ui/kb-score-3/actions/runs/40457581450) — **SUCCESS**. Wykorzystano 3 sezony historyczne PitchAPI pobrane ponownie za pomocą istniejącego bezpłatnego źródła, **tylko TRAIN 760 + VALIDATION 380**, z **TEST 0**, bez kursów, XG i eksportu wyników pojedynczych meczów. Każdy zestaw prognoz został wyliczony zgodnie z zamrożonymi parametrami na początku folda oraz dopasowaniem Poissona wyłącznie z przeszłości. Przed obliczeniem niepewności rygorystycznie porównano każdy fold — średnie logloss/Brier, fitting, trening i SHA ID celów — z podpisanym [pierwotnym raportem prawdziwej retrospekcji](../data/audits/STEP13_REAL_RETROSPECTIVE_PITCHAPI_2026-10-27.json). Przy rozbieżności program kończy działanie bez raportu. **Nie stroimy parametrów pod walidację**.
+
+Wykonano **3000 deterministycznych losowań bootstrapowych** na tych samych meczach, grupowanych według tygodnia kalendarzowego *wewnątrz każdego z czterech kwartalnych foldów* (38 klastrów). Opisywane granice to **orientacyjny interwał bootstrapowy**, a nie formalny dowód niezależności meczów ani PIT. Dodatnia różnica ROLLING−EXPANDING sprzyja EXPANDING, ujemna sprzyja ROLLING.
+
+| Miara | ROLLING minus EXPANDING | Bootstrap 95% (klastry tygodni) | 0 w interwale? |
+|---|---:|---|---|
+| Multiclass log loss 1X2 | **+0.0017436482** | **[−0.0003789226, +0.0038354903]** | TAK |
+| Multiclass Brier sum3 | **+0.0011512708** | **[−0.0004956491, +0.0027241987]** | TAK |
+
+Według kwartałów delta logloss: lip–wrz 2025 **0.000000**, paź–gru 2025 **+0.002972**, sty–mar 2026 **−0.002556**, kwi–cze 2026 **+0.008486**. Wniosek: nawet obserwowana minimalna przewaga EXPANDING **nie jest odporna na niepewność doboru próby**, nie wyznaczamy zwycięzcy ani nie włączamy modelu produkcyjnie. Słabszy trzeci kwartał pozostaje znanym ryzykiem, nie jest efektem tego dodatkowego testu.
+
+**Dowód:** [zamrożony raport wyłącznie agregatowy](../data/audits/STEP13_REAL_PAIRED_UNCERTAINTY_2026-10-27.json), SHA256 `e1a1694da3b43f944696b456521448015b855f47da8d91d181ee5d547a9d47d4`; [kod](../scripts/step13_paired_uncertainty_once.py); [testy blokady zmiany wyniku/raportu/TEST](../tests/test_step13_paired_uncertainty.py). Pierwszy syntetyczny CI odrzucił niepodpisany testowy raport zanim wysłano żądania do API, następnie naprawiono podpis sztucznego fixture i powtórzono. [Właściwy przebieg #40457581450 PASS](https://github.com/karolbarankiewicz1984-ui/kb-score-3/actions/runs/40457581450), brak wycieku surowych meczów do artefaktów. **Żadne dane z 2026/27 TEST nie zostały odczytane**.
+
+**Granice:** To nadal badanie `RECONSTRUCTED_EVENT_TIME_RESEARCH_NOT_VERIFIED_PIT`, a nie oryginalne źródłowe obserwacje sprzed dawnych spotkań. Bootstrap nie dowodzi istotności ani przewagi; rzeczywisty prospective PIT wymaga nowo zarejestrowanych przedmeczowych prognoz i uczciwego późniejszego porównania. KROK13 W REALIZACJI, GATE13 PENDING, `training_allowed=false`, ukończono **12/29**, krok14 nie rozpoczęty.
