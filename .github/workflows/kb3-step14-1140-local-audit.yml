@@ -1,0 +1,41 @@
+name: KB3 Step14 Full 1140 Native Identity and 159 Field-PIT Contract
+on:
+  push:
+    branches:
+      - audit/step14-full-1140-identity-field-pit-20261027
+      - main
+    paths:
+      - "src/kb3_step14_full_identity_pit_audit.py"
+      - "scripts/step14_full_native_identity_pit_local.py"
+      - "tests/test_step14_full_identity_pit_audit.py"
+      - ".github/workflows/kb3-step14-1140-local-audit.yml"
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  no-private-rsa-no-provider-network:
+    runs-on: ubuntu-latest
+    timeout-minutes: 7
+    env:
+      PYTHONPATH: "."
+      PYTHONDONTWRITEBYTECODE: "1"
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Synthetic/mock 1140 immutable identity and asof field classification tests
+        run: python -m unittest discover -s tests -p "test_step14_full_identity_pit_audit.py" -v
+      - name: Check syntax of owner-local decrypt runner (do not execute)
+        run: python -m py_compile scripts/step14_full_native_identity_pit_local.py
+      - name: Enforce no claim of real 1140 private-archive read by this CI
+        run: |
+          python - <<'PY'
+          from src.kb3_step14_bridge import EXPECTED_FEATURES,EXPECTED_MISSING
+          assert len(EXPECTED_FEATURES)==121 and len(EXPECTED_MISSING)==38
+          print("CI_MOCK_TEST_ONLY__TRUE_PRIVATE_1140_IDENTITY_REQUIRES_OWNER_LOCAL_RSA")
+          print("HISTORICAL_PITCHAPI_2026_RECEIPT_NOT_PREMATCH_FOR_2023_2026")
+          print("GATE14_PENDING_NO_REAL_TRAIN_PRODUCTION")
+          PY
