@@ -26,6 +26,8 @@ jobs:
           python-version: "3.11"
       - name: Offline native pair, negative proof tests with MOCK receipts only
         run: python -m unittest discover -s tests -p 'test_step14_native_team_crosswalk.py' -v
+      - name: Verify trusted-local runner syntax without unlocking any private archive
+        run: python -m py_compile scripts/step14_native_pitch_teamids_local.py
       - name: Ensure no key, no paid API, no real historical PIT release
         run: |
           python - <<'PY'
