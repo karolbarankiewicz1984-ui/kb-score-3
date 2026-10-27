@@ -1,0 +1,371 @@
+{
+  "schema": "kb3-step14-historical-candidate-pilot-v1",
+  "source_safe_projection_sha256": "3b8da84b334d897e327c883b769944bf36016cb44daf1da041bfb7d16a7b11e7",
+  "evidence_class": "FIXTURE_SCHEDULE_ONLY_NO_RESULTS_NO_TEAM_CROSSWALK",
+  "selection_rule": "20 equally spaced chronologically per season; 40 TRAIN + 20 VALIDATION; no TEST",
+  "training_allowed": false,
+  "archive_match_identity_certified": false,
+  "pilot_fixture_count": 60,
+  "fixtures": [
+    {
+      "fixture_id": "m_2AMDH3",
+      "kickoff_utc": "2023-08-14T19:00:00Z",
+      "partition": "TRAIN",
+      "season": "2023-24"
+    },
+    {
+      "fixture_id": "m_1bWMqX",
+      "kickoff_utc": "2023-08-27T15:30:00Z",
+      "partition": "TRAIN",
+      "season": "2023-24"
+    },
+    {
+      "fixture_id": "m_3RPUOt",
+      "kickoff_utc": "2023-09-17T15:30:00Z",
+      "partition": "TRAIN",
+      "season": "2023-24"
+    },
+    {
+      "fixture_id": "m_32y8SF",
+      "kickoff_utc": "2023-09-30T16:30:00Z",
+      "partition": "TRAIN",
+      "season": "2023-24"
+    },
+    {
+      "fixture_id": "m_4JMw9K",
+      "kickoff_utc": "2023-10-21T14:00:00Z",
+      "partition": "TRAIN",
+      "season": "2023-24"
+    },
+    {
+      "fixture_id": "m_4BPPGF",
+      "kickoff_utc": "2023-11-04T15:00:00Z",
+      "partition": "TRAIN",
+      "season": "2023-24"
+    },
+    {
+      "fixture_id": "m_2IebRt",
+      "kickoff_utc": "2023-11-25T15:00:00Z",
+      "partition": "TRAIN",
+      "season": "2023-24"
+    },
+    {
+      "fixture_id": "m_03CQW9",
+      "kickoff_utc": "2023-12-06T19:30:00Z",
+      "partition": "TRAIN",
+      "season": "2023-24"
+    },
+    {
+      "fixture_id": "m_1U4bT2",
+      "kickoff_utc": "2023-12-16T15:00:00Z",
+      "partition": "TRAIN",
+      "season": "2023-24"
+    },
+    {
+      "fixture_id": "m_3RjFem",
+      "kickoff_utc": "2023-12-26T15:00:00Z",
+      "partition": "TRAIN",
+      "season": "2023-24"
+    },
+    {
+      "fixture_id": "m_4FxHNS",
+      "kickoff_utc": "2024-01-13T12:30:00Z",
+      "partition": "TRAIN",
+      "season": "2023-24"
+    },
+    {
+      "fixture_id": "m_38RTSl",
+      "kickoff_utc": "2024-02-03T12:30:00Z",
+      "partition": "TRAIN",
+      "season": "2023-24"
+    },
+    {
+      "fixture_id": "m_2kUJK5",
+      "kickoff_utc": "2024-02-12T20:00:00Z",
+      "partition": "TRAIN",
+      "season": "2023-24"
+    },
+    {
+      "fixture_id": "m_4Pfqa8",
+      "kickoff_utc": "2024-02-25T13:30:00Z",
+      "partition": "TRAIN",
+      "season": "2023-24"
+    },
+    {
+      "fixture_id": "m_3Or36t",
+      "kickoff_utc": "2024-03-10T14:00:00Z",
+      "partition": "TRAIN",
+      "season": "2023-24"
+    },
+    {
+      "fixture_id": "m_4cZbsn",
+      "kickoff_utc": "2024-04-02T18:30:00Z",
+      "partition": "TRAIN",
+      "season": "2023-24"
+    },
+    {
+      "fixture_id": "m_1uwhQK",
+      "kickoff_utc": "2024-04-13T11:30:00Z",
+      "partition": "TRAIN",
+      "season": "2023-24"
+    },
+    {
+      "fixture_id": "m_1PMyxf",
+      "kickoff_utc": "2024-04-24T19:00:00Z",
+      "partition": "TRAIN",
+      "season": "2023-24"
+    },
+    {
+      "fixture_id": "m_41FcMT",
+      "kickoff_utc": "2024-05-04T14:00:00Z",
+      "partition": "TRAIN",
+      "season": "2023-24"
+    },
+    {
+      "fixture_id": "m_0Za6mO",
+      "kickoff_utc": "2024-05-19T15:00:00Z",
+      "partition": "TRAIN",
+      "season": "2023-24"
+    },
+    {
+      "fixture_id": "m_3JrCLN",
+      "kickoff_utc": "2024-08-19T19:00:00Z",
+      "partition": "TRAIN",
+      "season": "2024-25"
+    },
+    {
+      "fixture_id": "m_489nRK",
+      "kickoff_utc": "2024-09-01T12:30:00Z",
+      "partition": "TRAIN",
+      "season": "2024-25"
+    },
+    {
+      "fixture_id": "m_3SLMkR",
+      "kickoff_utc": "2024-09-21T16:30:00Z",
+      "partition": "TRAIN",
+      "season": "2024-25"
+    },
+    {
+      "fixture_id": "m_3AMymS",
+      "kickoff_utc": "2024-10-05T16:30:00Z",
+      "partition": "TRAIN",
+      "season": "2024-25"
+    },
+    {
+      "fixture_id": "m_2pnf3Z",
+      "kickoff_utc": "2024-10-26T16:30:00Z",
+      "partition": "TRAIN",
+      "season": "2024-25"
+    },
+    {
+      "fixture_id": "m_2IJhgL",
+      "kickoff_utc": "2024-11-09T17:30:00Z",
+      "partition": "TRAIN",
+      "season": "2024-25"
+    },
+    {
+      "fixture_id": "m_1AmWFs",
+      "kickoff_utc": "2024-11-30T15:00:00Z",
+      "partition": "TRAIN",
+      "season": "2024-25"
+    },
+    {
+      "fixture_id": "m_4Nyk6q",
+      "kickoff_utc": "2024-12-07T15:00:00Z",
+      "partition": "TRAIN",
+      "season": "2024-25"
+    },
+    {
+      "fixture_id": "m_2Xjinj",
+      "kickoff_utc": "2024-12-21T15:00:00Z",
+      "partition": "TRAIN",
+      "season": "2024-25"
+    },
+    {
+      "fixture_id": "m_1HkbKV",
+      "kickoff_utc": "2024-12-29T15:00:00Z",
+      "partition": "TRAIN",
+      "season": "2024-25"
+    },
+    {
+      "fixture_id": "m_17le1w",
+      "kickoff_utc": "2025-01-14T19:30:00Z",
+      "partition": "TRAIN",
+      "season": "2024-25"
+    },
+    {
+      "fixture_id": "m_1IZ7nv",
+      "kickoff_utc": "2025-01-20T20:00:00Z",
+      "partition": "TRAIN",
+      "season": "2024-25"
+    },
+    {
+      "fixture_id": "m_2g5x00",
+      "kickoff_utc": "2025-02-02T16:30:00Z",
+      "partition": "TRAIN",
+      "season": "2024-25"
+    },
+    {
+      "fixture_id": "m_31bRmB",
+      "kickoff_utc": "2025-02-22T15:00:00Z",
+      "partition": "TRAIN",
+      "season": "2024-25"
+    },
+    {
+      "fixture_id": "m_4Me4X1",
+      "kickoff_utc": "2025-03-08T17:30:00Z",
+      "partition": "TRAIN",
+      "season": "2024-25"
+    },
+    {
+      "fixture_id": "m_0amcdi",
+      "kickoff_utc": "2025-04-02T18:45:00Z",
+      "partition": "TRAIN",
+      "season": "2024-25"
+    },
+    {
+      "fixture_id": "m_22Luwy",
+      "kickoff_utc": "2025-04-12T16:30:00Z",
+      "partition": "TRAIN",
+      "season": "2024-25"
+    },
+    {
+      "fixture_id": "m_1uFOdV",
+      "kickoff_utc": "2025-04-26T11:30:00Z",
+      "partition": "TRAIN",
+      "season": "2024-25"
+    },
+    {
+      "fixture_id": "m_21gURA",
+      "kickoff_utc": "2025-05-10T14:00:00Z",
+      "partition": "TRAIN",
+      "season": "2024-25"
+    },
+    {
+      "fixture_id": "m_04WbdP",
+      "kickoff_utc": "2025-05-25T15:00:00Z",
+      "partition": "TRAIN",
+      "season": "2024-25"
+    },
+    {
+      "fixture_id": "m_4AseJ9",
+      "kickoff_utc": "2025-08-18T19:00:00Z",
+      "partition": "VALIDATION",
+      "season": "2025-26"
+    },
+    {
+      "fixture_id": "m_0lzfjT",
+      "kickoff_utc": "2025-08-31T15:30:00Z",
+      "partition": "VALIDATION",
+      "season": "2025-26"
+    },
+    {
+      "fixture_id": "m_0JJdwI",
+      "kickoff_utc": "2025-09-21T13:00:00Z",
+      "partition": "VALIDATION",
+      "season": "2025-26"
+    },
+    {
+      "fixture_id": "m_3HX0Rm",
+      "kickoff_utc": "2025-10-05T13:00:00Z",
+      "partition": "VALIDATION",
+      "season": "2025-26"
+    },
+    {
+      "fixture_id": "m_1L3wwP",
+      "kickoff_utc": "2025-10-26T14:00:00Z",
+      "partition": "VALIDATION",
+      "season": "2025-26"
+    },
+    {
+      "fixture_id": "m_0bp90o",
+      "kickoff_utc": "2025-11-08T20:00:00Z",
+      "partition": "VALIDATION",
+      "season": "2025-26"
+    },
+    {
+      "fixture_id": "m_3oVAGV",
+      "kickoff_utc": "2025-11-29T17:30:00Z",
+      "partition": "VALIDATION",
+      "season": "2025-26"
+    },
+    {
+      "fixture_id": "m_3pdM3D",
+      "kickoff_utc": "2025-12-06T15:00:00Z",
+      "partition": "VALIDATION",
+      "season": "2025-26"
+    },
+    {
+      "fixture_id": "m_09qRw9",
+      "kickoff_utc": "2025-12-20T15:00:00Z",
+      "partition": "VALIDATION",
+      "season": "2025-26"
+    },
+    {
+      "fixture_id": "m_0kmBgc",
+      "kickoff_utc": "2025-12-30T19:30:00Z",
+      "partition": "VALIDATION",
+      "season": "2025-26"
+    },
+    {
+      "fixture_id": "m_0A2hDi",
+      "kickoff_utc": "2026-01-04T17:30:00Z",
+      "partition": "VALIDATION",
+      "season": "2025-26"
+    },
+    {
+      "fixture_id": "m_2Qj9ic",
+      "kickoff_utc": "2026-01-18T16:30:00Z",
+      "partition": "VALIDATION",
+      "season": "2025-26"
+    },
+    {
+      "fixture_id": "m_4McelU",
+      "kickoff_utc": "2026-02-01T14:00:00Z",
+      "partition": "VALIDATION",
+      "season": "2025-26"
+    },
+    {
+      "fixture_id": "m_4f5B97",
+      "kickoff_utc": "2026-02-11T19:30:00Z",
+      "partition": "VALIDATION",
+      "season": "2025-26"
+    },
+    {
+      "fixture_id": "m_45vz0Q",
+      "kickoff_utc": "2026-02-28T15:00:00Z",
+      "partition": "VALIDATION",
+      "season": "2025-26"
+    },
+    {
+      "fixture_id": "m_0aQZpr",
+      "kickoff_utc": "2026-03-14T17:30:00Z",
+      "partition": "VALIDATION",
+      "season": "2025-26"
+    },
+    {
+      "fixture_id": "m_29pQsp",
+      "kickoff_utc": "2026-04-11T16:30:00Z",
+      "partition": "VALIDATION",
+      "season": "2025-26"
+    },
+    {
+      "fixture_id": "m_1E5opu",
+      "kickoff_utc": "2026-04-24T19:00:00Z",
+      "partition": "VALIDATION",
+      "season": "2025-26"
+    },
+    {
+      "fixture_id": "m_3KrkOr",
+      "kickoff_utc": "2026-05-09T14:00:00Z",
+      "partition": "VALIDATION",
+      "season": "2025-26"
+    },
+    {
+      "fixture_id": "m_0RzVJW",
+      "kickoff_utc": "2026-05-24T15:00:00Z",
+      "partition": "VALIDATION",
+      "season": "2025-26"
+    }
+  ]
+}
