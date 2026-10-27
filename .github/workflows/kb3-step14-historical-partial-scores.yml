@@ -1,0 +1,65 @@
+name: KB3 Step14 Real Old Pre-match Public Results Evidence (not PitchAPI PIT)
+on:
+  push:
+    branches:
+      - audit/step14-verified-old-score-publication-20261027
+      - main
+    paths:
+      - src/kb3_step14_partial_public_scores.py
+      - tests/test_step14_partial_public_scores.py
+      - .github/workflows/kb3-step14-historical-partial-scores.yml
+permissions:
+  contents: write
+jobs:
+  verified-public-predecessor-scores:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    env:
+      PYTHONPATH: "."
+      PYTHONDONTWRITEBYTECODE: "1"
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Python crypto dependency for verified source adapters only, no keys
+        run: python -m pip install --disable-pip-version-check cryptography
+      - name: 7 tests -- GH Archive proof, target-result refusal and no PIT promotion
+        run: python -m unittest discover -s tests -p "test_step14_partial_public_scores.py" -v
+      - name: Real exact-SHA historical source replay with independent public GH push clock
+        run: |
+          if [ -f data/audits/STEP14_EARLY_PUBLIC_PREMATCH_FT_2026-10-27.json ]; then
+            echo "Original partial result proof is frozen; keep it unchanged."
+          else
+            python -m src.kb3_step14_partial_public_scores --output data/audits/STEP14_EARLY_PUBLIC_PREMATCH_FT_2026-10-27.json
+          fi
+      - name: Verify partial proof never certifies complete original M1 features
+        run: |
+          python - <<'PY'
+          import json
+          p="data/audits/STEP14_EARLY_PUBLIC_PREMATCH_FT_2026-10-27.json"
+          r=json.load(open(p))
+          assert r["historical_public_push_2024_10_02_fully_finished_results"]==60
+          assert r["historical_public_push_2025_07_30_fully_finished_results"]==0
+          e=next(v for v in r["records"] if v["fixture_id"]=="m_3AMymS")
+          assert e["completed_predecessor_results_for_home_in_pushed_blob"]==6
+          assert e["completed_predecessor_results_for_away_in_pushed_blob"]==6
+          assert e["public_within_season_last5_goal_form_inputs_reconstructable"]
+          assert r["official_M1_train_eligible"]==0 and not r["gate14_pass"]
+          assert not r["target_match_scores_exported_or_used"]
+          print("REAL_PREMATCH_PUBLIC_SCORES_PARTIAL_POSITIVE__ORIGINAL_PITCHAPI_M1_GATE_STILL_BLOCKED")
+          PY
+      - name: Store immutable safe aggregate on audit branch only
+        if: github.ref == 'refs/heads/audit/step14-verified-old-score-publication-20261027'
+        run: |
+          git config user.name "kb3-audit-bot"
+          git config user.email "kb3-audit-bot@users.noreply.github.com"
+          git add data/audits/STEP14_EARLY_PUBLIC_PREMATCH_FT_2026-10-27.json
+          if git diff --cached --quiet; then
+            echo "Already archived."
+          else
+            git commit -m "audit: freeze genuinely pre-match published public predecessor score counts only"
+            git push origin HEAD:audit/step14-verified-old-score-publication-20261027
+          fi
