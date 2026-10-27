@@ -179,6 +179,9 @@
 
 **NOWY DOWÓD PROSPECTIVE — 27.10.2026 (BEZ ZMIANY KROKU13):** [10 autentycznie przedmeczowych prognoz M0 Elo+Poisson](../data/forecasts/STEP13_FIRST_PROSPECTIVE_PREMATCH_2026-10-27.json) zamrożonych `2026-10-27T06:12:08.707287Z` na mecze 31.10–02.11.2026, SHA `9c346f79b1868fd1cb0d4d4ffa066f6f1629e09bbc6ce0454c5c8901e7645389`, [GitHub Actions PASS](https://github.com/karolbarankiewicz1984-ui/kb-score-3/actions/runs/40459673538). Dokładnie 760 TRAIN do parametrów i ratingów, `VALIDATION wyniki=0`, `TEST wyniki=0`; z TEST tylko przyszła lista `upcoming` z pustym score. **PIT teraz przed kickoff, ale nie certyfikuje dawnego historycznego PIT**. Ratingi są celowo nieaktualne od końca TRAIN w 2025 r.; model shadow, bez zakładów i bez oceny skuteczności przyszłych wyników. **GATE13 PENDING, training_allowed=false, nadal 12/29, krok14 nierozpoczęty.**
 
+
+**27.10.2026 — ZAMROŻONO ZASADY PRZYSZŁEJ OCENY 10 REALNYCH PROGNOZ PREMATCH (nadal KROK13):** [kontrakt z góry](STEP_13_FORWARD_SCORING_CONTRACT.md), [czysty scorer](../src/kb3_step13_forward_score.py), [testy bezpieczeństwa](../tests/test_step13_forward_score.py). Wyłącznie 10 natywnych meczów z przedmeczowego [snapshotu SHA `9c346f79...`](../data/forecasts/STEP13_FIRST_PROSPECTIVE_PREMATCH_2026-10-27.json), nie 370 pozostałych TEST. Po zakończeniu wszystkich spotkań i 3-godzinnym bezpieczniku wolno jednorazowo porównać zamrożone P z autentycznie później zarejestrowanymi 10 wynikami: top1 accuracy, log loss, Brier sum3, ECE (wyłącznie opisowe n=10), Poisson NLL i MAE goli. Dopiero przyszła, osobna obserwacja PitchAPI może dostarczyć rzeczywistych wyników, nie dziś; **testy tylko syntetyczne, 0 odczytów TEST**, żadnego strojenia po fakcie. GATE13 PENDING, training_allowed=false, 12/29 i krok14 nadal nie rozpoczęty.
+
 #### Krok 14 — Pierwszy CatBoost 1X2  [NIE ROZPOCZĘTO]
 
 - **CO ZROBIĘ:** Wytrenować niezależny ML dla 1/X/2 na cechach przedmeczowych.
