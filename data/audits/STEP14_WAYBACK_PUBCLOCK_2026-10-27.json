@@ -1,0 +1,33 @@
+{
+  "gate14_pass": false,
+  "independent_capture_matched_to_historical_blobs": false,
+  "official_train_eligible": 0,
+  "schema": "kb3-step14-independent-archival-capture-probe-v1",
+  "seasons": {
+    "2024-25": {
+      "cdx_capture_count_reported": null,
+      "earliest_capture_timestamp_utc": null,
+      "historical_capture_payload_sha256_matches_pinned_blob": false,
+      "lookup_attempted": true,
+      "lookup_status": "EMPTY_OR_UNEXPECTED_CDX",
+      "official_m1_eligible": false,
+      "pitchapi_crosswalk_verified": false,
+      "provider": "Internet Archive CDX",
+      "source_url": "https://raw.githubusercontent.com/openfootball/football.json/master/2024-25/en.1.json",
+      "timestamp_independent_of_git_commit": false
+    },
+    "2025-26": {
+      "cdx_capture_count_reported": null,
+      "earliest_capture_timestamp_utc": null,
+      "historical_capture_payload_sha256_matches_pinned_blob": false,
+      "lookup_attempted": true,
+      "lookup_status": "EMPTY_OR_UNEXPECTED_CDX",
+      "official_m1_eligible": false,
+      "pitchapi_crosswalk_verified": false,
+      "provider": "Internet Archive CDX",
+      "source_url": "https://raw.githubusercontent.com/openfootball/football.json/master/2025-26/en.1.json",
+      "timestamp_independent_of_git_commit": false
+    }
+  },
+  "source": "Internet Archive CDX"
+}
