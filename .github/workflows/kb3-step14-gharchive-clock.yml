@@ -1,0 +1,57 @@
+name: KB3 Step14 independent GH Archive PushEvent source clock probe
+on:
+  push:
+    branches:
+      - audit/step14-gharchive-server-push-clock-20261027
+    paths:
+      - src/kb3_step14_gharchive_clock.py
+      - tests/test_step14_gharchive_clock.py
+      - .github/workflows/kb3-step14-gharchive-clock.yml
+permissions:
+  contents: write
+jobs:
+  public-server-event-clock:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    env:
+      PYTHONPATH: "."
+      PYTHONDONTWRITEBYTECODE: "1"
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Offline proof and negative clock unit tests
+        run: python -m unittest discover -s tests -p "test_step14_gharchive_clock.py" -v
+      - name: Independent GH Archive hourly public PushEvent scan, limited to four exact samples
+        run: |
+          python -m src.kb3_step14_gharchive_clock --output data/audits/STEP14_GHARCHIVE_SERVER_PUSHCLOCK_2026-10-27.json
+      - name: Assert no source clock or identity automatically promotes training
+        run: |
+          python - <<'PY'
+          import json
+          p="data/audits/STEP14_GHARCHIVE_SERVER_PUSHCLOCK_2026-10-27.json"
+          j=json.load(open(p))
+          assert len(j["records"])==4 and len(j["archive_hours_scanned"])==4
+          assert j["native_pitchapi_team_pairs_verified"]==0
+          assert j["official_train_eligible"]==0
+          assert j["test_labels_read"]==0 and j["paid_sports_provider_requests"]==0
+          assert not j["gate14_pass"]
+          assert all(not v["eligible_for_official_m1"] for v in j["records"])
+          print("PUBLIC_SERVER_EVENT_CLOCK_RESEARCH_ONLY_NO_PIT_TRAIN_RELEASE")
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: step14-thirdparty-public-pushclock-samples
+          path: data/audits/STEP14_GHARCHIVE_SERVER_PUSHCLOCK_2026-10-27.json
+          retention-days: 14
+      - name: Freeze result on audit branch
+        if: github.ref == 'refs/heads/audit/step14-gharchive-server-push-clock-20261027'
+        run: |
+          git config user.name "kb3-audit-bot"
+          git config user.email "kb3-audit-bot@users.noreply.github.com"
+          git add data/audits/STEP14_GHARCHIVE_SERVER_PUSHCLOCK_2026-10-27.json
+          git commit -m "audit: independent GH Archive server push clock for four historical source SHAs"
+          git push origin HEAD:audit/step14-gharchive-server-push-clock-20261027
