@@ -1,0 +1,54 @@
+{
+  "schema": "kb3-step14-verified-single-kickoff-delay-exception-v1",
+  "researched_on_utc": "2026-10-28",
+  "season": "2024-25",
+  "partition": "TRAIN",
+  "home_name": "Ipswich Town",
+  "away_name": "Everton",
+  "originally_scheduled_kickoff_utc": "2024-10-19T14:00:00Z",
+  "actual_kickoff_utc": "2024-10-19T14:15:00Z",
+  "actual_minus_scheduled_minutes": 15,
+  "cause": "Localized electrical/IT issue at Portman Road impacting turnstiles and spectator entry; the home club delayed kickoff by 15 minutes.",
+  "independent_sources": [
+    {
+      "publisher": "Ipswich Town Football Club",
+      "kind": "same-day official home-club kickoff delay notice",
+      "page_date": "2024-10-19",
+      "url": "https://www.itfc.co.uk/news/2024/october/19/everton-kick-off-delayed/",
+      "supports": "changed start to 3:15 PM BST due to power issue impeding entry"
+    },
+    {
+      "publisher": "Premier League",
+      "kind": "matchday official match report",
+      "page_date": "2024-10-19",
+      "url": "https://www.premierleague.com/en/news/4149676/ipswich-town-fc-v-everton-fc-premier-league",
+      "supports": "15-minute kickoff delay caused by stadium IT issue"
+    },
+    {
+      "publisher": "Premier League",
+      "kind": "preseason original fixture schedule",
+      "page_date": "2024-08-06",
+      "url": "https://www.premierleague.com/en/news/4076999",
+      "supports": "original 3:00 PM BST scheduled start for Ipswich v Everton on Oct 19"
+    },
+    {
+      "publisher": "Reuters",
+      "kind": "independent event-day report",
+      "page_date": "2024-10-19",
+      "url": "https://www.reuters.com/sports/soccer/ipswich-v-everton-delayed-due-turnstile-issue-2024-10-19/",
+      "supports": "scheduled 3:00 PM changed to 3:15 PM due to turnstile issues"
+    }
+  ],
+  "matching_public_reference_sha256": "fa924730da71e3ba24e89a3095f7d4d92de5e71dd252b893bd86cc2e4db53678",
+  "owner_local_report": "Owner independently ran authenticated original PitchAPI ZIP on Windows and safe 1140 index; screenshot on 2026-10-28 showed 1139 exact and one identical team pair different kickoff; subsequent owner-only tool showed Ipswich Town v Everton and two UTC times.",
+  "scope": "Identity/time classification only, not an earlier historical source publication proof for 121 feature fields",
+  "identity_assessment": "MATCH_IDENTITY_CORROBORATED__SCHEDULED_VS_ACTUAL_KICKOFF",
+  "canonical_ledger_policy": "Store scheduled and actual kickoff as distinct immutable attributes; never rewrite either frozen source",
+  "prematch_asof_policy": "For historical pregame feature eligibility use cutoff strictly earlier than originally scheduled 14:00 UTC; never leverage an extra 15 minutes without independent contemporary per-field evidence and separate explicit approval",
+  "historical_publication_clock_of_match_features_proven": false,
+  "test_rows_read": 0,
+  "native_ids_published": false,
+  "original_training_rows_pit_certified": 0,
+  "training_allowed": false,
+  "gate14_pass": false
+}

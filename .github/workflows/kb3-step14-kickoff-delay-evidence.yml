@@ -1,0 +1,44 @@
+name: KB3 Step14 Documented Ipswich–Everton Kickoff Delay Source-PIT Guard
+on:
+  push:
+    branches:
+      - audit/step14-ipswich-everton-confirmed-15min-delay-20261028
+      - main
+    paths:
+      - "src/kb3_step14_verified_kickoff_delay.py"
+      - "tests/test_step14_verified_kickoff_delay.py"
+      - "data/audits/STEP14_IPSWICH_EVERTON_VERIFIED_KICKOFF_DELAY_2026-10-28.json"
+      - ".github/workflows/kb3-step14-kickoff-delay-evidence.yml"
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  verify-official-delay-without-private-rsa:
+    runs-on: ubuntu-latest
+    timeout-minutes: 7
+    env:
+      PYTHONPATH: "."
+      PYTHONDONTWRITEBYTECODE: "1"
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install public source-chain verification dependency, no private keys
+        run: python -m pip install --disable-pip-version-check cryptography
+      - name: Seven source-bound synthetic 1139+1 tests, originally-scheduled strict cutoff
+        run: python -m unittest discover -s tests -p test_step14_verified_kickoff_delay.py -v
+      - name: Verify event evidence is documentation only, never production M1 or TEST
+        run: |
+          python - <<'PY'
+          from src.kb3_step14_verified_kickoff_delay import read_evidence,eligible_before_original_schedule
+          e=read_evidence()
+          assert e["home_name"]=="Ipswich Town" and e["away_name"]=="Everton"
+          assert e["actual_minus_scheduled_minutes"]==15
+          assert e["test_rows_read"]==0
+          assert not e["training_allowed"] and not e["gate14_pass"]
+          assert not eligible_before_original_schedule("2024-10-19T14:10:00Z",e)
+          print("IPSWICH_EVERTON_OFFICIALLY_DELAYED_15MIN__KEEP_BOTH_TIMES__NO_PIT_RELEASE")
+          PY
