@@ -187,3 +187,25 @@ Runner poprawnie odrzuca nieoryginalny ZIP, nieprawidłowy nagłówek klucza, lo
 **Trwałe dowody:** [pełny zbiorczy JSON](../data/audits/STEP13_REAL_RETROSPECTIVE_PITCHAPI_2026-10-27.json), podpis kontrolny `3d950fff30b57c94a6f71462c7521cfda2cb0b27c666d59d09d274261efca803`, [źródłowa akcja z datą i testami](https://github.com/karolbarankiewicz1984-ui/kb-score-3/actions/runs/40422326740), [niezależny transfer tego samego pliku bez pobierania danych z API](https://github.com/karolbarankiewicz1984-ui/kb-score-3/actions/runs/40422560884). **Brak surowych wyników/meczów w GitHub, tylko zbiorcze metryki i hashe.** Dane TEST (380) nietknięte.
 
 **Status:** to istotne wypełnienie części historyczno-badawczej kroku 13, ale nie certyfikacja PIT. Formalnie **KROK13 W REALIZACJI; GATE13 PENDING; training_allowed=false; 12/29**. Nie rozpoczynamy kroku14 ani nie modyfikujemy harmonogramu. Dalsza kontrola w obrębie kroku13: ewaluacja stabilności i przyszły forward-PIT bez przecieków.
+
+## 27.10.2026 — Audyt stabilności REALNEJ walidacji kroku 13 (nie nowy etap)
+
+W obrębie **tego samego kroku 13 / ELO+Poisson** wykonano i utrwalono dodatkową analizę **WYŁĄCZNIE NA ORYGINALNYM ZBIORCZYM RAPORCIE** [realnego retrospektywnego badania 380 meczów](../data/audits/STEP13_REAL_RETROSPECTIVE_PITCHAPI_2026-10-27.json). Nie odczytano nowych rekordów, nie wykonywano żadnego wywołania PitchAPI, nie użyto TEST, kursów, klucza RSA ani nowych modeli. Weryfikowalny [kod analizy](../src/kb3_step13_stability_audit.py) kontroluje podpis SHA256 oryginalnego raportu, niezmienność zbioru spotkań walidacyjnych, kompletność 4 foldów oraz przelicza z koszyków sumaryczną trafność najczęściej prognozowanej klasy 1X2, przeciętną pewność i ECE. Wynik ma własny SHA256 `10e75ea0a247ca3d446379238ac4f97aab6be90f8ee55aac6796cf7d83bdeb8e` i [niezmienny raport](../data/audits/STEP13_REAL_RETROSPECTIVE_STABILITY_2026-10-27.json).
+
+### Trafność najczęściej wskazanej klasy 1X2 a deklarowana pewność (nie skuteczność kuponów)
+
+| Kwartał | n | EXPANDING: liczba trafień / trafność / średnia deklarowana P | ROLLING: liczba trafień / trafność / średnia deklarowana P |
+|---|---:|---|---|
+| 2025 VII–IX | 60 | 31; 51.7%; 47.4% | 31; 51.7%; 47.4% |
+| 2025 X–XII | 126 | 72; 57.1%; 48.0% | 72; 57.1%; 47.7% |
+| 2026 I–III | 123 | 48; **39.0%**; **49.7%** | 48; **39.0%**; **48.8%** |
+| 2026 IV–VI | 71 | 34; 47.9%; 47.7% | 33; 46.5%; 46.5% |
+| 380 łącznie | 380 | 185; **48.68%**; 48.42% | 184; **48.42%**; 47.77% |
+
+**Kluczowy rezultat:** w kwartale **I–III 2026** EXPANDING był zbyt pewny o **10.70 punktu procentowego**, ROLLING o **9.73 p.p.**, a log loss tego kwartału był najsłabszy w obu wariantach. Rozbieżności między kwartałami mają przeciwne znaki. Gdy błędy kwartałów połączą się, **pooled ECE** 5-bin (EXPANDING **0.01693**, ROLLING **0.01033**) daje zbyt uspokajające wrażenie; uzgodniona miara kontrolna **średnia ważona z ECE kwartalnych** jest wyższa: EXPANDING **0.07395**, ROLLING **0.07332**. Nie wolno zastępować drugiej pierwszą w raporcie odbiorowym. Samo ECE nie jest miarą trafności kuponu.
+
+Zgodnie z wcześniej zamrożonymi wynikami EXPANDING minimalnie wygrywa log loss o 0.00174365 i Brier o 0.00115127; różnicy **nie oznaczamy jako statystycznie istotnej** (brak danych per-mecz do sparowanych przedziałów ufności). W **8/8** dopasowań `elo_goal_elasticity=0.6` osiąga maksymalny punkt ustalonej z góry siatki — sygnał **kontroli na TRAIN**, a NIE przyzwolenie na strojenie modelu z użyciem walidacji. W tym przeglądzie **nie zmieniano parametrów, siatki, wyników ani algorytmu** i **nie wybrano wersji produkcyjnej**.
+
+**Zabezpieczenia:** [testy](../tests/test_step13_stability_audit.py) odrzucają podmieniony podpis raportu, niezgodność miar lub naruszenie danych walidacyjnych. [GitHub Actions — komplet testów i generator raportu](https://github.com/karolbarankiewicz1984-ui/kb-score-3/actions/runs/40423988185) **SUCCESS**, wygenerowany raport zapisany na gałęzi audytowej, bez zapytań sieciowych do dostawców sportowych.
+
+**Stan:** kroki 1–12 pozostają odebrane, **krok 13 nadal w realizacji**, GATE13 **PENDING**, training_allowed=false, historyczny PIT **nieudowodniony**, TEST **nieczytany**, harmonogram **29 pozycji bez zmian**, krok14 CatBoost **nie rozpoczęty**. W ramach tego kroku pozostaje przygotowanie przyszłego rzeczywistego testu forward/PIT i ustalona z góry diagnostyka wpływu Elo wyłącznie na TRAIN — nie automatyczna korekta na podstawie walidacji.
