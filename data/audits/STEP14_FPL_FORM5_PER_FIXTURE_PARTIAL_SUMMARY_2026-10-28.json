@@ -1,0 +1,71 @@
+{
+  "schema": "kb3-step14-fpl-form5-public-target-safe-summary-v1",
+  "generated_from_real_github_actions_run": 40602527429,
+  "run_url": "https://github.com/karolbarankiewicz1984-ui/kb-score-3/actions/runs/40602527429",
+  "github_actions_conclusion": "success",
+  "offline_negative_unit_tests_passed": 11,
+  "published_blob": "vaastav/Fantasy-Premier-League/data/2023-24/fixtures.csv",
+  "source_commit_sha": "96fbc38ee6e36e3a7250081a787b65a1a27c944d",
+  "source_csv_sha256": "07b88250be0903a76b6334a7db56b9d9c148fc4a301c5e2338ce2c27dd01f367",
+  "independent_push_event_id": "32344206544",
+  "independently_verified_push_utc": "2023-10-05T14:38:59Z",
+  "full_report_sha256": "ac6c3c3e3773191bd703a73e43164a4d63229e05600b26d0815f56ed3f5cc59d",
+  "github_actions_artifact_id": 12779198518,
+  "initial_380_fixture_records": {
+    "published_finished_ft": 70,
+    "unplayed_with_empty_ft": 310
+  },
+  "target_candidates_examined": 309,
+  "states": {
+    "PUBLIC_FORM5_INPUTS_CONDITIONALLY_RECONSTRUCTABLE": 8,
+    "INTERVENING_UNVERIFIED_FIXTURE": 269,
+    "TEAM_SCHEDULE_TIME_UNKNOWN": 32
+  },
+  "eight_public_fpl_candidate_fixture_ids": [
+    {
+      "id": "77",
+      "old_schedule_utc": "2023-10-07T11:30:00Z"
+    },
+    {
+      "id": "73",
+      "old_schedule_utc": "2023-10-07T14:00:00Z"
+    },
+    {
+      "id": "75",
+      "old_schedule_utc": "2023-10-07T14:00:00Z"
+    },
+    {
+      "id": "76",
+      "old_schedule_utc": "2023-10-07T14:00:00Z"
+    },
+    {
+      "id": "74",
+      "old_schedule_utc": "2023-10-07T16:30:00Z"
+    },
+    {
+      "id": "72",
+      "old_schedule_utc": "2023-10-08T13:00:00Z"
+    },
+    {
+      "id": "79",
+      "old_schedule_utc": "2023-10-08T13:00:00Z"
+    },
+    {
+      "id": "80",
+      "old_schedule_utc": "2023-10-08T13:00:00Z"
+    }
+  ],
+  "fixture_ids_are_public_fpl_not_native_pitchapi": true,
+  "source_does_not_certify_native_pitchapi_fixture_identity": true,
+  "previous_results_only_no_target_scores": true,
+  "public_form5_inputs_only_not_full_pitchapi_form5": true,
+  "elo_complete_chain_certified": false,
+  "xg_certified": false,
+  "original_train_certified": 0,
+  "original_validation_certified": 0,
+  "test_2026_27_accessed": false,
+  "model_M0_modified": false,
+  "original_frozen_forecasts_modified": false,
+  "production_M1_training_allowed": false,
+  "gate14_pass": false
+}

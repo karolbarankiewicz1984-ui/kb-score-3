@@ -1,0 +1,40 @@
+name: KB3 Step14 FPL per-fixture historical source lineage
+
+on:
+  push:
+    branches:
+      - 'step14/pit-per-fixture-fpl-form5-ledger-20261028'
+    paths:
+      - 'src/kb3_step14_fpl_form5_lineage.py'
+      - 'tests/test_step14_fpl_form5_lineage.py'
+      - '.github/workflows/kb3-step14-fpl-per-fixture-lineage.yml'
+  pull_request:
+    paths:
+      - 'src/kb3_step14_fpl_form5_lineage.py'
+      - 'tests/test_step14_fpl_form5_lineage.py'
+      - '.github/workflows/kb3-step14-fpl-per-fixture-lineage.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  audited-research-only:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Fail-closed synthetic tests
+        run: python -m unittest discover -s tests -p 'test_step14_fpl_form5_lineage.py' -v
+      - name: Reconstruct public 2023 source evidence only
+        run: python -m src.kb3_step14_fpl_form5_lineage --output "$RUNNER_TEMP/step14_fpl_form5_public_lineage.json"
+      - name: Preserve evidence report without goals or TEST
+        uses: actions/upload-artifact@v4
+        with:
+          name: step14-fpl-public-form5-lineage-research-only
+          path: ${{ runner.temp }}/step14_fpl_form5_public_lineage.json
+          if-no-files-found: error
+          retention-days: 30
