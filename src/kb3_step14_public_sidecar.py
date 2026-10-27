@@ -82,7 +82,8 @@ def collect(blob_reader=None,now=None):
             with urllib.request.urlopen(req,timeout=25) as response:
                 return response.read(2_000_000+1)
     blob=blob_reader(SOURCE)
-    # Observation is recorded only AFTER the public HTTP response completes.\n    observed_at=datetime.now(timezone.utc) if now is None else now
+    # Observation is recorded only AFTER the public HTTP response completes.
+    observed_at=datetime.now(timezone.utc) if now is None else now
     return clean_future_schedule(blob,observed_at)
 
 
