@@ -1,0 +1,56 @@
+name: KB3 Step13 Original Scope Final Independent Acceptance
+on:
+  push:
+    branches: ["feature/step13-original-acceptance-and-step14-open-20261027"]
+    paths:
+      - ".github/workflows/kb3-step13-original-final-acceptance.yml"
+permissions:
+  contents: write
+concurrency:
+  group: kb3-step13-original-final-acceptance-20261027
+  cancel-in-progress: false
+jobs:
+  original-scope-final-audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - name: Verify reproducible original M0 math and four-fold safety offline
+        run: |
+          python3 -m unittest discover -s tests -p "test_step13_baseline.py" -v
+          python3 -m unittest discover -s tests -p "test_step13_retrospective.py" -v
+          python3 -m unittest discover -s tests -p "test_step13_stability_audit.py" -v
+          python3 -m unittest discover -s tests -p "test_step13_original_acceptance.py" -v
+      - name: Independent pinned evidence final review, no future results/API
+        run: |
+          python3 -m src.kb3_step13_original_acceptance \
+            --output data/audits/STEP13_ORIGINAL_BASELINE_ACCEPTANCE_2026-10-27.json
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          from src.kb3_split import sha
+          p=Path("data/audits/STEP13_ORIGINAL_BASELINE_ACCEPTANCE_2026-10-27.json")
+          a=json.loads(p.read_text(encoding="utf8"))
+          assert a["report_sha256"]==sha({k:v for k,v in a.items() if k!="report_sha256"})
+          assert a["step13_original_scope_accepted"]
+          assert a["train_rows"]==760 and a["retrospective_validation_rows"]==380
+          assert a["historical_test_rows_read"]==0 and a["forward_test_results_read"]==0
+          assert a["forward_prematch_predictions_frozen"]==20
+          assert a["original_requirements"]["original_step13_checklist"]=="PASS_LIMITED_SCOPE"
+          assert not a["training_allowed"]
+          assert not a["historical_provider_prematch_pit_certified"]
+          assert not a["global_production_eligibility_granted"]
+          assert not a["model_champion_selected"]
+          print("KB3_STEP13_ORIGINAL_SCOPE_APPROVED_NO_PRODUCTION_PIT_PROMOTION")
+          PY
+      - name: Preserve unchanged evidence-based acceptance report on branch
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/audits/STEP13_ORIGINAL_BASELINE_ACCEPTANCE_2026-10-27.json
+          git diff --cached --quiet && exit 3
+          git commit -m "Step13 original baseline gate acceptance evidence, non-PIT and no production training"
+          git push origin HEAD:feature/step13-original-acceptance-and-step14-open-20261027

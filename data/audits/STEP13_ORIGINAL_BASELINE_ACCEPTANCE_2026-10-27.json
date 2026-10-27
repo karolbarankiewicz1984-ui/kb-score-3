@@ -1,0 +1,65 @@
+{
+  "empirical_retro_expanding": {
+    "multiclass_brier_sum3_fold_weighted": 0.6185368951343552,
+    "multiclass_logloss_fold_weighted": 1.032636740359353,
+    "top_class_ece_5bin_fold_weighted": 0.07395339036333402,
+    "validation_n": 380
+  },
+  "empirical_retro_rolling": {
+    "multiclass_brier_sum3_fold_weighted": 0.6196881659096319,
+    "multiclass_logloss_fold_weighted": 1.0343803885705523,
+    "top_class_ece_5bin_fold_weighted": 0.07331600872222804,
+    "validation_n": 380
+  },
+  "evidence_sha256": {
+    "forward_first": "9c346f79b1868fd1cb0d4d4ffa066f6f1629e09bbc6ce0454c5c8901e7645389",
+    "forward_second": "bca520ffd20021cf984189c6aa5a15eda078b5a501f32345c87c334d6c3b045e",
+    "leakage": "f4b0d1e1c3c89bd15a311407c2906eaa64d960b192340249dd197bb6907ca542",
+    "math": "5c9d6a790950e07e6ada8d306a38d1dffaefeeede216b0444effa0f0114f98f3",
+    "paired": "e1a1694da3b43f944696b456521448015b855f47da8d91d181ee5d547a9d47d4",
+    "real_retro": "3d950fff30b57c94a6f71462c7521cfda2cb0b27c666d59d09d274261efca803",
+    "stability": "10e75ea0a247ca3d446379238ac4f97aab6be90f8ee55aac6796cf7d83bdeb8e"
+  },
+  "external_step11_step12_provenance_training_gate_overridden": false,
+  "forward_prematch_predictions_frozen": 20,
+  "forward_test_results_read": 0,
+  "global_production_eligibility_granted": false,
+  "historical_provider_prematch_pit_certified": false,
+  "historical_test_rows_read": 0,
+  "math_test_cases_checked": 3,
+  "model_champion_selected": false,
+  "no_wagering_model_authorized": true,
+  "original_frozen_elo_poisson_parameters_unchanged": true,
+  "original_requirements": {
+    "1x2_probability_simplex": "PASS",
+    "brier_logloss_calibration_dataset_version_report": "PASS",
+    "elo_poisson_1x2_and_goals_engine": "PASS",
+    "no_bookmaker_odds_as_model_inputs": "PASS",
+    "original_step13_checklist": "PASS_LIMITED_SCOPE",
+    "retrospective_historical_research_test": "PASS_WITH_NON_PIT_LIMITATION",
+    "synthetic_reference_cases": "PASS"
+  },
+  "original_unverified_source_promoted_to_training": false,
+  "paired_95pct_brier_ci_contains_zero": true,
+  "paired_95pct_logloss_ci_contains_zero": true,
+  "previous_reports_gate13_pass_values_unchanged": true,
+  "quality_risk_remaining": "REAL_RETROSPECTIVE_NOT_PROVIDER_PIT_AND_ELASTICITY_GRID_EDGE",
+  "quarter3_overconfidence_remains_open": true,
+  "reference_is_unfitted_uniform_chance_not_an_empirical_competitor": true,
+  "reference_uniform_random_1x2_brier_sum3": 0.6666666666666666,
+  "reference_uniform_random_1x2_logloss": 1.0986122886681098,
+  "report_sha256": "a4d26dc96bf75bf2073007e66c4445f61adcaed22611f5fa21c31d74a36e4718",
+  "retrospective_validation_folds": [
+    60,
+    126,
+    123,
+    71
+  ],
+  "retrospective_validation_rows": 380,
+  "schema": "kb3-step13-original-baseline-scope-acceptance-v1",
+  "scope": "ORIGINAL_STEP13_BASELINE_BUILD_AND_RETROSPECTIVE_RESEARCH_ONLY",
+  "step13_original_scope_accepted": true,
+  "step14_next": "OPEN_METHOD_SPEC_ONLY_CATBOOST_UNTIL_PIT_TRAINING_ELIGIBLE",
+  "train_rows": 760,
+  "training_allowed": false
+}
