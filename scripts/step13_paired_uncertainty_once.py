@@ -41,7 +41,8 @@ def quantile(sorted_values, p):
     v=(len(sorted_values)-1)*p
     lo=int(v)
     hi=min(len(sorted_values)-1,lo+1)
-    return sorted_values[lo]*(hi-v)+sorted_values[hi]*(v-lo)
+    frac=v-lo
+    return sorted_values[lo]*(1.0-frac)+sorted_values[hi]*frac
 
 
 def paired_uncertainty(rows,*,reference,expected_reference_sha=None,replicates=BOOTSTRAPS):
