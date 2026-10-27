@@ -1,0 +1,73 @@
+name: KB3 Step13 Second Pre-Kickoff Cohort Once
+on:
+  push:
+    branches: ["feature/step13-four-controls-math-leak-forward-eval-20261027"]
+    paths: [".github/workflows/kb3-step13-second-forward-once.yml"]
+permissions:
+  contents: write
+concurrency:
+  group: kb3-step13-next-pre-kickoff-20261027-only
+  cancel-in-progress: false
+jobs:
+  second-forward-cohort:
+    runs-on: ubuntu-latest
+    timeout-minutes: 18
+    steps:
+      - uses: actions/checkout@v4
+      - name: No-network safety tests must pass before PitchAPI
+        run: |
+          python3 -m unittest discover -s tests -p 'test_step13_second_prematch.py' -v
+          python3 -m unittest discover -s tests -p 'test_step13_math_independent_audit.py' -v
+          python3 -m unittest discover -s tests -p 'test_step13_leakage_audit.py' -v
+      - name: Existing free provider SDK
+        run: python3 -m pip install --disable-pip-version-check 'pitchapi==0.1.6'
+      - name: Exact two TRAIN played seasons and one upcoming-only TEST schedule
+        env:
+          PITCHAPI_API_KEY: ${{ secrets.PITCHAPI_API_KEY }}
+        run: |
+          set -euo pipefail
+          test -n "$PITCHAPI_API_KEY"
+          python3 -m scripts.step13_second_prematch_once \
+            --output data/forecasts/STEP13_SECOND_PROSPECTIVE_PREMATCH_2026-10-27.json
+      - name: Check original cohort not modified, no scores or recent-season fitting
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import json
+          from src.kb3_split import sha,timestamp
+          first=json.loads(Path("data/forecasts/STEP13_FIRST_PROSPECTIVE_PREMATCH_2026-10-27.json").read_text())
+          r=json.loads(Path("data/forecasts/STEP13_SECOND_PROSPECTIVE_PREMATCH_2026-10-27.json").read_text())
+          assert first["report_sha256"]=="9c346f79b1868fd1cb0d4d4ffa066f6f1629e09bbc6ce0454c5c8901e7645389"
+          assert r["report_sha256"]==sha({k:v for k,v in r.items() if k!="report_sha256"})
+          assert r["cohort_window_utc"]==["2026-11-06T00:00:00Z","2026-11-09T00:00:00Z"]
+          assert r["previous_cohort_snapshot_sha256"]==first["report_sha256"]
+          assert r["cohort_target_count"]==10
+          assert r["TEST_results_read"]==r["VALIDATION_results_read"]==0
+          assert r["TRAIN_original_rows"]==760
+          assert r["train_input_sha256"]=="5b1f46592457a648a3761d30ae3f519065470af06d6bf5f8505808b7c09dfac7"
+          assert r["provider_requests"]==3
+          assert r["fitted_parameters_unchanged"]
+          assert r["previous_cohort_overlap_count"]==0
+          assert not (r["gate13_pass"] or r["training_allowed"] or r["step14_started"])
+          assert all(x["scores_at_source"]=={"home":None,"away":None}
+            and timestamp(x["forecast_frozen_at_utc"])<timestamp(x["kickoff_utc"])
+            and abs(sum(x["probabilities_1x2"].values())-1)<1e-12 for x in r["forecasts"])
+          assert not set(x["fixture_id"] for x in r["forecasts"])&set(x["fixture_id"] for x in first["forecasts"])
+          print("STEP13_SECOND_FORWARD_COHORT_FROZEN_NO_LABELS_PASS")
+          PY
+      - name: Archive additional upcoming-only real probabilities
+        uses: actions/upload-artifact@v4
+        with:
+          name: kb3-step13-second-10-genuine-prematch-20261027
+          path: data/forecasts/STEP13_SECOND_PROSPECTIVE_PREMATCH_2026-10-27.json
+          if-no-files-found: error
+          retention-days: 90
+      - name: Commit immutable second snapshot to research branch
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/forecasts/STEP13_SECOND_PROSPECTIVE_PREMATCH_2026-10-27.json
+          git diff --cached --quiet && { echo "NO_NEW_PROSPECTIVE_FILE"; exit 3; }
+          git commit -m "Step13: immutable second genuine 10-fixture prospective snapshot, no TEST labels"
+          git push origin HEAD:feature/step13-four-controls-math-leak-forward-eval-20261027

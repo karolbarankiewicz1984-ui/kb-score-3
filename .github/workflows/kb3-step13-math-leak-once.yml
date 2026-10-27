@@ -1,0 +1,43 @@
+name: KB3 Step13 Math and Leakage Independent Audit Once
+on:
+  push:
+    branches: ["feature/step13-four-controls-math-leak-forward-eval-20261027"]
+    paths: [".github/workflows/kb3-step13-math-leak-once.yml"]
+permissions:
+  contents: write
+jobs:
+  audit-closed-offline:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Independent math and leakage regressions
+        run: |
+          python3 -m unittest discover -s tests -p 'test_step13_math_independent_audit.py' -v
+          python3 -m unittest discover -s tests -p 'test_step13_leakage_audit.py' -v
+      - name: Frozen real prematch forecast math audit (no real outcomes)
+        run: |
+          python3 -m src.kb3_step13_math_independent_audit --output data/audits/STEP13_MATH_INDEPENDENT_2026-10-27.json
+          python3 -m src.kb3_step13_leakage_audit --output data/audits/STEP13_LEAKAGE_INDEPENDENT_2026-10-27.json
+      - name: Assert audit evidence and safety before freezing reports
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import json
+          from src.kb3_split import sha
+          for path in ("STEP13_MATH_INDEPENDENT_2026-10-27.json","STEP13_LEAKAGE_INDEPENDENT_2026-10-27.json"):
+              x=json.loads((Path("data/audits")/path).read_text())
+              assert x["report_sha256"]==sha({k:v for k,v in x.items() if k!="report_sha256"})
+              assert x["result_labels_read"]==0
+              assert not x["gate13_pass"]
+              assert not x["training_allowed"]
+          print("STEP13_INDEPENDENT_MATH_AND_LEAKAGE_BOTH_VERIFIED_ZERO_TEST_RESULTS")
+          PY
+      - name: Save frozen two audit reports in branch
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/audits/STEP13_MATH_INDEPENDENT_2026-10-27.json data/audits/STEP13_LEAKAGE_INDEPENDENT_2026-10-27.json
+          git commit -m "Step13: freeze independent Elo+Poisson algebra and prematch leakage audits"
+          git push origin HEAD:feature/step13-four-controls-math-leak-forward-eval-20261027

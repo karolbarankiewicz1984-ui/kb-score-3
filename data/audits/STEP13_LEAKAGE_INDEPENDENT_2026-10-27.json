@@ -1,0 +1,29 @@
+{
+  "all_frozen_provider_scores_null": true,
+  "data_inspected": "ORIGINAL_PREDICTION_JSON_AND_SPLIT_METADATA_ONLY",
+  "frozen_fixture_ids_match_safe_test_partition": true,
+  "gate13_pass": false,
+  "historical_pit_proven": false,
+  "network_calls": 0,
+  "original_provider_publication_time_verified": false,
+  "query_policy": "TRAIN_PLAYED_PLUS_TEST_UPCOMING_ONLY",
+  "query_statuses_static": [
+    "played",
+    "upcoming"
+  ],
+  "report_sha256": "f4b0d1e1c3c89bd15a311407c2906eaa64d960b192340249dd197bb6907ca542",
+  "result_labels_read": 0,
+  "schema": "kb3-step13-prospective-leakage-audit-v1",
+  "snapshot_sha256": "9c346f79b1868fd1cb0d4d4ffa066f6f1629e09bbc6ce0454c5c8901e7645389",
+  "source_code_query_scan_is_not_a_runtime_trace": true,
+  "test_metadata_only_future_targets": 10,
+  "test_other_outcomes_read": 0,
+  "test_scores_permitted": 0,
+  "train_input_seasons": [
+    "2023/2024",
+    "2024/2025"
+  ],
+  "train_scores_permitted": 760,
+  "training_allowed": false,
+  "validation_scores_permitted": 0
+}

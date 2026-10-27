@@ -1,0 +1,277 @@
+{
+  "TEST_results_read": 0,
+  "TRAIN_original_rows": 760,
+  "VALIDATION_results_read": 0,
+  "cohort_target_count": 10,
+  "cohort_window_utc": [
+    "2026-11-06T00:00:00Z",
+    "2026-11-09T00:00:00Z"
+  ],
+  "fitted_parameters_unchanged": true,
+  "forecast_frozen_at_utc": "2026-10-27T07:17:59.705733Z",
+  "forecasts": [
+    {
+      "away_team_id": "t_0C4xyR",
+      "away_team_name": "Coventry City",
+      "eligible_for_betting": false,
+      "expected_goals_poisson": {
+        "away": 1.3902115001751065,
+        "home": 1.692553553840722
+      },
+      "fixture_id": "m_0ZFoVd",
+      "forecast_frozen_at_utc": "2026-10-27T07:17:59.705733Z",
+      "home_team_id": "t_21IR9d",
+      "home_team_name": "Everton",
+      "kickoff_utc": "2026-11-06T20:00:00Z",
+      "probabilities_1x2": {
+        "1": 0.4472601946298635,
+        "2": 0.3163538124058145,
+        "X": 0.23638599296432194
+      },
+      "scores_at_source": {
+        "away": null,
+        "home": null
+      },
+      "source_observed_at_utc": "2026-10-27T07:17:59.683875Z"
+    },
+    {
+      "away_team_id": "t_4A7FfD",
+      "away_team_name": "Tottenham Hotspur",
+      "eligible_for_betting": false,
+      "expected_goals_poisson": {
+        "away": 1.3132229176911596,
+        "home": 1.791780651641805
+      },
+      "fixture_id": "m_4L4kXH",
+      "forecast_frozen_at_utc": "2026-10-27T07:17:59.705733Z",
+      "home_team_id": "t_19Nr9K",
+      "home_team_name": "Leeds United",
+      "kickoff_utc": "2026-11-07T12:30:00Z",
+      "probabilities_1x2": {
+        "1": 0.48713625886498885,
+        "2": 0.28167660006573925,
+        "X": 0.231187141069272
+      },
+      "scores_at_source": {
+        "away": null,
+        "home": null
+      },
+      "source_observed_at_utc": "2026-10-27T07:17:59.683875Z"
+    },
+    {
+      "away_team_id": "t_0HV3k6",
+      "away_team_name": "Hull City",
+      "eligible_for_betting": false,
+      "expected_goals_poisson": {
+        "away": 1.1254116577337023,
+        "home": 2.0907970865967274
+      },
+      "fixture_id": "m_0D9KSt",
+      "forecast_frozen_at_utc": "2026-10-27T07:17:59.705733Z",
+      "home_team_id": "t_1gkhxH",
+      "home_team_name": "Arsenal",
+      "kickoff_utc": "2026-11-07T15:00:00Z",
+      "probabilities_1x2": {
+        "1": 0.5953515860712004,
+        "2": 0.19779252914168882,
+        "X": 0.20685588478711076
+      },
+      "scores_at_source": {
+        "away": null,
+        "home": null
+      },
+      "source_observed_at_utc": "2026-10-27T07:17:59.683875Z"
+    },
+    {
+      "away_team_id": "t_2eQl9k",
+      "away_team_name": "Newcastle United",
+      "eligible_for_betting": false,
+      "expected_goals_poisson": {
+        "away": 1.5829393402883762,
+        "home": 1.4864798386923361
+      },
+      "fixture_id": "m_2UcMLw",
+      "forecast_frozen_at_utc": "2026-10-27T07:17:59.705733Z",
+      "home_team_id": "t_1c1ZPD",
+      "home_team_name": "Fulham",
+      "kickoff_utc": "2026-11-07T15:00:00Z",
+      "probabilities_1x2": {
+        "1": 0.359230214552646,
+        "2": 0.4012078689607632,
+        "X": 0.23956191648659078
+      },
+      "scores_at_source": {
+        "away": null,
+        "home": null
+      },
+      "source_observed_at_utc": "2026-10-27T07:17:59.683875Z"
+    },
+    {
+      "away_team_id": "t_0UCNPX",
+      "away_team_name": "Manchester City",
+      "eligible_for_betting": false,
+      "expected_goals_poisson": {
+        "away": 1.7367617986808013,
+        "home": 1.3548244883085874
+      },
+      "fixture_id": "m_2cf00t",
+      "forecast_frozen_at_utc": "2026-10-27T07:17:59.705733Z",
+      "home_team_id": "t_0msSwp",
+      "home_team_name": "Nottingham Forest",
+      "kickoff_utc": "2026-11-07T17:30:00Z",
+      "probabilities_1x2": {
+        "1": 0.30043757505585544,
+        "2": 0.4652524777914009,
+        "X": 0.23430994715274364
+      },
+      "scores_at_source": {
+        "away": null,
+        "home": null
+      },
+      "source_observed_at_utc": "2026-10-27T07:17:59.683875Z"
+    },
+    {
+      "away_team_id": "t_2ihyjC",
+      "away_team_name": "Brentford",
+      "eligible_for_betting": false,
+      "expected_goals_poisson": {
+        "away": 1.3620859265786471,
+        "home": 1.7275029198209362
+      },
+      "fixture_id": "m_0CUyUv",
+      "forecast_frozen_at_utc": "2026-10-27T07:17:59.705733Z",
+      "home_team_id": "t_3eV7Ev",
+      "home_team_name": "Brighton & Hove Albion",
+      "kickoff_utc": "2026-11-08T14:00:00Z",
+      "probabilities_1x2": {
+        "1": 0.461513690372879,
+        "2": 0.30370787454270676,
+        "X": 0.23477843508441434
+      },
+      "scores_at_source": {
+        "away": null,
+        "home": null
+      },
+      "source_observed_at_utc": "2026-10-27T07:17:59.683875Z"
+    },
+    {
+      "away_team_id": "t_1iaglr",
+      "away_team_name": "AFC Bournemouth",
+      "eligible_for_betting": false,
+      "expected_goals_poisson": {
+        "away": 1.7802816042876068,
+        "home": 1.321705178295763
+      },
+      "fixture_id": "m_0sKilh",
+      "forecast_frozen_at_utc": "2026-10-27T07:17:59.705733Z",
+      "home_team_id": "t_2C9laO",
+      "home_team_name": "Ipswich Town",
+      "kickoff_utc": "2026-11-08T14:00:00Z",
+      "probabilities_1x2": {
+        "1": 0.2855039682565711,
+        "2": 0.48261039529405275,
+        "X": 0.23188563644937615
+      },
+      "scores_at_source": {
+        "away": null,
+        "home": null
+      },
+      "source_observed_at_utc": "2026-10-27T07:17:59.683875Z"
+    },
+    {
+      "away_team_id": "t_4R934X",
+      "away_team_name": "Chelsea",
+      "eligible_for_betting": false,
+      "expected_goals_poisson": {
+        "away": 1.6801899259126398,
+        "home": 1.400441330424904
+      },
+      "fixture_id": "m_2hOf3a",
+      "forecast_frozen_at_utc": "2026-10-27T07:17:59.705733Z",
+      "home_team_id": "t_2xPV6y",
+      "home_team_name": "Sunderland",
+      "kickoff_utc": "2026-11-08T14:00:00Z",
+      "probabilities_1x2": {
+        "1": 0.3209432838384662,
+        "2": 0.44216578478763335,
+        "X": 0.2368909313739004
+      },
+      "scores_at_source": {
+        "away": null,
+        "home": null
+      },
+      "source_observed_at_utc": "2026-10-27T07:17:59.683875Z"
+    },
+    {
+      "away_team_id": "t_0BrMnM",
+      "away_team_name": "Liverpool",
+      "eligible_for_betting": false,
+      "expected_goals_poisson": {
+        "away": 1.7377278497536301,
+        "home": 1.3540713038265575
+      },
+      "fixture_id": "m_4Ct268",
+      "forecast_frozen_at_utc": "2026-10-27T07:17:59.705733Z",
+      "home_team_id": "t_4bz4EP",
+      "home_team_name": "Crystal Palace",
+      "kickoff_utc": "2026-11-08T14:00:00Z",
+      "probabilities_1x2": {
+        "1": 0.3000982642710612,
+        "2": 0.4656416600276635,
+        "X": 0.23426007570127524
+      },
+      "scores_at_source": {
+        "away": null,
+        "home": null
+      },
+      "source_observed_at_utc": "2026-10-27T07:17:59.683875Z"
+    },
+    {
+      "away_team_id": "t_4RqKpo",
+      "away_team_name": "Aston Villa",
+      "eligible_for_betting": false,
+      "expected_goals_poisson": {
+        "away": 1.7198448454277966,
+        "home": 1.3681509826116485
+      },
+      "fixture_id": "m_1hg20L",
+      "forecast_frozen_at_utc": "2026-10-27T07:17:59.705733Z",
+      "home_team_id": "t_2I313i",
+      "home_team_name": "Manchester United",
+      "kickoff_utc": "2026-11-08T16:30:00Z",
+      "probabilities_1x2": {
+        "1": 0.3064378647321511,
+        "2": 0.45840939576804074,
+        "X": 0.23515273949980822
+      },
+      "scores_at_source": {
+        "away": null,
+        "home": null
+      },
+      "source_observed_at_utc": "2026-10-27T07:17:59.683875Z"
+    }
+  ],
+  "gate13_pass": false,
+  "historical_pit_proven": false,
+  "no_model_retraining_or_tuning": true,
+  "original_source_pubtime_verified": false,
+  "previous_cohort_overlap_count": 0,
+  "previous_cohort_snapshot_sha256": "9c346f79b1868fd1cb0d4d4ffa066f6f1629e09bbc6ce0454c5c8901e7645389",
+  "provider_requests": 3,
+  "ratings_not_updated_since_2025_07_01": true,
+  "report_sha256": "bca520ffd20021cf984189c6aa5a15eda078b5a501f32345c87c334d6c3b045e",
+  "schema": "kb3-step13-prospective-second-ten-shadow-v1",
+  "season": "2026/2027",
+  "shadow_research_only": true,
+  "source": "PitchAPI",
+  "source_observed_at_utc": "2026-10-27T07:17:59.683875Z",
+  "source_query_policy": "2_FINISHED_TRAIN_AND_1_UPCOMING_ONLY_TEST",
+  "step14_started": false,
+  "test_metadata_only_targets": 10,
+  "train_input_sha256": "5b1f46592457a648a3761d30ae3f519065470af06d6bf5f8505808b7c09dfac7",
+  "train_season_digests_sha256": {
+    "2023/2024": "39348c5643eafd57532a8ba0d355f0e0d478390544bcb9bd2884664d47c29340",
+    "2024/2025": "fd1c3436b55fb48d89bc315f8f91075d884ae8bb38592befbd4e430d880219e6"
+  },
+  "training_allowed": false
+}
