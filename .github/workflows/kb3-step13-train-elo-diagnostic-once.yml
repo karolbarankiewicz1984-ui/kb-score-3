@@ -1,0 +1,72 @@
+name: "KB3 Step13 - One-time TRAIN-only Elo Elasticity Diagnostic"
+on:
+  push:
+    branches: ["feature/step13-train-only-elo-elasticity-v07"]
+    paths: [".github/workflows/kb3-step13-train-elo-diagnostic-once.yml"]
+permissions:
+  contents: write
+concurrency:
+  group: kb3-step13-train-elo-once-20261027
+  cancel-in-progress: false
+jobs:
+  train-only-diagnostic:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install existing SDK
+        run: python3 -m pip install --disable-pip-version-check "pitchapi==0.1.6"
+      - name: Synthetic input and holdout isolation regression BEFORE provider
+        run: |
+          python3 -m unittest discover -s tests -p 'test_step13_train_elo_sensitivity.py' -v
+      - name: Fetch exactly two historical TRAIN seasons and fit Poisson goal likelihood only
+        env:
+          PITCHAPI_API_KEY: ${{ secrets.PITCHAPI_API_KEY }}
+        run: |
+          set -euo pipefail
+          if [ -z "$PITCHAPI_API_KEY" ]; then
+            echo "STEP13_TRAIN_PROVIDER_SECRET_MISSING_NO_PROVIDER_REQUESTS"
+            exit 3
+          fi
+          python3 -m scripts.step13_pitchapi_train_elo_once \
+            --output data/audits/STEP13_TRAIN_760_ELO_ELASTICITY_DIAGNOSTIC_2026-10-27.json
+      - name: Verify no VALIDATION TEST model promotion or sporting score in report
+        run: |
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          from src.kb3_split import sha
+          path=Path("data/audits/STEP13_TRAIN_760_ELO_ELASTICITY_DIAGNOSTIC_2026-10-27.json")
+          r=json.loads(path.read_text())
+          assert path.stat().st_size < 100_000
+          assert r["report_sha256"]==sha({k:v for k,v in r.items() if k!="report_sha256"})
+          assert r["train_rows"]==760
+          assert r["validation_rows_read"]==0 and r["test_rows_read"]==0
+          assert r["provider_calls"]==2
+          assert r["existing_model_parameters_unchanged"] is True
+          assert r["no_validation_in_grid_choice"] is True
+          assert r["profile_metric"]=="POISSON_TWO_GOAL_TRAIN_NLL_NOT_1X2_LOGLOSS"
+          assert not r["production_model_promoted"] and not r["training_allowed"] and not r["gate13_pass"]
+          assert not r["match_scores_exported"] and not r["api_key_or_rsa_exported"]
+          assert len(r["profiles"]["TRAIN_760"])==13
+          assert len(r["profiles"]["TRAIN_2023_24"])==13
+          assert len(r["profiles"]["TRAIN_2024_25"])==13
+          assert not any(k in r for k in ("matches","results","fixture_rows","api_key","private_key"))
+          print("STEP13_TRAIN_ONLY_REAL_PROVIDER_ELO_PROFILE_VERIFIED_NOT_PIT")
+          PY
+      - name: Store only verified aggregate report as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: kb3-step13-760-train-elo-sensitivity-aggregate-20261027
+          path: data/audits/STEP13_TRAIN_760_ELO_ELASTICITY_DIAGNOSTIC_2026-10-27.json
+          if-no-files-found: error
+          retention-days: 90
+      - name: Commit research-only report to this branch (no model changes)
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/audits/STEP13_TRAIN_760_ELO_ELASTICITY_DIAGNOSTIC_2026-10-27.json
+          if ! git diff --cached --quiet; then
+            git commit -m "Step13: freeze real 760-TRAIN-only Elo sensitivity research, no validation"
+            git push origin HEAD:feature/step13-train-only-elo-elasticity-v07
+          fi
