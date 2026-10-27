@@ -135,7 +135,11 @@ def _extract_native_matches(receipts):
         resource=source["resource"]
         if not resource.startswith("pitchapi:history:"):
             continue
-        season=resource.split(":")[3].replace("/","-")
+        full_season=resource.split(":")[3]
+        begin,end=map(int,full_season.split("/"))
+        if end!=begin+1:
+            raise NativeCrosswalkError("NATIVE_SOURCE_SEASON_INVALID")
+        season=f"{begin}-{end%100:02d}"
         matches=source.get("payload",{}).get("matches")
         if not isinstance(matches,list) or len(matches)!=380:
             raise NativeCrosswalkError("ORIGINAL_NATIVE_SEASON_COUNT_WRONG")
