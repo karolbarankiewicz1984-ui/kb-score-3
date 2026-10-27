@@ -1,0 +1,71 @@
+name: "KB3 Step13 - ONE TIME Paired 380 Real Validation Uncertainty"
+on:
+  push:
+    branches: ["feature/step13-paired-uncertainty-validation-v08"]
+    paths:
+      - ".github/workflows/kb3-step13-paired-uncertainty-once.yml"
+permissions:
+  contents: write
+concurrency:
+  group: kb3-step13-once-paired-bootstrap-20261027
+  cancel-in-progress: false
+jobs:
+  uncertainty-from-frozen-380:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - name: Offline synthetic matched-bootstrap tests before provider
+        run: |
+          python3 -m unittest discover -s tests -p "test_step13_paired_uncertainty.py" -v
+          python3 -m unittest discover -s tests -p "test_step13_pitchapi_live_research.py" -v
+      - name: Install same fixed PitchAPI SDK
+        run: python3 -m pip install --disable-pip-version-check "pitchapi==0.1.6"
+      - name: Bounded 3 historical seasons only, paired 380 validation uncertainty
+        env:
+          PITCHAPI_API_KEY: ${{ secrets.PITCHAPI_API_KEY }}
+        run: |
+          set -euo pipefail
+          if [ -z "$PITCHAPI_API_KEY" ]; then
+            echo "STEP13_NO_PROVIDER_SECRET_NO_REQUESTS"
+            exit 3
+          fi
+          python3 -m scripts.step13_paired_uncertainty_once \
+            --output data/audits/STEP13_REAL_PAIRED_UNCERTAINTY_2026-10-27.json
+      - name: Verify original metrics and no-promotion gate with SHA
+        run: |
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          from src.kb3_split import sha
+          path=Path("data/audits/STEP13_REAL_PAIRED_UNCERTAINTY_2026-10-27.json")
+          r=json.loads(path.read_text(encoding="utf8"))
+          assert r["report_sha256"]==sha({k:v for k,v in r.items() if k!="report_sha256"})
+          assert r["original_report_sha256"]=="3d950fff30b57c94a6f71462c7521cfda2cb0b27c666d59d09d274261efca803"
+          assert r["training_initial_n"]==760 and r["validation_n"]==380 and r["test_rows_read"]==0
+          assert [q["validation_n"] for q in r["folds"]]==[60,126,123,71]
+          assert len(r["overall"]["log"]["week_cluster_bootstrap_ci95"])==2
+          assert len(r["overall"]["brier"]["week_cluster_bootstrap_ci95"])==2
+          assert not r["raw_results_exported"] and not r["predictions_per_match_exported"]
+          assert not r["original_provider_prematch_publication_verified"]
+          assert not r["training_allowed"] and not r["gate13_pass"]
+          assert not r["current_model_parameter_change"]
+          assert not r["betting_claims_authorized"]
+          print("STEP13_REAL_PAIRED_UNCERTAINTY_GUARDS_PASS")
+          PY
+      - name: Store only no-match-details aggregate report
+        uses: actions/upload-artifact@v4
+        with:
+          name: kb3-step13-380-paired-weekcluster-uncertainty-20261027
+          path: data/audits/STEP13_REAL_PAIRED_UNCERTAINTY_2026-10-27.json
+          if-no-files-found: error
+          retention-days: 90
+      - name: Freeze exact audited aggregate into Step13 research branch
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/audits/STEP13_REAL_PAIRED_UNCERTAINTY_2026-10-27.json
+          if ! git diff --cached --quiet; then
+            git commit -m "Step13: freeze paired uncertainty of real validation (no promotion, no raw rows)"
+            git push origin HEAD:feature/step13-paired-uncertainty-validation-v08
+          fi
