@@ -47,8 +47,11 @@
       "matching_public_push_events": 1,
       "native_pitchapi_team_pair_crosswalk_verified": false,
       "pitch_fixture_id_or_source_season": "m_3AMymS",
+      "public_branch_head_sha": "5f777dc6e2cd02cdafd1520e81b7e338284fb7a7",
+      "public_branch_ref": "refs/heads/master",
       "push_events_before_kickoff": 1,
       "server_created_at_utc": "2024-10-02T13:52:44Z",
+      "server_github_event_id": "42475053178",
       "source_archive_hour": "2024-10-02-13"
     },
     {
@@ -61,8 +64,11 @@
       "matching_public_push_events": 0,
       "native_pitchapi_team_pair_crosswalk_verified": false,
       "pitch_fixture_id_or_source_season": "m_2IJhgL",
+      "public_branch_head_sha": null,
+      "public_branch_ref": null,
       "push_events_before_kickoff": 0,
       "server_created_at_utc": null,
+      "server_github_event_id": null,
       "source_archive_hour": "2024-11-05-05"
     },
     {
@@ -75,8 +81,11 @@
       "matching_public_push_events": 0,
       "native_pitchapi_team_pair_crosswalk_verified": false,
       "pitch_fixture_id_or_source_season": "m_2g5x00",
+      "public_branch_head_sha": null,
+      "public_branch_ref": null,
       "push_events_before_kickoff": 0,
       "server_created_at_utc": null,
+      "server_github_event_id": null,
       "source_archive_hour": "2025-01-29-05"
     },
     {
@@ -89,8 +98,11 @@
       "matching_public_push_events": 1,
       "native_pitchapi_team_pair_crosswalk_verified": false,
       "pitch_fixture_id_or_source_season": "SEASON_2025_26_FIRST",
+      "public_branch_head_sha": "fdca227e6fc8284865254f009e987ce7a70935a0",
+      "public_branch_ref": "refs/heads/master",
       "push_events_before_kickoff": 1,
       "server_created_at_utc": "2025-07-30T16:20:53Z",
+      "server_github_event_id": "52743265113",
       "source_archive_hour": "2025-07-30-16"
     }
   ],
