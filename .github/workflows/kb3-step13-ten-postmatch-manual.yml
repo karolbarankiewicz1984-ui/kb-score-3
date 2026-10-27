@@ -1,0 +1,79 @@
+name: KB3 Step13 Secure Future Ten Postmatch Evaluation MANUAL
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: kb3-step13-ten-postmatch-manual-only
+  cancel-in-progress: false
+jobs:
+  future-ten-only:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - name: No future TEST label access before synthetic tests
+        run: |
+          python3 -m pip install --disable-pip-version-check 'cryptography>=42,<47'
+          python3 -m unittest discover -s tests -p 'test_step13_secure_postmatch_collector.py' -v
+          python3 -m unittest discover -s tests -p 'test_step13_forward_score.py' -v
+      - name: Confirm minimum final-eligibility time BEFORE provider access
+        run: |
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          from src.kb3_pit_ledger import utc_now
+          from scripts.step13_first_ten_secure_postmatch_once import check_earliest_frozen
+          first=json.loads(Path("data/forecasts/STEP13_FIRST_PROSPECTIVE_PREMATCH_2026-10-27.json").read_text())
+          result=check_earliest_frozen(first,utc_now())
+          assert len(result)==10
+          print("STEP13_FINAL_TIME_GATE_PASS_10_EXACT_IDS")
+          PY
+      - name: Pinned existing PitchAPI SDK
+        run: python3 -m pip install --disable-pip-version-check 'pitchapi==0.1.6'
+      - name: Call ONLY original ten match IDs and encrypt ALL provider evidence
+        env:
+          PITCHAPI_API_KEY: ${{ secrets.PITCHAPI_API_KEY }}
+        run: |
+          set -euo pipefail
+          test -n "$PITCHAPI_API_KEY"
+          python3 -m scripts.step13_first_ten_secure_postmatch_once \
+            --output-prefix audit/step13/forward-ten-evidence \
+            --recipient config/step11_archive_recipient_public.pem
+      - name: Verify no raw score labels present outside encrypted evidence
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          from src.kb3_split import sha
+          import json
+          p=Path("audit/step13/forward-ten-evidence")
+          data=json.loads(Path(str(p)+".aggregate.json").read_text())
+          mf=json.loads(Path(str(p)+".manifest.json").read_text())
+          assert data["report_sha256"]==sha({k:v for k,v in data.items() if k!="report_sha256"})
+          assert data["prospective_evaluation_target_count"]==10
+          assert data["result_labels_for_this_prespecified_shadow_sample_read"]==10
+          assert data["other_370_test_labels_read_by_this_protocol"]==0
+          assert data["exactly_ten_individual_provider_calls"]==10
+          assert data["other_test_results_requested"]==0
+          assert data["source_evidence_kind"]=="NETWORK_OBSERVED_MATCH_GET"
+          assert data["capture_chain_locally_verified"]
+          assert data["encrypted_source_sha256"]==mf["encrypted_sha256"]
+          assert not mf["independent_decryption_verified"]
+          assert not data["training_allowed"] and not data["gate13_pass"]
+          assert not data["step14_started"]
+          assert not data["original_provider_publication_asof_kickoff_proven"]
+          assert not data["actual_provider_receipt_chain_separately_verified"]
+          for key in ("goals_home_90","goals_away_90","fixture_id","raw_matches"):
+              assert key not in data
+          print("STEP13_TEN_ENCRYPTED_EXACT_FINAL_SCORES_AGGREGATE_ONLY_PASS")
+          PY
+      - name: Upload ONLY AES-GCM encrypted ten raw records and SAFE audit
+        uses: actions/upload-artifact@v4
+        with:
+          name: kb3-step13-first-ten-future-postmatch-evidence
+          path: |
+            audit/step13/forward-ten-evidence.enc
+            audit/step13/forward-ten-evidence.manifest.json
+            audit/step13/forward-ten-evidence.aggregate.json
+          if-no-files-found: error
+          retention-days: 90
