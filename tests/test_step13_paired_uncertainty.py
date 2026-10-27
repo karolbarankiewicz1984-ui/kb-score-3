@@ -6,13 +6,16 @@ from test_step13_pitchapi_live_research import fixtures
 from scripts.step13_pitchapi_research_once import extract_research_rows
 from scripts.step13_paired_uncertainty_once import paired_uncertainty, quantile
 from src.kb3_step13_retrospective import retrospective_research, POLICY
+from src.kb3_split import sha
 from src.kb3_step13_baseline import BaselineSafetyError
 
 
 def synthetic_fixture_study():
     safe,seasons=fixtures()
     rows,_=extract_research_rows(seasons,safe_view=safe)
-    return rows,retrospective_research(rows,policy=POLICY)
+    study=retrospective_research(rows,policy=POLICY)
+    study["report_sha256"]=sha(study)
+    return rows,study
 
 
 class Step13PairedBootstrapTests(unittest.TestCase):
