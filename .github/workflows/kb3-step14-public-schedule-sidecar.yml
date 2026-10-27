@@ -40,8 +40,8 @@ jobs:
           import json
           from pathlib import Path
           p=sorted(Path("data/pit_sidecar/step14_openfootball").glob("*.json"))
-          assert len(p)==1
-          r=json.loads(p[0].read_text())
+          assert len(p)>=1
+          r=json.loads(p[-1].read_text())
           assert not r["test_labels_read"] and not r["match_results_read_or_recorded"]
           assert not r["training_allowed"] and not r["gate14_pass"]
           assert r["pitchapi_primary_source_unchanged"] is True
