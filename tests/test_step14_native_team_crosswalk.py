@@ -18,6 +18,7 @@ NAMES={
     "Arsenal FC":"t_EEEEEE",
     "Sunderland AFC":"t_FFFFFF",
     "Aston Villa":"t_GGGGGG",
+    "AFC Bournemouth":"t_JJJJJJ",
 }
 
 def fake_receipts():
@@ -35,10 +36,14 @@ def fake_receipts():
         targets=[(fid,exp) for fid,exp in REQUIRED.items()
                  if exp["season"]==f"{season[:4]}-{str(int(season[:4])+1)[-2:]}"]
         for i,(fid,exp) in enumerate(targets):
+            # Historical live PitchAPI 2026 retrospective data has the September
+            # reschedule; OpenFootball July fixture names are stale for this ID.
+            home="AFC Bournemouth" if fid=="m_0JJdwI" else exp["home"]
+            away="Newcastle United" if fid=="m_0JJdwI" else exp["away"]
             games[i]={
                 "id":fid,"time_utc":exp["kickoff_utc"],
-                "home_team":{"id":NAMES[exp["home"]],"name":exp["home"]},
-                "away_team":{"id":NAMES[exp["away"]],"name":exp["away"]},
+                "home_team":{"id":NAMES[home],"name":home},
+                "away_team":{"id":NAMES[away],"name":away},
                 "score_home":2,"score_away":0,
             }
         receipts.append({
@@ -74,7 +79,40 @@ class LocalNativeFixtureCrosswalkTests(unittest.TestCase):
         self.assertTrue(all(x["original_pinned_PitchAPI_native_ids_confirmed"] for x in a["rows"]))
         self.assertEqual(a["rows"][0]["pitch_home_team_id"],"t_AAAAAA")
         self.assertEqual(a["rows"][0]["pitch_away_team_id"],"t_BBBBBB")
+        corrected=next(x for x in a["rows"] if x["pitch_fixture_id"]=="m_0JJdwI")
+        self.assertEqual(corrected["public_candidate_home_name"],"Sunderland AFC")
+        self.assertEqual(corrected["public_candidate_away_name"],"Aston Villa")
+        self.assertEqual(corrected["official_revised_fixture_home_name"],"AFC Bournemouth")
+        self.assertEqual(corrected["official_revised_fixture_away_name"],"Newcastle United")
+        self.assertFalse(corrected["archival_july_schedule_team_pair_match"])
+        self.assertTrue(corrected["used_official_september_reschedule_evidence"])
+        self.assertTrue(corrected["external_fixture_identity_crosswalk_confirmed"])
+        self.assertFalse(corrected["official_article_editorial_date_is_independent_PIT_receipt"])
+        self.assertEqual(a["official_fixture_amendments_considered"],1)
         self.assertFalse(any("score" in k for row in a["rows"] for k in row))
+
+    def test_wrong_july_team_pair_cannot_be_accepted_after_amendment(self):
+        # Fail closed if the false old OpenFootball pair appears as PitchAPI
+        # native pair: official revised real fixture must be Bournemouth.
+        r=fake_receipts()
+        season=next(q for q in r if q["resource"].endswith("2025/2026:matches:played"))
+        m=next(x for x in season["payload"]["matches"] if x["id"]=="m_0JJdwI")
+        m["home_team"]={"id":NAMES["Sunderland AFC"],"name":"Sunderland AFC"}
+        m["away_team"]={"id":NAMES["Aston Villa"],"name":"Aston Villa"}
+        result=self.run_proof(r)
+        corrected=next(x for x in result["rows"] if x["pitch_fixture_id"]=="m_0JJdwI")
+        self.assertTrue(corrected["archival_july_schedule_team_pair_match"])
+        self.assertFalse(corrected["external_fixture_identity_crosswalk_confirmed"])
+        self.assertEqual(result["identity_crosswalk_verified_count"],3)
+        self.assertFalse(result["production_catboost_training_allowed"])
+
+    def test_amendment_is_only_official_identity_not_prematch_feature_pit(self):
+        result=self.run_proof()
+        self.assertEqual(result["identity_crosswalk_verified_count"],4)
+        self.assertFalse(result["historical_prematch_PIT_certified"])
+        self.assertTrue(result["external_dated_articles_not_cryptographic_PIT_capture"])
+        self.assertFalse(result["production_catboost_training_allowed"])
+        self.assertEqual(result["test_records_accessed"],0)
 
     def test_canonical_alias_requires_full_name(self):
         self.assertEqual(canonical_team_name("Everton FC"),canonical_team_name("Everton"))
