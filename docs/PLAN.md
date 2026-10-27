@@ -1,6 +1,6 @@
 # KB Score 3.0 — PLAN GŁÓWNY (kopia operacyjna GitHub)
 
-**Wersja źródłowa:** v1.1, Google Docs (aktualizowane po odbiorach). **Stan po odbiorze 27.10.2026:** **13/29 kroków zaliczonych** (01–13). Krok 13 ELO+Poisson ZALICZONO **w jego oryginalnym zakresie technicznym** po niezależnym audycie dowodów; realne badanie retrospektywne nie jest certyfikowanym PIT. Krok 14 ROZPOCZĘTO w trybie specyfikacji / wyłącznie testów syntetycznych. **Trening na historycznych danych z niepotwierdzonym PIT i wdrożenie produkcyjne nadal ZABLOKOWANE**. Wcześniejsze raporty badawcze zachowują oryginalne flagi i ograniczenia. Statusy w tej kopii aktualizujemy po odbiorach, ale **źródłem prawdy pozostaje [oryginał na Dysku Google](https://docs.google.com/document/d/10wjHL3r3OAuxtezwcIeWztxS8lwjhYon5GM3BLhI0xE/edit)**.
+**Wersja źródłowa:** v1.1, Google Docs (aktualizowane po odbiorach). **Stan po odbiorze 27.10.2026:** **13/29 kroków zaliczonych** (01–13). Krok 13 ELO+Poisson ZALICZONO **w jego oryginalnym zakresie technicznym** po niezależnym audycie dowodów; realne badanie retrospektywne nie jest certyfikowanym PIT. Krok 14 W REALIZACJI: syntetyczny CatBoost M1 oraz odczytowy audyt pochodzenia i bramki danych wdrożone na main (PR #45), niezależne CI 28/28 PASS; bez rzeczywistego treningu. **Trening na historycznych danych z niepotwierdzonym PIT i wdrożenie produkcyjne nadal ZABLOKOWANE**. Wcześniejsze raporty badawcze zachowują oryginalne flagi i ograniczenia. Statusy w tej kopii aktualizujemy po odbiorach, ale **źródłem prawdy pozostaje [oryginał na Dysku Google](https://docs.google.com/document/d/10wjHL3r3OAuxtezwcIeWztxS8lwjhYon5GM3BLhI0xE/edit)**.
 
 **Pozostałe dokumenty:** [DANE.md](DANE.md), [MODEL.md](MODEL.md), [ZMIANY.md](ZMIANY.md), [instrukcja bezpieczeństwa kroku 03](STEP_03_SECURITY_CHECKLIST.md). **Repozytorium:** https://github.com/karolbarankiewicz1984-ui/kb-score-3.
 
@@ -196,7 +196,7 @@
 - **BRAMKA ODBIORU / TEST PASS:** Trening jest odtwarzalny (wersja danych, seed, parametry); eksport modelu działa; P sumuje się do 1; test bez przyszłych danych przechodzi.
 - **DOWÓD ZALICZENIA:** Plik modelu z hashem, metryki TEST, log uruchomienia.
 - **ZALEŻY OD:** Krok 13.
-- **STATUS:** W REALIZACJI od 27.10.2026 — **tylko projektowanie schematu cech i przyszłe testy syntetyczne**, brak rzeczywistego treningu i brak nowego modelu | TEST ODBIOROWY: NIE URUCHOMIONO | ODBIÓR: — | [Karta otwarcia](STEP_14_KICKOFF.md).
+- **STATUS:** W REALIZACJI od 27.10.2026 — **techniczny pipeline CatBoost M1, testy syntetyczne i audyt pochodzenia wdrożone; 28/28 niezależnych testów CI PASS** ([Actions #40479522446](https://github.com/karolbarankiewicz1984-ui/kb-score-3/actions/runs/40479522446), [PR #45](https://github.com/karolbarankiewicz1984-ui/kb-score-3/pull/45)). **To NIE jest oryginalny końcowy TEST PASS ani trening rzeczywisty:** historyczny prematch PIT niecertyfikowany, realny M1 niewytrenowany, GATE14 PENDING, `real_catboost_fit_eligible=false`, produkcja zabroniona. DOWÓD: [kontrakt syntetyczny i bramka danych](STEP_14_SYNTHETIC_CONTRACT.md), [karta otwarcia](STEP_14_KICKOFF.md) | ODBIÓR: —.
 
 #### Krok 15 — Modele goli i spójność rynków  [NIE ROZPOCZĘTO]
 
