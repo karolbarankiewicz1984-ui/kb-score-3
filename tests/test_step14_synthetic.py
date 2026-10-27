@@ -77,11 +77,15 @@ class Step14SyntheticContract(unittest.TestCase):
         self.assertEqual(first["synthetic_data_sha256"], second["synthetic_data_sha256"])
         self.assertAlmostEqual(first["synthetic_log_loss"], second["synthetic_log_loss"], places=12)
         self.assertTrue(math.isfinite(first["synthetic_brier_sum3"]))
+        self.assertTrue(first["cbm_reload_checked"])
+        self.assertLessEqual(first["cbm_reload_max_absolute_probability_difference"], 1e-12)
         self.assertFalse(first["real_data_training_eligible"])
         self.assertFalse(first["gate14_pass"])
         xg = run_synthetic_catboost(use_xg=True)
         self.assertEqual(xg["synthetic_train_count"], 90)
         self.assertEqual(xg["synthetic_validation_count"], 30)
+        self.assertTrue(xg["cbm_reload_checked"])
+        self.assertLessEqual(xg["cbm_reload_max_absolute_probability_difference"], 1e-12)
         self.assertFalse(xg["production_approved"])
 
 
