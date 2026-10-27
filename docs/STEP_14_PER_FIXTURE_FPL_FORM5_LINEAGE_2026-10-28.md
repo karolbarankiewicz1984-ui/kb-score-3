@@ -15,6 +15,17 @@ Nawet jeżeli dane o 70 wcześniejszych wynikach faktycznie istniały 05.10.2023
 - Każdy rekord zawiera oryginalny publiczny `fixture_id`, stary czas meczu, `source SHA`, `public_push_utc`, identyfikator niezależnego zdarzenia, ewentualnie pięć ID poprzedników dla gospodarzy i gości. Nie eksportuje `FT` ani etykiety meczu docelowego.
 - W workflow `.github/workflows/kb3-step14-fpl-per-fixture-lineage.yml` testy syntetyczne uruchamiane są przed próbą realnego publicznego CSV; bez kluczy, bez płatnego sportowego API; artefakt badawczy GitHub Actions, nie produkcyjny model.
 
+## Faktyczny przebieg na publicznym archiwum — PASS
+
+[GitHub Actions #40602527429](https://github.com/karolbarankiewicz1984-ui/kb-score-3/actions/runs/40602527429): **11/11 testów syntetycznych PASS**, realne pobranie dokładnego archiwalnego `fixtures.csv` SHA256 zgodne, narzędzie wykonało audyt i wydało artefakt o SHA256 `ac6c3c3e3773191bd703a73e43164a4d63229e05600b26d0815f56ed3f5cc59d`.
+
+Spośród **309** przyszłych celów posiadających historyczne publiczne godziny w tej migawce:
+- **8** — kompletne pięć wcześniejszych opublikowanych spotkań obu drużyn w ramach 2023/24 (publiczne fixture ID: 77, 73, 75, 76, 74, 72, 79, 80), z datą targetu 07–08.10.2023. To tylko źródłowe **WARUNKOWE** odtwarzanie formy; native PitchAPI nie dołączono;
+- **269** — luki w starym źródle: wcześniejsze spotkanie drużyny niezakończone według starej migawki lub rozegrane dopiero po jej publikacji;
+- **32** — nieznany kickoff jednego ze spotkań drużyny w starym terminarzu, więc algorytm odmawia domniemania pełnej historii.
+
+Razem 8+269+32 = 309. Kompaktowy [trwale zamrożony raport liczbowy i lista 8 publicznych ID](../data/audits/STEP14_FPL_FORM5_PER_FIXTURE_PARTIAL_SUMMARY_2026-10-28.json) zawiera hashe i numer przebiegu. Pełny szczegółowy ledger 309 rekordów jest w artefakcie GitHub Actions (retencja 30 dni) i odtwarzalny z przypiętego surowego źródła. **Nie ogłoszono 8 certyfikowanych TRAIN, nie potwierdzono oficjalnego PIT; nadal TRAIN 0/760, VALIDATION 0/380.**
+
 ## Granice dowodu
 
 Taki rezultat potwierdza co najwyżej:
@@ -25,7 +36,7 @@ Nie potwierdza jeszcze: poprawnego powiązania tego publicznego target `fixture_
 
 ## Kolejność kolejnych prac
 
-1. Odczytać realny raport z zatwierdzonego publicznego SHA: policzyć **ile konkretnie przyszłych spotkań** spełnia ścisłe kryterium kompletnej formy 5 w danej migawce. Nie podawać liczby bez wykonanego raportu.
+1. **WYKONANO dla jednej migawki** — przeanalizowano 309 targetów, 8 spełnia ścisły warunek źródła FPL, ale nie warunek natywnej tożsamości i całego PIT.
 2. Rozszerzyć zbiór autentycznie timestampowanych migawek publicznych (FPL 2023/24 oraz OpenFootball 2024/25–2025/26). Każdy nowy rekord tylko po niezależnej weryfikacji czasu publikacji i bez mieszania różnych wersji bez rozliczenia każdej zależności.
 3. Dla potencjalnych targetów potwierdzić `home`, `away`, sezon oraz **bezpieczny wcześniejszy cutoff** względem autentycznego natywnego meczu; Ipswich–Everton zachowuje pierwotną granicę 14:00 UTC.
 4. Osobno dowieść pełnego, nieprzerwanego łańcucha Elo (w tym historii startowej) i równoważności ewentualnych danych xG. Braki pozostają `NOT_PROVEN`.
