@@ -33,7 +33,7 @@ ALLOWED_SAMPLE_CATEGORIES={
  "MATCH_EXACT_TEAMS_GIT_COMMIT_DATE_ONLY",
  "NO_NATIVE_PAIR_MATCH_IN_OLD_PUBLIC_BLOB",
 }
-NATIVE_ID_PATTERN=re.compile(r"\\b(?:m|t)_[A-Za-z0-9]{6}\\b")
+NATIVE_ID_PATTERN=re.compile(r"\b(?:m|t)_[A-Za-z0-9]{6}\b")
 
 def _counts(value,required_total,allowed):
     if not isinstance(value,dict) or not set(value)<=allowed:
@@ -50,8 +50,9 @@ def inspect_owner_aggregate(report):
     # Native strings must NEVER leave the user's computer; only aggregates.
     serialized=json.dumps(report,sort_keys=True,ensure_ascii=False)
     if (NATIVE_ID_PATTERN.search(serialized) or
-        any('private_key' in k or 'score_home' in k or 'score_away' in k or
-            'odds' in k or 'target_label' in k for k in report)):
+        any(k in report for k in (
+            "private_key","secret","score_home","score_away",
+            "odds","target_label","labels","rows","receipts","matches"))):
         raise FullOwnerReviewError("OWNER_REPORT_NOT_AGGREGATE_ONLY")
     for field,want in {
        "source_archive_zip_sha256":ARCHIVE_ZIP_SHA,
