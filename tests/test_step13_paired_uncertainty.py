@@ -2,7 +2,7 @@
 import copy
 import unittest
 
-from tests.test_step13_pitchapi_live_research import fixtures
+from test_step13_pitchapi_live_research import fixtures
 from scripts.step13_pitchapi_research_once import extract_research_rows
 from scripts.step13_paired_uncertainty_once import paired_uncertainty, quantile
 from src.kb3_step13_retrospective import retrospective_research, POLICY
