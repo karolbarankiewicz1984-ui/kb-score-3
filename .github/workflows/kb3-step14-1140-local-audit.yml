@@ -3,6 +3,7 @@ on:
   push:
     branches:
       - audit/step14-full-1140-identity-field-pit-20261027
+      - fix/step14-1140-ci-immutable-ref-idempotent-20261027
       - main
     paths:
       - "src/kb3_step14_full_identity_pit_audit.py"
@@ -37,7 +38,11 @@ jobs:
         run: python -m unittest discover -s tests -p "test_step14_public_1140_fixtures.py" -v
       - name: Capture CC0 public 3-season schedules 1140 without scores (research reference only)
         run: |
-          python -m src.kb3_step14_public_1140_fixtures --output data/research/STEP14_OPENFOOTBALL_1140_TARGETFREE_2026-10-27.json
+          if [ -f data/research/STEP14_OPENFOOTBALL_1140_TARGETFREE_2026-10-27.json ]; then
+            echo "Target-free 1140 public fixture reference already frozen; validating existing instead of recapturing."
+          else
+            python -m src.kb3_step14_public_1140_fixtures --output data/research/STEP14_OPENFOOTBALL_1140_TARGETFREE_2026-10-27.json
+          fi
       - name: Verify all public projection record fields contain no labels, scores or odds
         run: |
           python - <<'PY'
@@ -48,6 +53,8 @@ jobs:
           assert all(len(v["fixtures_target_free"])==380 for v in j["source_seasons"].values())
           assert all(set(row)=={"date","time_london","home_name","away_name"}
              for v in j["source_seasons"].values() for row in v["fixtures_target_free"])
+          from src.kb3_split import sha
+          assert j["projection_sha256"]==sha({k:v for k,v in j.items() if k!="projection_sha256"})
           assert j["test_2026_2027_not_downloaded"] is True
           assert not j["training_allowed"] and not j["gate14_pass"]
           print("PUBLIC_1140_SCHEDULE_TARGET_FREE_ONLY_NOT_PREMATCH_ASOF_PROOF")
