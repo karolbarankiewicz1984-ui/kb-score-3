@@ -31,8 +31,8 @@ def synthetic_source():
             "id":f["fixture_id"],"time_utc":f["kickoff_utc"],
             "status":"not_started",
             "score_home":None,"score_away":None,
-            "home_team":{"id":f"t_{h:06d}","name":f"SYN-HOME-{h}"},
-            "away_team":{"id":f"t_{a:06d}","name":f"SYN-AWAY-{a}"},
+            "home_team":{"id":f"t_{h:06d}","name":f"SYN-TEAM-{h}"},
+            "away_team":{"id":f"t_{a:06d}","name":f"SYN-TEAM-{a}"},
         })
     return safe,{"matches":rows}
 
@@ -107,7 +107,7 @@ class ForwardPrematchTests(TestCase):
         safe,_=synthetic_source()
         safe["training_allowed"]=True
         with self.assertRaisesRegex(BaselineSafetyError,"FROZEN_SPLIT"):
-            train_only({},safe)
+            train_only({"2023/2024":{},"2024/2025":{}},safe)
 
     def test_upcoming_provider_cannot_contain_test_result_for_another_game(self):
         safe,upcoming=synthetic_source()
