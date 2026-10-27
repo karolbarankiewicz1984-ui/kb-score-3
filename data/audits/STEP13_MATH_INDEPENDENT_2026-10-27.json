@@ -1,0 +1,26 @@
+{
+  "api_requests": 0,
+  "elo_zero_sum_and_standard_logistic_tested": true,
+  "gate13_pass": false,
+  "identity_checks": 35,
+  "independent_closed_form_poisson_over_btts": true,
+  "numerical_max_absolute_deviation": {
+    "btts": 2.502442697505103e-13,
+    "elo_balance": 0.0,
+    "elo_logit": 1.1368683772161603e-13,
+    "one_x_two": 0.0,
+    "poisson_over": 7.200906537718765e-13,
+    "scoreline": 1.2213841049657503e-13
+  },
+  "original_snapshot_sha256": "9c346f79b1868fd1cb0d4d4ffa066f6f1629e09bbc6ce0454c5c8901e7645389",
+  "parameters_tuned": false,
+  "pinned_real_prematch_forecasts_replayed": 10,
+  "poisson_draw_and_scoreline_consistency_tested": true,
+  "report_sha256": "5c9d6a790950e07e6ada8d306a38d1dffaefeeede216b0444effa0f0114f98f3",
+  "result_labels_read": 0,
+  "schema": "kb3-step13-independent-algebra-audit-v1",
+  "source_snapshot_modified": false,
+  "step14_started": false,
+  "synthetic_rating_pairs": 25,
+  "training_allowed": false
+}
