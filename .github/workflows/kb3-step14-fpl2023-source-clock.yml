@@ -26,7 +26,7 @@ jobs:
           python-version: "3.11"
       - name: Seven negative/positive offline contracts - no private keys
         run: python -m unittest discover -s tests -p "test_step14_fpl_historic_clock_pilot.py" -v
-      - name: Independently verify real 2023/24 FPL pregame archived CSV against GH Archive events
+      - name: Inspect real 2023/24 FPL old CSVs and separately corroborate any available GH Archive events
         run: |
           python -m src.kb3_step14_fpl_historic_clock_pilot --output data/audits/STEP14_FPL_2023_PREMATCH_PUBLIC_SNAPSHOT_PILOT_2026-10-27.json
       - name: Permit partial public predecessor score evidence ONLY, never PitchAPI PIT
@@ -35,13 +35,15 @@ jobs:
           import json
           p="data/audits/STEP14_FPL_2023_PREMATCH_PUBLIC_SNAPSHOT_PILOT_2026-10-27.json"
           r=json.load(open(p))
-          assert r["verified_snapshots"]==3
+          assert r["archived_snapshot_contents_checked"]==3
+          assert 0<=r["independent_public_push_verified_snapshots"]<=3
+          assert r["unverified_publication_snapshots"]==3-r["independent_public_push_verified_snapshots"]
           assert [v["finished_ft_records_available_at_historical_source_publication"] for v in r["records"]]==[10,70,90]
           assert all(v["unplayed_rows_have_null_scores"]==380-v["finished_ft_records_available_at_historical_source_publication"] for v in r["records"])
           assert not r["gate14_pass"] and not r["official_M1_train_allowed"]
           assert not r["native_pitchapi_team_pair_joined"] and not r["xg_input_certified"]
           assert r["test_rows_examined"]==0 and not r["odds_used"]
-          print("FPL_2023_REAL_GHARCHIVE_PREMATCH_FT_PROVEN__PITCHAPI_159_FIELDS_STILL_UNPROVEN")
+          print("FPL_2023_REAL_ARCHIVE_CONTENTS_CHECKED_PUBLIC_TIMESTAMPS_VERIFIED",r["independent_public_push_verified_snapshots"],"PITCHAPI_159_FIELDS_STILL_UNPROVEN")
           PY
       - name: Freeze safe provenance summary on isolated research branch
         if: github.ref == 'refs/heads/research/step14-fpl-2023-24-real-publish-clock-20261027'
