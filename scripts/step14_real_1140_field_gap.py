@@ -76,8 +76,12 @@ if __name__=="__main__":
     opt=p.parse_args()
     report=run()
     dest=Path(opt.out);dest.parent.mkdir(parents=True,exist_ok=True)
-    if dest.exists(): raise ValueError("REPORT_EXISTS_APPEND_ONLY")
-    dest.write_text(json.dumps(report,ensure_ascii=False,sort_keys=True,indent=2)+"\n",encoding="utf8")
+    serialized=json.dumps(report,ensure_ascii=False,sort_keys=True,indent=2)+"\n"
+    if dest.exists():
+        if dest.read_text(encoding="utf8")!=serialized:
+            raise ValueError("PINNED_REPORT_CHANGED_APPEND_ONLY")
+    else:
+        dest.write_text(serialized,encoding="utf8")
     print(json.dumps({k:report[k] for k in (
       "historical_match_count","real_train_missing_true_prematch_cutoff",
       "real_validation_missing_true_prematch_cutoff",
