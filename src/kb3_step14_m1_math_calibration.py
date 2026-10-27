@@ -164,3 +164,73 @@ def audit_frozen_settlements(forecasts,settlements,*,cutoff_utc):
         pairs.append((forecast,item))
     pairs.sort(key=lambda x:(x[0]["kickoff_utc"],x[0]["forecast_id"]))
     return pairs
+
+def prepare_future_calibration_candidate(*,forecasts,settlements,
+        model_version,variant,calibration_cutoff_utc,review_cutoff_utc,
+        min_calibration_rows=100,min_evaluation_rows=50):
+    """Fail-closed review candidate for LATER actual pregame frozen forecasts.
+
+    Results from the later evaluation interval are never given to optimizer.
+    Data source here must be an externally authenticated append-only forecast
+    ledger. Self-SHA is tamper DETECTION, not proof of historical capture.
+    Model and variant must be fixed throughout each candidate sample.
+    """
+    if (variant not in ("NO_XG","WITH_XG_MASKS") or
+        not isinstance(model_version,str) or not model_version or
+        type(min_calibration_rows) is not int or min_calibration_rows<100 or
+        type(min_evaluation_rows) is not int or min_evaluation_rows<50):
+        raise M1MathError("REAL_CALIBRATION_SAMPLE_POLICY_NOT_MET")
+    before=strict_utc(calibration_cutoff_utc)
+    review=strict_utc(review_cutoff_utc)
+    if before>=review:
+        raise M1MathError("REVIEW_MUST_FOLLOW_CALIBRATION_CUTOFF")
+    pairs=audit_frozen_settlements(forecasts,settlements,cutoff_utc=review_cutoff_utc)
+    training=[];evaluation=[];embargoed=0
+    for forecast,result in pairs:
+        if forecast["variant"]!=variant or forecast["model_version"]!=model_version:
+            # Do not silently pool forecasts from models with different
+            # uncalibrated scores. Candidate is per-version and per-variant.
+            continue
+        kickoff=strict_utc(forecast["kickoff_utc"])
+        finished=strict_utc(result["settled_at_utc"])
+        pair=(forecast["probabilities"],result["label_1x2"])
+        if kickoff<before and finished<before:
+            training.append(pair)
+        elif kickoff>=before and finished<review:
+            evaluation.append(pair)
+        else:
+            embargoed+=1
+    if len(training)<min_calibration_rows or len(evaluation)<min_evaluation_rows:
+        raise M1MathError("NOT_ENOUGH_INDEPENDENT_FROZEN_SETTLED_FORECASTS")
+    temp=fit_temperature([a for a,b in training],[b for a,b in training],
+                         min_rows=min_calibration_rows)
+    later=evaluate_calibrated_holdout([a for a,b in evaluation],
+                                     [b for a,b in evaluation],temp)
+    digest=hashlib.sha256(json.dumps(
+        {"model_version":model_version,"variant":variant,
+         "calibration_forecast_shas":[f["sha256"] for f,r in pairs
+             if f["variant"]==variant and f["model_version"]==model_version and
+             strict_utc(f["kickoff_utc"])<before and strict_utc(r["settled_at_utc"])<before],
+         "calibration_cutoff_utc":calibration_cutoff_utc,
+         "review_cutoff_utc":review_cutoff_utc},
+        sort_keys=True,separators=(",",":")).encode()).hexdigest()
+    return {
+        "schema":"kb3-m1-future-calibration-candidate-v1",
+        "model_version":model_version,"feature_variant":variant,
+        "calibration_cutoff_utc":calibration_cutoff_utc,
+        "review_cutoff_utc":review_cutoff_utc,
+        "calibration_training_count":len(training),
+        "independent_later_evaluation_count":len(evaluation),
+        "embargoed_cross_cutoff_settlements_count":embargoed,
+        "calibration_temperature_proposal":temp["temperature"],
+        "past_fit_metrics":{k:temp[k] for k in ("calibration_log_loss_raw","calibration_log_loss_fitted")},
+        "later_not_used_in_fit":later,
+        "calibration_forecast_ids_immutable_digest_only":digest,
+        "forecast_capture_origin_independently_verified":False,
+        "hash_alone_not_proof_prematch_publication":True,
+        "requires_immutable_external_ledger_and_manual_review":True,
+        "auto_activation":False,
+        "test_rows_read":0,
+        "training_allowed_original_historical_M1":False,
+        "gate14_pass":False,
+    }
