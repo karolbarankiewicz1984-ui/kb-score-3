@@ -3,6 +3,8 @@ from datetime import datetime,timezone
 from zoneinfo import ZoneInfo
 import json
 import unittest
+from unittest.mock import patch
+from pathlib import Path
 from src.kb3_step14_public_1140_fixtures import project,PublicReferenceError
 from src.kb3_step14_full_identity_pit_audit import _independent_public_1140,FullNativeAuditError
 from src.kb3_split import sha
@@ -31,6 +33,16 @@ def make_seasons(with_scores=True):
         datas[s]=raw
     return datas,native
 
+def mock_crosscheck(native,reference):
+    # Only synthetic unit-test references may override frozen production SHA.
+    with patch("src.kb3_step14_full_identity_pit_audit.PUBLIC_REFERENCE_SHA",
+               reference["projection_sha256"]), patch(
+               "src.kb3_step14_full_identity_pit_audit.PUBLIC_SOURCE_SHA",
+               {s:v["original_source_sha256_AUDIT_ONLY"] for s,v in
+                reference["source_seasons"].items()}):
+        return _independent_public_1140(native,reference)
+
+
 class PublicExternal1140Tests(unittest.TestCase):
     def test_projection_never_exports_scores_or_odds(self):
         docs,_=make_seasons()
@@ -47,7 +59,7 @@ class PublicExternal1140Tests(unittest.TestCase):
         docs,native=make_seasons()
         p=project(fetcher=lambda url:docs[url.split("/")[-2]],
                   observed_at_utc="2026-10-27T15:00:00Z")
-        result=_independent_public_1140(native,p)
+        result=mock_crosscheck(native,p)
         self.assertEqual(result["checked"],1140)
         self.assertEqual(result["counts"],{"EXACT_PUBLIC_TEAM_PAIR_AND_UTC_KICKOFF":1140})
         self.assertFalse(result["source_is_historical_pit"])
@@ -57,7 +69,7 @@ class PublicExternal1140Tests(unittest.TestCase):
         p=project(fetcher=lambda url:docs[url.split("/")[-2]],
                   observed_at_utc="2026-10-27T15:00:00Z")
         native["2025-26:1:2"]["kickoff_utc"]="2026-01-31T20:00:00Z"
-        result=_independent_public_1140(native,p)
+        result=mock_crosscheck(native,p)
         self.assertEqual(result["counts"]["EXACT_PUBLIC_TEAM_PAIR_AND_UTC_KICKOFF"],1139)
         self.assertEqual(result["counts"]["SAME_PUBLIC_TEAM_PAIR_DIFFERENT_UTC_KICKOFF"],1)
 
@@ -66,7 +78,7 @@ class PublicExternal1140Tests(unittest.TestCase):
         p=project(fetcher=lambda url:docs[url.split("/")[-2]],
                   observed_at_utc="2026-10-27T15:00:00Z")
         native["2025-26:1:2"]["home_name"]="Not a real club"
-        result=_independent_public_1140(native,p)
+        result=mock_crosscheck(native,p)
         self.assertEqual(result["counts"]["NO_EXACT_PUBLIC_TEAM_PAIR_SAME_SEASON"],1)
 
     def test_public_source_cannot_claim_training_allowed_with_new_hash(self):
@@ -76,7 +88,26 @@ class PublicExternal1140Tests(unittest.TestCase):
         p["training_allowed"]=True
         p["projection_sha256"]=sha({k:v for k,v in p.items() if k!="projection_sha256"})
         with self.assertRaisesRegex(FullNativeAuditError,"PUBLIC_1140_REFERENCE_NOT_AUTHENTIC"):
-            _independent_public_1140(native,p)
+            mock_crosscheck(native,p)
+
+    def test_re_signed_retro_reference_rejected_even_if_self_hash_valid(self):
+        source=Path(__file__).resolve().parents[1]/"data/research/STEP14_OPENFOOTBALL_1140_TARGETFREE_2026-10-27.json"
+        real=json.loads(source.read_text(encoding="utf8"))
+        self.assertEqual(real["projection_sha256"],sha({k:v for k,v in real.items() if k!="projection_sha256"}))
+        # A maliciously rewritten retrospective schedule may have a perfectly
+        # internally valid recalculated digest. It MUST NOT become the pinned baseline.
+        real["source_seasons"]["2024-25"]["fixtures_target_free"][0]["home_name"]="Forged Club"
+        real["projection_sha256"]=sha({k:v for k,v in real.items() if k!="projection_sha256"})
+        with self.assertRaisesRegex(FullNativeAuditError,"PUBLIC_1140_REFERENCE_NOT_AUTHENTIC"):
+            _independent_public_1140({},real)
+
+    def test_original_real_reference_passes_pinned_provenance_validation(self):
+        source=Path(__file__).resolve().parents[1]/"data/research/STEP14_OPENFOOTBALL_1140_TARGETFREE_2026-10-27.json"
+        real=json.loads(source.read_text(encoding="utf8"))
+        out=_independent_public_1140({},real)
+        self.assertEqual(out["checked"],1140)
+        self.assertEqual(out["counts"],{})
+        self.assertFalse(out["source_is_historical_pit"])
 
     def test_non_october_retro_clock_does_not_assert_old_pit(self):
         docs,_=make_seasons()
