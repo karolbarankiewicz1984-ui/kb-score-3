@@ -1,6 +1,6 @@
 # KB Score 3.0 — MODEL (koncepcja metodologii i testów)
 
-**Stan:** specyfikacja projektowa v0.1, KROK 04. **To nie jest implementacja ani wynik treningu.** Brak zatwierdzonego modelu KB3.0; nie podajemy fikcyjnych skuteczności i nie nazywamy starych modeli nowym silnikiem.
+**Stan specyfikacji:** v0.1 (KROK 04). **Aktualizacja 27.10.2026:** KROK13 — baseline M0 ELO + Poisson — formalnie ZALICZONO w oryginalnym zakresie technicznym, patrz [protokół](STEP_13_FINAL_ACCEPTANCE_2026-10-27.md). KROK14 — rozpoczęto projektowanie CatBoost, [karta](STEP_14_KICKOFF.md). **Żaden model produkcyjny KB3.0 nie jest zatwierdzony; nie wolno trenować na niecertyfikowanym historycznym PIT.**
 
 **Źródło prawdy:** [plan i dziennik Google Docs](https://docs.google.com/document/d/10wjHL3r3OAuxtezwcIeWztxS8lwjhYon5GM3BLhI0xE/edit) · [PLAN.md](PLAN.md) · [DANE.md](DANE.md) · [ZMIANY.md](ZMIANY.md).
 
