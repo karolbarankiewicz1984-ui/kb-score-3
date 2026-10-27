@@ -13,6 +13,7 @@ ROOT=Path(__file__).resolve().parents[1]
 NAMES={
     "Everton FC":"t_AAAAAA",
     "Newcastle United FC":"t_BBBBBB",
+    "Newcastle United":"t_BBBBBB",
     "Leeds United":"t_CCCCCC",
     "Liverpool FC":"t_DDDDDD",
     "Arsenal FC":"t_EEEEEE",
