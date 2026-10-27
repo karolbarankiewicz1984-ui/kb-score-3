@@ -5,6 +5,7 @@ on:
       - audit/step14-full-1140-identity-field-pit-20261027
       - fix/step14-1140-ci-immutable-ref-idempotent-20261027
       - main
+      - audit/step14-prewindows-safety-readiness-20261027
     paths:
       - "src/kb3_step14_full_identity_pit_audit.py"
       - "scripts/step14_full_native_identity_pit_local.py"
@@ -12,6 +13,8 @@ on:
       - "scripts/step14_real_1140_field_gap.py"
       - "src/kb3_step14_public_1140_fixtures.py"
       - "tests/test_step14_public_1140_fixtures.py"
+      - "src/kb3_step14_calendar_collision_audit.py"
+      - "tests/test_step14_calendar_collision_audit.py"
       - ".github/workflows/kb3-step14-1140-local-audit.yml"
   workflow_dispatch:
 permissions:
@@ -58,6 +61,19 @@ jobs:
           assert j["test_2026_2027_not_downloaded"] is True
           assert not j["training_allowed"] and not j["gate14_pass"]
           print("PUBLIC_1140_SCHEDULE_TARGET_FREE_ONLY_NOT_PREMATCH_ASOF_PROOF")
+          PY
+      - name: Real immutable 1140 timestamp-collision stress test (no RSA / no TEST)
+        run: python -m unittest discover -s tests -p "test_step14_calendar_collision_audit.py" -v
+      - name: Real original pinned 1140 kickoff ambiguity report (counts only)
+        run: |
+          python -m src.kb3_step14_calendar_collision_audit --output /tmp/kb3_step14_calendar_collision.json
+          python - <<'PY'
+          import json
+          r=json.load(open("/tmp/kb3_step14_calendar_collision.json"))
+          assert r["total_train_validation_utc_kickoffs_examined"]==1140
+          assert r["total_test_rows_examined"]==0 and not r["gate14_pass"]
+          assert sum(r["candidate_count_statuses"].values())==1140
+          print("REAL_1140_CALENDAR_COLLISION_RISK_SUMMARY",r["candidate_count_statuses"])
           PY
       - name: Check syntax of owner-local decrypt runner (do not execute)
         run: python -m py_compile scripts/step14_full_native_identity_pit_local.py
