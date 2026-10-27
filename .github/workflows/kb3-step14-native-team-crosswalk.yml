@@ -1,0 +1,40 @@
+name: KB3 Step14 Offline Native Team ID Crosswalk Contract
+on:
+  push:
+    branches:
+      - audit/step14-native-pitch-teamids-local-20261027
+    paths:
+      - src/kb3_step14_native_team_crosswalk.py
+      - scripts/step14_native_pitch_teamids_local.py
+      - tests/test_step14_native_team_crosswalk.py
+      - .github/workflows/kb3-step14-native-team-crosswalk.yml
+permissions:
+  contents: read
+jobs:
+  no-private-key-ever:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    env:
+      PYTHONPATH: "."
+      PYTHONDONTWRITEBYTECODE: "1"
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Offline native pair, negative proof tests with MOCK receipts only
+        run: python -m unittest discover -s tests -p 'test_step14_native_team_crosswalk.py' -v
+      - name: Ensure no key, no paid API, no real historical PIT release
+        run: |
+          python - <<'PY'
+          import inspect
+          import src.kb3_step14_native_team_crosswalk as m
+          assert len(m.REQUIRED)==4
+          assert all(v["partition"] in ("TRAIN","VALIDATION") for v in m.REQUIRED.values())
+          assert m.ARCHIVE_ZIP_SHA=="301bae69251d19a0192e12c2c033636b3f2822a15dcea2c4beaca28f4b45de2e"
+          print("LOCAL_PRIVATE_OWNER_RSA_KEY_REQUIRED_FOR_ACTUAL_4_ID_CHECK")
+          print("SYNTHETIC_UNIT_TESTS_DO_NOT_CLAIM_ACTUAL_NATIVE_IDS")
+          print("GATE14_PENDING_0_OFFICIAL_TRAIN_ELIGIBLE")
+          PY
