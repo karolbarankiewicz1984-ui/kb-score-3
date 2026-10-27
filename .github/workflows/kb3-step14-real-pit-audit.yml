@@ -1,0 +1,45 @@
+name: KB3 Step14 Real PIT Admission Audit (No Fit)
+on:
+  push:
+    branches:
+      - audit/step14-actual-pit-eligibility-20261027
+    paths:
+      - ".github/workflows/kb3-step14-real-pit-audit.yml"
+      - "src/kb3_step14_real_pit_gate.py"
+      - "tests/test_step14_real_pit_gate.py"
+      - "docs/STEP_14_REAL_PIT_ADMISSION_2026-10-27.md"
+permissions:
+  contents: read
+jobs:
+  read-only-signed-training-gate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    env:
+      PYTHONPATH: "."
+      PYTHONDONTWRITEBYTECODE: "1"
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Actual pinned manifests, metadata only; no results/API/model fitting
+        run: python -m unittest discover -s tests -p 'test_step14_real_pit_gate.py' -v
+      - name: Output only aggregate refusal report
+        run: |
+          python -m src.kb3_step14_real_pit_gate > /tmp/kb3_step14_real_pit_audit.json
+          python - <<'PY'
+          import json
+          r=json.load(open("/tmp/kb3_step14_real_pit_audit.json"))
+          assert (r["train_row_count"],r["validation_row_count"])==(760,380)
+          assert (r["train_missing_feature_cutoff_count"],
+                  r["validation_missing_feature_cutoff_count"])==(760,380)
+          assert r["train_proven_pre_match_eligible"] == 0
+          assert r["validation_proven_pre_match_eligible"] == 0
+          assert r["test_targets_read"]==0 and r["test_rows_examined"]==0
+          assert not r["real_catboost_train_allowed"]
+          assert not r["real_catboost_model_fitted"] and not r["gate14_pass"]
+          assert not r["real_validation_metrics_available"]
+          print(json.dumps(r,ensure_ascii=False,sort_keys=True))
+          PY
