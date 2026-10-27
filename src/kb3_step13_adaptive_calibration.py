@@ -130,9 +130,9 @@ def propose_adaptive_update(rows,*,now_utc, frozen_manifest, min_logloss_gain=0.
     The LAST 30% is a fresh chronological internal gate; holdout TEST never
     appears in either portion. Later gate results cannot influence fitted T.
     """
-    if not isinstance(frozen_manifest,dict) or
+    if (not isinstance(frozen_manifest,dict) or
         frozen_manifest.get("schema")!="kb3-step12-methodology-v1" or
-        frozen_manifest.get("partition_counts")!={"TRAIN":760,"VALIDATION":380,"TEST":380}:
+        frozen_manifest.get("partition_counts")!={"TRAIN":760,"VALIDATION":380,"TEST":380}):
         _block("FROZEN_SPLIT_NOT_VERIFIED")
     if frozen_manifest.get("training_allowed") is not False:
         _block("ORIGINAL_SPLIT_PROMOTION_FORBIDDEN")
