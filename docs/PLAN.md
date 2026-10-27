@@ -176,6 +176,9 @@
 
 **PRAWIDŁOWA KONTROLA ISTOTNOŚCI PORÓWNANIA 27.10.2026 (nadal KROK13):** [sparowany raport 380 meczów z 3000 resamplingów tygodniowych](../data/audits/STEP13_REAL_PAIRED_UNCERTAINTY_2026-10-27.json), [GitHub Actions PASS](https://github.com/karolbarankiewicz1984-ui/kb-score-3/actions/runs/40457581450). Delta logloss ROLL−EXP **+0,001744**, bootstrap 95% **[−0,000379, +0,003835]**; delta Brier **+0,001151**, bootstrap 95% **[−0,000496, +0,002724]**. Oba przedziały obejmują zero — nie wybierać zwycięzcy, nie promować parametrów, nie dodawać modelu. Kontrola wszystkich 4 foldów zgodna z podpisanym źródłowym raportem, TEST=0, historyczny prematch PIT nieudowodniony. **GATE13 PENDING; training_allowed=false; 12/29; krok14 nierozpoczęty.**
 
+
+**NOWY DOWÓD PROSPECTIVE — 27.10.2026 (BEZ ZMIANY KROKU13):** [10 autentycznie przedmeczowych prognoz M0 Elo+Poisson](../data/forecasts/STEP13_FIRST_PROSPECTIVE_PREMATCH_2026-10-27.json) zamrożonych `2026-10-27T06:12:08.707287Z` na mecze 31.10–02.11.2026, SHA `9c346f79b1868fd1cb0d4d4ffa066f6f1629e09bbc6ce0454c5c8901e7645389`, [GitHub Actions PASS](https://github.com/karolbarankiewicz1984-ui/kb-score-3/actions/runs/40459673538). Dokładnie 760 TRAIN do parametrów i ratingów, `VALIDATION wyniki=0`, `TEST wyniki=0`; z TEST tylko przyszła lista `upcoming` z pustym score. **PIT teraz przed kickoff, ale nie certyfikuje dawnego historycznego PIT**. Ratingi są celowo nieaktualne od końca TRAIN w 2025 r.; model shadow, bez zakładów i bez oceny skuteczności przyszłych wyników. **GATE13 PENDING, training_allowed=false, nadal 12/29, krok14 nierozpoczęty.**
+
 #### Krok 14 — Pierwszy CatBoost 1X2  [NIE ROZPOCZĘTO]
 
 - **CO ZROBIĘ:** Wytrenować niezależny ML dla 1/X/2 na cechach przedmeczowych.
