@@ -4,6 +4,8 @@ on:
     branches: ["feature/step13-*", "main"]
     paths:
       - "src/kb3_step13_retrospective.py"
+      - "src/kb3_step13_stability_audit.py"
+      - "tests/test_step13_stability_audit.py"
       - "src/kb3_step13_archive_preflight.py"
       - "data/audits/STEP13_ORIGINAL_SEALED_ZIP_PREFLIGHT_2026-10-26.json"
       - "scripts/step13_pitch_retrospective_local.py"
@@ -16,6 +18,8 @@ on:
   pull_request:
     paths:
       - "src/kb3_step13_retrospective.py"
+      - "src/kb3_step13_stability_audit.py"
+      - "tests/test_step13_stability_audit.py"
       - "src/kb3_step13_archive_preflight.py"
       - "data/audits/STEP13_ORIGINAL_SEALED_ZIP_PREFLIGHT_2026-10-26.json"
       - "scripts/step13_pitch_retrospective_local.py"
@@ -27,7 +31,7 @@ on:
       - ".github/workflows/kb3-step13-retrospective.yml"
   workflow_dispatch:
 permissions:
-  contents: read
+  contents: write
 jobs:
   research-safety-without-private-archive:
     runs-on: ubuntu-latest
@@ -90,3 +94,40 @@ jobs:
           assert not report["training_allowed"] and not report["gate13_pass"]
           print("STEP13_ORIGINAL_ENCRYPTED_ZIP_AUDIT_PINNED_NO_DECRYPTION")
           PY
+      - name: Regenerate genuine retrospective stability audit from frozen aggregate (no API)
+        run: |
+          python3 -m src.kb3_step13_stability_audit \
+            --output data/audits/STEP13_REAL_RETROSPECTIVE_STABILITY_2026-10-27.json
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          from src.kb3_split import sha
+          p=Path("data/audits/STEP13_REAL_RETROSPECTIVE_STABILITY_2026-10-27.json")
+          r=json.loads(p.read_text())
+          assert r["report_sha256"] == sha({k:v for k,v in r.items() if k!="report_sha256"})
+          assert r["original_aggregate_report_sha256"] == "3d950fff30b57c94a6f71462c7521cfda2cb0b27c666d59d09d274261efca803"
+          assert r["validation_total"] == 380 and r["test_rows_read"] == 0
+          assert r["fold3_overconfidence_detected_both_methods"]
+          assert r["all_eight_elasticity_fits_at_original_grid_upper_edge"]
+          assert not r["model_winner_promoted"]
+          assert not r["retraining_or_parameter_grid_change_performed"]
+          assert not r["training_allowed"] and not r["gate13_pass"]
+          print("STEP13_REAL_AGGREGATE_STABILITY_Q3_SAFETY_PASS")
+          PY
+      - name: Save only aggregate stability JSON as independent artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: kb3-step13-real-retrospective-stability-aggregate-v06
+          path: data/audits/STEP13_REAL_RETROSPECTIVE_STABILITY_2026-10-27.json
+          retention-days: 90
+          if-no-files-found: error
+      - name: Freeze stability audit on reviewed Step13 feature branch only
+        if: github.event_name == 'push' && github.ref == 'refs/heads/feature/step13-calibration-stability-audit-v06'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/audits/STEP13_REAL_RETROSPECTIVE_STABILITY_2026-10-27.json
+          if ! git diff --cached --quiet; then
+            git commit -m "Step13: freeze verified quarterly calibration stability findings (no new provider calls)"
+            git push origin HEAD:feature/step13-calibration-stability-audit-v06
+          fi
