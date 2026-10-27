@@ -59,7 +59,7 @@ def next_10(*,train_seasons, upcoming_payload, safe, first_snapshot, observed_at
     for fid in sorted(metadata,key=lambda k:(metadata[k]["kickoff_utc"],k)):
         game=candidates[fid]
         ko=timestamp(game["time_utc"])
-        if ko!=timestamp(metadata[fid]["kickoff_utc"]) or not now<lock<ko:
+        if ko!=timestamp(metadata[fid]["kickoff_utc"]) or not now<=lock<ko:
             raise BaselineSafetyError("STEP13_NEXT_PROVIDER_KICKOFF_CHANGED")
         h,a=game["home_team"],game["away_team"]
         p=forecast(ratings.get(h["id"],params.initial_elo),
