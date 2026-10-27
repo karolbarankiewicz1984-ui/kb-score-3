@@ -15,6 +15,7 @@ jobs:
     timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
+# Test fixture SHA parity now checked before every provider use.
       - name: Offline synthetic matched-bootstrap tests before provider
         run: |
           python3 -m unittest discover -s tests -p "test_step13_paired_uncertainty.py" -v
