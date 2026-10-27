@@ -1,0 +1,46 @@
+name: KB3 Step14 One Owner Kickoff Difference Diagnostic Offline Tests
+on:
+  push:
+    branches:
+      - fix/step14-owner-one-time-mismatch-diagnosis-20261027
+      - main
+    paths:
+      - "src/kb3_step14_one_kickoff_diagnosis.py"
+      - "scripts/step14_explain_one_kickoff_local.py"
+      - "tests/test_step14_one_kickoff_diagnosis.py"
+      - ".github/workflows/kb3-step14-one-kickoff-local.yml"
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  never-decrypt-in-ci:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    env:
+      PYTHONPATH: "."
+      PYTHONDONTWRITEBYTECODE: "1"
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install public verification-only library, no RSA key
+        run: python -m pip install --disable-pip-version-check cryptography
+      - name: Six synthetic source-failure and no-native-ID-output tests
+        run: python -m unittest discover -s tests -p test_step14_one_kickoff_diagnosis.py -v
+      - name: Compile real owner-only script but NEVER execute RSA here
+        run: python -m py_compile scripts/step14_explain_one_kickoff_local.py
+      - name: Confirm original immutable reference file remains pinned
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import json
+          from src.kb3_step14_full_identity_pit_audit import PUBLIC_REFERENCE_SHA
+          p=Path("data/research/STEP14_OPENFOOTBALL_1140_TARGETFREE_2026-10-27.json")
+          v=json.loads(p.read_text(encoding="utf8"))
+          assert v["projection_sha256"] == PUBLIC_REFERENCE_SHA
+          assert not v["training_allowed"] and not v["gate14_pass"]
+          print("ONLY_FAKE_1140_TESTS_PASS__REAL_ONE_MATCH_REQUIRES_OWNER_LOCAL_RSA")
+          PY
