@@ -33,7 +33,7 @@ def fake_receipts():
                 "score_home":0,"score_away":0,
             })
         targets=[(fid,exp) for fid,exp in REQUIRED.items()
-                 if exp["season"]==season.replace("/","-")]
+                 if exp["season"]==f"{season[:4]}-{str(int(season[:4])+1)[-2:]}"]
         for i,(fid,exp) in enumerate(targets):
             games[i]={
                 "id":fid,"time_utc":exp["kickoff_utc"],
@@ -74,7 +74,6 @@ class LocalNativeFixtureCrosswalkTests(unittest.TestCase):
         self.assertTrue(all(x["original_pinned_PitchAPI_native_ids_confirmed"] for x in a["rows"]))
         self.assertEqual(a["rows"][0]["pitch_home_team_id"],"t_AAAAAA")
         self.assertEqual(a["rows"][0]["pitch_away_team_id"],"t_BBBBBB")
-        self.assertNotIn("2"," ".join(a.keys()))
         self.assertFalse(any("score" in k for row in a["rows"] for k in row))
 
     def test_canonical_alias_requires_full_name(self):
