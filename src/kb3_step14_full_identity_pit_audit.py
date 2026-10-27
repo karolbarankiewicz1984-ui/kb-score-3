@@ -27,6 +27,15 @@ SEASONS={"2023/2024":("2023-24","TRAIN"),"2024/2025":("2024-25","TRAIN"),
 SCHEMA="kb3-step14-full-1140-native-identity-pit-audit-v1"
 PUBLIC_BLOB_SCHEMA="kb3-step14-historical-blob-clock-crosswalk-audit-v1"
 PUBLIC_CLOCK_SCHEMA="kb3-step14-thirdparty-public-push-clock-v1"
+# Original full October-27 public identity reference is immutable. A freshly
+# self-hashed replacement must NOT silently become a new accepted baseline.
+# Changing this requires a separately reviewed new version and provenance.
+PUBLIC_REFERENCE_SHA="fa924730da71e3ba24e89a3095f7d4d92de5e71dd252b893bd86cc2e4db53678"
+PUBLIC_SOURCE_SHA={
+    "2023-24":"03e13eafbf78dfe00d7e89dd3bf6643986eb6e8fd86c7664aeb8c5bc0bed88d0",
+    "2024-25":"c3d18f552d83382cd4b6b21127adbbfe38e7f8618ddc979fb5404f2df07d0a75",
+    "2025-26":"d6070bdf731546ccf97767f062e8af4bd26dd309dee69f6092025bf9c78f43c1",
+}
 
 class FullNativeAuditError(ValueError):pass
 
@@ -221,6 +230,11 @@ def _independent_public_1140(native,reference):
         reference.get("gate14_pass") is not False or
         reference.get("observation_is_retrospective_not_2023_2026_pit") is not True or
         reference.get("full_coverage_historical_season_fixtures")!=1140 or
+        reference.get("projection_sha256")!=PUBLIC_REFERENCE_SHA or
+        reference.get("test_2026_2027_not_downloaded") is not True or
+        reference.get("no_prematch_feature_release") is not True or
+        reference.get("odds_in_projection") is not False or
+        reference.get("xg_in_projection") is not False or
         reference.get("result_labels_in_projection") is not False or
         reference.get("projection_sha256")!=sha({k:v for k,v in reference.items() if k!="projection_sha256"})):
         raise FullNativeAuditError("PUBLIC_1140_REFERENCE_NOT_AUTHENTIC_TARGETFREE")
@@ -229,6 +243,8 @@ def _independent_public_1140(native,reference):
         raise FullNativeAuditError("PUBLIC_1140_SEASONS_CHANGED")
     pairs={}
     for season,doc in source.items():
+        if doc.get("original_source_sha256_AUDIT_ONLY")!=PUBLIC_SOURCE_SHA[season]:
+            raise FullNativeAuditError("PUBLIC_1140_RAW_SOURCE_SHA_CHANGED")
         matches=doc.get("fixtures_target_free")
         if not isinstance(matches,list) or len(matches)!=380:
             raise FullNativeAuditError("PUBLIC_1140_INCOMPLETE")
@@ -248,6 +264,8 @@ def _independent_public_1140(native,reference):
             pairs[key]=utc
     if len(pairs)!=1140:
         raise FullNativeAuditError("PUBLIC_1140_NOT_ALL_PRESENT")
+    if len(native) not in (0,1140):
+        raise FullNativeAuditError("NATIVE_NOT_FULL_1140")
     counts=Counter()
     for n in native.values():
         key=(n["season"],canonical_team_name(n["home_name"]),canonical_team_name(n["away_name"]))
@@ -261,11 +279,12 @@ def _independent_public_1140(native,reference):
             # Reschedules / source feed disagreement must be investigated:
             # NEVER substitute an external fixture based on kickoff only.
             counts["SAME_PUBLIC_TEAM_PAIR_DIFFERENT_UTC_KICKOFF"]+=1
-    if sum(counts.values())!=1140:
+    if sum(counts.values())!=len(native):
         raise FullNativeAuditError("PUBLIC_1140_MATCH_CLASSIFICATION_INCOMPLETE")
     return {
-        "status":"RETROSPECTIVE_PUBLIC_1140_IDENTITY_CROSSCHECK_ONLY",
-        "checked":1140,
+        "status":("RETROSPECTIVE_PUBLIC_1140_IDENTITY_CROSSCHECK_ONLY"
+                  if native else "PINNED_PUBLIC_REFERENCE_VALIDATION_ONLY"),
+        "checked":len(native),
         "counts":dict(sorted(counts.items())),
         "public_source_capture_utc":reference["actual_observed_at_utc"],
         "target_free_reference_sha256":reference["projection_sha256"],

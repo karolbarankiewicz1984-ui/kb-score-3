@@ -1,0 +1,25 @@
+{
+  "schema": "kb3-step14-no-label-schedule-kickoff-collision-audit-v1",
+  "audit_date": "2026-10-27",
+  "source": "REAL_GITHUB_ACTIONS_40575997199__FROZEN_SAFE_STEP12_VS_FROZEN_PUBLIC_OPENFOOTBALL_1140",
+  "source_safe_sha256": "3b8da84b334d897e327c883b769944bf36016cb44daf1da041bfb7d16a7b11e7",
+  "source_public_sha256": "fa924730da71e3ba24e89a3095f7d4d92de5e71dd252b893bd86cc2e4db53678",
+  "source_actual_capture": "public OpenFootball October 27, 2026; retrospective identity reference only",
+  "roles": {
+    "TRAIN": 760,
+    "VALIDATION": 380,
+    "TEST_examined": 0
+  },
+  "counts": {
+    "MULTIPLE_PUBLIC_SAME_KICKOFF": 647,
+    "EXACTLY_ONE_PUBLIC_SAME_KICKOFF_NOT_IDENTITY_PROOF": 492,
+    "ZERO_PUBLIC_SAME_KICKOFF": 1
+  },
+  "total": 1140,
+  "native_team_ids_verified_in_this_audit": 0,
+  "proof_limit": "only season+UTC candidate counts, not home/away native team identity",
+  "historical_prematch_PIT_certified": false,
+  "training_allowed": false,
+  "gate14_pass": false,
+  "github_actions_url": "https://github.com/karolbarankiewicz1984-ui/kb-score-3/actions/runs/40575997199"
+}

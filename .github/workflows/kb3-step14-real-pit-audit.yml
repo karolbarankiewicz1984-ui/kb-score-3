@@ -3,11 +3,19 @@ on:
   push:
     branches:
       - audit/step14-actual-pit-eligibility-20261027
+      - audit/step14-prewindows-safety-readiness-20261027
+      - main
     paths:
       - ".github/workflows/kb3-step14-real-pit-audit.yml"
       - "src/kb3_step14_real_pit_gate.py"
       - "tests/test_step14_real_pit_gate.py"
       - "docs/STEP_14_REAL_PIT_ADMISSION_2026-10-27.md"
+      - "data/splits/STEP12_NATIVE_REAL_SPLIT_2026-10-26.json"
+      - "data/splits/STEP12_SAFE_MODEL_VIEW_2026-10-26.json"
+      - "src/kb3_step14_full_identity_pit_audit.py"
+      - "src/kb3_step14_calendar_collision_audit.py"
+      - "scripts/step14_full_native_identity_pit_local.py"
+  workflow_dispatch:
 permissions:
   contents: read
 jobs:
