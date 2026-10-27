@@ -1,0 +1,74 @@
+{
+  "betting_claims_authorized": false,
+  "comparison_statistically_conclusive": false,
+  "current_model_parameter_change": false,
+  "elo_elasticity_at_original_grid_boundary_count": 8,
+  "folds": [
+    {
+      "calendar_week_clusters": 7,
+      "fold": 1,
+      "rolling_minus_expanding_brier": 0.0,
+      "rolling_minus_expanding_logloss": 0.0,
+      "validation_n": 60
+    },
+    {
+      "calendar_week_clusters": 12,
+      "fold": 2,
+      "rolling_minus_expanding_brier": 0.0021531059049424003,
+      "rolling_minus_expanding_logloss": 0.002971598533278101,
+      "validation_n": 126
+    },
+    {
+      "calendar_week_clusters": 12,
+      "fold": 3,
+      "rolling_minus_expanding_brier": -0.0022836798425502377,
+      "rolling_minus_expanding_logloss": -0.0025556424061780798,
+      "validation_n": 123
+    },
+    {
+      "calendar_week_clusters": 7,
+      "fold": 4,
+      "rolling_minus_expanding_brier": 0.006296960157972905,
+      "rolling_minus_expanding_logloss": 0.008486041141162439,
+      "validation_n": 71
+    }
+  ],
+  "gate13_pass": false,
+  "original_provider_prematch_publication_verified": false,
+  "original_report_sha256": "3d950fff30b57c94a6f71462c7521cfda2cb0b27c666d59d09d274261efca803",
+  "overall": {
+    "brier": {
+      "interval_includes_zero": true,
+      "rolling_minus_expanding_mean": 0.0011512707752764746,
+      "same_match_paired_losses": true,
+      "week_cluster_bootstrap_ci95": [
+        -0.0004956491064112354,
+        0.0027241986647060703
+      ],
+      "week_cluster_resamples": 3000
+    },
+    "log": {
+      "interval_includes_zero": true,
+      "rolling_minus_expanding_mean": 0.0017436482111990758,
+      "same_match_paired_losses": true,
+      "week_cluster_bootstrap_ci95": [
+        -0.000378922606774722,
+        0.0038354903137070217
+      ],
+      "week_cluster_resamples": 3000
+    }
+  },
+  "predictions_per_match_exported": false,
+  "raw_results_exported": false,
+  "report_sha256": "e1a1694da3b43f944696b456521448015b855f47da8d91d181ee5d547a9d47d4",
+  "resampling": "STRATIFIED_WITHIN_FOLD_CALENDAR_WEEK_CLUSTERS_WITH_REPLACEMENT",
+  "resampling_note": "DESCRIPTIVE_CI_NOT_FREQUENTIST_GUARANTEE_FOR_DEPENDENT_FOOTBALL_RESULTS",
+  "research_policy": "RECONSTRUCTED_EVENT_TIME_RESEARCH_NOT_VERIFIED_PIT",
+  "schema": "kb3-step13-real-retrospective-paired-week-cluster-uncertainty-v0.8",
+  "seed": 13082026,
+  "test_rows_read": 0,
+  "training_allowed": false,
+  "training_initial_n": 760,
+  "validation_n": 380,
+  "week_clusters_total": 38
+}
