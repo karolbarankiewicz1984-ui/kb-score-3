@@ -1,0 +1,66 @@
+{
+  "full_original_pitchapi_feature_vector_pit_certified": false,
+  "gate14_pass": false,
+  "historical_public_push_2024_10_02_fully_finished_results": 60,
+  "historical_public_push_2025_07_30_fully_finished_results": 0,
+  "no_test_result_read": true,
+  "official_M1_train_eligible": 0,
+  "public_availability_of_some_prior_ft_results_proven": true,
+  "records": [
+    {
+      "completed_predecessor_results_for_away_in_pushed_blob": 6,
+      "completed_predecessor_results_for_home_in_pushed_blob": 6,
+      "fixture_id": "m_3AMymS",
+      "historic_result_values_exported": false,
+      "independent_GH_push_before_kickoff": true,
+      "official_m1_training_allowed": false,
+      "prematch_native_PitchAPI_form5_certified": false,
+      "public_july_source_contains_actual_native_pair": true,
+      "public_push_time_utc": "2024-10-02T13:52:44Z",
+      "public_source_sha": "5f777dc6e2cd02cdafd1520e81b7e338284fb7a7",
+      "public_within_season_last5_goal_form_inputs_reconstructable": true,
+      "season": "2024-25"
+    },
+    {
+      "completed_predecessor_results_for_away_in_pushed_blob": 0,
+      "completed_predecessor_results_for_home_in_pushed_blob": 0,
+      "fixture_id": "m_4AseJ9",
+      "historic_result_values_exported": false,
+      "independent_GH_push_before_kickoff": true,
+      "official_m1_training_allowed": false,
+      "prematch_native_PitchAPI_form5_certified": false,
+      "public_july_source_contains_actual_native_pair": true,
+      "public_push_time_utc": "2025-07-30T16:20:53Z",
+      "public_source_sha": "fdca227e6fc8284865254f009e987ce7a70935a0",
+      "public_within_season_last5_goal_form_inputs_reconstructable": false,
+      "season": "2025-26"
+    },
+    {
+      "completed_predecessor_results_for_away_in_pushed_blob": 0,
+      "completed_predecessor_results_for_home_in_pushed_blob": 0,
+      "fixture_id": "m_0lzfjT",
+      "historic_result_values_exported": false,
+      "independent_GH_push_before_kickoff": true,
+      "official_m1_training_allowed": false,
+      "prematch_native_PitchAPI_form5_certified": false,
+      "public_july_source_contains_actual_native_pair": true,
+      "public_push_time_utc": "2025-07-30T16:20:53Z",
+      "public_source_sha": "fdca227e6fc8284865254f009e987ce7a70935a0",
+      "public_within_season_last5_goal_form_inputs_reconstructable": false,
+      "season": "2025-26"
+    },
+    {
+      "fixture_id": "m_0JJdwI",
+      "no_target_score_examined": true,
+      "official_m1_training_allowed": false,
+      "prematch_native_PitchAPI_form5_certified": false,
+      "public_july_source_contains_actual_native_pair": false,
+      "state": "WRONG_JULY_FIXTURE_SAME_KICKOFF_REVISED_IN_SEPTEMBER"
+    }
+  ],
+  "report_sha256": "50e29b6c7278d39c4b4f141929da4cceb38a47b8e8aa1cce6b1c8679cc4c1147",
+  "schema": "kb3-step14-historical-partial-public-score-evidence-v1",
+  "source": "exact OpenFootball raw historical Git SHA + GH Archive independent public PushEvent",
+  "source_is_same_as_pitchapi_original": false,
+  "target_match_scores_exported_or_used": false
+}
