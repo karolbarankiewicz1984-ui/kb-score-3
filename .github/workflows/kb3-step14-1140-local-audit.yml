@@ -8,10 +8,11 @@ on:
       - "src/kb3_step14_full_identity_pit_audit.py"
       - "scripts/step14_full_native_identity_pit_local.py"
       - "tests/test_step14_full_identity_pit_audit.py"
+      - "scripts/step14_real_1140_field_gap.py"
       - ".github/workflows/kb3-step14-1140-local-audit.yml"
   workflow_dispatch:
 permissions:
-  contents: read
+  contents: write
 jobs:
   no-private-rsa-no-provider-network:
     runs-on: ubuntu-latest
@@ -22,7 +23,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          persist-credentials: false
+          persist-credentials: true
       - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
@@ -32,6 +33,33 @@ jobs:
         run: python -m unittest discover -s tests -p "test_step14_full_identity_pit_audit.py" -v
       - name: Check syntax of owner-local decrypt runner (do not execute)
         run: python -m py_compile scripts/step14_full_native_identity_pit_local.py
+      - name: Real signed TRAIN+VALIDATION 1140 source metadata and field PIT receipts audit
+        run: |
+          python -m scripts.step14_real_1140_field_gap --out data/audits/STEP14_FULL_1140_PIT_GAP_2026-10-27.json
+      - name: Verify actual public-safe report without native IDs, private labels or gate promotion
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          j=json.loads(Path("data/audits/STEP14_FULL_1140_PIT_GAP_2026-10-27.json").read_text())
+          assert (j["real_train_count"],j["real_validation_count"])==(760,380)
+          assert j["real_train_missing_true_prematch_cutoff"]==760
+          assert j["real_validation_missing_true_prematch_cutoff"]==380
+          assert j["per_row_field_evidence_required"]==159
+          assert j["certified_actual_prematch_train"]==0
+          assert j["private_team_pair_decryption_performed_in_this_ci"] is False
+          assert j["test_rows_read"]==0 and j["result_labels_read"]==0
+          assert not j["training_allowed"] and not j["gate14_pass"]
+          print("REAL_SIGNED_1140_PIT_SOURCE_GAP_AUDIT_PASS_ZERO_FEATURE_EVIDENCE")
+          PY
+      - name: Freeze real source metadata audit, no secrets (audit branch only)
+        if: github.ref == 'refs/heads/audit/step14-full-1140-identity-field-pit-20261027'
+        run: |
+          git config user.name "kb3-audit-bot"
+          git config user.email "kb3-audit-bot@users.noreply.github.com"
+          git add data/audits/STEP14_FULL_1140_PIT_GAP_2026-10-27.json
+          git commit -m "audit: freeze actual 1140 historical PIT feature evidence gaps only"
+          git push origin HEAD:audit/step14-full-1140-identity-field-pit-20261027
       - name: Enforce no claim of real 1140 private-archive read by this CI
         run: |
           python - <<'PY'
