@@ -171,6 +171,8 @@
 
 **AUDYT STABILNOŚCI 27.10.2026, W TYM SAMYM KROKU13:** [agregaty i 4 kwartalne diagnozy](../data/audits/STEP13_REAL_RETROSPECTIVE_STABILITY_2026-10-27.json), SHA `10e75ea0a247ca3d446379238ac4f97aab6be90f8ee55aac6796cf7d83bdeb8e`. Prawdziwe walidacyjne wyniki top1 1X2: EXPANDING **185/380 (48.68%)**, ROLLING **184/380 (48.42%)**. W I–III 2026 zaledwie **48/123 (39.0%)** przy średniej deklarowanej szansie **49.7% EXP / 48.8% ROLL**, czyli wyraźna zła kwartalna kalibracja. Pooled ECE 0.0169 / 0.0103 maskuje zmiany znaków błędów; preferujemy do oceny stabilności kwartalne weighted ECE 0.0740 / 0.0733. W 8/8 foldach elastyczność ELO równa górnej granicy pierwotnej siatki 0.6; **nie stroimy z walidacji**. Bez pobierania API i bez danych TEST. **GATE13 PENDING, training_allowed=false, 12/29, krok14 nie rozpoczęty.**
 
+**DIAGNOSTYKA TYLKO TRAIN, 27.10.2026 (w ramach KROKU13):** [raport 760 rzeczywistych meczów](../data/audits/STEP13_TRAIN_760_ELO_ELASTICITY_DIAGNOSTIC_2026-10-27.json). W dodatkowej siatce ELO 0.0–1.2 tylko na TRAIN bramkowy Poisson NLL minimalny przy 1.0 (3.055322); w pierwotnej siatce 0.0–0.6 minimum 0.6 (3.071748). Dla 2023/24 minimum badanej siatki 1.2 (brzeg), dla 2024/25 0.9 — niestabilność między sezonami. To NIE log loss 1X2 z VALIDATION i nie podstawa do aktualizacji modelu. Pobranie: tylko 2 sezony TRAIN, zero VALIDATION, zero TEST. [CI PASS](https://github.com/karolbarankiewicz1984-ui/kb-score-3/actions/runs/40425365353). **GATE13 PENDING, training_allowed=false, 12/29; bez zmiany kroków14–29.**
+
 #### Krok 14 — Pierwszy CatBoost 1X2  [NIE ROZPOCZĘTO]
 
 - **CO ZROBIĘ:** Wytrenować niezależny ML dla 1/X/2 na cechach przedmeczowych.
