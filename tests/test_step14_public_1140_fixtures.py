@@ -105,7 +105,8 @@ class PublicExternal1140Tests(unittest.TestCase):
         source=Path(__file__).resolve().parents[1]/"data/research/STEP14_OPENFOOTBALL_1140_TARGETFREE_2026-10-27.json"
         real=json.loads(source.read_text(encoding="utf8"))
         out=_independent_public_1140({},real)
-        self.assertEqual(out["checked"],1140)
+        self.assertEqual(out["checked"],0)
+        self.assertEqual(out["status"],"PINNED_PUBLIC_REFERENCE_VALIDATION_ONLY")
         self.assertEqual(out["counts"],{})
         self.assertFalse(out["source_is_historical_pit"])
 
