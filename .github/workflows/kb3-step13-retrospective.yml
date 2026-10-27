@@ -4,6 +4,8 @@ on:
     branches: ["feature/step13-*", "main"]
     paths:
       - "src/kb3_step13_retrospective.py"
+      - "src/kb3_step13_forward_score.py"
+      - "tests/test_step13_forward_score.py"
       - "src/kb3_step13_stability_audit.py"
       - "tests/test_step13_stability_audit.py"
       - "src/kb3_step13_archive_preflight.py"
@@ -18,6 +20,8 @@ on:
   pull_request:
     paths:
       - "src/kb3_step13_retrospective.py"
+      - "src/kb3_step13_forward_score.py"
+      - "tests/test_step13_forward_score.py"
       - "src/kb3_step13_stability_audit.py"
       - "tests/test_step13_stability_audit.py"
       - "src/kb3_step13_archive_preflight.py"
