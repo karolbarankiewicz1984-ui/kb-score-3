@@ -1,0 +1,100 @@
+{
+  "archive_hours_scanned": [
+    "2024-10-02-13",
+    "2024-11-05-05",
+    "2025-01-29-05",
+    "2025-07-30-16"
+  ],
+  "gate14_pass": false,
+  "hour_states": {
+    "2024-10-02-13": {
+      "archive_url": "https://data.gharchive.org/2024-10-02-13.json.gz",
+      "error_type": null,
+      "n_events": 1,
+      "status": "READ_OK"
+    },
+    "2024-11-05-05": {
+      "archive_url": "https://data.gharchive.org/2024-11-05-05.json.gz",
+      "error_type": "HTTPError",
+      "n_events": 0,
+      "status": "READ_UNAVAILABLE"
+    },
+    "2025-01-29-05": {
+      "archive_url": "https://data.gharchive.org/2025-01-29-05.json.gz",
+      "error_type": "HTTPError",
+      "n_events": 0,
+      "status": "READ_UNAVAILABLE"
+    },
+    "2025-07-30-16": {
+      "archive_url": "https://data.gharchive.org/2025-07-30-16.json.gz",
+      "error_type": null,
+      "n_events": 1,
+      "status": "READ_OK"
+    }
+  },
+  "independent_push_sha_samples_corroborated": 2,
+  "native_pitchapi_team_pairs_verified": 0,
+  "official_train_eligible": 0,
+  "paid_sports_provider_requests": 0,
+  "records": [
+    {
+      "candidate_source_commit_sha": "5f777dc6e2cd02cdafd1520e81b7e338284fb7a7",
+      "eligible_for_official_m1": false,
+      "gharchive_hour_read_status": "READ_OK",
+      "historical_blob_content_inspected_in_separate_audit": true,
+      "independent_public_push_time_corroborated": true,
+      "kickoff_utc": "2024-10-05T16:30:00Z",
+      "matching_public_push_events": 1,
+      "native_pitchapi_team_pair_crosswalk_verified": false,
+      "pitch_fixture_id_or_source_season": "m_3AMymS",
+      "push_events_before_kickoff": 1,
+      "server_created_at_utc": "2024-10-02T13:52:44Z",
+      "source_archive_hour": "2024-10-02-13"
+    },
+    {
+      "candidate_source_commit_sha": "d0a780d5a22b34375f320a51e52e723814d59aff",
+      "eligible_for_official_m1": false,
+      "gharchive_hour_read_status": "READ_UNAVAILABLE",
+      "historical_blob_content_inspected_in_separate_audit": true,
+      "independent_public_push_time_corroborated": false,
+      "kickoff_utc": "2024-11-09T17:30:00Z",
+      "matching_public_push_events": 0,
+      "native_pitchapi_team_pair_crosswalk_verified": false,
+      "pitch_fixture_id_or_source_season": "m_2IJhgL",
+      "push_events_before_kickoff": 0,
+      "server_created_at_utc": null,
+      "source_archive_hour": "2024-11-05-05"
+    },
+    {
+      "candidate_source_commit_sha": "831bb41621b99b7081f9942ff294fb3c91165448",
+      "eligible_for_official_m1": false,
+      "gharchive_hour_read_status": "READ_UNAVAILABLE",
+      "historical_blob_content_inspected_in_separate_audit": true,
+      "independent_public_push_time_corroborated": false,
+      "kickoff_utc": "2025-02-02T16:30:00Z",
+      "matching_public_push_events": 0,
+      "native_pitchapi_team_pair_crosswalk_verified": false,
+      "pitch_fixture_id_or_source_season": "m_2g5x00",
+      "push_events_before_kickoff": 0,
+      "server_created_at_utc": null,
+      "source_archive_hour": "2025-01-29-05"
+    },
+    {
+      "candidate_source_commit_sha": "fdca227e6fc8284865254f009e987ce7a70935a0",
+      "eligible_for_official_m1": false,
+      "gharchive_hour_read_status": "READ_OK",
+      "historical_blob_content_inspected_in_separate_audit": true,
+      "independent_public_push_time_corroborated": true,
+      "kickoff_utc": "2025-08-18T19:00:00Z",
+      "matching_public_push_events": 1,
+      "native_pitchapi_team_pair_crosswalk_verified": false,
+      "pitch_fixture_id_or_source_season": "SEASON_2025_26_FIRST",
+      "push_events_before_kickoff": 1,
+      "server_created_at_utc": "2025-07-30T16:20:53Z",
+      "source_archive_hour": "2025-07-30-16"
+    }
+  ],
+  "schema": "kb3-step14-thirdparty-public-push-clock-v1",
+  "source": "GH Archive hourly public GitHub event stream",
+  "test_labels_read": 0
+}
