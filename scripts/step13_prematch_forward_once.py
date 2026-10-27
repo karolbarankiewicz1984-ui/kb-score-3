@@ -207,10 +207,19 @@ def capture():
     # No API call for played/all in TEST 2026/27. Absolutely upcoming only.
     upcoming=to_plain(sdk.leagues.matches(LEAGUE,season=TARGET_SEASON,status="upcoming"))
     observed=datetime.now(timezone.utc).isoformat().replace("+00:00","Z")
-    # Restrict provider payload to in-memory validation & never persist outcomes.
+    # First calculate predictions in process memory without exposing any outcomes.
+    prepared=build_first_snapshot(train_seasons=sources,upcoming_payload=upcoming,
+                                safe=safe,observed_at=observed,completed_at=observed)
+    # Only NOW, after every probability has been created, capture freeze time.
     completed=datetime.now(timezone.utc).isoformat().replace("+00:00","Z")
-    return build_first_snapshot(train_seasons=sources,upcoming_payload=upcoming,
-                                safe=safe,observed_at=observed,completed_at=completed)
+    now=timestamp(completed)
+    for row in prepared["forecasts"]:
+        if now>=timestamp(row["kickoff_utc"]):
+            raise BaselineSafetyError("STEP13_FORWARD_FINISHED_CALCULATION_AFTER_KICKOFF")
+        row["forecast_frozen_at_utc"]=completed
+    prepared["forecast_frozen_at_utc"]=completed
+    prepared["report_sha256"]=sha({k:v for k,v in prepared.items() if k!="report_sha256"})
+    return prepared
 
 
 def main():
