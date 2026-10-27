@@ -119,9 +119,6 @@ def audit(*,read_archived_csv=fetch_old_csv,read_hour=gharchive_one_hour):
             raise FPLSourceError("EXACT_SHA_PUBLIC_GH_ARCHIVE_PUSH_NOT_CORROBORATED")
         proof=matched[0]
         push=proof["server_created_at_utc"]
-        if push[:13]!=hour.replace("-",":",0)[:13]:
-            # Strict hour parsing below; do not trust commit metadata.
-            pass
         expected_hour=datetime.strptime(hour,"%Y-%m-%d-%H").replace(tzinfo=timezone.utc)
         if not expected_hour<=_utc(push)<expected_hour.replace(minute=59,second=59,microsecond=999999):
             raise FPLSourceError("GHARCHIVE_SERVER_TIME_NOT_IN_ARCHIVE_HOUR")
