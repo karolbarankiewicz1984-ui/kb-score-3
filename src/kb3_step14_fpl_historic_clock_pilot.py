@@ -108,37 +108,59 @@ def gharchive_one_hour(hour,*,opener=None):
                 "events":[]}
 
 def audit(*,read_archived_csv=fetch_old_csv,read_hour=gharchive_one_hour):
-    verified=[]
+    """Separate demonstrably archived file contents from actual publication
+    certification. GH Archive outage does not turn commit dates into PIT.
+    """
+    records=[]
+    proven=0
     for hour,commit,expected_count in SAMPLES:
-        events=read_hour(hour)
-        if events.get("status")!="READ_OK":
-            raise FPLSourceError("INDEPENDENT_HISTORICAL_SERVER_CLOCK_UNAVAILABLE")
-        matched=[e for e in events["events"] if commit in e["shas"] and
-                 e.get("server_created_at_utc") and e.get("event_id")]
-        if len(matched)!=1:
-            raise FPLSourceError("EXACT_SHA_PUBLIC_GH_ARCHIVE_PUSH_NOT_CORROBORATED")
-        proof=matched[0]
-        push=proof["server_created_at_utc"]
-        expected_hour=datetime.strptime(hour,"%Y-%m-%d-%H").replace(tzinfo=timezone.utc)
-        if not expected_hour<=_utc(push)<expected_hour.replace(minute=59,second=59,microsecond=999999):
-            raise FPLSourceError("GHARCHIVE_SERVER_TIME_NOT_IN_ARCHIVE_HOUR")
+        event_hour=read_hour(hour)
+        matching=[]
+        if event_hour.get("status")=="READ_OK":
+            matching=[e for e in event_hour.get("events",[]) if
+                      commit in e.get("shas",[]) and
+                      e.get("server_created_at_utc") and e.get("event_id") and
+                      e.get("repository")==REPO and
+                      e.get("ref") in ("refs/heads/master","refs/heads/main")]
+        public_push=None
+        if len(matching)==1:
+            candidate=matching[0]["server_created_at_utc"]
+            begin=datetime.strptime(hour,"%Y-%m-%d-%H").replace(tzinfo=timezone.utc)
+            if not begin<=_utc(candidate)<begin.replace(minute=59,second=59,microsecond=999999):
+                raise FPLSourceError("GHARCHIVE_SERVER_TIME_NOT_IN_ARCHIVE_HOUR")
+            public_push=candidate
+            proven+=1
+        elif len(matching)>1:
+            raise FPLSourceError("DUPLICATE_EXACT_PUBLIC_PUSH")
+        # For an unverified source, the nominated archive hour is used only
+        # for an internal consistency plausibility test, never as a proven
+        # published-at clock. Results cannot be labelled genuine PIT in that case.
+        potential_clock=hour[:10]+"T"+hour[11:]+":59:59Z"
         raw=read_archived_csv(commit)
-        checked=verify_raw_csv(raw,expected_finished=expected_count,push_time_utc=push)
-        verified.append({
+        checked=verify_raw_csv(raw,expected_finished=expected_count,
+                                push_time_utc=public_push or potential_clock)
+        records.append({
             "public_repo":REPO,"season":"2023-24",
-            "server_confirmed_public_push_utc":push,
-            "server_event_id":str(proof["event_id"]),
             "historic_commit_sha":commit,
-            "historic_original_csv_sha256":sha256(raw).hexdigest(),
+            "original_archived_csv_sha256":sha256(raw).hexdigest(),
+            "independent_gharchive_hour_status":event_hour.get("status"),
+            "original_publication_timestamp_externally_corroborated":public_push is not None,
+            "server_confirmed_public_push_utc":public_push,
+            "server_event_id":str(matching[0]["event_id"]) if public_push else None,
+            "candidate_git_commit_hour_NOT_PUBLICATION_PROOF":hour if not public_push else None,
             **checked,
-            "prematch_source_status":"PUBLIC_PUSH_VERIFIED_PARTIAL_HISTORIC_FT_ONLY",
+            "prematch_source_status":("PUBLIC_PUSH_VERIFIED_PARTIAL_FT_ONLY" if public_push
+                                      else "ARCHIVED_CONTENT_ONLY_PUBLIC_CLOCK_UNVERIFIED"),
         })
     return {
-        "schema":SCHEMA,"source":"GH Archive hourly PushEvent + SHA-pinned old FPL 2023/24 CSV",
+        "schema":SCHEMA,
+        "source":"SHA-pinned historical FPL 2023/24 fixture CSV + optional independent GHArchive clock",
         "source_is_not_pitchapi":True,
         "proof_is_public_result_availability_not_complete_159_feature_pit":True,
-        "verified_snapshots":len(verified),
-        "records":verified,
+        "archived_snapshot_contents_checked":len(records),
+        "independent_public_push_verified_snapshots":proven,
+        "unverified_publication_snapshots":len(records)-proven,
+        "records":records,
         "original_PitchAPI_production_train_rows_certified":0,
         "official_M1_train_allowed":False,"gate14_pass":False,
         "xg_input_certified":False,
@@ -158,6 +180,7 @@ if __name__=="__main__":
     else:
         with dest.open("x",encoding="utf8") as f:
             json.dump(result,f,sort_keys=True,ensure_ascii=False,indent=2);f.write("\n")
-    print(json.dumps({"verified_snapshots":result["verified_snapshots"],
+    print(json.dumps({"archived_snapshot_contents_checked":result["archived_snapshot_contents_checked"],
+        "independent_public_push_verified_snapshots":result["independent_public_push_verified_snapshots"],
         "score_counts":[x["finished_ft_records_available_at_historical_source_publication"] for x in result["records"]],
         "gate14_pass":result["gate14_pass"]},sort_keys=True))
