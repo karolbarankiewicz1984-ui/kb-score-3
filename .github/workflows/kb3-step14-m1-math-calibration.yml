@@ -1,0 +1,65 @@
+name: KB3 Step14 CatBoost M1 Multiclass Maths, xG Variant and Future Calibration
+on:
+  push:
+    branches:
+      - audit/step14-catboost-math-xg-calibration-20261027
+      - main
+    paths:
+      - "src/kb3_step14_m1_math_calibration.py"
+      - "src/kb3_step14_m1_xg_comparison.py"
+      - "tests/test_step14_m1_math_calibration.py"
+      - "tests/test_step14_m1_xg_comparison.py"
+      - ".github/workflows/kb3-step14-m1-math-calibration.yml"
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  synthetic-only-no-pit-release:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    env:
+      PYTHONPATH: "."
+      PYTHONDONTWRITEBYTECODE: "1"
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Pinned CatBoost CPU only, no paid sports API
+        run: python -m pip install --disable-pip-version-check catboost==1.2.8
+      - name: Proper scoring, calibration and anti-lookahead negative tests
+        run: python -m unittest discover -s tests -p 'test_step14_m1_math_calibration.py' -v
+      - name: Paired same 30 synthetic events xG comparison and chronological calibration
+        run: python -m unittest discover -s tests -p 'test_step14_m1_xg_comparison.py' -v
+      - name: Run and freeze complete nonproduction paired scorecard
+        run: |
+          python -m src.kb3_step14_m1_xg_comparison --report data/audits/STEP14_SYNTHETIC_M1_NOXG_XG_CALIBRATION_2026-10-27.json
+          python - <<'PY'
+          import json
+          p='data/audits/STEP14_SYNTHETIC_M1_NOXG_XG_CALIBRATION_2026-10-27.json'
+          d=json.load(open(p))
+          assert d['sample_type']=='SYNTHETIC_CODE_GENERATED_ONLY'
+          assert (d['train_count'],d['validation_count'])==(90,30)
+          assert d['validation_calibration_count']==15
+          assert d['validation_later_evaluation_count']==15
+          assert d['same_later_15_paired_variant_comparison']['n_paired']==15
+          assert set(d['variants'])=={'NO_XG','WITH_XG_MASKS'}
+          assert not d['gate14_pass'] and not d['production_approved']
+          assert d['test_rows_read']==0 and not d['odds_used']
+          assert not d['original_real_train_PIT_certified']
+          print('CATBOOST_M1_MATH_CALIBRATION_CORRECT_ON_SYNTHETIC_ONLY__REAL_FIT_BLOCKED')
+          PY
+      - name: Persist safe report to review branch, never rewrite production model
+        if: github.ref == 'refs/heads/audit/step14-catboost-math-xg-calibration-20261027'
+        run: |
+          git config user.name "kb3-audit-bot"
+          git config user.email "kb3-audit-bot@users.noreply.github.com"
+          git add data/audits/STEP14_SYNTHETIC_M1_NOXG_XG_CALIBRATION_2026-10-27.json
+          if git diff --cached --quiet; then
+            echo "Nonproduction paired scorecard already frozen"
+          else
+            git commit -m "audit: freeze synthetic paired NO_XG vs WITH_XG and later-block calibration scorecard"
+            git push origin HEAD:audit/step14-catboost-math-xg-calibration-20261027
+          fi
