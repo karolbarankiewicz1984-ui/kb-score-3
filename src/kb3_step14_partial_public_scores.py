@@ -81,7 +81,8 @@ def analyse(docs,blobs,clock):
             raise PartialEvidenceError("TARGET_HISTORIC_COMMIT_CHANGED")
         target=[g for g in doc["matches"] if
                 g.get("team1")==req["home"] and g.get("team2")==req["away"]]
-        if len(target)!=1 or target[0].get("score",{}).get("ft") is not None:
+        if len(target)!=1 or (type(target[0].get("score")) is dict and
+                               target[0]["score"].get("ft") is not None):
             raise PartialEvidenceError("TARGET_SCORE_ALREADY_IN_ARCHIVED_BLOB")
         proof=pushes[req["commit"]]
         if _utc(proof["server_created_at_utc"])>=_utc(req["kickoff_utc"]):
