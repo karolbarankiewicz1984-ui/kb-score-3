@@ -1,0 +1,81 @@
+name: "KB3 Step13 - ONE TIME Genuine Pre-Kickoff Shadow Forecast"
+on:
+  push:
+    branches: ["feature/step13-prematch-forward-snapshot-20261027"]
+    paths:
+      - ".github/workflows/kb3-step13-forward-once.yml"
+permissions:
+  contents: write
+concurrency:
+  group: kb3-step13-first-prospective-prematch-20261027
+  cancel-in-progress: false
+jobs:
+  one-time-frozen-prematch-pilot:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      # Tests use consistent synthetic team IDs/names; provider only after PASS.
+      - name: Offline future-only and withheld TEST score safety checks
+        run: |
+          python3 -m unittest discover -s tests -p "test_step13_prematch_forward.py" -v
+          python3 -m unittest discover -s tests -p "test_step13_baseline.py" -v
+          python3 -m unittest discover -s tests -p "test_step13_pitchapi_live_research.py" -v
+      - name: Install existing SDK without paid add-ons
+        run: python3 -m pip install --disable-pip-version-check "pitchapi==0.1.6"
+      - name: One-shot 2 TRAIN seasons and ONLY upcoming fixtures in held-out target season
+        env:
+          PITCHAPI_API_KEY: ${{ secrets.PITCHAPI_API_KEY }}
+        run: |
+          set -euo pipefail
+          if [ -z "$PITCHAPI_API_KEY" ]; then
+            echo "STEP13_FORWARD_NO_PROVIDER_SECRET_NO_API_REQUESTS"
+            exit 3
+          fi
+          python3 -m scripts.step13_prematch_forward_once \
+            --output data/forecasts/STEP13_FIRST_PROSPECTIVE_PREMATCH_2026-10-27.json
+      - name: Verify frozen research forecast receipt, strictly before every kickoff
+        run: |
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          from src.kb3_split import sha,timestamp
+          p=Path("data/forecasts/STEP13_FIRST_PROSPECTIVE_PREMATCH_2026-10-27.json")
+          a=json.loads(p.read_text(encoding="utf8"))
+          assert a["report_sha256"]==sha({k:v for k,v in a.items() if k!="report_sha256"})
+          assert a["schema"]=="kb3-step13-prospective-first-frozen-shadow-v0.9"
+          assert a["train_rows_admitted"]==760 and a["validation_rows_admitted"]==0
+          assert a["test_results_accessed"]==0
+          assert a["provider_requests"]==3
+          assert a["provider_request_policy"]=="2_FINISHED_HISTORICAL_TRAIN_LISTS_PLUS_1_UPCOMING_ONLY_TEST_SCHEDULE"
+          assert a["first_snapshot_match_count"]==len(a["forecasts"])
+          assert 1<=len(a["forecasts"])<=10
+          assert all(f["scores_at_source"]=={"home":None,"away":None} for f in a["forecasts"])
+          assert all(timestamp(a["observed_at_utc"])<=timestamp(f["forecast_frozen_at_utc"])<
+                     timestamp(f["kickoff_utc"]) for f in a["forecasts"])
+          assert all(abs(sum(f["probabilities_1x2"].values())-1.0)<1e-12 for f in a["forecasts"])
+          assert a["rating_limitation"]=="OUTDATED_ELO_AS_OF_2025_07_01_NO_CURRENT_SEASON_RESULTS"
+          assert a["immutable_predictions_pending_future_results"]
+          assert not a["historical_2023_2026_prematch_pit_certified"]
+          assert not a["training_allowed"] and not a["gate13_pass"] and not a["step14_started"]
+          assert not a["no_odds_or_market_inputs"] is False
+          print("STEP13_GENUINE_UPCOMING_ONLY_PREMATCH_RECEIPTS_PASS_MATCHES",len(a["forecasts"]))
+          PY
+      - name: Archive timestamped pre-kickoff probabilities and SHA, without outcome labels
+        uses: actions/upload-artifact@v4
+        with:
+          name: kb3-step13-first-prospective-frozen-shadow-20261027
+          path: data/forecasts/STEP13_FIRST_PROSPECTIVE_PREMATCH_2026-10-27.json
+          retention-days: 90
+          if-no-files-found: error
+      - name: Commit immutable first snapshot to feature branch only
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/forecasts/STEP13_FIRST_PROSPECTIVE_PREMATCH_2026-10-27.json
+          git diff --cached --quiet && { echo "NO_NEW_PROSPECTIVE_SNAPSHOT"; exit 3; }
+          git commit -m "Step13: freeze genuine pre-kickoff TEST fixture forecasts WITHOUT result labels or odds"
+          git push origin HEAD:feature/step13-prematch-forward-snapshot-20261027
