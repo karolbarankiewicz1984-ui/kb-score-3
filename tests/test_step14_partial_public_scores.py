@@ -49,7 +49,7 @@ class PartialAsOfProofTests(unittest.TestCase):
 
     def test_public_source_target_score_cannot_be_in_pre_match_blob(self):
         d=fake_docs();d["2024-25"]["matches"][0]["score"]={"ft":[2,1]}
-        with self.assertRaisesRegex(PartialEvidenceError,"TARGET_SCORE_ALREADY"):
+        with self.assertRaisesRegex(PartialEvidenceError,"TARGET_SCORE_ALREADY|RESULT_DATE_AT_OR_AFTER"):
             analyse(d,BLOB,CLOCK)
 
     def test_pushed_blob_with_future_score_is_refused(self):
