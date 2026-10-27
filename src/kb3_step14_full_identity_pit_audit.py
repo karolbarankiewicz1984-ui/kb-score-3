@@ -264,6 +264,8 @@ def _independent_public_1140(native,reference):
             pairs[key]=utc
     if len(pairs)!=1140:
         raise FullNativeAuditError("PUBLIC_1140_NOT_ALL_PRESENT")
+    if len(native) not in (0,1140):
+        raise FullNativeAuditError("NATIVE_NOT_FULL_1140")
     counts=Counter()
     for n in native.values():
         key=(n["season"],canonical_team_name(n["home_name"]),canonical_team_name(n["away_name"]))
@@ -277,11 +279,12 @@ def _independent_public_1140(native,reference):
             # Reschedules / source feed disagreement must be investigated:
             # NEVER substitute an external fixture based on kickoff only.
             counts["SAME_PUBLIC_TEAM_PAIR_DIFFERENT_UTC_KICKOFF"]+=1
-    if sum(counts.values())!=1140:
+    if sum(counts.values())!=len(native):
         raise FullNativeAuditError("PUBLIC_1140_MATCH_CLASSIFICATION_INCOMPLETE")
     return {
-        "status":"RETROSPECTIVE_PUBLIC_1140_IDENTITY_CROSSCHECK_ONLY",
-        "checked":1140,
+        "status":("RETROSPECTIVE_PUBLIC_1140_IDENTITY_CROSSCHECK_ONLY"
+                  if native else "PINNED_PUBLIC_REFERENCE_VALIDATION_ONLY"),
+        "checked":len(native),
         "counts":dict(sorted(counts.items())),
         "public_source_capture_utc":reference["actual_observed_at_utc"],
         "target_free_reference_sha256":reference["projection_sha256"],
