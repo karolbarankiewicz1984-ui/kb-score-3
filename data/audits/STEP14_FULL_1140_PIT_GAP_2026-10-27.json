@@ -1,0 +1,71 @@
+{
+  "certified_actual_prematch_train": 0,
+  "certified_actual_prematch_validation": 0,
+  "family_actual_original_receipt_prematch_proven": {
+    "Elo_and_opponent_Elo": {
+      "actual_original_asof_evidence_available": false,
+      "cutoffs_missing": 1140,
+      "train": 0,
+      "validation": 0
+    },
+    "fixture_and_history_completeness": {
+      "actual_original_asof_evidence_available": false,
+      "cutoffs_missing": 1140,
+      "train": 0,
+      "validation": 0
+    },
+    "historical_xG_xGA": {
+      "actual_original_asof_evidence_available": false,
+      "cutoffs_missing": 1140,
+      "train": 0,
+      "validation": 0
+    },
+    "previous_match_form_and_goals": {
+      "actual_original_asof_evidence_available": false,
+      "cutoffs_missing": 1140,
+      "train": 0,
+      "validation": 0
+    }
+  },
+  "feature_contract_missing_flags": 38,
+  "feature_contract_numeric_nullable_fields": 121,
+  "feature_families_fields": {
+    "Elo_and_opponent_Elo": 17,
+    "fixture_and_history_completeness": 20,
+    "historical_xG_xGA": 48,
+    "previous_match_form_and_goals": 36
+  },
+  "feature_families_missing_flags": {
+    "fixture_and_history_completeness": 2,
+    "historical_xG_xGA": 24,
+    "previous_match_form_and_goals": 12
+  },
+  "gate14_pass": false,
+  "historical_match_count": 1140,
+  "original_historical_statistic_publication_at_target_known": false,
+  "original_pitchapi_historical_capture_date": "2026-10-26",
+  "per_row_field_evidence_required": 159,
+  "prematch_fixture_identity_scheduled_vs_field_proof_distinct": true,
+  "private_team_pair_decryption_performed_in_this_ci": false,
+  "public_60_candidate_pilot_actual": {
+    "AMBIGUOUS_SAME_KICKOFF_PUBLIC_FIXTURES": 17,
+    "NO_COMMIT_BEFORE_CUTOFF": 21,
+    "NO_EXACT_SCHEDULE_MATCH_AT_COMMIT": 5,
+    "ONE_PUBLIC_SCHEDULE_MATCH_BY_KICKOFF_ONLY": 17
+  },
+  "real_train_count": 760,
+  "real_train_missing_true_prematch_cutoff": 760,
+  "real_validation_count": 380,
+  "real_validation_missing_true_prematch_cutoff": 380,
+  "report_scope": "ACTUAL_PINNED_MANIFEST_METADATA_ONLY_NOT_NATIVE_PAIR_LOCAL_DECRYPT",
+  "report_sha256": "dc6a5743ce7e0ee6f638983bd46295dff245993286b1515f46210cf8b73b0137",
+  "result_labels_read": 0,
+  "schema": "kb3-step14-original-real-1140-pit-gap-and-field-inventory-v1",
+  "source_real_split_sha256": "da387303645a9bb9476351044944e5465d178ddff689c96b579093c4fb4fce3a",
+  "source_safe_schedule_sha256": "3b8da84b334d897e327c883b769944bf36016cb44daf1da041bfb7d16a7b11e7",
+  "sports_api_calls": 0,
+  "test_rows_read": 0,
+  "third_party_public_push_shas_independently_confirmed": 2,
+  "third_party_push_not_full_feature_pit": true,
+  "training_allowed": false
+}
