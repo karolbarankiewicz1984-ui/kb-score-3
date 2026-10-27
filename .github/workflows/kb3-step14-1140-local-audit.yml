@@ -15,6 +15,9 @@ on:
       - "tests/test_step14_public_1140_fixtures.py"
       - "src/kb3_step14_calendar_collision_audit.py"
       - "tests/test_step14_calendar_collision_audit.py"
+      - "src/kb3_step14_full_owner_report_review.py"
+      - "tests/test_step14_full_owner_report_review.py"
+      - "data/audits/STEP14_REAL_1140_KICKOFF_AMBIGUITY_2026-10-27.json"
       - ".github/workflows/kb3-step14-1140-local-audit.yml"
   workflow_dispatch:
 permissions:
@@ -75,6 +78,8 @@ jobs:
           assert sum(r["candidate_count_statuses"].values())==1140
           print("REAL_1140_CALENDAR_COLLISION_RISK_SUMMARY",r["candidate_count_statuses"])
           PY
+      - name: Offline future owner-aggregate acceptance and secret-leak prevention tests
+        run: python -m unittest discover -s tests -p "test_step14_full_owner_report_review.py" -v
       - name: Check syntax of owner-local decrypt runner (do not execute)
         run: python -m py_compile scripts/step14_full_native_identity_pit_local.py
       - name: Real signed TRAIN+VALIDATION 1140 source metadata and field PIT receipts audit
