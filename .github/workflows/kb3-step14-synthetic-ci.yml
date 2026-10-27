@@ -1,0 +1,49 @@
+name: KB3 Step14 Synthetic CatBoost Contract Only
+on:
+  push:
+    branches:
+      - feature/step14-catboost-synthetic-gate-20261027
+    paths:
+      - ".github/workflows/kb3-step14-synthetic-ci.yml"
+      - "src/kb3_step14_*.py"
+      - "tests/test_step14_*.py"
+      - "docs/STEP_14_SYNTHETIC_CONTRACT.md"
+permissions:
+  contents: read
+concurrency:
+  group: kb3-step14-synthetic-contract-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  synthetic-cpu-contract:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    env:
+      PYTHONDONTWRITEBYTECODE: "1"
+      PYTHONPATH: "."
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Offline-only CatBoost dependency (no sports provider APIs, no secrets)
+        run: python -m pip install --disable-pip-version-check catboost==1.2.8
+      - name: Step14 synthetic-only negative tests and model roundtrip
+        run: python -m unittest discover -s tests -p 'test_step14_*.py' -v
+      - name: Audit machine-readable synthetic and quarantine gates
+        run: |
+          python - <<'PY'
+          from src.kb3_step14_synthetic import run_synthetic_catboost
+          from src.kb3_step14_bridge import EXPECTED_FEATURES,EXPECTED_MISSING,EXPECTED_PROOFS
+          assert (len(EXPECTED_FEATURES),len(EXPECTED_MISSING),len(EXPECTED_PROOFS)) == (121,38,159)
+          for use_xg in (False, True):
+              result=run_synthetic_catboost(use_xg=use_xg)
+              assert result["cbm_reload_checked"]
+              assert result["cbm_reload_max_absolute_probability_difference"]<=1e-12
+              assert result["synthetic_train_count"]==90 and result["synthetic_validation_count"]==30
+              assert result["network_requests"]==0 and result["test_labels_read"]==0
+              assert not result["real_data_training_eligible"] and not result["gate14_pass"]
+              assert not result["production_approved"] and not result["historical_pit_certified"]
+          print("SYNTHETIC_PIPELINE_ONLY; GATE14_PENDING; REAL_FIT_BLOCKED")
+          PY
