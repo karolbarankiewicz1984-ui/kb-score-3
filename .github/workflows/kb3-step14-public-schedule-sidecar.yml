@@ -1,0 +1,68 @@
+name: KB3 Step14 C - daily public schedule PIT sidecar (not production)
+on:
+  push:
+    branches:
+      - main
+      - research/step14-historical-rescue-research-m1-20261027
+    paths:
+      - src/kb3_step14_public_sidecar.py
+      - tests/test_step14_public_sidecar.py
+      - .github/workflows/kb3-step14-public-schedule-sidecar.yml
+  schedule:
+    - cron: '35 5 * * *'
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: kb3-step14-sidecar-one-snapshot-per-day
+  cancel-in-progress: false
+jobs:
+  future-fixtures-only:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    env:
+      PYTHONPATH: "."
+      PYTHONDONTWRITEBYTECODE: "1"
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Negative safety tests (no API)
+        run: python -m unittest discover -s tests -p 'test_step14_public_sidecar.py' -v
+      - name: One free source observation - target-free future fixture metadata
+        run: |
+          python -m src.kb3_step14_public_sidecar --directory data/pit_sidecar/step14_openfootball
+      - name: Verify sidecar contains zero target results or odds
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          p=sorted(Path("data/pit_sidecar/step14_openfootball").glob("*.json"))
+          assert len(p)>=1
+          r=json.loads(p[-1].read_text())
+          assert not r["test_labels_read"] and not r["match_results_read_or_recorded"]
+          assert not r["training_allowed"] and not r["gate14_pass"]
+          assert r["pitchapi_primary_source_unchanged"] is True
+          assert all(set(x)=={"date","time_provider_local_unverified","home_team_public_name","away_team_public_name"} for x in r["fixtures_target_free_only"])
+          print("TARGET_FREE_PUBLIC_SCHEDULE_PROSPECTIVE_ONLY; MODEL_TRAINING_DENIED")
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: kb3-step14-sidecar-proof
+          path: data/pit_sidecar/step14_openfootball/*.json
+          retention-days: 14
+      - name: Append-only Git history (default branch schedule/manual only)
+        if: github.ref == 'refs/heads/main'
+        run: |
+          git config user.name "kb3-sidecar-bot"
+          git config user.email "kb3-sidecar-bot@users.noreply.github.com"
+          git add data/pit_sidecar/step14_openfootball/
+          if git diff --cached --quiet; then
+            echo "Already archived today's one receipt."
+          else
+            git commit -m "sidecar: record public future fixture metadata only"
+            git push origin HEAD:main
+          fi

@@ -1,0 +1,61 @@
+name: KB3 Step14 A+B isolated pilot and research (no sports API)
+on:
+  push:
+    branches:
+      - research/step14-historical-rescue-research-m1-20261027
+    paths:
+      - src/kb3_step14_archive_probe.py
+      - src/kb3_step14_public_research.py
+      - tests/test_step14_public_research.py
+      - data/research/STEP14_PIT_PILOT_40_TRAIN_20_VALIDATION_2026-10-27.json
+      - .github/workflows/kb3-step14-pilot-research.yml
+permissions:
+  contents: read
+jobs:
+  independent-research:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    env:
+      PYTHONPATH: "."
+      PYTHONDONTWRITEBYTECODE: "1"
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: CatBoost CPU 1.2.8, no paid sports API
+        run: python -m pip install --disable-pip-version-check catboost==1.2.8
+      - name: Offline negative safety tests
+        run: python -m unittest discover -s tests -p 'test_step14_public_research.py' -v
+      - name: Pilot A - public historical candidate commits only
+        run: |
+          python -m src.kb3_step14_archive_probe --out /tmp/step14_pit_pilot_candidates.json
+      - name: Research B - real CC0 results, not source PIT, no official TEST
+        run: |
+          python -m src.kb3_step14_public_research --report /tmp/step14_research_metrics.json --model /tmp/M1_RESEARCH_ONLY_NOT_PIT.cbm
+      - name: Enforce nonproduction status of both reports
+        run: |
+          python - <<'PY'
+          import json
+          a=json.load(open("/tmp/step14_pit_pilot_candidates.json"))
+          b=json.load(open("/tmp/step14_research_metrics.json"))
+          assert a["sample_count"]==60 and a["sample_counts"]=={"TRAIN":40,"VALIDATION":20}
+          assert a["eligible_real_train_rows"]==0 and a["independently_pit_certified_rows"]==0
+          assert not a["gate14_pass"] and a["test_rows_read"]==0
+          assert (b["train_rows"],b["validation_rows"])==(760,380)
+          assert b["test_rows_read"]==0 and not b["test_season_requested"]
+          assert not b["real_historical_pit_proven"] and not b["gate14_pass"]
+          assert not b["production_approved"] and not b["model_champion_selected"]
+          assert b["official_pitchapi_ids_joined"] is False
+          print("PILOT_40_20_COMPLETED; RETROSPECTIVE_M1_ONLY; GATE14_PENDING")
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: step14-nonproduction-research-only
+          path: |
+            /tmp/step14_pit_pilot_candidates.json
+            /tmp/step14_research_metrics.json
+            /tmp/M1_RESEARCH_ONLY_NOT_PIT.cbm
+          retention-days: 14
