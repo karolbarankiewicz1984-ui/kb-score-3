@@ -3,6 +3,7 @@ on:
   push:
     branches:
       - audit/step14-full-1140-identity-field-pit-20261027
+      - fix/step14-1140-ci-immutable-ref-idempotent-20261027
       - main
     paths:
       - "src/kb3_step14_full_identity_pit_audit.py"
