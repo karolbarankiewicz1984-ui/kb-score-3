@@ -67,7 +67,8 @@ def audit_push_clock(fetch_hour=read_hour):
     for hour,sha,fixture,kickoff in SAMPLES:
         source=captured[hour]
         same=[e for e in source.get("push_events_found",[])
-              if sha in e.get("included_commit_shas",())]
+              if sha in e.get("included_commit_shas",()) and
+              e.get("push_ref") in ("refs/heads/master","refs/heads/main")]
         earlier=[]
         for event in same:
             try:
@@ -86,6 +87,9 @@ def audit_push_clock(fetch_hour=read_hour):
             "matching_public_push_events":len(same),
             "push_events_before_kickoff":len(earlier),
             "server_created_at_utc":earlier[0]["created_at_utc"] if earlier else None,
+            "server_github_event_id":earlier[0]["event_id"] if earlier else None,
+            "public_branch_ref":earlier[0]["push_ref"] if earlier else None,
+            "public_branch_head_sha":earlier[0]["head_sha"] if earlier else None,
             "independent_public_push_time_corroborated":bool(earlier),
             "historical_blob_content_inspected_in_separate_audit":True,
             "native_pitchapi_team_pair_crosswalk_verified":False,
