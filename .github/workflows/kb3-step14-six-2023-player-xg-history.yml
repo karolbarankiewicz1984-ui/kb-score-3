@@ -1,0 +1,36 @@
+name: KB3 Step14 real six 2023 FPL/Opta historic prematch player-xG snapshots
+
+on:
+  push:
+    branches: [step14/full-historical-2023-2026-source-lineage-20261028]
+    paths:
+      - 'scripts/step14_six_2023_historic_fpl_player_xg_reconstruction.py'
+      - 'tests/test_step14_six_2023_fpl_player_xg_reconstruction.py'
+      - '.github/workflows/kb3-step14-six-2023-player-xg-history.yml'
+  pull_request:
+    paths:
+      - 'scripts/step14_six_2023_historic_fpl_player_xg_reconstruction.py'
+      - 'tests/test_step14_six_2023_fpl_player_xg_reconstruction.py'
+      - '.github/workflows/kb3-step14-six-2023-player-xg-history.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  exact-six-old-player-xg-source-proof:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Verify six old real FPL original source clocks are pinned
+        run: python -m unittest discover -s tests -p 'test_step14_six_2023_fpl_player_xg_reconstruction.py' -v
+      - name: Download 6 original historic SHA player source xG and prove each former 5-matches available pre-target
+        run: python -m scripts.step14_six_2023_historic_fpl_player_xg_reconstruction --out "$RUNNER_TEMP/KB3_2023_SIX_OLD_FPL_XG_PROOF.json"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: KB3_STEP14_SIX_2023_GENUINE_PREMATCH_PLAYER_XG_SOURCES
+          path: ${{ runner.temp }}/KB3_2023_SIX_OLD_FPL_XG_PROOF.json
+          retention-days: 90
+          if-no-files-found: error
