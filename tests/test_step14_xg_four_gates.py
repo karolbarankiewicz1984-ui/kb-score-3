@@ -31,6 +31,19 @@ class FourGateTests(unittest.TestCase):
         self.assertEqual(s["source_side_xg_values_IN_MEMORY_ONLY"][(11,2)],0.4)
         self.assertTrue(before_target(prior_fixture=11,prior_team=1,src=s,
               cutoff="2024-10-01T19:00:00Z",target_kickoff="2024-10-02T15:00:00Z"))
+    def test_unplayed_future_without_kickoff_does_not_invalidate_old_ft(self):
+        f,p=samples()
+        new="12,1,2,,False"
+        f=(f.decode()+new+"\\n").encode("utf8")
+        source=audit(f,p)
+        self.assertEqual(source["finished_fixtures"],1)
+        self.assertEqual(source["fixtures_with_both_sides_player_xg"],1)
+        self.assertIsNone(source["source_match_index"][12]["kickoff"])
+    def test_completed_prior_without_kickoff_is_rejected(self):
+        f,p=samples()
+        f=f.replace(b"2023-08-12T14:00:00Z",b"")
+        with self.assertRaisesRegex(XGFourGateError,"NOT_FINISHED_BEFORE_PUBLICATION"):
+            audit(f,p)
     def test_wrong_fixture_never_borrow_nearest(self):
         _,p=samples();f,p=samples();s=audit(f,p)
         with self.assertRaisesRegex(XGFourGateError,"FIXTURE"):
