@@ -1,0 +1,49 @@
+{
+  "schema": "kb3-step14-exact-2023-fpl-player-xg-fixture-side-publication-gates-v1",
+  "dated": "2026-10-28",
+  "original_project": "KB Score 3.0 / CatBoost M1 Step14",
+  "public_2023_fpl": {
+    "old_repository": "vaastav/Fantasy-Premier-League",
+    "commit": "204c134d8e90e2b6e69ec252aa3ef6f10f21e73c",
+    "old_fixtures_path": "data/2023-24/fixtures.csv",
+    "old_fixtures_sha256": "d8521bdbb80edb5141bc17df71bf6026275f2e56fd6a6dc6041b3ae23a39ce6a",
+    "old_player_path": "data/2023-24/gws/merged_gw.csv",
+    "old_player_sha256": "e9c09c8856f1c86b4f920f46ddd5033af83409439dfda53be925df2a3e7c8a9e",
+    "independent_public_push_event": "38750359648",
+    "independently_attested_public_at_utc": "2024-05-27T18:05:12Z",
+    "completed_2023_EPL_fixtures": 380,
+    "fixture_team_side_records_with_exact_xg": 760,
+    "player_match_stat_rows": 29725,
+    "stable_original_FPL_team_ids": 20,
+    "fixture_home_away_opponent_team_exact": "PASS",
+    "duplicate_player_fixture_detection": "PASS",
+    "verified_old_player_xg_before_2024_25_opener": "PASS",
+    "verified_old_player_xg_before_each_2023_24_game": "NOT_PROVEN"
+  },
+  "original_pitchapi": {
+    "provider_original_published_at_in_historical_archive": null,
+    "original_2023_24_native_xg_values_exactly_equivalent_to_FPL_team_aggregation": false,
+    "FPL_player_xg_follows_same_team_match_methodology_as_PitchAPI": false,
+    "xg_from_FPL_eligible_as_replacement_original_feature": false,
+    "xga_conceded_from_repeated_player_field_valid_for_team": false
+  },
+  "public_other_candidate": {
+    "understat_team_match_xg_semantics_different_or_unproven": true,
+    "understat_historic_per_target_independent_publication_verified": false,
+    "extra_old_FPL_2024_25_2025_26_sources": "REQUIRES_INDEPENDENT_SOURCE_SHA_AND_GHARCHIVE_CLOCK"
+  },
+  "github_action_real_run": 40658094794,
+  "github_action_real_url": "https://github.com/karolbarankiewicz1984-ui/kb-score-3/actions/runs/40658094794",
+  "real_run_result": "SUCCESS",
+  "offline_negative_tests_passed": 15,
+  "truncated_initial_3mb_download_caused_intermediate_hash_error": true,
+  "fixed_download_reads_entire_old_29k_row_source": true,
+  "original_121_plus_38_feature_pit_eligible": 0,
+  "original_train_pit_eligible": 0,
+  "original_validation_pit_eligible": 0,
+  "GATE14": "PENDING",
+  "training_allowed": false,
+  "original_model_split_predictions_test_untouched": true,
+  "private_pem_or_original_xg_values_exported": false,
+  "paid_sports_api_calls": 0
+}
