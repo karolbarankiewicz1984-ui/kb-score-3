@@ -33,6 +33,9 @@ CANDIDATES=(
  {"season":"2025-26","repo":"openfootball/football.json",
   "file":"2025-26/en.1.json",
   "after":"2026-01-01T00:00:00Z","until":"2026-02-01T23:59:59Z","type":"OF"},
+ {"season":"2025-26","repo":"vaastav/Fantasy-Premier-League",
+  "file":"data/2025-26/fixtures.csv",
+  "after":"2026-01-15T00:00:00Z","until":"2026-03-05T23:59:59Z","type":"FPL"},
 )
 
 class DiscoveryError(ValueError): pass
