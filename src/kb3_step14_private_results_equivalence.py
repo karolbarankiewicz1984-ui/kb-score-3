@@ -32,22 +32,72 @@ def integer_goal(x):
             return int(v)
     raise NativeFTError("BAD_FT_SCORE")
 
-def native_scores(receipts,native):
-    """Only after the caller independently verifies the original RSA archive.
+def collect_prior_native_ids(native,raws):
+    """Build an allowlist only from scores present in the old public blobs.
 
-    Extract prior private outcomes into volatile RAM only; no serialization.
+    Never require, inspect or export an original TRAIN target label or
+    any original VALIDATION label.
     """
-    expected={
-        "2023/2024":"2023-24","2024/2025":"2024-25",
-        "2025/2026":"2025-26"}
+    allowed=set()
+    for source in (SOURCES[0],ADDITIONAL_2023):
+        raw=raws[source["commit"]]
+        pinned_raw(source,raw)
+        verify_raw_csv(raw,expected_finished=source["ft"],push_time_utc=source["push"])
+        rows=parse_fixture_rows(raw)
+        mapping=map_fpl_team_ids_by_finished_clock(
+            rows,native,season="2023-24",published_at=source["push"],
+            expected_finished=source["ft"])
+        idx=index_native(native,{},"2023-24")
+        old=0
+        for r in rows:
+            if r["finished"]!="True":continue
+            key=(mapping[r["team_h"]],mapping[r["team_a"]],r["kickoff_time"])
+            item=idx.get(key)
+            if item is None:raise NativeFTError("PUBLIC_FINISHED_NOT_IN_ORIGINAL_NATIVE")
+            allowed.add(item[0]);old+=1
+        if old!=source["ft"]:raise NativeFTError("PUBLIC_OLD_PRIOR_COUNT_CHANGED")
+    source=SOURCES[1]
+    raw=raws[source["commit"]]
+    pinned_raw(source,raw)
+    entries=parse_openfootball(raw,source)
+    index={}
+    for mid,n in native.items():
+        if n["season"]!="2024-25":continue
+        key=(canonical_team_name(n["home_name"]),canonical_team_name(n["away_name"]),n["kickoff_utc"])
+        if key in index:raise NativeFTError("DUPLICATE_NATIVE_PAIR")
+        index[key]=mid
+    found=0
+    for e in entries:
+        if not e["ft_published"]:continue
+        if e["kickoff"] is None:raise NativeFTError("OLD_PUBLIC_KICKOFF_MISSING")
+        stamp=e["kickoff"].isoformat().replace("+00:00","Z")
+        mid=index.get((e["home"],e["away"],stamp))
+        if mid is None:raise NativeFTError("PUBLIC_EARLIER_FT_NOT_IN_NATIVE")
+        allowed.add(mid);found+=1
+    if found!=60:raise NativeFTError("OLD_PUBLIC_60_CHANGED")
+    if not all(native[mid]["role"]=="TRAIN" for mid in allowed):
+        raise NativeFTError("VALIDATION_LABEL_ALLOWLIST_FORBIDDEN")
+    return allowed
+
+def native_scores(receipts,native,allowlist):
+    """Only read original labels for explicitly published historical PREDECESSORS.
+
+    The other original matches, including all 380 VALIDATION, have their
+    scores neither accessed nor serialized.
+    """
+    if not allowlist or not all(mid in native and native[mid]["role"]=="TRAIN" for mid in allowlist):
+        raise NativeFTError("PREDECESSOR_ALLOWLIST_INVALID")
+    expected={"2023/2024":"2023-24","2024/2025":"2024-25"}
     scores={}
     for long,short in expected.items():
         src=[r for r in receipts if r.get("resource")==
-            f"pitchapi:history:premier-league:{long}:matches:played"]
+             f"pitchapi:history:premier-league:{long}:matches:played"]
         if len(src)!=1 or len(src[0].get("payload",{}).get("matches",[]))!=380:
             raise NativeFTError("ORIGINAL_SCORE_RECEIPT_INCOMPLETE")
         for row in src[0]["payload"]["matches"]:
             mid=row.get("id")
+            if mid not in allowlist:
+                continue
             n=native.get(mid)
             if n is None or n["season"]!=short or mid in scores:
                 raise NativeFTError("PRIVATE_SCORE_NATIVE_ID_DISAGREES")
@@ -57,18 +107,17 @@ def native_scores(receipts,native):
                 raise NativeFTError("PRIVATE_SCORE_IDENTITY_CHANGED")
             scores[mid]=(integer_goal(row.get("score_home")),
                          integer_goal(row.get("score_away")))
-    if len(scores)!=1140 or set(scores)!=set(native):
-        raise NativeFTError("PRIVATE_SCORE_GRID_NOT_1140")
+    if set(scores)!=set(allowlist):
+        raise NativeFTError("PRIVATE_PREDECESSOR_SCORE_GRID_INCOMPLETE")
     return scores
 
 def index_native(native,scores,season):
     ix={}
     for mid,n in native.items():
         if n["season"]!=season:continue
-        if mid not in scores:raise NativeFTError("SCORE_MISSING")
         key=(n["home_id"],n["away_id"],n["kickoff_utc"])
         if key in ix:raise NativeFTError("AMBIGUOUS_PRIVATE_MATCH_CLOCK")
-        ix[key]=(mid,n,scores[mid])
+        ix[key]=(mid,n,scores.get(mid))
     if len(ix)!=380:raise NativeFTError("PRIVATE_SEASON_NOT_380")
     return ix
 
@@ -129,6 +178,7 @@ def audit_fpl(source,raw,native,scores):
         hit=index.get(key)
         if hit is None:raise NativeFTError("OLD_FPL_MATCH_NOT_IN_PRIVATE_NATIVE")
         mid,_,score=hit
+        if score is None:raise NativeFTError("PRIOR_NATIVE_SCORE_NOT_IN_ALLOWLIST")
         if mid in matched:raise NativeFTError("PUBLIC_MATCH_REPEATED")
         matched.add(mid)
         pubscore=(integer_goal(row["team_h_score"]),integer_goal(row["team_a_score"]))
@@ -214,8 +264,8 @@ def audit_of(source,raw,native,scores):
             "original_pitchapi_published_at_proven":False}
 
 def audit(native,scores,raws):
-    if len(native)!=1140 or len(scores)!=1140:
-        raise NativeFTError("REQUIRES_ORIGINAL_AUTHENTICATED_1140")
+    if len(native)!=1140 or not scores or not all(mid in native and native[mid]["role"]=="TRAIN" for mid in scores):
+        raise NativeFTError("REQUIRES_ORIGINAL_AUTHENTICATED_PRIOR_ONLY")
     proof=[]
     for source in (SOURCES[0],ADDITIONAL_2023):
         proof.append(audit_fpl(source,raws[source["commit"]],native,scores))
