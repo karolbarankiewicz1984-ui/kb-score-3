@@ -21,7 +21,7 @@ class FPLLineageError(ValueError):pass
 def inspect_one(src,*,fetcher=fetch):
     base=f"https://raw.githubusercontent.com/{src['repo']}/{src['commit']}/"
     fixtures=fetcher(base+src["path"],limit=3_000_001)
-    player_path=f"data/{src[\"season\"]}/gws/merged_gw.csv"
+    player_path=f"data/{src['season']}/gws/merged_gw.csv"
     players=fetcher(base+player_path,limit=40_000_001)
     if not isinstance(players,bytes) or not 1_000<len(players)<40_000_001:
         raise FPLLineageError("OLD_PLAYER_XG_BLOB_MISSING_OR_OVERSIZED")
