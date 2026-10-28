@@ -1,0 +1,88 @@
+name: KB3 Step14 C - daily real PitchAPI native observed-at xG archive
+
+on:
+  push:
+    branches:
+      - main
+      - step14/c-daily-pitchapi-native-asof-archive-20261028
+    paths:
+      - scripts/step14_c_pitchapi_daily_native_asof_archive.py
+      - tests/test_step14_c_pitchapi_daily_native_asof.py
+      - .github/workflows/kb3-step14-c-native-asof-daily.yml
+  pull_request:
+    paths:
+      - scripts/step14_c_pitchapi_daily_native_asof_archive.py
+      - tests/test_step14_c_pitchapi_daily_native_asof.py
+      - .github/workflows/kb3-step14-c-native-asof-daily.yml
+  schedule:
+    - cron: '42 4 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: kb3-step14-c-pitchapi-daily-native-evidence
+  cancel-in-progress: false
+
+jobs:
+  provider-asof-capture:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install existing supported SDK and only PUBLIC encryption mechanism
+        run: python -m pip install --disable-pip-version-check 'pitchapi==0.1.6' 'cryptography>=42,<47'
+      - name: No target result leakage and original 6-call quota tests
+        run: |
+          python -m compileall -q scripts/step14_c_pitchapi_daily_native_asof_archive.py
+          python -m unittest discover -s tests -p 'test_step14_c_pitchapi_daily_native_asof.py' -v
+      - name: Real daily original PitchAPI responses, hash-chain and owner public-key seal
+        env:
+          PITCHAPI_API_KEY: ${{ secrets.PITCHAPI_API_KEY }}
+        run: |
+          python -m scripts.step14_c_pitchapi_daily_native_asof_archive \
+            --base data/pit_sidecar/step14_pitchapi_native \
+            --public-key config/step11_archive_recipient_public.pem
+      - name: Confirm immutable encrypted receipts, no private key, no training
+        run: |
+          python - <<'PY'
+          import json,datetime,hashlib
+          from pathlib import Path
+          p=Path('data/pit_sidecar/step14_pitchapi_native')/datetime.datetime.now(datetime.timezone.utc).date().isoformat()
+          a=json.loads((p/'KB3_PITCH_NATIVE_ASOF_RECEIPT.json').read_text())
+          encrypted=(p/'KB3_PITCH_NATIVE_ASOF.enc').read_bytes()
+          manifest=json.loads((p/'KB3_PITCH_NATIVE_ASOF.manifest.json').read_text())
+          assert hashlib.sha256(encrypted).hexdigest()==a['ciphertext_sha256']==manifest['ciphertext_sha256']
+          assert a['provider_call_count']<=6
+          assert a['provider_original_first_publication_known'] is False
+          assert a['captured_asof_later_future_targets_only'] is True
+          assert not a['real_train_M1_allowed'] and not a['gate14_pass']
+          assert a['future_target_schedules_in_sealed_original']>0
+          print('C_REAL_ASOF_RSA_SEALED',a['captured_at_utc'],
+                'PRIOR_XG',a['finished_prior_match_shot_stats_pairs_observed'])
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: KB3_STEP14_C_DAILY_NATIVE_PITCHAPI_ENCRYPTED_ASOF
+          path: data/pit_sidecar/step14_pitchapi_native/
+          retention-days: 30
+          if-no-files-found: warn
+      - name: Append-only encrypted daily evidence to main (no PR repo mutation)
+        if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+        run: |
+          git config user.name "kb3-pit-bot"
+          git config user.email "kb3-pit-bot@users.noreply.github.com"
+          git add data/pit_sidecar/step14_pitchapi_native/
+          if git diff --cached --quiet; then
+            echo "Same UTC date already durably archived; no duplicate."
+          else
+            git commit -m "pit: immutable real PitchAPI daily native source snapshots (owner RSA sealed)"
+            git push origin HEAD:main
+          fi
