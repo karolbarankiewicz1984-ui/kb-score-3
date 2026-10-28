@@ -5,7 +5,7 @@ original PitchAPI native team-xG; no fake historical PitchAPI published_at.
 """
 from __future__ import annotations
 from pathlib import Path
-import argparse,json
+import argparse,json,csv,io
 from scripts.step14_six_2023_historic_fpl_player_xg_reconstruction import inspect_one
 from scripts.step14_full_1140_native_public_pit_lineage import independently_pinned_sources
 from src.kb3_step14_multiseason_pit import fetch
@@ -21,10 +21,22 @@ def run(fetcher=fetch):
             results.append({"state":"HISTORICAL_2024_FPL_XG_MEASURED",
                 **inspect_one(src,fetcher=fetcher)})
         except Exception as e:
-            results.append({"source_commit":src["commit"],"state":"BLOCKED_2024_FPL_PLAYER_XG",
+            row={"source_commit":src["commit"],"state":"BLOCKED_2024_FPL_PLAYER_XG",
                 "safe_error_type":type(e).__name__,
                 "safe_error_code":str(e) if isinstance(e,XGFourGateError) else None,
-                "source_future_targets_with_both_prior5_FPL_player_xg":0})
+                "source_future_targets_with_both_prior5_FPL_player_xg":0}
+            if isinstance(e,XGFourGateError) and str(e)=="UNKNOWN_FPL_VENUE_SIDE":
+                try:
+                    url=f"https://raw.githubusercontent.com/{src['repo']}/{src['commit']}/data/2024-25/gws/merged_gw.csv"
+                    raw=fetcher(url,limit=40_000_001)
+                    old=list(csv.DictReader(io.StringIO(raw.decode("utf-8-sig"))))
+                    formats=sorted({r.get("was_home","") for r in old})
+                    if all(len(x)<30 for x in formats):
+                        row["historic_player_was_home_only_encoding_values"]=formats[:12]
+                        row["historic_player_rows_inspected_for_format"]=len(old)
+                except Exception:
+                    row["historic_player_was_home_format_probe"]="UNAVAILABLE"
+            results.append(row)
     return {"schema":SCHEMA,"four_independent_old_2024_source_clocks_verified":4,
         "four_real_xg_sources_success":sum(x["state"]=="HISTORICAL_2024_FPL_XG_MEASURED" for x in results),
         "source_target_pairs_with_pre_target_FPL_player_xg":sum(x["source_future_targets_with_both_prior5_FPL_player_xg"] for x in results),
