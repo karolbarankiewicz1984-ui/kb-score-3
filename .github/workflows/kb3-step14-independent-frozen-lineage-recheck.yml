@@ -1,0 +1,57 @@
+name: KB3 Step14 independent frozen 1140 public lineage consistency recheck
+
+on:
+  pull_request:
+    paths:
+      - 'scripts/step14_independent_frozen_lineage_recheck.py'
+      - 'tests/test_step14_independent_frozen_lineage_recheck.py'
+      - '.github/workflows/kb3-step14-independent-frozen-lineage-recheck.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/step14_independent_frozen_lineage_recheck.py'
+      - 'tests/test_step14_independent_frozen_lineage_recheck.py'
+      - '.github/workflows/kb3-step14-independent-frozen-lineage-recheck.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  read-only-frozen-lineage-recheck:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Negative temporal, source and original M1 gate tests
+        run: |
+          python -m compileall -q scripts/step14_independent_frozen_lineage_recheck.py
+          python -m unittest discover -s tests -p 'test_step14_independent_frozen_lineage_recheck.py' -v
+      - name: Recheck all frozen 1140 rows against summary and eight dated witness records
+        run: |
+          python -m scripts.step14_independent_frozen_lineage_recheck --output "$RUNNER_TEMP/KB3_STEP14_INDEPENDENT_FROZEN_LINEAGE_RECHECK.json"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: KB3_STEP14_INDEPENDENT_FROZEN_1140_LINEAGE_RECHECK
+          path: ${{ runner.temp }}/KB3_STEP14_INDEPENDENT_FROZEN_LINEAGE_RECHECK.json
+          if-no-files-found: warn
+          retention-days: 90
+      - name: Append-only independent audit proof on main
+        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+        run: |
+          cp "$RUNNER_TEMP/KB3_STEP14_INDEPENDENT_FROZEN_LINEAGE_RECHECK.json" data/audits/STEP14_INDEPENDENT_FROZEN_LINEAGE_RECHECK_2026-10-28.json
+          git config user.name 'kb3-independent-pit-audit-bot'
+          git config user.email 'kb3-independent-pit-audit-bot@users.noreply.github.com'
+          git add data/audits/STEP14_INDEPENDENT_FROZEN_LINEAGE_RECHECK_2026-10-28.json
+          if git diff --cached --quiet; then
+            echo 'Independent frozen audit already archived.'
+          else
+            git commit -m 'audit: persist independent read-only 1140 PIT lineage recheck'
+            git push origin HEAD:main
+          fi
