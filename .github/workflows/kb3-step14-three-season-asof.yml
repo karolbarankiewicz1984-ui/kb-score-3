@@ -8,9 +8,11 @@ on:
       - 'src/kb3_step14_multiseason_pit.py'
       - 'src/kb3_step14_elo_xg_readiness.py'
       - 'src/kb3_step14_three_season_discovery.py'
+      - 'scripts/step14_multiseason_owner_native_join_local.py'
       - 'tests/test_step14_multiseason_pit.py'
       - 'tests/test_step14_elo_xg_readiness.py'
       - 'tests/test_step14_three_season_discovery.py'
+      - 'tests/test_step14_owner_multiseason_join.py'
       - '.github/workflows/kb3-step14-three-season-asof.yml'
   workflow_dispatch:
 
@@ -31,6 +33,8 @@ jobs:
           python -m unittest discover -s tests -p 'test_step14_multiseason_pit.py' -v
           python -m unittest discover -s tests -p 'test_step14_elo_xg_readiness.py' -v
           python -m unittest discover -s tests -p 'test_step14_three_season_discovery.py' -v
+          python -m unittest discover -s tests -p 'test_step14_owner_multiseason_join.py' -v
+          python -m compileall -q scripts/step14_multiseason_owner_native_join_local.py
       - name: Read three independently verified old source snapshots and audit retrospective aliases
         run: python -m src.kb3_step14_multiseason_pit --output "$RUNNER_TEMP/multiseason_public_source_proofs.json"
       - name: Independently audit full Elo-chain and team xG prerequisites
