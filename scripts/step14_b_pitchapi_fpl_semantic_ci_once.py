@@ -112,10 +112,29 @@ def compare_live(key,*,provider_factory=None,fetcher=fetch):
     for mid,home,away,fid,fh,fa in selected:
         shots=call(client.matches.shots,mid)
         stats=call(client.matches.stats,mid)
-        observed.extend(side_comparison(match_id=mid,home_id=home,away_id=away,
-            source_shots=shots,source_stats=stats,
-            fpl_side_values=source["source_side_xg_values_IN_MEMORY_ONLY"],
-            public_fixture_id=fid,fpl_home_id=fh,fpl_away_id=fa))
+        try:
+            observed.extend(side_comparison(match_id=mid,home_id=home,away_id=away,
+                source_shots=shots,source_stats=stats,
+                fpl_side_values=source["source_side_xg_values_IN_MEMORY_ONLY"],
+                public_fixture_id=fid,fpl_home_id=fh,fpl_away_id=fa))
+        except SemanticAuditError as e:
+            if str(e)=="TEAM_STATS_XG_FIELD_NOT_UNIQUE":
+                # Only schema labels, never match IDs, values or payloads.
+                data=stats.get("data",stats)
+                periods=data.get("periods",[]) if isinstance(data,dict) else []
+                labels=[]
+                for pp in periods if isinstance(periods,list) else []:
+                    if not isinstance(pp,dict):continue
+                    if pp.get("period")!="All":continue
+                    for gg in pp.get("groups",[]):
+                        if isinstance(gg,dict):
+                            for item in gg.get("items",[]):
+                                if isinstance(item,dict) and isinstance(item.get("key"),str):
+                                    k=item["key"]
+                                    if k.isascii() and k.replace("_","").isalnum() and len(k)<=45:
+                                        labels.append(k)
+                raise BSourceError("STATS_ALL_PUBLIC_SCHEMA_KEYS:"+",".join(sorted(set(labels))[:32])) from None
+            raise
     result=aggregate(observed)
     result["schema"]="kb3-step14-B-real-2023-pitchapi-vs-old-fpl-exact-380-identity-6-samples-v1"
     result["provider_request_count"]=requests
