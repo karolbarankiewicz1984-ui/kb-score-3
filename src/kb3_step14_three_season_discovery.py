@@ -27,6 +27,12 @@ CANDIDATES=(
  {"season":"2025-26","repo":"openfootball/football.json",
   "file":"2025-26/en.1.json",
   "after":"2025-10-01T00:00:00Z","until":"2025-10-31T23:59:59Z","type":"OF"},
+ {"season":"2024-25","repo":"vaastav/Fantasy-Premier-League",
+  "file":"data/2024-25/fixtures.csv",
+  "after":"2024-11-01T00:00:00Z","until":"2024-12-05T23:59:59Z","type":"FPL"},
+ {"season":"2025-26","repo":"openfootball/football.json",
+  "file":"2025-26/en.1.json",
+  "after":"2026-01-01T00:00:00Z","until":"2026-02-01T23:59:59Z","type":"OF"},
 )
 
 class DiscoveryError(ValueError): pass
@@ -171,8 +177,7 @@ def main():
     else:output.write_text(encoded,encoding="utf8")
     print(json.dumps({"additional_blobs_scanned":len(r["records"]),
                       "independent_push_verified":r["new_source_snapshots_with_independent_clock"],
-                      "states":{x["season"]:x["state"] for x in r["records"]},
-                      "public_additional_5match_candidates":{
-                          x["season"]:x.get("public_form5_prematch_certified_count",0) for x in r["records"]},
+                      "states":[{"season":x["season"],"repo":x["public_repo"],"state":x["state"]} for x in r["records"]],
+                      "public_additional_5match_candidates":[{"season":x["season"],"repo":x["public_repo"],"count":x.get("public_form5_prematch_certified_count",0)} for x in r["records"]],
                       "gate14_pass":False,"training_allowed":False},sort_keys=True))
 if __name__=="__main__":main()
