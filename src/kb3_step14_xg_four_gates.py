@@ -133,6 +133,7 @@ def extract_public_xg(fixtures_raw,players_raw,*,published_at,pinned_fixture_sha
     complete_fixtures=sum(x["finished"]=="True" for x in fixture_index.values())
     return {"published_at":published_at,"source_method":METHOD,
             "source_match_index":fixture_index,
+            "FPL_team_labels_IN_MEMORY_ONLY":teams_by_id,
             "source_side_xg_values_IN_MEMORY_ONLY":side_totals,
             "source_side_row_counts":players_per_side,
             "finished_fixtures":complete_fixtures,
