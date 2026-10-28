@@ -52,18 +52,29 @@ def parse_native_team_stats(payload,match_id,home_id,away_id):
     all_periods=[p for p in periods if isinstance(p,dict) and p.get("period")=="All"]
     if len(all_periods)!=1:
         raise SemanticAuditError("TEAM_STATS_FULL_MATCH_PERIOD_NOT_UNIQUE")
-    items=[]
+    exact=[]
+    other=[]
     for group in all_periods[0].get("groups",[]):
         if not isinstance(group,dict) or not isinstance(group.get("items"),list):
             raise SemanticAuditError("TEAM_STATS_INVALID_GROUP")
-        items.extend(x for x in group["items"]
-                     if isinstance(x,dict) and x.get("key")=="expected_goals")
-    if len(items)!=1:
+        title=group.get("name") or group.get("group_name") or group.get("title")
+        for item in group["items"]:
+            if not isinstance(item,dict) or item.get("key")!="expected_goals":
+                continue
+            if item.get("format_type") not in ("double",""):
+                raise SemanticAuditError("TEAM_STATS_XG_FORMAT_NOT_NUMERIC")
+            pair=(num(item.get("home")),num(item.get("away")))
+            if title=="Expected goals (xG)":
+                exact.append(pair)
+            elif title=="Top stats":
+                other.append(pair)
+            else:
+                raise SemanticAuditError("TEAM_STATS_XG_UNEXPECTED_DUPLICATE_GROUP")
+    if len(exact)!=1 or len(other)>1:
         raise SemanticAuditError("TEAM_STATS_XG_FIELD_NOT_UNIQUE")
-    item=items[0]
-    if item.get("format_type") not in ("double",""):
-        raise SemanticAuditError("TEAM_STATS_XG_FORMAT_NOT_NUMERIC")
-    return num(item.get("home")),num(item.get("away"))
+    if other and any(abs(a-b)>.02 for a,b in zip(exact[0],other[0])):
+        raise SemanticAuditError("TEAM_STATS_TOP_AND_XG_GROUP_CONFLICT")
+    return exact[0]
 
 def parse_native_shots(payload,match_id,home_id,away_id):
     """Validate exact shot fixture and each shot's original team ID.
