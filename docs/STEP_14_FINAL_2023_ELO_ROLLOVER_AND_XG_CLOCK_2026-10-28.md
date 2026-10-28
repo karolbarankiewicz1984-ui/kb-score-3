@@ -62,3 +62,12 @@ py -3 -m scripts.step14_owner_elo_rollover_380_local --archive-zip "$HOME\Downlo
 ```
 
 Nie przesyłać RSA PEM, odszyfrowanego ZIP, ani prywatnych ID. Zapis ekranu z samymi agregatami można wykorzystać jako kolejne potwierdzenie. **Nadal formalnie GATE14 PENDING, 0/760 TRAIN, 0/380 VALIDATION** — bez certyfikacji xG i wszystkich 121+38 oryginalnych cech nie ma produkcyjnego M1.
+
+
+## Dodatkowy faktyczny wynik: stary pełny FPL xG GW zawodników (CI #40633173937)
+
+Wbrew wcześniejszej sytuacji, gdy znaleziono tylko `gw38.csv`, zbadano także *rzeczywisty* stary `data/2023-24/gws/merged_gw.csv` z tego samego opublikowanego `204c134d8e90e2b6e69ec252aa3ef6f10f21e73c`, SHA256 `e9c09c8856f1c86b4f920f46ddd5033af83409439dfda53be925df2a3e7c8a9e`. CI #40633173937 **SUCCESS, 5/5 testów**: **29 725 wierszy zawodnik–mecz, 380/380 identyfikatorów spotkań FPL z liczbowym `expected_goals`, 0 nieprzypisanych spotkań, 0 brakujących xG**. Publiczna wersja pliku została poświadczona niezależnym GH Archive PushEvent `38750359648` **2024-05-27 18:05:12 UTC**, a więc przed otwarciem 2024/25.
+
+Jest to **historyczny dowód dostępności FPL/Opta *player-per-fixture xG***, ale **nie** dowodzi, że te wartości były dostępne *przed każdym docelowym spotkaniem 2023/24*, ponieważ pełny snapshot opublikowano dopiero po zakończeniu sezonu. W październiku 2024 wartości mogą stanowić alternatywne historyczne wejście, lecz nie podmieniamy automatycznie nimi oryginalnego zespołowego `PitchAPI team xG/xGA` ani nie uznajemy ich za 121+38 pełnych oryginalnych cech. Konieczna byłaby jawna osobna metodologia xG, zgodność tożsamości i kontrola danych wejściowych z chwili przed każdym targetem. [Zamrożony rzeczywisty raport xG](../data/audits/STEP14_FPL_2023_ALL380_PLAYER_XG_PUBLISHED_MAY2024_2026-10-28.json).
+
+**Lokalny kod full 2023/24 FT → Elo 2024/25 ma przejść jedynie na komputerze właściciela z jego RSA i oryginalnym ZIP**; testy GitHub Actions tylko symulują źródła i bezpieczne bramki. Do czasu prawdziwego przebiegu nie twierdzimy, że 380/380 historycznych FT jest zgodnych z natywnym PitchAPI ani że 10/10 oryginalnych docelowych Elo ma zweryfikowaną ciągłość. GATE14 pozostaje PENDING.
