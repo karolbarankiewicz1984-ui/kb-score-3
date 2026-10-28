@@ -12,7 +12,8 @@ from collections import Counter
 from datetime import timedelta
 from pathlib import Path
 from src.kb3_step14_bridge import EXPECTED_FEATURES,EXPECTED_MISSING
-from src.kb3_step14_native_team_crosswalk import SAFE_SHA\nfrom src.kb3_split import sha
+from src.kb3_step14_native_team_crosswalk import SAFE_SHA
+from src.kb3_split import sha
 from src.kb3_step14_multiseason_pit import SOURCES,utc
 from src.kb3_step14_owner_elo_2023_to_2024 import FULL_2023
 from scripts.step14_multiseason_owner_native_join_local import ADDITIONAL_2023
