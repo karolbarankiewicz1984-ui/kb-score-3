@@ -53,7 +53,7 @@ class SeasonBoundaryTests(unittest.TestCase):
               {"sha":"b"*40,"commit":{"committer":{"date":"2024-08-01T11:00:00Z"}}}]
         selected=git_candidates(rows,SEARCHES[0])
         self.assertEqual(len(selected),2)
-        self.assertTrue(all("DISCOVERY_ONLY" in list(s)[1].upper() for s in selected))
+        self.assertTrue(all("git_committer_search_hint_only" in s for s in selected))
         self.assertNotIn("independent_source_publication_utc",selected[0])
     def test_unavailable_gharchive_remains_unproven(self):
         r=matched_push("a"*40,"2024-06-01T10:00:00Z",
