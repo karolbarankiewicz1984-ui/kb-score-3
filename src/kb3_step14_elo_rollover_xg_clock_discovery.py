@@ -106,6 +106,53 @@ def inspect_ft(raw,publication_utc):
     result["full_380_FT_public_asof_2024_25_opening"]=(len(finished)==380)
     return result
 
+def original_season_retention(rating,params=None):
+    """Exact Step11 season carry-over: only for the same stable club identity."""
+    from src.kb3_features import EloParameters
+    p=params or EloParameters()
+    if not isinstance(rating,(float,int)) or isinstance(rating,bool):
+        raise DiscoveryError("INVALID_ROLLOVER_RATING")
+    import math
+    if not math.isfinite(rating):
+        raise DiscoveryError("NONFINITE_ROLLOVER_RATING")
+    return p.initial+(rating-p.initial)*p.season_retention
+
+def prepare_2023_full_ft_rollover(raw,published_at):
+    """No private source and no full-model training; 380 FT research replay."""
+    from src.kb3_step14_private_results_equivalence import replay_elo_batched
+    if not inspect_ft(raw,published_at)["full_380_FT_public_asof_2024_25_opening"]:
+        raise DiscoveryError("FULL_380_PUBLIC_FT_NOT_PROVEN")
+    rows=list(csv.DictReader(io.StringIO(raw.decode("utf-8-sig"))))
+    counts={}
+    values=[]
+    for r in rows:
+        home,away=str(r["team_h"]),str(r["team_a"])
+        if home==away:raise DiscoveryError("SELF_MATCH")
+        for team in (home,away):counts[team]=counts.get(team,0)+1
+        vals=[]
+        for side in ("team_h_score","team_a_score"):
+            v=float(r[side])
+            if not (0<=v<=30 and v.is_integer()):
+                raise DiscoveryError("NONINTEGER_FINAL_FT")
+            vals.append(int(v))
+        values.append((utc(r["kickoff_time"]),r["id"],home,away,*vals))
+    if len(counts)!=20 or any(n!=38 for n in counts.values()):
+        raise DiscoveryError("PUBLIC_FULL_SEASON_20_TEAMS_38_MATCHES_NOT_PROVEN")
+    result=replay_elo_batched(values)
+    if len(result)!=20:raise DiscoveryError("FULL_ELO_TEAM_COUNT_NOT_20")
+    carried={tid:original_season_retention(rating) for tid,rating in result.items()}
+    if len(carried)!=20 or any(abs(rating-1500)>2000 for rating in carried.values()):
+        raise DiscoveryError("ROLLOVER_OUT_OF_BOUNDS")
+    # Never export public team keys, scores, or numeric Elo values.
+    return {"full_public_2023_24_results_replayed":380,
+            "public_teams_38_games_each":20,
+            "retention_parameter":0.85,
+            "formula":"1500 + (end_of_2023_24_rating - 1500) * 0.85",
+            "rated_full_2023_24_team_count":20,
+            "actual_original_pitchapi_same_team_ids_verified_for_crossseason":False,
+            "actual_2024_25_native_elo_feature_pit_proven":False,
+            "team_ratings_or_scores_exported":False}
+
 def inspect_xg(raw,publication_utc):
     """Never equate per-player FPL xG with original PitchAPI team-match xG."""
     # Bounded schema-only scan; do not leak athlete names or xG values.
@@ -152,6 +199,8 @@ def scan(option,fetcher=fetch,clock_reader=gharchive_one_hour):
             proven=push["independent_source_publication_utc"]
             if option["kind"]=="ELO_FULL_FT":
                 s.update(inspect_ft(raw,proven))
+                if s["full_380_FT_public_asof_2024_25_opening"]:
+                    s["rollover_research_only"]=prepare_2023_full_ft_rollover(raw,proven)
                 s["state"]=(
                     "FULL_380_FT_BEFORE_2024_OPENING_VERIFIED"
                     if s["full_380_FT_public_asof_2024_25_opening"]
