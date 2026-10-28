@@ -19,7 +19,7 @@ from src.kb3_step14_fpl_form5_lineage import parse_fixture_rows
 from scripts.step14_multiseason_owner_native_join_local import map_fpl_team_ids_by_finished_clock
 from scripts.pitchapi_step06_audit import norm,to_plain
 from src.kb3_pitch_native import check_season
-from src.kb3_step14_pitchapi_xg_semantics import aggregate,side_comparison
+from src.kb3_step14_pitchapi_xg_semantics import aggregate,side_comparison,SemanticAuditError
 
 ROOT=Path(__file__).resolve().parents[1]
 SAMPLE_INDICES=(20,84,148,212,276,340)
@@ -141,6 +141,7 @@ def main():
         report={"schema":"kb3-step14-B-real-2023-pitchapi-vs-fpl-v1",
                 "live_comparison_state":"REAL_API_OR_MATCH_SEMANTICS_BLOCKED",
                 "safe_error_class":type(exc).__name__,
+                "safe_error_reason_code":str(exc) if isinstance(exc,(BSourceError,SemanticAuditError)) else "OPAQUE_NON_SOURCE_ERROR",
                 "real_six_match_numeric_comparison_complete":False,
                 "historic_original_provider_published_at_proven":False,
                 "training_allowed":False,"gate14_pass":False,
@@ -150,6 +151,7 @@ def main():
         "matched_games":report.get("exact_matched_fixtures",0),
         "native_graph_matches":report.get("whole_season_exact_fixture_home_away_identity_matches",0),
         "error_type":report.get("safe_error_class"),
+        "reason_code":report.get("safe_error_reason_code"),
         "first_historical_PitchAPI_publish_proven":False,
         "gate14_pass":False},sort_keys=True))
 if __name__=="__main__":main()
