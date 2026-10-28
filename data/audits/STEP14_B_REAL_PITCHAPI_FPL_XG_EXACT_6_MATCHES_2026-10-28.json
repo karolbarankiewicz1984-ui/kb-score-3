@@ -1,0 +1,40 @@
+{
+  "schema": "kb3-step14-B-real-2023-pitchapi-vs-old-fpl-exact-380-identity-6-samples-v1",
+  "snapshot_date": "2026-10-28",
+  "source_GitHub_Actions_run": 40739852904,
+  "source_artifact_id": 12837504230,
+  "source_GitHub_Actions_conclusion": "SUCCESS",
+  "source_PitchAPI_API_requests": 14,
+  "whole_season_exact_fixture_home_away_identity_matches": 380,
+  "exact_matched_fixtures": 6,
+  "exact_matched_team_sides": 12,
+  "selection": "chronological 2023-24 fixtures 20,84,148,212,276,340",
+  "PITCH_SHOTS_XG_vs_PITCH_FULL_MATCH_STATS_XG": {
+    "count": 12,
+    "mean_absolute_difference": 0.015,
+    "median_absolute_difference": 0.01,
+    "max_absolute_difference": 0.06,
+    "within_0_02": 9,
+    "within_0_10": 12,
+    "over_0_25": 0
+  },
+  "FPL_OPTA_PLAYER_SUM_XG_vs_PITCH_FULL_MATCH_STATS_XG": {
+    "count": 12,
+    "mean_absolute_difference": 0.0525,
+    "median_absolute_difference": 0.02,
+    "max_absolute_difference": 0.24,
+    "within_0_02": 7,
+    "within_0_10": 10,
+    "over_0_25": 0
+  },
+  "FPL_historic_independent_publication_utc": "2024-05-27T18:05:12Z",
+  "PitchAPI_retrieved_at_utc_NOT_original_first_publication": "2026-10-28T17:53:03.918576Z",
+  "PitchAPI_provider_original_first_published_at_utc": null,
+  "proof_of_identical_vendor_xg_models": false,
+  "original_historic_PitchAPI_xg_pit_certified": false,
+  "original_fit_train_rows_eligible": 0,
+  "original_validation_eligible": 0,
+  "original_M1_training_allowed": false,
+  "gate14_pass": false,
+  "data_integrity": "Only actual scalar error aggregate from GitHub Actions artifact, no match IDs, odds, xG original values or secrets"
+}

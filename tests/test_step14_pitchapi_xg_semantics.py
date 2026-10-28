@@ -33,6 +33,19 @@ class PitchSemanticsTests(unittest.TestCase):
         s=stats();s["data"]["away_team"]["id"]="t_Zz1234"
         with self.assertRaisesRegex(SemanticAuditError,"SIDE_ID_MISMATCH"):
             parse_native_team_stats(s,MID,HOME,AWAY)
+    def test_real_pitchapi_repeated_xg_in_top_stats_agrees(self):
+        s=stats()
+        s["data"]["periods"][0]["groups"].append({
+            "group_name":"Top stats",
+            "items":[{"key":"expected_goals","format_type":"double","home":"0.40","away":"0.75"}]})
+        self.assertEqual(parse_native_team_stats(s,MID,HOME,AWAY),(.4,.75))
+    def test_real_pitchapi_repeated_xg_conflict_blocks(self):
+        s=stats()
+        s["data"]["periods"][0]["groups"].append({
+            "group_name":"Top stats",
+            "items":[{"key":"expected_goals","format_type":"double","home":"0.92","away":"0.75"}]})
+        with self.assertRaisesRegex(SemanticAuditError,"CONFLICT"):
+            parse_native_team_stats(s,MID,HOME,AWAY)
     def test_duplicate_stats_key_fails(self):
         s=stats();s["data"]["periods"][0]["groups"][0]["items"].append(
             {"key":"expected_goals","home":"0.4","away":"0.75","format_type":"double"})
