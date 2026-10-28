@@ -210,12 +210,12 @@ def all_1140_pit(*,safe,native,sources,selected):
                   "all_same_season_predecessor_FT_in_old_source":True})
         candidate_counts[attempted]+=1
         if qualifying:
-            selected=max(qualifying,key=lambda q:q["source_published_at_utc"])
+            chosen_source=max(qualifying,key=lambda q:q["source_published_at_utc"])
             best["SOURCE_PRIOR_RESULTS_COMPLETE_ALL_SAME_SEASON"]+=1
-            if selected["both_have_five_prior_games"]:
+            if chosen_source["both_have_five_prior_games"]:
                 best["BOTH_TEAM_5_PRIOR_RESULTS_PUBLIC"]+=1;total_last5+=1
             rank="PUBLIC_OLD_RESULTS_ALL_PREDECESSORS_SOURCE_ONLY"
-            basis=selected
+            basis=chosen_source
         else:
             rank="NO_COMPLETE_SOURCE_BACKED_PRIOR_RESULT_CHAIN"
             basis=None
