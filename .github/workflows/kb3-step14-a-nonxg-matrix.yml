@@ -1,0 +1,40 @@
+name: KB3 Step14 A - real 1140x73 no-xG PIT matrix
+
+on:
+  push:
+    branches: [step14/a-73-nonxg-pit-matrix-20261028]
+    paths:
+      - 'src/kb3_step14_a_nonxg_1140_pit_matrix.py'
+      - 'tests/test_step14_a_nonxg_1140_pit_matrix.py'
+      - '.github/workflows/kb3-step14-a-nonxg-matrix.yml'
+  pull_request:
+    paths:
+      - 'src/kb3_step14_a_nonxg_1140_pit_matrix.py'
+      - 'tests/test_step14_a_nonxg_1140_pit_matrix.py'
+      - '.github/workflows/kb3-step14-a-nonxg-matrix.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  actual-no-xg-gap-matrix:
+    runs-on: ubuntu-latest
+    timeout-minutes: 7
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Real pinned 1140-match metadata and 73+14 frozen feature contract
+        run: python -m unittest discover -s tests -p 'test_step14_a_nonxg_1140_pit_matrix.py' -v
+      - name: Generate all 99,180 field/flag status cells
+        run: python -m src.kb3_step14_a_nonxg_1140_pit_matrix --summary "$RUNNER_TEMP/KB3_A_NOXG_SUMMARY.json" --matrix "$RUNNER_TEMP/KB3_A_NOXG_1140x87.jsonl.gz"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: KB3_STEP14_A_REAL_1140_NOXG_FIELD_PIT_MATRIX
+          path: |
+            ${{ runner.temp }}/KB3_A_NOXG_SUMMARY.json
+            ${{ runner.temp }}/KB3_A_NOXG_1140x87.jsonl.gz
+          retention-days: 30
+          if-no-files-found: error
