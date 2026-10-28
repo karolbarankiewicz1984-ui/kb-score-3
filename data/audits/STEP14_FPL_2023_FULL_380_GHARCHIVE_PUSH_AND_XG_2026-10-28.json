@@ -1,0 +1,65 @@
+{
+  "schema": "kb3-step14-full-public-2023-24-elo-cutoff-and-fpl-player-xg-v1",
+  "date_utc": "2026-10-28",
+  "real_workflow_run_id": 40632634060,
+  "real_workflow_url": "https://github.com/karolbarankiewicz1984-ui/kb-score-3/actions/runs/40632634060",
+  "real_workflow_conclusion": "SUCCESS",
+  "offline_negative_tests_passed": 15,
+  "source_repo": "vaastav/Fantasy-Premier-League",
+  "full_season_EPL_2023_24": {
+    "commit": "204c134d8e90e2b6e69ec252aa3ef6f10f21e73c",
+    "path": "data/2023-24/fixtures.csv",
+    "raw_sha256": "d8521bdbb80edb5141bc17df71bf6026275f2e56fd6a6dc6041b3ae23a39ce6a",
+    "old_380_fixtures_finished": 380,
+    "independent_GHArchive_event_id": "38750359648",
+    "event_server_UTC": "2024-05-27T18:05:12Z",
+    "public_branch": "master",
+    "publication_before_2024_25_opening": true,
+    "2024_25_official_opening_UTC": "2024-08-16T19:00:00Z",
+    "isolated_2023_all_380_public_elo_replayed": true,
+    "teams_20_with_38_each": true,
+    "elo_year_to_year_retention": 0.85,
+    "first_original_native_full_380_crosscheck_done": false,
+    "native_id_continuity_2023_to_2024_completely_verified_for_rollover": false,
+    "research_public_rollover_eligible": true,
+    "official_native_elo_m1_training_certified": false
+  },
+  "historical_fpl_player_xg": [
+    {
+      "season": "2023-24",
+      "path": "data/2023-24/gws/gw38.csv",
+      "raw_sha256": "8228d44505d2c27b79fc2b0079d48115be040e81906b4140217d64fb91da0fef",
+      "commit": "204c134d8e90e2b6e69ec252aa3ef6f10f21e73c",
+      "historically_independent_public_push": "2024-05-27T18:05:12Z",
+      "independent_publication_evidenced": true,
+      "expected_goals_column_present": true,
+      "fixture_column_present": true,
+      "team_column_present": true,
+      "equivalence_to_PitchAPI_team_xG": false
+    },
+    {
+      "season": "2024-25",
+      "path": "data/2024-25/gws/gw6.csv",
+      "raw_sha256": "9d5e1ef2a1d7c35d53e0976691759d9e98fdd22ec9ef32ce06030b2ca3e4cbba",
+      "independent_publication_evidenced": false,
+      "expected_goals_column_present": true,
+      "equivalence_to_PitchAPI_team_xG": false
+    },
+    {
+      "season": "2025-26",
+      "path": "data/2025-26/gws/gw6.csv",
+      "raw_sha256": "aa23bcdb479188a3bf60b6add9433295a7b5639627c0c9e615273e0e7d7e2a2d",
+      "independent_publication_evidenced": false,
+      "expected_goals_column_present": true,
+      "equivalence_to_PitchAPI_team_xG": false
+    }
+  ],
+  "original_121_plus_38_feature_PIT_certified": false,
+  "original_train_eligible": 0,
+  "original_validation_eligible": 0,
+  "GATE14": "PENDING",
+  "original_M1_training_allowed": false,
+  "test_2026_27_examined": false,
+  "private_RSA_or_native_ids_or_outcomes_exported": false,
+  "paid_API_requests": 0
+}

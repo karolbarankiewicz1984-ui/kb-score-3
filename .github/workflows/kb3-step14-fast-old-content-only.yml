@@ -1,0 +1,36 @@
+name: KB3 Step14 fast historic content only inventory
+
+on:
+  push:
+    branches: [step14/end2023-asof-rollover-xg-clock-20261028]
+    paths:
+      - 'src/kb3_step14_fast_old_content_inventory.py'
+      - '.github/workflows/kb3-step14-fast-old-content-only.yml'
+  pull_request:
+    paths:
+      - 'src/kb3_step14_fast_old_content_inventory.py'
+      - '.github/workflows/kb3-step14-fast-old-content-only.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  quick-content-probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 4
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Old exact Git blob FT/xG header only, no claim of old publication
+        run: |
+          python -m src.kb3_step14_fast_old_content_inventory --output "$RUNNER_TEMP/old_content_no_clock.json"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: KB3-2024-old-FT-xG-schema-NO-publication-clock
+          path: ${{ runner.temp }}/old_content_no_clock.json
+          if-no-files-found: warn
+          retention-days: 30

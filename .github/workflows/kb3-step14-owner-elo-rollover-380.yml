@@ -1,0 +1,35 @@
+name: KB3 Step14 private-owner 380 FT & Elo rollover safety tests
+
+on:
+  push:
+    branches: [step14/end2023-asof-rollover-xg-clock-20261028]
+    paths:
+      - 'src/kb3_step14_owner_elo_2023_to_2024.py'
+      - 'scripts/step14_owner_elo_rollover_380_local.py'
+      - 'tests/test_step14_owner_elo_2023_to_2024.py'
+      - '.github/workflows/kb3-step14-owner-elo-rollover-380.yml'
+  pull_request:
+    paths:
+      - 'src/kb3_step14_owner_elo_2023_to_2024.py'
+      - 'scripts/step14_owner_elo_rollover_380_local.py'
+      - 'tests/test_step14_owner_elo_2023_to_2024.py'
+      - '.github/workflows/kb3-step14-owner-elo-rollover-380.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  safe-owner-code-only:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: No RSA in CI, strict frozen as-of evidence and negative guards
+        run: |
+          python -m compileall -q src/kb3_step14_owner_elo_2023_to_2024.py scripts/step14_owner_elo_rollover_380_local.py
+          python -m unittest discover -s tests -p 'test_step14_owner_elo_2023_to_2024.py' -v
+          python -m unittest discover -s tests -p 'test_step14_private_results_equivalence.py' -v
+          python -m unittest discover -s tests -p 'test_step14_owner_multiseason_join.py' -v

@@ -1,0 +1,38 @@
+name: KB3 Step14 independently dated 2023 FPL player xG coverage
+
+on:
+  push:
+    branches: [step14/end2023-asof-rollover-xg-clock-20261028]
+    paths:
+      - 'src/kb3_step14_2023_fpl_old_player_xg.py'
+      - 'tests/test_step14_2023_fpl_old_player_xg.py'
+      - '.github/workflows/kb3-step14-fpl-old-player-xg.yml'
+  pull_request:
+    paths:
+      - 'src/kb3_step14_2023_fpl_old_player_xg.py'
+      - 'tests/test_step14_2023_fpl_old_player_xg.py'
+      - '.github/workflows/kb3-step14-fpl-old-player-xg.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  public-historic-only:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Negative xG column/time and fixture tests
+        run: python -m unittest discover -s tests -p 'test_step14_2023_fpl_old_player_xg.py' -v
+      - name: Verify real May 2024 old player-fixture xG rows, no player/fixture values output
+        run: python -m src.kb3_step14_2023_fpl_old_player_xg --output "$RUNNER_TEMP/old_fpl_player_xg_2023_24.json"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: step14-old-2023-player-xg-NOT-PitchAPI-team-xG
+          path: ${{ runner.temp }}/old_fpl_player_xg_2023_24.json
+          if-no-files-found: warn
+          retention-days: 30
