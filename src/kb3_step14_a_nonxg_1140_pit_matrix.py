@@ -12,7 +12,7 @@ from collections import Counter
 from datetime import timedelta
 from pathlib import Path
 from src.kb3_step14_bridge import EXPECTED_FEATURES,EXPECTED_MISSING
-from src.kb3_step14_full_identity_pit_audit import _validate_safe
+from src.kb3_step14_native_team_crosswalk import SAFE_SHA\nfrom src.kb3_split import sha
 from src.kb3_step14_multiseason_pit import SOURCES,utc
 from src.kb3_step14_owner_elo_2023_to_2024 import FULL_2023
 from scripts.step14_multiseason_owner_native_join_local import ADDITIONAL_2023
@@ -29,7 +29,21 @@ def _nonxg(name):
                 or name.endswith("_xga_n") or name.endswith("_xga_avg"))
 
 def construct(safe):
-    ix=_validate_safe(safe)
+    if (not isinstance(safe,dict) or safe.get("schema")!="kb3-step12-methodology-v1"
+        or safe.get("projection_sha256")!=SAFE_SHA
+        or sha({k:v for k,v in safe.items() if k!="projection_sha256"})!=SAFE_SHA
+        or safe.get("training_allowed") is not False
+        or safe.get("partition_counts")!={"TRAIN":760,"VALIDATION":380,"TEST":380}):
+        raise MatrixError("FROZEN_ORIGINAL_SPLIT_HASH_INVALID")
+    ix={}
+    for item in safe["fixtures"]:
+        role=item.get("partition")
+        if role=="TEST":continue
+        if (role not in ("TRAIN","VALIDATION")
+            or set(item)!={"fixture_id","kickoff_utc","partition"}
+            or item["fixture_id"] in ix):
+            raise MatrixError("BAD_OR_DUPLICATE_FROZEN_MATCH")
+        ix[item["fixture_id"]]=(item["kickoff_utc"],role)
     fields=sorted(x for x in EXPECTED_FEATURES if _nonxg(x))
     flags=sorted(x for x in EXPECTED_MISSING if not (x.endswith("_xg") or x.endswith("_xga")))
     if len(fields)!=73 or len(flags)!=14 or len(ix)!=1140:
