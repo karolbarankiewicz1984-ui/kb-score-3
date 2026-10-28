@@ -23,19 +23,25 @@ EXPECTED_ELO={"initial":1500.0,"k":20.0,"home_advantage":65.0,
 
 class ChainError(ValueError):pass
 
+def _additional_2023_source():
+    from scripts.step14_multiseason_owner_native_join_local import ADDITIONAL_2023
+    return ADDITIONAL_2023
+
 def validate_contract(params):
     if not isinstance(params,EloParameters):
         raise ChainError("NOT_STEP11_ELO_PARAMETERS")
     if {x:getattr(params,x) for x in EXPECTED_ELO}!=EXPECTED_ELO:
         raise ChainError("ORIGINAL_ELO_CONTRACT_CHANGED")
 
-def verify_public_elo_math(raw,verified_source,params=None):
+def verify_public_elo_math(raw,verified_source,params=None,source_pin=None):
     """Independent deterministic 2023/24 partial Elo replay (70 finished FT).
     Source clock proof must already be pinned; no ratings exported.
     """
     params=params or EloParameters()
     validate_contract(params)
-    source=SOURCES[0]
+    source=source_pin if source_pin is not None else SOURCES[0]
+    if source not in (SOURCES[0],_additional_2023_source()):
+        raise ChainError("UNREVIEWED_ELO_REPLAY_SOURCE")
     if (verified_source.get("verified_source_commit")!=source["commit"]
         or verified_source.get("verified_prematch_raw_sha256")!=source["sha"]
         or verified_source.get("push_utc")!=source["push"]
@@ -60,7 +66,7 @@ def verify_public_elo_math(raw,verified_source,params=None):
             if row["team_h_score"] or row["team_a_score"]:
                 raise ChainError("UNPLAYED_SCORE_LEAK")
         else:raise ChainError("INVALID_STATUS")
-    if len(done)!=70:raise ChainError("PUBLIC_70_FT_CHANGED")
+    if len(done)!=source["ft"]:raise ChainError("PUBLIC_EARLIER_FT_COUNT_CHANGED")
     done.sort(key=lambda x:(x[0],x[1]))
     ratings=defaultdict(lambda:params.initial)
     teams=set()
@@ -170,6 +176,21 @@ def main():
     with urlopen(Request(url,headers={"User-Agent":"KB3-step14-elo-source-check"}),timeout=35) as fd:
         raw=fd.read(3_000_001)
     math_result=verify_public_elo_math(raw,source["verified_three_season_public_sources"]["2023-24"])
+    # Second independently corroborated 2023-12-04 PushEvent with 140 FT.
+    # One source is a longer prefix of the SAME season, never 70+140=210
+    # independent Elo events.
+    s2=_additional_2023_source()
+    url2=f"https://raw.githubusercontent.com/{s2['repo']}/{s2['commit']}/{s2['path']}"
+    with urlopen(Request(url2,headers={"User-Agent":"KB3-step14-elo-source-check"}),timeout=35) as fd:
+        raw2=fd.read(3_000_001)
+    verified2={"verified_source_commit":s2["commit"],
+       "verified_prematch_raw_sha256":s2["sha"],
+       "push_utc":s2["push"],
+       "independent_push_event_id":s2["event"]}
+    later=verify_public_elo_math(raw2,verified2,source_pin=s2)
+    math_result["additional_verified_public_replay_2023_12_04_utc"]=s2["push"]
+    math_result["newer_snapshot_2023_24_public_elo_prefix_length"]=later["public_replay_scored_earlier_events"]
+    math_result["additional_source_is_same_season_longer_prefix_not_independent_210_matches"]=True
     report=assess(source,elo_replay=math_result)
     dest=Path(opts.output)
     dest.parent.mkdir(parents=True,exist_ok=True)
@@ -178,7 +199,8 @@ def main():
         if dest.read_text(encoding="utf8")!=serialized:raise ChainError("IMMUTABLE_ELO_XG_REPORT_CHANGED")
     else:dest.write_text(serialized,encoding="utf8")
     print(json.dumps({
-        "public_2023_elo_partial_results_replayed":math_result["public_replay_scored_earlier_events"],
+        "public_2023_elo_first_snapshot_results_replayed":math_result["public_replay_scored_earlier_events"],
+        "public_2023_elo_later_snapshot_results_replayed":math_result["newer_snapshot_2023_24_public_elo_prefix_length"],
         "original_full_native_elo_pit_certified":False,
         "historic_xg_pit_certified":False,
         "official_train_pit_eligible":0,"gate14_pass":False
