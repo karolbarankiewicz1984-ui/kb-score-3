@@ -101,8 +101,9 @@ def one_fpl_source(s,native):
             key=(r["home_id"],r["away_id"],r["kickoff_utc"])
             private_index[key].append(r)
     for target in records:
-        if target["finished"]!="False" or not target["kickoff_time"] or
+        if (target["finished"]!="False" or not target["kickoff_time"] or
             utc(target["kickoff_time"])<=utc(s["push"])):
+
             continue
         if _candidate(records,target,utc(s["push"]))["state"]!="PUBLIC_FORM5_INPUTS_CONDITIONALLY_RECONSTRUCTABLE":
             continue
