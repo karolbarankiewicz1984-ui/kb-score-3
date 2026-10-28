@@ -1,0 +1,53 @@
+{
+  "schema": "kb3-step14-pitchapi-original-historical-team-xg-evidence-readiness-v1",
+  "date": "2026-10-28",
+  "provider": "PitchAPI",
+  "official_reference_url": "https://pitchapi.dev/",
+  "public_reference_checked_asof": "2026-10-28",
+  "documented_current_resources": [
+    "/v1/matches/{id}/shots → periods[].shots[].expected_goals 0..1 with team_id",
+    "/v1/matches/{id}/stats → periods[All] group Expected goals key expected_goals home/away double",
+    "/v1/leagues/{id}/matches?season=YYYY/YYYY → historical fixtures"
+  ],
+  "provider_claims_history_back_to_year": 2021,
+  "historical_team_xg_first_value_published_at_field_in_public_docs": false,
+  "independent_historical_PitchAPI_endpoint_response_archived_asof_each_2023_24_2024_25_2025_26_target": false,
+  "provider_first_available_at_UTC_for_specific_original_team_match_xg": null,
+  "historical_team_xg_original_provider_version_history_recovered": false,
+  "old_owner_RSA_2023_2026_archive_contents": "catalog plus played season match/result lists, no per-match shots/stats historical first-publication receipts",
+  "historical_source_2023_FPL_Opta_old_prematch_xg_16_target_snapshot_pairs": true,
+  "FPL_Opta_values_equal_to_original_PitchAPI_team_xg_proven": false,
+  "previous_PitchAPI_observed_2026_27_complete_shots_30_matches_true": true,
+  "previous_2026_capture_is_not_2023_25_provider_publication": true,
+  "provider_changelog_exhibits_2026_new_league_IDs_or_changes": true,
+  "same_fixture_semantic_comparator_status": "OWNER_LOCAL_READY_NOT_YET_RUN_ON_REAL_SIX_PITCHAPI_SHOTS_AND_STATS",
+  "comparator_selected_historical_2023_24_matches": 6,
+  "comparator_xg_team_sides": 12,
+  "comparator_max_pitchapi_sdk_calls": 12,
+  "comparator_shots_vs_stats_vs_FPL_labels": [
+    "PitchAPI shots[].expected_goals",
+    "PitchAPI stats All expected_goals",
+    "FPL/Opta player expected_goals aggregated within exact historical fixture/team"
+  ],
+  "comparator_does_not_compare_npxg_or_xgot": true,
+  "semantic_equal_from_small_sample_is_proof_of_same_provider_model": false,
+  "required_external_provider_evidence": [
+    "Exact native match_id, team_id, home/away and period All",
+    "Provider original first-availability UTC for each specific historical xG value, not current capture Date",
+    "Immutable original shot or team-xG payload SHA-256 and provider/source version ID",
+    "Correction/backfill revision history and whether first version existed by each subsequent target cutoff",
+    "Precise definition (penalties, own goals, shootouts, xGOT, npxG, blocked shots, rounding)",
+    "Attestation by upstream provider with independent event-time verification or independently timestamped raw original response"
+  ],
+  "train_rows_original_full_121_plus_38_pit_certified": 0,
+  "validation_rows_original_full_121_plus_38_pit_certified": 0,
+  "GATE14": "PENDING",
+  "official_M1_training_allowed": false,
+  "original_M0_Elo_20_forecasts_split_test_untouched": true,
+  "actual_new_pitchapi_calls_completed_in_this_public_CI": 0,
+  "user_RSA_key_or_live_API_secret_shared": false,
+  "test_exposure": 0,
+  "offline_real_ci_id": 40701194878,
+  "offline_real_ci_conclusion": "SUCCESS",
+  "offline_negative_and_mock_tests_passed": 36
+}
