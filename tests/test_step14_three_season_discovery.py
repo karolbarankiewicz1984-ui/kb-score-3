@@ -3,8 +3,9 @@ import unittest
 from src.kb3_step14_three_season_discovery import CANDIDATES,pinned_selection,probe_public_push
 
 class DiscoveryTests(unittest.TestCase):
-    def test_exactly_three_historical_windows(self):
-        self.assertEqual([x["season"] for x in CANDIDATES],["2023-24","2024-25","2025-26"])
+    def test_historical_windows_cover_every_original_season(self):
+        self.assertEqual(len(CANDIDATES),5)
+        self.assertEqual(set(x["season"] for x in CANDIDATES),{"2023-24","2024-25","2025-26"})
     def test_git_date_only_discovers_not_proves(self):
         src=CANDIDATES[0]
         got=pinned_selection(src,[{"sha":"a"*40,"commit":{"committer":{"date":"2023-11-15T13:00:00Z"}}}])
