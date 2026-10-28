@@ -18,7 +18,7 @@ class RealHistoryProofTests(unittest.TestCase):
     self.assertTrue(all(x["push"].endswith("Z") for x in s))
     self.assertEqual(len({x["commit"] for x in s}),9)
  def test_public_to_native_exact_id_not_name_fuzzy(self):
-    src={"season":"2024-25"}
+    src={"season":"2024-25","push":"2024-10-02T13:52:44Z"}
     native={"2024-25":[
       {"id":"m_012345","time_utc":"2024-10-05T16:30:00Z",
        "home_team":{"id":"t_012345","name":"Everton FC"},
