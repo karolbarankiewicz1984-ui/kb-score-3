@@ -14,16 +14,13 @@ from tempfile import TemporaryDirectory
 from zipfile import ZipFile
 import argparse,json,os
 
-from src.kb3_step13_archive_preflight import verify_original_zip,ENC,MAN
-from src.kb3_pitch_uefa_evidence import restore
-from src.kb3_step14_full_identity_pit_audit import _validate_native,_validate_safe
 from src.kb3_step14_native_team_crosswalk import canonical_team_name
 from src.kb3_step14_multiseason_pit import SOURCES,audit as public_audit,fetch,utc
 from src.kb3_step14_fpl_form5_lineage import _candidate,parse_fixture_rows
 from src.kb3_step14_fpl_historic_clock_pilot import verify_raw_csv
-from scripts.step14_full_native_identity_pit_local import SAFE
 
 ROOT=Path(__file__).resolve().parents[1]
+SAFE=ROOT/"data/splits/STEP12_SAFE_MODEL_VIEW_2026-10-26.json"
 ADDITIONAL_2023={
     "season":"2023-24",
     "repo":"vaastav/Fantasy-Premier-League",
@@ -169,6 +166,10 @@ def trusted_join(*,native,public):
             "training_allowed":False,"gate14_pass":False}
 
 def run_local(*,archive_zip,private_key,output):
+    # Cryptographic components are owner-only, not prerequisites for pure CI tests.
+    from src.kb3_step13_archive_preflight import verify_original_zip,ENC,MAN
+    from src.kb3_pitch_uefa_evidence import restore
+    from src.kb3_step14_full_identity_pit_audit import _validate_native,_validate_safe
     dest=Path(output).expanduser().resolve()
     if dest.exists() or dest.is_relative_to(ROOT.resolve()) or dest.is_dir():
         raise PrivateJoinError("NEW_PRIVATE_REPORT_OUTSIDE_REPOSITORY_REQUIRED")
