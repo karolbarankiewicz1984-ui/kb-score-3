@@ -152,6 +152,6 @@ def main():
                     "sources":[{"status":z["status"],
                                 "published_utc":z.get("clock",{}).get("server_publication_utc"),
                                 "old_completed_fixtures":z.get("completed_public_fixtures")}
-                        for z in x["snapshots"]]} for x in reports],
+                        for z in x["snapshots"]]} for x in r["reports"]],
         "original_PitchAPI_team_xg_PIT":False,"gate14_pass":False},sort_keys=True))
 if __name__=="__main__":main()
