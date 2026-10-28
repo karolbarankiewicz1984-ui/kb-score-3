@@ -132,9 +132,14 @@ def audit_candidate(option,*,fetcher=fetch,fpl_reader=gharchive_one_hour,of_read
                     known+=1
                 elif row["team_h_score"] or row["team_a_score"]:
                     raise DiscoveryError("FUTURE_FPL_SCORE")
-            valid=sum(1 for row in rows if row["finished"]=="False" and row["kickoff_time"] and
-                      utc(row["kickoff_time"])>stamp and
-                      _candidate(rows,row,stamp).get("state")=="PUBLIC_FORM5_INPUTS_CONDITIONALLY_RECONSTRUCTABLE")
+            id_list=sorted(
+                (row["id"] for row in rows
+                 if row["finished"]=="False" and row["kickoff_time"] and
+                 utc(row["kickoff_time"])>stamp and
+                 _candidate(rows,row,stamp).get("state")=="PUBLIC_FORM5_INPUTS_CONDITIONALLY_RECONSTRUCTABLE"),
+                key=lambda x:int(x))
+            valid=len(id_list)
+            result["conditional_public_fpl_fixture_ids_only"]=id_list
         else:
             source={"sha":sha256(raw).hexdigest(),"push":attested["published_at_utc"],
                     "ft":source_finished,"season":option["season"],
@@ -142,6 +147,7 @@ def audit_candidate(option,*,fetcher=fetch,fpl_reader=gharchive_one_hour,of_read
                     "event":attested["independent_event_id"]}
             output=per_openfootball(source,raw)
             valid=output["states"].get("PUBLIC_5_PRIOR_RESULTS_ONLY",0)
+            result["conditional_public_openfootball_fixtures_only"]=output["public_form5_candidates"]
         result["state"]="NEW_INDEPENDENT_PUSH_TIME_VERIFIED_PARTIAL_PUBLIC_FT"
         result["public_form5_prematch_certified_count"]=valid
         result["native_id_join_completed"]=False
