@@ -44,7 +44,7 @@ def construct(safe):
         # an actual historic source capture or original feature cutoff.
         cutoff=(ko-timedelta(minutes=1)).isoformat().replace("+00:00","Z")
         public=[{"provider":x.get("provider","FPL"),
-                 "commit":x["commit"],"independent_gharchive_event":x["event"]}
+                 "commit":x["commit"],"independent_gharchive_event":x.get("event",x.get("event_id"))}
                 for x in SOURCES_CLOCKED if utc(x["push"])<utc(cutoff)]
         parts[partition]+=1;public_counts[len(public)]+=1
         rows.append({"native_fixture_id":native_id,"partition":partition,
