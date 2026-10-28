@@ -230,24 +230,36 @@ def audit_fpl(source,raw,native,scores):
             "form5_targets_native_identity_missing":native_target_missing,
             "original_pitchapi_published_at_proven":False}
 
+def index_native_public_names(native,scores,season):
+    """Index all sealed fixture identities, but only allowlisted prior scores.
+
+    Scores for future TRAIN targets and all VALIDATION rows are intentionally
+    absent. Never request a score just to build the name-and-kickoff index.
+    """
+    index={}
+    for mid,n in native.items():
+        if n["season"]!=season:continue
+        key=(canonical_team_name(n["home_name"]),
+             canonical_team_name(n["away_name"]),n["kickoff_utc"])
+        if key in index:raise NativeFTError("AMBIGUOUS_NATIVE_PUBLIC_NAMES")
+        index[key]=scores.get(mid)  # Missing by design: no label read.
+    if len(index)!=380:raise NativeFTError("NATIVE_SEASON_INDEX_INCOMPLETE")
+    return index
+
 def audit_of(source,raw,native,scores):
     pinned_raw(source,raw)
     entries=parse_openfootball(raw,source)
     rawmatches=json.loads(raw)["matches"]
     if len(entries)!=len(rawmatches):raise NativeFTError("OPENFOOTBALL_GRID_CHANGED")
-    index={}
-    for mid,n in native.items():
-        if n["season"]!="2024-25":continue
-        key=(canonical_team_name(n["home_name"]),canonical_team_name(n["away_name"]),n["kickoff_utc"])
-        if key in index:raise NativeFTError("AMBIGUOUS_NATIVE_PUBLIC_NAMES")
-        index[key]=scores[mid]
+    index=index_native_public_names(native,scores,"2024-25")
     checked=0;different=0
     for m,e in zip(rawmatches,entries):
         if not e["ft_published"]:continue
         if e["kickoff"] is None:raise NativeFTError("PUBLIC_COMPLETED_KICKOFF_MISSING")
         key=(e["home"],e["away"],e["kickoff"].isoformat().replace("+00:00","Z"))
         private=index.get(key)
-        if private is None:raise NativeFTError("PRIOR_PUBLIC_TEAM_CLOCK_NOT_IN_NATIVE")
+        if key not in index:raise NativeFTError("PRIOR_PUBLIC_TEAM_CLOCK_NOT_IN_NATIVE")
+        if private is None:raise NativeFTError("PUBLIC_PREDECESSOR_SCORE_NOT_IN_ALLOWLIST")
         pair=m["score"]["ft"]
         pubscore=(integer_goal(pair[0]),integer_goal(pair[1]))
         different+=int(private!=pubscore)
