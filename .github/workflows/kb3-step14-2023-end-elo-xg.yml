@@ -1,0 +1,39 @@
+name: KB3 Step14 2023-24 final FT Elo and original FPL xG clocks
+
+on:
+  push:
+    branches: [step14/end2023-asof-rollover-xg-clock-20261028]
+  pull_request:
+    paths:
+      - 'src/kb3_step14_elo_rollover_xg_clock_discovery.py'
+      - 'tests/test_step14_elo_rollover_xg_clock_discovery.py'
+      - '.github/workflows/kb3-step14-2023-end-elo-xg.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  historical-public-only:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Offline source-time and rollover invariants
+        run: |
+          python -m unittest discover -s tests -p 'test_step14_elo_rollover_xg_clock_discovery.py' -v
+          python -m unittest discover -s tests -p 'test_step14_openfootball_elo_prefix.py' -v
+      - name: Search actual historic public Git SHAs and independent GH Archive clock
+        run: |
+          python -m src.kb3_step14_elo_rollover_xg_clock_discovery --output "$RUNNER_TEMP/step14_end2023_elo_xg_external_clocks.json"
+      - name: Preserve research audit; no private data
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: step14-public-Elo380-rollover-FPLxG-clock-not-PitchAPI-PIT
+          path: ${{ runner.temp }}/step14_end2023_elo_xg_external_clocks.json
+          if-no-files-found: warn
+          retention-days: 30
