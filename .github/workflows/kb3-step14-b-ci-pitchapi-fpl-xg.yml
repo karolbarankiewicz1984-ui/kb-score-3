@@ -7,6 +7,11 @@ on:
       - 'scripts/step14_b_pitchapi_fpl_semantic_ci_once.py'
       - 'tests/test_step14_b_pitchapi_fpl_semantic_ci.py'
       - '.github/workflows/kb3-step14-b-ci-pitchapi-fpl-xg.yml'
+  pull_request:
+    paths:
+      - 'scripts/step14_b_pitchapi_fpl_semantic_ci_once.py'
+      - 'tests/test_step14_b_pitchapi_fpl_semantic_ci.py'
+      - '.github/workflows/kb3-step14-b-ci-pitchapi-fpl-xg.yml'
   workflow_dispatch:
 
 permissions:
