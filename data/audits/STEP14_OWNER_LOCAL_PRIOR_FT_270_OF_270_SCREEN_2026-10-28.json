@@ -1,0 +1,59 @@
+{
+  "schema": "kb3-step14-owner-local-rsa-history-270-source-score-comparisons-v1",
+  "date": "2026-10-28",
+  "evidence": "owner supplied PowerShell screenshot of second local run in kb3-6 after manual sparse-label KeyError correction",
+  "program": "scripts.step14_owner_native_score_elo_local",
+  "program_end": "ORIGINAL_TRAIN_PIT 0 GATE14 PENDING PRIVATE_AGGREGATES_ONLY_REPORT_CREATED_OUTSIDE_GITHUB",
+  "runs": [
+    {
+      "season": "2023-24",
+      "historical_snapshot": "FPL Oct 5 2023",
+      "previous_public_results": 70,
+      "original_native_exact_results": 70,
+      "disagreements": 0,
+      "public_form5_elo_source_target_pairs": 8,
+      "status": "PREVIOUS_FT_SCORES_EXACT_AND_LOCAL_ELO_MATH_REPLAY"
+    },
+    {
+      "season": "2023-24",
+      "historical_snapshot": "FPL Dec 4 2023",
+      "previous_public_results": 140,
+      "original_native_exact_results": 140,
+      "disagreements": 0,
+      "public_form5_elo_source_target_pairs": 8,
+      "status": "PREVIOUS_FT_SCORES_EXACT_AND_LOCAL_ELO_MATH_REPLAY"
+    },
+    {
+      "season": "2024-25",
+      "historical_snapshot": "OpenFootball Oct 2 2024",
+      "previous_public_results": 60,
+      "original_native_exact_results": 60,
+      "disagreements": 0,
+      "public_form5_elo_source_target_pairs": 0,
+      "status": "PREVIOUS_FT_SCORES_EXACT"
+    }
+  ],
+  "aggregate_public_blob_vs_native_ft_comparisons": 270,
+  "aggregate_exact_public_blob_vs_native_ft_comparisons": 270,
+  "aggregate_ft_disagreements": 0,
+  "aggregate_comparisons_are_not_necessarily_distinct_fixture_ids": true,
+  "private_owner_local_report_path": "OWNER_DESKTOP_NOT_IN_GITHUB",
+  "full_owner_local_json_not_received": true,
+  "original_private_pem_not_received": true,
+  "original_sealed_zip_not_received": true,
+  "private_goal_values_not_received": true,
+  "native_team_and_match_ids_not_received": true,
+  "old_2024_25_form5_source_target_pairs_previously_identity_joined": 10,
+  "zero_for_2024_25_partial_elo_targets_was_method_not_implemented_not_source_failure": true,
+  "full_original_three_season_elo_chain_pit_certified": false,
+  "historical_xg_pit_certified": false,
+  "original_121_plus_38_features_pit_certified": false,
+  "train_rows_pit_certified": 0,
+  "validation_rows_pit_certified": 0,
+  "test_read": false,
+  "original_M0_changed": false,
+  "frozen_20_predictions_changed": false,
+  "paid_sports_api_calls": 0,
+  "gate14_pass": false,
+  "official_training_allowed": false
+}
