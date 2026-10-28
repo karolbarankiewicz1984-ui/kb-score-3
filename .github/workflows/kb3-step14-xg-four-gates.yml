@@ -30,17 +30,6 @@ jobs:
         run: |
           python -m compileall -q src/kb3_step14_xg_four_gates.py
           python -m unittest discover -s tests -p 'test_step14_xg_four_gates.py' -v
-      - name: Forensic hash-only diagnostic, never source values
-        run: |
-          python - <<'PY'
-          from src.kb3_step14_xg_four_gates import FULL_2023,FULL_MERGED_PATH
-          from src.kb3_step14_multiseason_pit import fetch
-          from hashlib import sha256
-          base=f"https://raw.githubusercontent.com/{FULL_2023['repo']}/{FULL_2023['commit']}/"
-          for path in (FULL_2023["path"],FULL_MERGED_PATH):
-              raw=fetch(base+path)
-              print("HISTORICAL_FPL_SOURCE_SHA256",path,sha256(raw).hexdigest(),"raw_bytes",len(raw))
-          PY
       - name: Read exact historic old FPL player xG/fixture blobs and independently pinned clock
         run: python -m src.kb3_step14_xg_four_gates --output "$RUNNER_TEMP/xg_2023_all_380_four_gates_public_only.json"
       - uses: actions/upload-artifact@v4
