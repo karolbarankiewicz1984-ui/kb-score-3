@@ -1,0 +1,38 @@
+name: KB3 Step14 Oct Dec 2023 genuine prematch FPL player xG
+
+on:
+  push:
+    branches: [step14/xg-independent-clock-match-team-semantic-audit-20261028]
+    paths:
+      - 'src/kb3_step14_xg_2023_early_prematch.py'
+      - 'tests/test_step14_xg_2023_early_prematch.py'
+      - '.github/workflows/kb3-step14-xg-2023-early-pit.yml'
+  pull_request:
+    paths:
+      - 'src/kb3_step14_xg_2023_early_prematch.py'
+      - 'tests/test_step14_xg_2023_early_prematch.py'
+      - '.github/workflows/kb3-step14-xg-2023-early-pit.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  original-old-public-only:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Fake published-at and source hash tamper tests
+        run: python -m unittest discover -s tests -p 'test_step14_xg_2023_early_prematch.py' -v
+      - name: Audit xG in actual October and December 2023 already independently published snapshots
+        run: python -m src.kb3_step14_xg_2023_early_prematch --output "$RUNNER_TEMP/2023_real_early_prematch_xg_fpl_source_only.json"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: step14-2023-old-FPL-xg-true-prematch-source-not-PitchAPI
+          path: ${{ runner.temp }}/2023_real_early_prematch_xg_fpl_source_only.json
+          if-no-files-found: warn
+          retention-days: 30
