@@ -3,6 +3,10 @@ name: KB3 Step14 2023-24 final FT Elo and original FPL xG clocks
 on:
   push:
     branches: [step14/end2023-asof-rollover-xg-clock-20261028]
+    paths:
+      - 'src/kb3_step14_elo_rollover_xg_clock_discovery.py'
+      - 'tests/test_step14_elo_rollover_xg_clock_discovery.py'
+      - '.github/workflows/kb3-step14-2023-end-elo-xg.yml'
   pull_request:
     paths:
       - 'src/kb3_step14_elo_rollover_xg_clock_discovery.py'
