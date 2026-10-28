@@ -1,0 +1,95 @@
+{
+  "schema": "kb3-step14-three-season-partial-prematch-evidence-v1",
+  "created_utc_date": "2026-10-28",
+  "repository": "karolbarankiewicz1984-ui/kb-score-3",
+  "real_actions_run_id": 40607082407,
+  "real_actions_url": "https://github.com/karolbarankiewicz1984-ui/kb-score-3/actions/runs/40607082407",
+  "real_actions_result": "SUCCESS",
+  "offline_negative_tests_passed": 31,
+  "public_sources": [
+    {
+      "season": "2023-24",
+      "provider": "FPL",
+      "source_sha": "96fbc38ee6e36e3a7250081a787b65a1a27c944d",
+      "raw_sha256": "07b88250be0903a76b6334a7db56b9d9c148fc4a301c5e2338ce2c27dd01f367",
+      "publication_utc": "2023-10-05T14:38:59Z",
+      "event_id": "32344206544",
+      "preexisting_completed_ft": 70,
+      "source_form5_conditional_targets": 8
+    },
+    {
+      "season": "2023-24",
+      "provider": "FPL",
+      "source_sha": "c4f66ee30ef026bb7e8b7184b2427f9708c77d74",
+      "raw_sha256": "c9f99615ca61bba4a8306f88131119b5539bb0862fee3178e54501111498f8f1",
+      "publication_utc": "2023-12-04T13:04:15Z",
+      "event_id": "33866831577",
+      "preexisting_completed_ft": 140,
+      "source_form5_conditional_targets": 8
+    },
+    {
+      "season": "2024-25",
+      "provider": "OpenFootball",
+      "source_sha": "5f777dc6e2cd02cdafd1520e81b7e338284fb7a7",
+      "raw_sha256": "6687e626fd7361ae771308920b289392229c36f6bdffee0b56b7e9235815e3de",
+      "publication_utc": "2024-10-02T13:52:44Z",
+      "event_id": "42475053178",
+      "preexisting_completed_ft": 60,
+      "source_form5_conditional_targets": 10
+    },
+    {
+      "season": "2025-26",
+      "provider": "OpenFootball",
+      "source_sha": "fdca227e6fc8284865254f009e987ce7a70935a0",
+      "raw_sha256": "ba32190faf6aad0558d9e919344db6be6abe6e4ce733168b7efc40427771962b",
+      "publication_utc": "2025-07-30T16:20:53Z",
+      "event_id": "52743265113",
+      "preexisting_completed_ft": 0,
+      "source_form5_conditional_targets": 0
+    }
+  ],
+  "source_snapshot_target_pairs_conditional_form5": 26,
+  "distinct_source_snapshot_target_pairs_not_asserted_distinct_pitchapi_training_rows": true,
+  "partial_fpl_source_2023_24_70_and_140_nested_not_210_independent_elo_matches": true,
+  "additional_unverified_candidate_windows_probed": 6,
+  "additional_verified_public_snapshot_count": 1,
+  "original_native_pitchapi_fixture_identity_owner_local_prior_1140_proven": true,
+  "new_original_rsa_native_join_run_this_audit": false,
+  "original_native_fixture_samples_joined_to_conditional_public_form5": 1,
+  "owner_local_native_join_code_prepared": true,
+  "elo": {
+    "original_step11_params": {
+      "initial": 1500,
+      "k": 20,
+      "scale": 400,
+      "home_advantage": 65,
+      "season_retention": 0.85
+    },
+    "public_october_2023_snapshot_ft_elo_updates_replayed": 70,
+    "public_december_2023_snapshot_ft_elo_updates_replayed": 140,
+    "full_original_pitchapi_three_season_elo_chain_pit_certified": false,
+    "cross_season_initialization_and_transfers_historical_asof_certified": false,
+    "ratings_exported": false
+  },
+  "xg": {
+    "historical_original_pitchapi_2023_2026_team_xg_first_published_at_verified": false,
+    "fpl_player_xg_equivalent_to_pitchapi_team_xg_proven": false,
+    "missing_teams_xg_imputed_as_zero": false,
+    "original_prematch_xg_certified": false
+  },
+  "original_train_pit_certified": 0,
+  "original_train_count": 760,
+  "original_validation_pit_certified": 0,
+  "original_validation_count": 380,
+  "gate14": "PENDING",
+  "steps_completed": 13,
+  "total_steps": 29,
+  "production_m1_fitted": false,
+  "original_m0_modified": false,
+  "original_20_frozen_forecasts_modified": false,
+  "original_split_modified": false,
+  "test_2026_27_read": false,
+  "private_RSA_or_native_team_ids_exported": false,
+  "paid_sports_provider_API_calls": 0,
+  "training_allowed": false
+}
