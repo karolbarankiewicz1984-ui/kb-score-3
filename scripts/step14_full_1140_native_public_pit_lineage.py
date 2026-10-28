@@ -193,6 +193,10 @@ def all_1140_pit(*,safe,native,sources,selected):
             needed=set()
             for history in team_prior.values():
                 needed.update(p["id"] for p in history)
+            # An empty list is not reconstructed historical form; the opening
+            # 2025/26 pre-season snapshot proves schedule only, no earlier FT.
+            if not needed:
+                notes["PRESEASON_SCHEDULE_ONLY_NO_PREVIOUS_RESULT"]+=1;continue
             valid=True;complete=0
             for oldid in needed:
                 p=actual[oldid][1]
