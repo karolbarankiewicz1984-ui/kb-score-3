@@ -1,0 +1,51 @@
+{
+  "schema": "kb3-step14-fpl-xg-2024-25-and-2025-26-source-clock-gaps-v1",
+  "date": "2026-10-28",
+  "reference_real_Github_Actions_run_id": 40659018388,
+  "reference_real_artifact_id": 12802288369,
+  "program": "src/kb3_step14_xg_old_clock_probe.py",
+  "source_probes": [
+    {
+      "season": "2024-25",
+      "source_path": "data/2024-25/gws/gw6.csv",
+      "candidate_commit": "57caf7e165ba47b48de9f307785aac79cb03b8af",
+      "git_committer_time_NOT_PUBLICATION": "2024-10-01T08:56:28Z",
+      "target_source_must_be_before": "2024-10-05T11:00:00Z",
+      "archive_hour": "2024-10-01-08",
+      "archive_status": "GHARCHIVE_HOUR_UNAVAILABLE",
+      "independent_published_at": null,
+      "old_player_xg_source_pit_pass": false
+    },
+    {
+      "season": "2024-25",
+      "source_path": "data/2024-25/gws/merged_gw.csv",
+      "candidate_commit": "57caf7e165ba47b48de9f307785aac79cb03b8af",
+      "git_committer_time_NOT_PUBLICATION": "2024-10-01T08:56:28Z",
+      "target_source_must_be_before": "2024-10-05T11:00:00Z",
+      "archive_hour": "2024-10-01-08",
+      "archive_status": "GHARCHIVE_HOUR_UNAVAILABLE",
+      "independent_published_at": null,
+      "old_player_xg_source_pit_pass": false
+    },
+    {
+      "season": "2025-26",
+      "source_path": "data/2025-26/gws/gw6.csv",
+      "candidate_commit": "cd74fdea7d792f816e96e9ada4551f443d0e82c9",
+      "git_committer_time_NOT_PUBLICATION": "2025-09-30T20:29:48Z",
+      "target_source_must_be_before": "2025-10-11T12:00:00Z",
+      "archive_hour": "2025-09-30-20",
+      "archive_status": "NO_EXACT_INDEPENDENT_SHA_PUSH_IN_ARCHIVE_HOUR",
+      "independent_published_at": null,
+      "old_player_xg_source_pit_pass": false
+    }
+  ],
+  "result": "THREE_RESEARCH_CANDIDATES_NONE_WITH_VERIFIED_EXTERNAL_PUBLISHED_AT_FOR_PREMATCH_TARGET",
+  "negative_evidence_interpretation": "No independently corroborated publication in the selected archive hour; does not prove that the source never existed or never became public.",
+  "original_PitchAPI_historical_team_xG_published_at_known": false,
+  "GATE14": "PENDING",
+  "no_original_M1_training": true,
+  "original_train_pit_eligible": 0,
+  "original_validation_pit_eligible": 0,
+  "no_test_access": true,
+  "no_paid_sports_api": true
+}

@@ -1,0 +1,52 @@
+{
+  "schema": "kb3-step14-2023-old-published-player-xg-premarket-last5-real-ci-v1",
+  "recorded_date": "2026-10-28",
+  "real_ci_run_id": 40659018398,
+  "real_ci_url": "https://github.com/karolbarankiewicz1984-ui/kb-score-3/actions/runs/40659018398",
+  "real_ci_conclusion": "SUCCESS",
+  "offline_negative_early_clock_tests_passed": 5,
+  "source_snapshot_targets": [
+    {
+      "season": "2023-24",
+      "old_source_commit": "96fbc38ee6e36e3a7250081a787b65a1a27c944d",
+      "old_fixtures_sha256": "07b88250be0903a76b6334a7db56b9d9c148fc4a301c5e2338ce2c27dd01f367",
+      "old_merged_player_xg_sha256": "359ab5c95e9bde13c9e3f0a740e3b32871cbd6272845b14d82533627d647aa9e",
+      "external_GH_Archive_push_id": "32344206544",
+      "publication_utc": "2023-10-05T14:38:59Z",
+      "finished_prior_matches_with_both_player_xg_sides": 70,
+      "old_player_xg_rows": 4880,
+      "target_matches_5_previous_games_each_side_all_xg_verified": 8,
+      "exact_prior_fixture_team_xg_checks": 80,
+      "errors": 0
+    },
+    {
+      "season": "2023-24",
+      "old_source_commit": "c4f66ee30ef026bb7e8b7184b2427f9708c77d74",
+      "old_fixtures_sha256": "c9f99615ca61bba4a8306f88131119b5539bb0862fee3178e54501111498f8f1",
+      "old_merged_player_xg_sha256": "06845415c63a14308c440f3ae65dfa678be62a0d3430cfd53d668b83a2927a85",
+      "external_GH_Archive_push_id": "33866831577",
+      "publication_utc": "2023-12-04T13:04:15Z",
+      "finished_prior_matches_with_both_player_xg_sides": 140,
+      "old_player_xg_rows": 10042,
+      "target_matches_5_previous_games_each_side_all_xg_verified": 8,
+      "exact_prior_fixture_team_xg_checks": 80,
+      "errors": 0
+    }
+  ],
+  "published_blob_target_pairs_with_full_last5_FPL_player_xg": 16,
+  "exact_prior_fixture_team_xg_verification_checks": 160,
+  "these_may_repeat_same_club_or_fixture_across_snapshots": true,
+  "source_definition": "FPL/Opta player expected_goals summed by exact fixture/side in memory",
+  "original_pitchapi_team_match_xg_semantic_and_numeric_equivalence_proven": false,
+  "native_pitchapi_original_provider_published_at_known": false,
+  "source_publication_precedes_2023_target_kickoff": true,
+  "source_old_blob_prior_only_no_target_results": true,
+  "original_121_plus_38_feature_PIT_certified": false,
+  "official_train_PIT_eligible": 0,
+  "official_validation_PIT_eligible": 0,
+  "gate14": "PENDING",
+  "official_M1_training_allowed": false,
+  "test_2026_27_read": false,
+  "paid_sports_api_calls": 0,
+  "private_original_RSA_or_xG_values_exported": false
+}

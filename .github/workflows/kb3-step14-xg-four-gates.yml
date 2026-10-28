@@ -1,0 +1,41 @@
+name: KB3 Step14 independently dated historic player xG 4-gate audit
+
+on:
+  push:
+    branches: [step14/xg-independent-clock-match-team-semantic-audit-20261028]
+    paths:
+      - 'src/kb3_step14_xg_four_gates.py'
+      - 'tests/test_step14_xg_four_gates.py'
+      - '.github/workflows/kb3-step14-xg-four-gates.yml'
+  pull_request:
+    paths:
+      - 'src/kb3_step14_xg_four_gates.py'
+      - 'tests/test_step14_xg_four_gates.py'
+      - '.github/workflows/kb3-step14-xg-four-gates.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  audited-old-public-fixtures:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Static and adversarial fixture-team-time-definition unit tests
+        run: |
+          python -m compileall -q src/kb3_step14_xg_four_gates.py
+          python -m unittest discover -s tests -p 'test_step14_xg_four_gates.py' -v
+      - name: Read exact historic old FPL player xG/fixture blobs and independently pinned clock
+        run: python -m src.kb3_step14_xg_four_gates --output "$RUNNER_TEMP/xg_2023_all_380_four_gates_public_only.json"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: step14-xg-4gates-2023-source-only-NOT-PitchAPI
+          path: ${{ runner.temp }}/xg_2023_all_380_four_gates_public_only.json
+          if-no-files-found: warn
+          retention-days: 30

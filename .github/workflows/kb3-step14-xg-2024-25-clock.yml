@@ -1,0 +1,38 @@
+name: KB3 Step14 FPL 2024-2025 old xG independent publication audit
+
+on:
+  push:
+    branches: [step14/xg-independent-clock-match-team-semantic-audit-20261028]
+    paths:
+      - 'src/kb3_step14_xg_old_clock_probe.py'
+      - 'tests/test_step14_xg_old_clock_probe.py'
+      - '.github/workflows/kb3-step14-xg-2024-25-clock.yml'
+  pull_request:
+    paths:
+      - 'src/kb3_step14_xg_old_clock_probe.py'
+      - 'tests/test_step14_xg_old_clock_probe.py'
+      - '.github/workflows/kb3-step14-xg-2024-25-clock.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  historical-public-only:
+    runs-on: ubuntu-latest
+    timeout-minutes: 18
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Fail closed on wrong SHA/public repo/push clock
+        run: python -m unittest discover -s tests -p 'test_step14_xg_old_clock_probe.py' -v
+      - name: Check 2024 and 2025 genuinely historic player xG pushes, not retrospective uploads
+        run: python -m src.kb3_step14_xg_old_clock_probe --output "$RUNNER_TEMP/old_xg_2024_2025_four_gate_clocks.json"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: step14-2024-25-xg-old-push-clock-probe-not-PitchAPI
+          path: ${{ runner.temp }}/old_xg_2024_2025_four_gate_clocks.json
+          if-no-files-found: warn
+          retention-days: 30
