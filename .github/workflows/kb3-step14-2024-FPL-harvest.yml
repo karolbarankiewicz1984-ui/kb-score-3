@@ -1,0 +1,36 @@
+name: KB3 Step14 six old FPL 2024-25 independent historic source clocks
+
+on:
+  push:
+    branches: [step14/full-historical-2023-2026-source-lineage-20261028]
+    paths:
+      - 'scripts/step14_2024_fpl_independent_history_harvest.py'
+      - 'tests/test_step14_2024_fpl_independent_history.py'
+      - '.github/workflows/kb3-step14-2024-FPL-harvest.yml'
+  pull_request:
+    paths:
+      - 'scripts/step14_2024_fpl_independent_history_harvest.py'
+      - 'tests/test_step14_2024_fpl_independent_history.py'
+      - '.github/workflows/kb3-step14-2024-FPL-harvest.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  actual-2024-25-push-events:
+    runs-on: ubuntu-latest
+    timeout-minutes: 18
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Check 2024 GHArchive methodology
+        run: python -m unittest discover -s tests -p 'test_step14_2024_fpl_independent_history.py' -v
+      - name: Probe 6 actual 2024-25 FPL old-source GHArchive dates and source snapshots
+        run: python -m scripts.step14_2024_fpl_independent_history_harvest --out "$RUNNER_TEMP/KB3_2024_FPL_OLD_GHARCHIVE.json"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: KB3_STEP14_SIX_2024_HISTORICAL_FPL_SOURCE_PROOFS
+          path: ${{ runner.temp }}/KB3_2024_FPL_OLD_GHARCHIVE.json
+          retention-days: 90
+          if-no-files-found: error
