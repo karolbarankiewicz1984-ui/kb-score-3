@@ -1,0 +1,37 @@
+name: KB3 Step14 full 2023-26 historical public PushEvent and source reconstruction
+
+on:
+  push:
+    branches: [step14/full-historical-2023-2026-source-lineage-20261028]
+    paths:
+      - 'scripts/step14_full_history_harvest_independent_clocks.py'
+      - 'tests/test_step14_full_history_harvest_clocks.py'
+      - '.github/workflows/kb3-step14-full-history-harvest.yml'
+  pull_request:
+    paths:
+      - 'scripts/step14_full_history_harvest_independent_clocks.py'
+      - 'tests/test_step14_full_history_harvest_clocks.py'
+      - '.github/workflows/kb3-step14-full-history-harvest.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+jobs:
+  independently-dated-old-public-sources:
+    runs-on: ubuntu-latest
+    timeout-minutes: 23
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Adversarial historical clock tests
+        run: python -m unittest discover -s tests -p 'test_step14_full_history_harvest_clocks.py' -v
+      - name: Fetch 13 old repo SHA snapshots and validate independent GHArchive PushEvent
+        run: python -m scripts.step14_full_history_harvest_independent_clocks --out "$RUNNER_TEMP/KB3_STEP14_HISTORICAL_PUBLIC_2023_26_SOURCE_PROOF.json"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: KB3_STEP14_THREE_SEASON_INDEPENDENT_SOURCE_PUBLISHED_AT_PROOF
+          path: ${{ runner.temp }}/KB3_STEP14_HISTORICAL_PUBLIC_2023_26_SOURCE_PROOF.json
+          retention-days: 90
+          if-no-files-found: error

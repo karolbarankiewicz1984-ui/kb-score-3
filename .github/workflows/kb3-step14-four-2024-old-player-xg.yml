@@ -1,0 +1,38 @@
+name: KB3 Step14 real 2024 historic player xG four source snapshots
+
+on:
+  push:
+    branches: [step14/full-historical-2023-2026-source-lineage-20261028]
+    paths:
+      - 'scripts/step14_four_2024_historic_fpl_player_xg_reconstruction.py'
+      - 'tests/test_step14_four_2024_fpl_player_xg.py'
+      - '.github/workflows/kb3-step14-four-2024-old-player-xg.yml'
+  pull_request:
+    paths:
+      - 'scripts/step14_four_2024_historic_fpl_player_xg_reconstruction.py'
+      - 'tests/test_step14_four_2024_fpl_player_xg.py'
+      - '.github/workflows/kb3-step14-four-2024-old-player-xg.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  original-fpl-2024-four-pushed-sources:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Ensure xG provider separation, original 2024 source pins and no false PIT
+        run: |
+          python -m compileall -q scripts/step14_four_2024_historic_fpl_player_xg_reconstruction.py scripts/step14_six_2023_historic_fpl_player_xg_reconstruction.py
+          python -m unittest discover -s tests -p 'test_step14_four_2024_fpl_player_xg.py' -v
+      - name: Pull genuine historical 2024 FPL/Opta player-gw xG 4 old commit SHA and verify same-team last5
+        run: python -m scripts.step14_four_2024_historic_fpl_player_xg_reconstruction --out "$RUNNER_TEMP/KB3_2024_FPL_PLAYER_XG_LAST5.json"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: KB3_STEP14_FOUR_2024_REAL_SOURCE_PLAYER_XG_LAST5
+          path: ${{ runner.temp }}/KB3_2024_FPL_PLAYER_XG_LAST5.json
+          retention-days: 90
+          if-no-files-found: error

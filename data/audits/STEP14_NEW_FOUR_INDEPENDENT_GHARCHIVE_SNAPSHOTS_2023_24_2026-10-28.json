@@ -1,0 +1,64 @@
+{
+  "schema": "kb3-step14-verified-new-4-FPL-2023-historic-clock-evidence-v1",
+  "source_workflow_run": "https://github.com/karolbarankiewicz1984-ui/kb-score-3/actions/runs/40743053728",
+  "source_artifact_id": 12840930348,
+  "source_candidates_searched": 13,
+  "source_2023_2024_verified_new": 4,
+  "source_2024_25_verified_new": 0,
+  "source_2025_26_verified_new": 0,
+  "unverified_other_candidates": 9,
+  "absence_of_GHArchive_event_does_not_mean_source_absent": true,
+  "verified_sources": [
+    {
+      "season": "2023-24",
+      "provider": "FPL",
+      "repo": "vaastav/Fantasy-Premier-League",
+      "path": "data/2023-24/fixtures.csv",
+      "commit": "8b05861fb33ee89bae34c2b6d06564449a5885db",
+      "push": "2023-09-25T15:34:10Z",
+      "event": "32084180987",
+      "sha": "1dcc0fd05aaa43b93cb3136e8907d4a6aec653ed1214abd90da370e283aa3dac",
+      "ft": 59,
+      "external_publication_evidence_verified": true
+    },
+    {
+      "season": "2023-24",
+      "provider": "FPL",
+      "repo": "vaastav/Fantasy-Premier-League",
+      "path": "data/2023-24/fixtures.csv",
+      "commit": "546143eb5d0ae6d250e074374152e8be4b15719b",
+      "push": "2024-01-23T13:01:36Z",
+      "event": "35049350413",
+      "sha": "fbfd0780fd97b29fee22e35a3e826270200ab7f051654ea0f52bcea831c7025b",
+      "ft": 208,
+      "external_publication_evidence_verified": true
+    },
+    {
+      "season": "2023-24",
+      "provider": "FPL",
+      "repo": "vaastav/Fantasy-Premier-League",
+      "path": "data/2023-24/fixtures.csv",
+      "commit": "f061aafa88a921dd70fd2b0f72b8020889d8e589",
+      "push": "2024-02-22T10:23:48Z",
+      "event": "35904934811",
+      "sha": "8b3849fcba1d4bc09dc259269c7ae35a74e9f3546e67833fe2635ffdc2c4be95",
+      "ft": 250,
+      "external_publication_evidence_verified": true
+    },
+    {
+      "season": "2023-24",
+      "provider": "FPL",
+      "repo": "vaastav/Fantasy-Premier-League",
+      "path": "data/2023-24/fixtures.csv",
+      "commit": "436f1ff2d306783d3e3892dc3d3ce21712cbc08e",
+      "push": "2024-04-08T10:31:24Z",
+      "event": "37259299021",
+      "sha": "0f0f380b8ac935c9a3c2f97235172759fcd4d4c60d5488ea85bd206aaf730da3",
+      "ft": 313,
+      "external_publication_evidence_verified": true
+    }
+  ],
+  "source_not_original_PitchAPI": true,
+  "original_train_pit_released": false,
+  "gate14_pass": false
+}
