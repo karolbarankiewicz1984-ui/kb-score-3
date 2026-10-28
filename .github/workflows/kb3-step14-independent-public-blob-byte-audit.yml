@@ -1,0 +1,57 @@
+name: KB3 Step14 independently redownload eight old public FPL source bytes
+
+on:
+  pull_request:
+    paths:
+      - 'scripts/step14_independent_public_blob_bytes_audit.py'
+      - 'tests/test_step14_independent_public_blob_bytes_audit.py'
+      - '.github/workflows/kb3-step14-independent-public-blob-byte-audit.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/step14_independent_public_blob_bytes_audit.py'
+      - 'tests/test_step14_independent_public_blob_bytes_audit.py'
+      - '.github/workflows/kb3-step14-independent-public-blob-byte-audit.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  verify-old-public-immutable-blob-bytes:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Offline negative SHA, fixture identity and historical clock tests
+        run: |
+          python -m compileall -q scripts/step14_independent_public_blob_bytes_audit.py
+          python -m unittest discover -s tests -p 'test_step14_independent_public_blob_bytes_audit.py' -v
+      - name: Download eight original public GitHub fixture CSVs and verify SHA256 against GHArchive witness registry
+        run: |
+          python -m scripts.step14_independent_public_blob_bytes_audit --output "$RUNNER_TEMP/KB3_STEP14_EIGHT_PUBLIC_SOURCE_BYTES_AUDIT.json"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: KB3_STEP14_EIGHT_INDEPENDENT_PUBLIC_SOURCE_BLOB_SHA256
+          path: ${{ runner.temp }}/KB3_STEP14_EIGHT_PUBLIC_SOURCE_BYTES_AUDIT.json
+          retention-days: 90
+          if-no-files-found: warn
+      - name: Persist verified source bytes audit on main without overwrite
+        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+        run: |
+          cp "$RUNNER_TEMP/KB3_STEP14_EIGHT_PUBLIC_SOURCE_BYTES_AUDIT.json" data/audits/STEP14_INDEPENDENT_EIGHT_OLD_PUBLIC_BLOB_BYTES_2026-10-28.json
+          git config user.name 'kb3-independent-public-blob-bot'
+          git config user.email 'kb3-independent-public-blob-bot@users.noreply.github.com'
+          git add data/audits/STEP14_INDEPENDENT_EIGHT_OLD_PUBLIC_BLOB_BYTES_2026-10-28.json
+          if git diff --cached --quiet; then
+            echo 'Public source byte audit already persisted.'
+          else
+            git commit -m 'audit: freeze independent eight public historic source byte hashes'
+            git push origin HEAD:main
+          fi
