@@ -74,8 +74,8 @@ jobs:
               assert len(dests[1].read_text().splitlines())==1140
               print('EXISTING_IMMUTABLE_FULL_1140_ARCHIVE_ALREADY_PRESENT')
           else:
-              dests[0].write_text(json.dumps(summary,indent=2,sort_keys=True,ensure_ascii=False)+'\\n')
-              dests[1].write_text('\\n'.join(rows)+'\\n')
+              dests[0].write_text(json.dumps(summary,indent=2,sort_keys=True,ensure_ascii=False)+chr(10))
+              dests[1].write_text(chr(10).join(rows)+chr(10))
               print('PERSISTENT_FULL_1140_SOURCE_LINEAGE_PREPARED')
           PY
           git config user.name 'kb3-historic-lineage-bot'
