@@ -1,0 +1,107 @@
+{
+  "actual_current_PitchAPI_API_calls": 4,
+  "all_prior_FT_in_real_old_public_source_both_teams": 106,
+  "best_source_state_counts": {
+    "BOTH_TEAM_5_PRIOR_RESULTS_PUBLIC": 106,
+    "SOURCE_PRIOR_RESULTS_COMPLETE_ALL_SAME_SEASON": 106
+  },
+  "both_teams_form5_source_available": 106,
+  "candidate_source_count_by_target": {
+    "0": 109,
+    "1": 401,
+    "2": 291,
+    "3": 96,
+    "4": 103,
+    "5": 73,
+    "6": 67
+  },
+  "current_read_UTC_NOT_HISTORIC_PUBLICATION": "2026-10-28T18:39:56.751652Z",
+  "frozen_native_safe_SHA": "3b8da84b334d897e327c883b769944bf36016cb44daf1da041bfb7d16a7b11e7",
+  "gate14_pass": false,
+  "historical_sources_checked": 13,
+  "model_or_split_modified": false,
+  "old_FPL_player_xG_not_PitchAPI_team_xG": true,
+  "old_to_native_source_exact_join_counts": {
+    "204c134d8e90e2b6e69ec252aa3ef6f10f21e73c": {
+      "old_rows_exact_native_home_away_and_kickoff": 380,
+      "season": "2023-24",
+      "unmatched_due_to_changed_old_schedule_or_source_time": 0
+    },
+    "29e6c2f4590b1a03f218552ca676b9495539cfdc": {
+      "old_rows_exact_native_home_away_and_kickoff": 368,
+      "season": "2024-25",
+      "unmatched_due_to_changed_old_schedule_or_source_time": 12
+    },
+    "436f1ff2d306783d3e3892dc3d3ce21712cbc08e": {
+      "old_rows_exact_native_home_away_and_kickoff": 372,
+      "season": "2023-24",
+      "unmatched_due_to_changed_old_schedule_or_source_time": 8
+    },
+    "546143eb5d0ae6d250e074374152e8be4b15719b": {
+      "old_rows_exact_native_home_away_and_kickoff": 309,
+      "season": "2023-24",
+      "unmatched_due_to_changed_old_schedule_or_source_time": 71
+    },
+    "58de8250c856e3476d45557422b257a3659b2b26": {
+      "old_rows_exact_native_home_away_and_kickoff": 351,
+      "season": "2024-25",
+      "unmatched_due_to_changed_old_schedule_or_source_time": 29
+    },
+    "5f777dc6e2cd02cdafd1520e81b7e338284fb7a7": {
+      "old_rows_exact_native_home_away_and_kickoff": 139,
+      "season": "2024-25",
+      "unmatched_due_to_changed_old_schedule_or_source_time": 241
+    },
+    "8b05861fb33ee89bae34c2b6d06564449a5885db": {
+      "old_rows_exact_native_home_away_and_kickoff": 217,
+      "season": "2023-24",
+      "unmatched_due_to_changed_old_schedule_or_source_time": 163
+    },
+    "96fbc38ee6e36e3a7250081a787b65a1a27c944d": {
+      "old_rows_exact_native_home_away_and_kickoff": 217,
+      "season": "2023-24",
+      "unmatched_due_to_changed_old_schedule_or_source_time": 163
+    },
+    "a7089bab28e2a6012cde62b4fbd692f975792a55": {
+      "old_rows_exact_native_home_away_and_kickoff": 380,
+      "season": "2024-25",
+      "unmatched_due_to_changed_old_schedule_or_source_time": 0
+    },
+    "c4f66ee30ef026bb7e8b7184b2427f9708c77d74": {
+      "old_rows_exact_native_home_away_and_kickoff": 279,
+      "season": "2023-24",
+      "unmatched_due_to_changed_old_schedule_or_source_time": 101
+    },
+    "f061aafa88a921dd70fd2b0f72b8020889d8e589": {
+      "old_rows_exact_native_home_away_and_kickoff": 329,
+      "season": "2023-24",
+      "unmatched_due_to_changed_old_schedule_or_source_time": 51
+    },
+    "f42ed38d279afc705448ebc2b89e48838a0fdfba": {
+      "old_rows_exact_native_home_away_and_kickoff": 220,
+      "season": "2024-25",
+      "unmatched_due_to_changed_old_schedule_or_source_time": 160
+    },
+    "fdca227e6fc8284865254f009e987ce7a70935a0": {
+      "old_rows_exact_native_home_away_and_kickoff": 54,
+      "season": "2025-26",
+      "unmatched_due_to_changed_old_schedule_or_source_time": 326
+    }
+  },
+  "original_CatBoost_M1_fit_allowed": false,
+  "original_exact_native_ID_and_kickoff_joins": 1140,
+  "original_train_certified_PIT": 0,
+  "original_validation_certified_PIT": 0,
+  "per_target_frozen_source_provenance_records": 1140,
+  "public_old_FT_does_not_prove_native_PitchAPI_PIT_or_121_plus_38": true,
+  "reason_counts_for_unavailable_old_source": {
+    "PRESEASON_SCHEDULE_ONLY_NO_PREVIOUS_RESULT": 10,
+    "SOME_TRUE_PREDECESSOR_NOT_IN_OLD_SOURCE": 885,
+    "TARGET_NOT_IN_EXACT_OLD_SOURCE_SCHEDULE": 1211
+  },
+  "schema": "kb3-step14-three-season-1140-exact-native-public-PIT-match-lineage-v1",
+  "target_result_scores_accessed": false,
+  "test_examined": false,
+  "train": 760,
+  "validation": 380
+}
