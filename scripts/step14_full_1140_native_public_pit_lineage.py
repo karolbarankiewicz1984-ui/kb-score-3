@@ -24,7 +24,36 @@ from scripts.pitchapi_step06_audit import norm,to_plain
 
 ROOT=Path(__file__).resolve().parents[1]
 SCHEMA="kb3-step14-three-season-1140-exact-native-public-PIT-match-lineage-v1"
-SELECTED=(SOURCES[0],dict(ADDITIONAL_2023,provider='FPL'),\n          dict(FULL_2023,season='2023-24',provider='FPL'),SOURCES[1],SOURCES[2])
+BASE_SOURCES=(SOURCES[0],dict(ADDITIONAL_2023,provider='FPL'),
+              dict(FULL_2023,season='2023-24',provider='FPL'),SOURCES[1],SOURCES[2])
+NEW_2023_PROOF=ROOT/"data/audits/STEP14_NEW_FOUR_INDEPENDENT_GHARCHIVE_SNAPSHOTS_2023_24_2026-10-28.json"
+ADDED_2023_PINNED={
+ "8b05861fb33ee89bae34c2b6d06564449a5885db":("2023-09-25T15:34:10Z","32084180987","1dcc0fd05aaa43b93cb3136e8907d4a6aec653ed1214abd90da370e283aa3dac",59),
+ "546143eb5d0ae6d250e074374152e8be4b15719b":("2024-01-23T13:01:36Z","35049350413","fbfd0780fd97b29fee22e35a3e826270200ab7f051654ea0f52bcea831c7025b",208),
+ "f061aafa88a921dd70fd2b0f72b8020889d8e589":("2024-02-22T10:23:48Z","35904934811","8b3849fcba1d4bc09dc259269c7ae35a74e9f3546e67833fe2635ffdc2c4be95",250),
+ "436f1ff2d306783d3e3892dc3d3ce21712cbc08e":("2024-04-08T10:31:24Z","37259299021","0f0f380b8ac935c9a3c2f97235172759fcd4d4c60d5488ea85bd206aaf730da3",313)
+}
+def independently_pinned_sources():
+    proof=json.loads(NEW_2023_PROOF.read_text(encoding="utf8"))
+    sources=proof.get("verified_sources",[])
+    if (proof.get("schema")!="kb3-step14-verified-new-4-FPL-2023-historic-clock-evidence-v1"
+        or proof.get("source_artifact_id")!=12840930348
+        or len(sources)!=4
+        or {x.get("commit") for x in sources}!=set(ADDED_2023_PINNED)):
+        raise ReconstructError("NEW_PUBLIC_HISTORICAL_GHARCHIVE_WITNESS_CHANGED")
+    for x in sources:
+        expect=ADDED_2023_PINNED[x["commit"]]
+        if ((x.get("push"),x.get("event"),x.get("sha"),x.get("ft"))!=expect
+            or x.get("season")!="2023-24" or x.get("provider")!="FPL"
+            or x.get("repo")!="vaastav/Fantasy-Premier-League"
+            or x.get("path")!="data/2023-24/fixtures.csv"
+            or x.get("external_publication_evidence_verified") is not True):
+            raise ReconstructError("NEW_HISTORIC_GHARCHIVE_PUBLISHED_SHA_NOT_PINNED")
+    all_sources=tuple(sorted(BASE_SOURCES+tuple(sources),
+                  key=lambda x:x["push"]))
+    if len(all_sources)!=9 or len({x["commit"] for x in all_sources})!=9:
+        raise ReconstructError("HISTORIC_PUBLIC_SOURCES_NOT_NINE_DISTINCT")
+    return all_sources
 class ReconstructError(ValueError):pass
 
 def old_source_rows(src,*,fetcher=fetch):
@@ -104,7 +133,7 @@ def exact_source_map(src,srcrows,native,team_map_2023):
                        "source_fixture_id":r["source_fixture_id"]}
     return mapped,miss
 
-def all_1140_pit(*,safe,native,sources):
+def all_1140_pit(*,safe,native,sources,selected):
     source_rows=sources
     if set(native)!={"2023-24","2024-25","2025-26"} or any(len(v)!=380 for v in native.values()):
         raise ReconstructError("NATIVE_ORIGINAL_THREE_SEASONS_NOT_FULL")
@@ -130,7 +159,7 @@ def all_1140_pit(*,safe,native,sources):
          native_2023,season="2023-24",published_at=FULL_2023["push"],
          expected_finished=380)
     bysource={};join_counts={}
-    for src in SELECTED:
+    for src in selected:
         rows=source_rows[src["commit"]]
         mapping,unmatched=exact_source_map(src,rows,native,mp)
         bysource[src["commit"]]=mapping
@@ -149,7 +178,7 @@ def all_1140_pit(*,safe,native,sources):
                     if side in (p["home_team"]["id"],p["away_team"]["id"])]
                     for side in sides}
         attempted=0;qualifying=[];notes=Counter()
-        for src in SELECTED:
+        for src in selected:
             if src["season"]!=season or utc(src["push"])>=kickoff:
                 continue
             attempted+=1
@@ -205,7 +234,7 @@ def all_1140_pit(*,safe,native,sources):
       "frozen_native_safe_SHA":safe["projection_sha256"],
       "original_exact_native_ID_and_kickoff_joins":1140,
       "train":760,"validation":380,
-      "historical_sources_checked":len(SELECTED),
+      "historical_sources_checked":len(selected),
       "old_to_native_source_exact_join_counts":join_counts,
       "candidate_source_count_by_target":dict(sorted(candidate_counts.items())),
       "best_source_state_counts":dict(sorted(best.items())),
@@ -226,7 +255,8 @@ def live_run(key,*,client_factory=None,fetcher=fetch):
     check_pinned_public_evidence(json.loads((root/
        "data/audits/STEP14_FPL_2023_FULL_380_GHARCHIVE_PUSH_AND_XG_2026-10-28.json").read_text()))
     sources={}
-    for s in SELECTED:
+    selected=independently_pinned_sources()
+    for s in selected:
         raw=fetcher(f"https://raw.githubusercontent.com/{s['repo']}/{s['commit']}/{s['path']}",limit=3_000_001)
         if sha256(raw).hexdigest()!=s["sha"]:
             raise ReconstructError("EXTERNALLY_PINNED_PUBLIC_SOURCE_CHANGED")
@@ -235,7 +265,7 @@ def live_run(key,*,client_factory=None,fetcher=fetch):
             sources[s["commit"]+"_RAW"]=raw
     native,ncalls=native_three_seasons(key=key,client_factory=client_factory)
     safe=json.loads((root/"data/splits/STEP12_SAFE_MODEL_VIEW_2026-10-26.json").read_text())
-    report,records=all_1140_pit(safe=safe,native=native,sources=sources)
+    report,records=all_1140_pit(safe=safe,native=native,sources=sources,selected=selected)
     report["current_read_UTC_NOT_HISTORIC_PUBLICATION"]=datetime.datetime.now(
        datetime.timezone.utc).isoformat().replace("+00:00","Z")
     report["actual_current_PitchAPI_API_calls"]=ncalls
