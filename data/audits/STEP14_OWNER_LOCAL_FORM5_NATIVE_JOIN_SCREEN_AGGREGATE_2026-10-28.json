@@ -1,0 +1,45 @@
+{
+  "schema": "kb3-step14-owner-screen-aggregate-only-form5-native-join-v1",
+  "date_local": "2026-10-28",
+  "evidence_type": "USER_PROVIDED_SCREENSHOT_OF_OWNER_LOCAL_POWERSHELL_COMPLETION",
+  "source": "Original sealed RSA PitchAPI owner-local tool in kb-score-3/main",
+  "screen_shows_program": "scripts.step14_multiseason_owner_native_join_local",
+  "status": "PROGRAM_RETURNED_SUCCESS_PROMPT_RESTORED",
+  "counts": [
+    {
+      "season": "2023-24",
+      "public_source": "FPL_2023_10",
+      "join_state": "ORIGINAL_RSA_NATIVE_CLOCK_FINGERPRINT_BIJECTION_CHECKED",
+      "native_source_form5_pair_joins": 8
+    },
+    {
+      "season": "2023-24",
+      "public_source": "FPL_2023_12",
+      "join_state": "ORIGINAL_RSA_NATIVE_CLOCK_FINGERPRINT_BIJECTION_CHECKED",
+      "native_source_form5_pair_joins": 8
+    },
+    {
+      "season": "2024-25",
+      "public_source": "OpenFootball_2024_10",
+      "native_source_form5_pair_joins": 10
+    },
+    {
+      "season": "2025-26",
+      "public_source": "OpenFootball_2025_07",
+      "native_source_form5_pair_joins": 0
+    }
+  ],
+  "conditional_public_snapshot_to_native_fixture_pairs": 26,
+  "unique_native_fixture_count_proven": false,
+  "score_home_away_historic_PitchAPI_vs_public_compared_this_stage": false,
+  "complete_native_elo_chain_verified": false,
+  "original_pitchapi_feature_published_at_certified": false,
+  "original_PIT_TRAIN_eligible": 0,
+  "original_PIT_VALIDATION_eligible": 0,
+  "original_M1_training_allowed": false,
+  "owner_private_aggregate_json_contents_not_read_by_assistant": true,
+  "owner_private_RSA_and_encrypted_archive_not_received": true,
+  "native_ids_or_outcomes_exported": false,
+  "original_2026_27_TEST_examined": false,
+  "gate14_pass": false
+}
