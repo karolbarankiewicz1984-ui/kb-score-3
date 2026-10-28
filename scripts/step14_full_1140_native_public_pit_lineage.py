@@ -24,7 +24,7 @@ from scripts.pitchapi_step06_audit import norm,to_plain
 
 ROOT=Path(__file__).resolve().parents[1]
 SCHEMA="kb3-step14-three-season-1140-exact-native-public-PIT-match-lineage-v1"
-SELECTED=(SOURCES[0],ADDITIONAL_2023,FULL_2023,SOURCES[1],SOURCES[2])
+SELECTED=(SOURCES[0],dict(ADDITIONAL_2023,provider='FPL'),\n          dict(FULL_2023,season='2023-24',provider='FPL'),SOURCES[1],SOURCES[2])
 class ReconstructError(ValueError):pass
 
 def old_source_rows(src,*,fetcher=fetch):
