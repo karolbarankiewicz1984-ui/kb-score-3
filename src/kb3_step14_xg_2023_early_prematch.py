@@ -21,6 +21,17 @@ PATH="data/2023-24/gws/merged_gw.csv"
 class OldXGError(ValueError):pass
 
 def examine_one(s,fetcher=fetch):
+    # Revalidate fixed public source publication evidence rather than taking
+    # a self-declared timestamp in a caller's object as historical truth.
+    pinned=json.loads((Path(__file__).resolve().parents[1]/
+         "data/audits/STEP14_THREE_SEASON_PARTIAL_PIT_ELO_XG_2026-10-28.json").read_text(encoding="utf8"))
+    witnesses=[x for x in pinned.get("public_sources",[])
+          if x.get("source_sha")==s["commit"] and
+          x.get("raw_sha256")==s["sha"] and
+          str(x.get("event_id"))==s["event"] and
+          x.get("publication_utc")==s["push"]]
+    if len(witnesses)!=1:
+        raise OldXGError("NO_FROZEN_INDEPENDENT_GHARCHIVE_PUBLICATION_WITNESS")
     base=f"https://raw.githubusercontent.com/{s['repo']}/{s['commit']}/"
     fix=fetcher(base+s["path"],limit=3_000_001)
     players=fetcher(base+PATH,limit=40_000_001)
