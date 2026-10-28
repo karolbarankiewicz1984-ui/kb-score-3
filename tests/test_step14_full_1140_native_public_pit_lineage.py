@@ -5,9 +5,9 @@ from scripts.step14_full_1140_native_public_pit_lineage import (
  native_three_seasons,all_1140_pit)
 ROOT=Path(__file__).resolve().parents[1]
 class RealHistoryProofTests(unittest.TestCase):
- def test_nine_independent_old_source_receipts(self):
+ def test_thirteen_independent_old_source_receipts(self):
     s=independently_pinned_sources()
-    self.assertEqual(len(s),9)
+    self.assertEqual(len(s),13)
     self.assertEqual([x["ft"] for x in s if x["season"]=="2023-24"],[59,70,140,208,250,313,380])
  def test_no_backdated_old_source_clock(self):
     s=independently_pinned_sources()
@@ -16,7 +16,7 @@ class RealHistoryProofTests(unittest.TestCase):
  def test_separate_source_clocks_and_no_assumed_train(self):
     s=independently_pinned_sources()
     self.assertTrue(all(x["push"].endswith("Z") for x in s))
-    self.assertEqual(len({x["commit"] for x in s}),9)
+    self.assertEqual(len({x["commit"] for x in s}),13)
  def test_public_to_native_exact_id_not_name_fuzzy(self):
     src={"season":"2024-25","push":"2024-10-02T13:52:44Z"}
     native={"2024-25":[
@@ -38,6 +38,16 @@ class RealHistoryProofTests(unittest.TestCase):
     p=[{"home":"everton","away":"liverpool","utc":"2024-10-05T16:30:00Z",
         "finished":False,"source_fixture_id":None}]
     self.assertEqual(exact_source_map(src,p,native,{})[1],1)
+ def test_four_new_2024_sources_global_fpl_identity(self):
+    s=independently_pinned_sources()
+    fpl2024=[x for x in s if x.get("season")=="2024-25" and x.get("provider")=="FPL"]
+    self.assertEqual(sorted(x["ft"] for x in fpl2024),[50,281,309,370])
+ def test_no_vacuous_zero_previous_results_qualify(self):
+    from scripts import step14_full_1140_native_public_pit_lineage as mod
+    source=mod.__file__
+    with open(source,encoding="utf8") as f:
+        text=f.read()
+    self.assertIn('notes["PRESEASON_SCHEDULE_ONLY_NO_PREVIOUS_RESULT"]',text)
  def test_missing_secret_bounded(self):
     with self.assertRaisesRegex(ReconstructError,"KEY_MISSING"):
         native_three_seasons(key="")
