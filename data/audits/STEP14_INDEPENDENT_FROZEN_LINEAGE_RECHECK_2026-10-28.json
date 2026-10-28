@@ -1,0 +1,45 @@
+{
+  "consistency_tests": "PASS",
+  "full_121_features_plus_38_flags_proven": false,
+  "full_original_pitchapi_pit_proven": false,
+  "gate14": "PENDING",
+  "input_sha256": {
+    "frozen_1140_jsonl": "dab94e2c35709c3ba7c0ccff9162c7101cdd8cd6f00374e6597de2e061267bb7",
+    "frozen_summary": "1e5c18c7a9dd506c66a61b43f058cd0f87e696596ac9e56b0b6a760934e19c52",
+    "witness_2023": "7d43f6dd0f791d8bd5555a523930fa9681794b83a20eb725036a5f68b71f709a",
+    "witness_2024": "05ebb71f62bb1162ce61bf1200d38be386a4f14c379a6ed5312aba4393884eb9"
+  },
+  "limitations": [
+    "Witness JSONs are previously collected GHArchive evidence; this pass does not independently redownload GHArchive or old CSV bytes.",
+    "Persisted per-target lineage does not contain prior fixture ID chains, so their individual original result/identity proofs cannot be rederived here.",
+    "Old FPL/Opta results and player xG do not prove original PitchAPI 73 non-xG or 48 xG features or provider first publication.",
+    "No 2025-26 VALIDATION fixture has a complete old public result-source chain in this frozen set."
+  ],
+  "old_source_clock_witnesses_crosschecked": 8,
+  "original_M1_training_allowed": false,
+  "original_pitchapi_team_xg_first_publication_proven": false,
+  "original_train_certified": 0,
+  "original_validation_certified": 0,
+  "partition_counts": {
+    "TRAIN": 760,
+    "VALIDATION": 380
+  },
+  "public_form5_rows_using_crosschecked_witnesses": 76,
+  "public_form5_source_only": 106,
+  "public_form5_source_only_by_season": {
+    "2023-24": 58,
+    "2024-25": 48
+  },
+  "rows_independently_rechecked": 1140,
+  "schema": "kb3-step14-independent-frozen-public-lineage-consistency-recheck-v1",
+  "scope": "READ_ONLY_INDEPENDENT_RECHECK_OF_PERSISTED_PUBLIC_LINEAGE_AND_EIGHT_PRIOR_WITNESS_RECORDS",
+  "season_counts": {
+    "2023-24": 380,
+    "2024-25": 380,
+    "2025-26": 380
+  },
+  "target_result_values_examined": false,
+  "test_examined": false,
+  "unique_native_fixture_ids": 1140,
+  "used_crosschecked_witness_count": 8
+}
