@@ -1,0 +1,41 @@
+name: KB3 Step14 B - real historical PitchAPI vs FPL xG 6 exact games
+
+on:
+  push:
+    branches: [step14/b-ci-native-pitchapi-fpl-xg-real-20261028]
+    paths:
+      - 'scripts/step14_b_pitchapi_fpl_semantic_ci_once.py'
+      - 'tests/test_step14_b_pitchapi_fpl_semantic_ci.py'
+      - '.github/workflows/kb3-step14-b-ci-pitchapi-fpl-xg.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  exact-2023-provider-crosscheck:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Semantics, source identity, no lookahead unit tests
+        run: |
+          python -m compileall -q scripts/step14_b_pitchapi_fpl_semantic_ci_once.py
+          python -m unittest discover -s tests -p 'test_step14_b_pitchapi_fpl_semantic_ci.py' -v
+          python -m unittest discover -s tests -p 'test_step14_pitchapi_xg_semantics.py' -v
+      - name: Install existing PitchAPI SDK
+        run: python -m pip install --disable-pip-version-check 'pitchapi==0.1.6'
+      - name: Real 2023 380-fixture full graph plus 6 bounded same-team xG checks
+        env:
+          PITCHAPI_API_KEY: ${{ secrets.PITCHAPI_API_KEY }}
+        run: python -m scripts.step14_b_pitchapi_fpl_semantic_ci_once --out "$RUNNER_TEMP/KB3_B_REAL_6_XG_SEMANTIC_SOURCE_STATUS.json"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: KB3_STEP14_B_REAL_PITCHAPI_XG_AGGREGATE_NO_SECRETS
+          path: ${{ runner.temp }}/KB3_B_REAL_6_XG_SEMANTIC_SOURCE_STATUS.json
+          retention-days: 30
+          if-no-files-found: warn
