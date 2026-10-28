@@ -9,6 +9,7 @@ import argparse,json
 from scripts.step14_six_2023_historic_fpl_player_xg_reconstruction import inspect_one
 from scripts.step14_full_1140_native_public_pit_lineage import independently_pinned_sources
 from src.kb3_step14_multiseason_pit import fetch
+from src.kb3_step14_xg_four_gates import XGFourGateError
 
 SCHEMA="kb3-step14-2024-four-real-published-FPL-Opta-player-xg-last5-v1"
 def run(fetcher=fetch):
@@ -22,6 +23,7 @@ def run(fetcher=fetch):
         except Exception as e:
             results.append({"source_commit":src["commit"],"state":"BLOCKED_2024_FPL_PLAYER_XG",
                 "safe_error_type":type(e).__name__,
+                "safe_error_code":str(e) if isinstance(e,XGFourGateError) else None,
                 "source_future_targets_with_both_prior5_FPL_player_xg":0})
     return {"schema":SCHEMA,"four_independent_old_2024_source_clocks_verified":4,
         "four_real_xg_sources_success":sum(x["state"]=="HISTORICAL_2024_FPL_XG_MEASURED" for x in results),
