@@ -1,0 +1,30 @@
+name: KB3 Step14 RSA owner-only FT / Elo prerequisite checks
+
+on:
+  push:
+    branches: [step14/private-native-old-ft-score-equivalence-20261028]
+  pull_request:
+    paths:
+      - 'src/kb3_step14_private_results_equivalence.py'
+      - 'scripts/step14_owner_native_score_elo_local.py'
+      - 'tests/test_step14_private_results_equivalence.py'
+      - '.github/workflows/kb3-step14-owner-ft-elo-unit.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  offline-unit-only:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Confirm offline score and Elo math validation; NO private archives or sport API
+        run: |
+          python -m compileall -q src/kb3_step14_private_results_equivalence.py scripts/step14_owner_native_score_elo_local.py
+          python -m unittest discover -s tests -p 'test_step14_private_results_equivalence.py' -v
+          python -m unittest discover -s tests -p 'test_step14_owner_multiseason_join.py' -v
