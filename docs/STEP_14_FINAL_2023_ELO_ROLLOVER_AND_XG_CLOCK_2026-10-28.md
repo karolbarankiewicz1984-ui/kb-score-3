@@ -37,3 +37,28 @@ Program `src/kb3_step14_elo_rollover_xg_clock_discovery.py` i workflow `.github/
 Wybór SHA jest jedynie wyszukiwaniem, nigdy dowodem publikacji. W przypadku błędów publicznego API, ograniczeń sieci lub niedostępności GH Archive program zwraca nieudowodnienie, nie wydaje fałszywego PASS. Przebieg GitHub Actions uruchamia się bez klucza RSA, danych TEST, oryginalnych celów lub płatnych usług sportowych.
 
 **Wcześniej rzeczywiście potwierdzone:** 270/270 porównań wcześniejszych publicznych FT z zaszyfrowanym PitchAPI w 3 migawkach, 0 rozbieżności, 8 + 8 częściowych par Elo 2023/24 i 10 izolowanych źródłowych par Elo 2024/25. Nie jest to 380/380 koniec 2023/24. Oryginalny M1 wciąż zablokowany; 13/29, TRAIN 0/760, VALIDATION 0/380; GATE14 PENDING, TEST nienaruszony.
+
+
+## Rzeczywiste wyniki niezależnych archiwów (CI #40632634060)
+
+**NOWY POTWIERDZONY DOWÓD** — publiczny GitHub `vaastav/Fantasy-Premier-League`, commit `204c134d8e90e2b6e69ec252aa3ef6f10f21e73c`, `data/2023-24/fixtures.csv` SHA256 `d8521bdbb80edb5141bc17df71bf6026275f2e56fd6a6dc6041b3ae23a39ce6a`, **380/380 FT**. **NIEZALEŻNY** GH Archive PushEvent `38750359648` powiązał ten SHA z serwerowym UTC **2024-05-27T18:05:12Z**, tj. przed pierwszym meczem nowego sezonu 2024-08-16T19:00:00Z. Rzeczywisty publiczny replayer Elo obliczył 380 wydarzeń dla 20 zespołów po 38 i zastosował oryginalny wzór przeniesienia `1500+(rating−1500)*0.85`, nie ujawniając żadnego ratingu. Wcześniejszy plik 370/380 miał godzinę GH Archive niedostępną i nie jest potrzebny do końcowego Elo. [Trwały rejestr](../data/audits/STEP14_FPL_2023_FULL_380_GHARCHIVE_PUSH_AND_XG_2026-10-28.json). **Uwaga:** fakt 380 publicznych wyników nie dowodzi jeszcze 380/380 zgodności z prawdziwym oryginalnym PitchAPI, która wymaga lokalnej RSA kontroli.
+
+W **tym samym niezależnie potwierdzonym zdarzeniu** udokumentowano historyczną kolumnę `expected_goals`, `fixture`, `team` w `data/2023-24/gws/gw38.csv` (SHA256 `8228d44505d2c27b79fc2b0079d48115be040e81906b4140217d64fb91da0fef`): jest to **Opta/FPL player GW xG z 2023/24**, dostępne **27.05.2024**, a nie dowód danych dla każdego wcześniejszego meczu **2023/24**. Dla dawnych 2024/25 `gw6.csv` i 2025/26 `gw6.csv` potwierdzono **stare SHA i obecność kolumny**, lecz niezależne historyczne `published_at` konkretnych wersji nie zostało potwierdzone. Player xG FPL nie podmieniamy na oryginalne team xG PitchAPI i nie uznajemy zmiany dostawcy xG bez jawnej decyzji i pomiaru różnic.
+
+## Ostatnia brakująca kontrola pełnego rollover po natywnych ID — przygotowany kod owner-only
+
+Zabezpieczony `src/kb3_step14_owner_elo_2023_to_2024.py` i wrapper `scripts/step14_owner_elo_rollover_380_local.py` na oryginalnym RSA właściciela:
+
+1. Powtórnie weryfikuje źródłowy, niezależnie datowany pełny publiczny blob 2023/24 oraz 60 wcześniejszych FT w OpenFootball 2024/25 (02.10.2024), oba SHA.
+2. Uwierzytelnia oryginalne ZIP i `receipt chain`; odtwarza w pamięci 1140 **tożsamości**, ale czyta **wyłącznie** wyniki 380 spotkań 2023/24 oraz 60 wcześniejszych spotkań 2024/25, które są udokumentowanymi poprzednikami dla **październikowych 2024/25 celów**. Nie czyta innych wyników TRAIN ani VALIDATION czy TEST.
+3. Wymaga 380/380 i 60/60 zgodności z PitchAPI, pełnego dopasowania FPL team ID do PitchAPI, stabilnych `team ID` 17 pozostających i dokładnie 3 nowych klubów (inicjalne Elo 1500). W razie jakiejkolwiek rozbieżności kończy FAIL CLOSED.
+4. Odtwarza prawdziwy ciąg 2023/24 Elo (K20, home 65, scale 400), carry-over `season_retention=0.85` po **oryginalnych natywnych ID**, a następnie 60 aktualizacji Elo 2024/25 z grupowaniem równoczesnych meczów; weryfikuje, które z 10 2024/25 celów mają pełnych poprzedników bez przecieku wyników.
+5. Wyświetla i zapisuje **wyłącznie agregaty**, nie wyniki czy ratingi, w nowym JSON poza repozytorium. Jest to **osobny etap lokalny, którego nie wykonywano w GitHub Actions** — nie ogłaszać 380/380 natywnej zgodności ani 10/10 pełnego Elo przed tym przebiegiem.
+
+Po pobraniu aktualnego `main` z GitHub w nowym folderze na Windows uruchomić:
+
+```powershell
+py -3 -m scripts.step14_owner_elo_rollover_380_local --archive-zip "$HOME\Downloads\KB3_PITCH_PL_2023_2026_NATIVE_20261026.zip" --private-key "$HOME\Desktop\KB3_760_PAKIET_ODZYSKIWANIA_POUFNE\KB3_760_KLUCZ_ODZYSKIWANIA.pem" --output "$HOME\Desktop\KB3_STEP14_ELO_2023_2024_PRIVATE_AGGREGATE.json"
+```
+
+Nie przesyłać RSA PEM, odszyfrowanego ZIP, ani prywatnych ID. Zapis ekranu z samymi agregatami można wykorzystać jako kolejne potwierdzenie. **Nadal formalnie GATE14 PENDING, 0/760 TRAIN, 0/380 VALIDATION** — bez certyfikacji xG i wszystkich 121+38 oryginalnych cech nie ma produkcyjnego M1.
