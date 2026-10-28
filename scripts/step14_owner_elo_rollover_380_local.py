@@ -28,6 +28,9 @@ def run_local(*,archive_zip,private_key,output):
         raise ValueError("NEW_AGGREGATE_OUTPUT_OUTSIDE_REPOSITORY_REQUIRED")
     evidence=json.loads(PROOF.read_text(encoding="utf8"))
     check_pinned_public_evidence(evidence)
+    # Independently pinned 2024-10-02 public SHA-clock; not a Git committer date.
+    from src.kb3_step14_multiseason_pit import verify_existing_clocks
+    verify_existing_clocks(ROOT)
     original={}
     for s in (FULL_2023,SOURCES[1]):
         url=f"https://raw.githubusercontent.com/{s['repo']}/{s['commit']}/{s['path']}"
