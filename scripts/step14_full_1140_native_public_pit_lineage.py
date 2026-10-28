@@ -49,10 +49,28 @@ def independently_pinned_sources():
             or x.get("path")!="data/2023-24/fixtures.csv"
             or x.get("external_publication_evidence_verified") is not True):
             raise ReconstructError("NEW_HISTORIC_GHARCHIVE_PUBLISHED_SHA_NOT_PINNED")
-    all_sources=tuple(sorted(BASE_SOURCES+tuple(sources),
+    newer24=json.loads((ROOT/"data/audits/STEP14_NEW_FOUR_FPL_2024_25_GHARCHIVE_PUBLISHED_2026-10-28.json").read_text())
+    verified24=newer24.get("sources",[])
+    fixed24={
+       "f42ed38d279afc705448ebc2b89e48838a0fdfba":("2024-09-23T21:15:51Z","42193760166","ecc0e4ca6acd938e8dd359039f934fe1378bd23776cdd84b09e2e1f99ebe0a23",50),
+       "58de8250c856e3476d45557422b257a3659b2b26":("2025-03-11T11:53:20Z","47427463698","14d42571651825343df33cb197efc371090c562c8ff2d90699b7a93380d813c0",281),
+       "29e6c2f4590b1a03f218552ca676b9495539cfdc":("2025-04-11T12:32:10Z","48584799012","b832431b1ce6ea8566a2793a4046960102a3e90f56c5ad2adb98b67ea70ba8d1",309),
+       "a7089bab28e2a6012cde62b4fbd692f975792a55":("2025-05-24T12:26:26Z","50100988154","0e7fdd0fc6a7ca0dbc7385ef604466e72f6853f2b329778da98384f167b9aaec",370)}
+    if (newer24.get("schema")!="kb3-step14-2024-25-verified-four-old-FPL-sources-v1"
+        or newer24.get("artifact_id")!=12840902501
+        or len(verified24)!=4
+        or {x.get("commit") for x in verified24}!=set(fixed24)):
+        raise ReconstructError("NEW_2024_FPL_PUBLIC_PIT_SOURCE_WITNESS_CHANGED")
+    for x in verified24:
+        if ((x.get("push"),x.get("event"),x.get("sha"),x.get("ft"))!=fixed24[x["commit"]]
+            or (x.get("season"),x.get("provider"),x.get("repo"),x.get("path"))!=(
+            "2024-25","FPL","vaastav/Fantasy-Premier-League","data/2024-25/fixtures.csv")
+            or x.get("external_publication_evidence_verified") is not True):
+            raise ReconstructError("NEW_2024_FPL_PUBLICATION_SHA_NOT_PINNED")
+    all_sources=tuple(sorted(BASE_SOURCES+tuple(sources)+tuple(verified24),
                   key=lambda x:x["push"]))
-    if len(all_sources)!=9 or len({x["commit"] for x in all_sources})!=9:
-        raise ReconstructError("HISTORIC_PUBLIC_SOURCES_NOT_NINE_DISTINCT")
+    if len(all_sources)!=13 or len({x["commit"] for x in all_sources})!=13:
+        raise ReconstructError("HISTORIC_PUBLIC_SOURCES_NOT_THIRTEEN_DISTINCT")
     return all_sources
 class ReconstructError(ValueError):pass
 
@@ -103,13 +121,13 @@ def native_three_seasons(*,key,client_factory=None):
         result[f"{year}-{(year+1)%100:02d}"]=matches
     return result,count
 
-def exact_source_map(src,srcrows,native,team_map_2023):
+def exact_source_map(src,srcrows,native,team_maps):
     """Per source exact original fixture identity; output only in-memory IDs."""
     season=src["season"]
     native_map={};kicks={}
     for m in native[season]:
         h,a=m["home_team"],m["away_team"]
-        if season=="2023-24":
+        if src.get("provider")=="FPL":
             key=(h["id"],a["id"],m["time_utc"])
         else:
             key=(canonical_team_name(h["name"]),
@@ -119,8 +137,10 @@ def exact_source_map(src,srcrows,native,team_map_2023):
         kicks[m["id"]]=m["time_utc"]
     mapped={};miss=0
     for r in srcrows:
-        if season=="2023-24":
-            key=(team_map_2023[r["home"]],team_map_2023[r["away"]],r["utc"])
+        if src.get("provider")=="FPL":
+            mapping=team_maps.get(season)
+            if mapping is None:raise ReconstructError("NO_PINNED_FPL_GLOBAL_TEAM_FINGERPRINT")
+            key=(mapping[r["home"]],mapping[r["away"]],r["utc"])
         else:
             key=(r["home"],r["away"],r["utc"])
         if r["utc"] is None:
@@ -158,10 +178,23 @@ def all_1140_pit(*,safe,native,sources,selected):
     mp=map_fpl_team_ids_by_finished_clock(parse_fixture_rows(fullraw),
          native_2023,season="2023-24",published_at=FULL_2023["push"],
          expected_finished=380)
+    # 2024/25 source May 24 published after 370 completed games supplies
+    # a globally one-to-one FPL team graph against current native IDs.
+    # This is an ID lookup only, not a proof that later source values were old.
+    src24=next(x for x in selected if x.get("season")=="2024-25"
+               and x.get("provider")=="FPL" and x.get("ft")==370)
+    raw24=source_rows[src24["commit"]+"_RAW"]
+    native_2024={m["id"]:{"season":"2024-25","kickoff_utc":m["time_utc"],
+        "home_id":m["home_team"]["id"],"away_id":m["away_team"]["id"]}
+        for m in native["2024-25"]}
+    mp24=map_fpl_team_ids_by_finished_clock(parse_fixture_rows(raw24),
+        native_2024,season="2024-25",published_at=src24["push"],
+        expected_finished=370)
+    team_maps={"2023-24":mp,"2024-25":mp24}
     bysource={};join_counts={}
     for src in selected:
         rows=source_rows[src["commit"]]
-        mapping,unmatched=exact_source_map(src,rows,native,mp)
+        mapping,unmatched=exact_source_map(src,rows,native,team_maps)
         bysource[src["commit"]]=mapping
         join_counts[src["commit"]]={"season":src["season"],
             "old_rows_exact_native_home_away_and_kickoff":len(mapping),
@@ -265,7 +298,7 @@ def live_run(key,*,client_factory=None,fetcher=fetch):
         if sha256(raw).hexdigest()!=s["sha"]:
             raise ReconstructError("EXTERNALLY_PINNED_PUBLIC_SOURCE_CHANGED")
         sources[s["commit"]]=old_source_rows(s,fetcher=lambda url,**kwargs:raw)
-        if s["commit"]==FULL_2023["commit"]:
+        if s["commit"]==FULL_2023["commit"] or (s.get("season")=="2024-25" and s.get("provider")=="FPL" and s.get("ft")==370):
             sources[s["commit"]+"_RAW"]=raw
     native,ncalls=native_three_seasons(key=key,client_factory=client_factory)
     safe=json.loads((root/"data/splits/STEP12_SAFE_MODEL_VIEW_2026-10-26.json").read_text())
