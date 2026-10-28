@@ -2,7 +2,7 @@
 import unittest
 from datetime import datetime,timezone
 from src.kb3_step14_private_results_equivalence import (
-    NativeFTError,integer_goal,replay_elo_batched,native_scores,index_native,audit,
+    NativeFTError,integer_goal,replay_elo_batched,native_scores,index_native,index_native_public_names,audit,
 )
 
 class SourceScoreEquivalenceTests(unittest.TestCase):
@@ -67,6 +67,42 @@ class SourceScoreEquivalenceTests(unittest.TestCase):
         index=index_native(n,{"m_000000":(1,0)},"2023-24")
         self.assertEqual(len(index),380)
         self.assertEqual(sum(x[2] is None for x in index.values()),379)
+    def test_public_names_index_can_hold_380_fixtures_with_only_60_prior_scores(self):
+        # Exact regression for owner-local KeyError in 2024/25 public FT audit.
+        native={}
+        for i in range(380):
+            native[f"m_{i:06d}"]={
+                "season":"2024-25",
+                "home_name":f"Club{2*i}",
+                "away_name":f"Club{2*i+1}",
+                "kickoff_utc":"2024-09-01T14:00:00Z"}
+        allowed={f"m_{i:06d}":(2,1) for i in range(60)}
+        ix=index_native_public_names(native,allowed,"2024-25")
+        self.assertEqual(len(ix),380)
+        self.assertEqual(sum(val is not None for val in ix.values()),60)
+        self.assertEqual(sum(val is None for val in ix.values()),320)
+
+    def test_public_names_index_does_not_access_future_or_validation_scores(self):
+        class ForbiddenResults(dict):
+            def __getitem__(self,key):
+                raise AssertionError("FUTURE_OR_VALIDATION_LABEL_READ")
+        native={}
+        for i in range(380):
+            native[f"m_{i:06d}"]={
+                "season":"2024-25","home_name":f"Host{i}",
+                "away_name":f"Away{i}","kickoff_utc":"2024-09-01T14:00:00Z"}
+        ix=index_native_public_names(native,ForbiddenResults(),"2024-25")
+        self.assertTrue(all(val is None for val in ix.values()))
+
+    def test_public_names_index_rejects_ambiguous_name_time_pair(self):
+        native={}
+        for i in range(380):
+            native[f"m_{i:06d}"]={
+                "season":"2024-25","home_name":"Same Host",
+                "away_name":"Same Away","kickoff_utc":"2024-09-01T14:00:00Z"}
+        with self.assertRaisesRegex(NativeFTError,"AMBIGUOUS"):
+            index_native_public_names(native,{},"2024-25")
+
     def test_no_training_or_pit_release_from_audit(self):
         with self.assertRaisesRegex(NativeFTError,"REQUIRES_ORIGINAL"):
             audit({}, {}, {})
