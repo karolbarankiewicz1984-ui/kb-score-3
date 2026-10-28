@@ -15,9 +15,6 @@ from tempfile import TemporaryDirectory
 from zipfile import ZipFile
 import argparse,json,os,math
 
-from src.kb3_step13_archive_preflight import verify_original_zip,ENC,MAN
-from src.kb3_pitch_uefa_evidence import restore
-from src.kb3_step14_full_identity_pit_audit import _validate_safe,_validate_native
 from scripts.step14_multiseason_owner_native_join_local import ROOT,SAFE,map_fpl_team_ids_by_finished_clock
 from src.kb3_step14_owner_elo_2023_to_2024 import FULL_2023,check_pinned_public_evidence
 from src.kb3_step14_fpl_form5_lineage import parse_fixture_rows
@@ -108,6 +105,10 @@ def api_replay(*,selected,public,key):
     return summary
 
 def run(*,archive_zip,private_key,output):
+    # RSA crypto is owner-only, not a dependency of offline semantic CI.
+    from src.kb3_step13_archive_preflight import verify_original_zip,ENC,MAN
+    from src.kb3_pitch_uefa_evidence import restore
+    from src.kb3_step14_full_identity_pit_audit import _validate_safe,_validate_native
     dest=Path(output).expanduser().resolve()
     if dest.exists() or dest.is_relative_to(ROOT.resolve()) or dest.is_dir():
         raise LocalXGError("NEW_OUTPUT_OUTSIDE_GITHUB_REQUIRED")
