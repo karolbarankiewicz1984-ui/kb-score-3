@@ -34,7 +34,7 @@ class FourGateTests(unittest.TestCase):
     def test_unplayed_future_without_kickoff_does_not_invalidate_old_ft(self):
         f,p=samples()
         new="12,1,2,,False"
-        f=(f.decode()+new+"\\n").encode("utf8")
+        f=(f.decode()+new+"\n").encode("utf8")
         source=audit(f,p)
         self.assertEqual(source["finished_fixtures"],1)
         self.assertEqual(source["fixtures_with_both_sides_player_xg"],1)
