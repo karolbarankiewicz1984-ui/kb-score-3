@@ -1,0 +1,38 @@
+name: KB3 Step14 Owner FT270 record + 2024 isolated public Elo
+
+on:
+  push:
+    branches: [step14/real-270-ft-proof-and-2024-season-elo-20261028]
+  pull_request:
+    paths:
+      - 'src/kb3_step14_openfootball_elo_prefix.py'
+      - 'tests/test_step14_openfootball_elo_prefix.py'
+      - '.github/workflows/kb3-step14-owner-real-ft-2024-elo.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  public-old-source-replay:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Offline fail-closed tests
+        run: |
+          python -m unittest discover -s tests -p 'test_step14_openfootball_elo_prefix.py' -v
+          python -m unittest discover -s tests -p 'test_step14_private_results_equivalence.py' -v
+      - name: Authentically replay 60 published earlier 2024-25 FT, validate isolated 10-target inputs
+        run: |
+          python -m src.kb3_step14_openfootball_elo_prefix --output "$RUNNER_TEMP/2024_public_elo_reset1500_research_only.json"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: step14-2024-isolated-public-elo-not-native-PIT
+          path: ${{ runner.temp }}/2024_public_elo_reset1500_research_only.json
+          if-no-files-found: warn
+          retention-days: 30
