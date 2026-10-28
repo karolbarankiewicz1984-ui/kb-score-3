@@ -3,6 +3,13 @@ name: KB3 Step14 fast historic content only inventory
 on:
   push:
     branches: [step14/end2023-asof-rollover-xg-clock-20261028]
+    paths:
+      - 'src/kb3_step14_fast_old_content_inventory.py'
+      - '.github/workflows/kb3-step14-fast-old-content-only.yml'
+  pull_request:
+    paths:
+      - 'src/kb3_step14_fast_old_content_inventory.py'
+      - '.github/workflows/kb3-step14-fast-old-content-only.yml'
   workflow_dispatch:
 
 permissions:
