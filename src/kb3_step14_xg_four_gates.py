@@ -77,8 +77,14 @@ def extract_public_xg(fixtures_raw,players_raw,*,published_at,pinned_fixture_sha
         home,away=strict_id(r["team_h"]),strict_id(r["team_a"])
         if fid in fixture_index or home==away:
             raise XGFourGateError("DUPLICATE_OR_INVALID_FIXTURE")
-        ko=utc(r["kickoff_time"])
-        if r["finished"]=="True" and not (ko+timedelta(hours=3)<push):
+        # Future unplayed fixtures in authentic early snapshots can have an
+        # unknown kickoff. They supply NO xG and are never usable as
+        # predecessors; do not reject an otherwise valid older source.
+        ko=utc(r["kickoff_time"]) if r.get("kickoff_time") else None
+        if r["finished"] not in ("True","False"):
+            raise XGFourGateError("INVALID_FIXTURE_STATUS")
+        if r["finished"]=="True" and (
+             ko is None or not (ko+timedelta(hours=3)<push)):
             raise XGFourGateError("HISTORICAL_XG_FIXTURE_NOT_FINISHED_BEFORE_PUBLICATION")
         fixture_index[fid]={"home":home,"away":away,"kickoff":ko,"finished":r["finished"]}
         all_teams.update((home,away))
