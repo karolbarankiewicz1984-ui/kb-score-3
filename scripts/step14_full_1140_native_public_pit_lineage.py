@@ -291,6 +291,11 @@ def main():
               "provider_original_full_pit":False,"gate14_pass":False},sort_keys=True))
     except Exception as e:
         # SDK errors may contain sensitive headers, never print them.
-        print("FULL_NATIVE_PUBLIC_PIT_RECONSTRUCTION_BLOCKED",type(e).__name__)
+        import traceback
+        frames=[(Path(x.filename).name,x.name,x.lineno)
+                for x in traceback.extract_tb(e.__traceback__)][-4:]
+        # Names, function names and line numbers only; NO SDK error text.
+        print("FULL_NATIVE_PUBLIC_PIT_RECONSTRUCTION_BLOCKED",
+              type(e).__name__,"source_location",repr(frames))
         raise SystemExit(3)
 if __name__=="__main__":main()
