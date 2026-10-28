@@ -71,3 +71,32 @@ Wbrew wcześniejszej sytuacji, gdy znaleziono tylko `gw38.csv`, zbadano także *
 Jest to **historyczny dowód dostępności FPL/Opta *player-per-fixture xG***, ale **nie** dowodzi, że te wartości były dostępne *przed każdym docelowym spotkaniem 2023/24*, ponieważ pełny snapshot opublikowano dopiero po zakończeniu sezonu. W październiku 2024 wartości mogą stanowić alternatywne historyczne wejście, lecz nie podmieniamy automatycznie nimi oryginalnego zespołowego `PitchAPI team xG/xGA` ani nie uznajemy ich za 121+38 pełnych oryginalnych cech. Konieczna byłaby jawna osobna metodologia xG, zgodność tożsamości i kontrola danych wejściowych z chwili przed każdym targetem. [Zamrożony rzeczywisty raport xG](../data/audits/STEP14_FPL_2023_ALL380_PLAYER_XG_PUBLISHED_MAY2024_2026-10-28.json).
 
 **Lokalny kod full 2023/24 FT → Elo 2024/25 ma przejść jedynie na komputerze właściciela z jego RSA i oryginalnym ZIP**; testy GitHub Actions tylko symulują źródła i bezpieczne bramki. Do czasu prawdziwego przebiegu nie twierdzimy, że 380/380 historycznych FT jest zgodnych z natywnym PitchAPI ani że 10/10 oryginalnych docelowych Elo ma zweryfikowaną ciągłość. GATE14 pozostaje PENDING.
+
+
+## Potwierdzenie WYKONANE na oryginalnym RSA — 28.10.2026, lokalny Windows
+
+**Ta sekcja aktualizuje wcześniejsze sformułowania o konieczności uruchomienia lokalnego skryptu: ten przebieg JUŻ SIĘ ODBYŁ.** Właściciel wykonał `py -3 -m scripts.step14_owner_elo_rollover_380_local` w aktualnej wersji repozytorium; zrzut PowerShell jednoznacznie pokazuje pomyślne zakończenie bez wyjątku:
+
+```text
+KB3_STEP14_REAL_NATIVE_CROSSSEASON_ELO
+2023_24_FULL_ORIGINAL_FT_EXACT 380 2024_25_OLDER_FT_EXACT 60
+NATIVE_TEAM_IDS_STABLE 17 PROMOTED_STARTED_1500 3 SEASON_RETENTION 0.85
+2024_25_ORIGINAL_TEAM_PAIRS_WITH_FULL_ELO 10 OF 10
+GATE14 PENDING TRAIN_ELIGIBLE 0 VALIDATION_ELIGIBLE 0 PRIVATE_AGGREGATE_OUTSIDE_GITHUB_CREATED
+```
+
+Ten wynik **rzeczywiście potwierdza** zgodność 380/380 FT z oryginalnym szyfrowanym PitchAPI 2023/24, 60/60 wcześniej publicznych FT 2024/25, 17 tych samych natywnych `team_id` między sezonami, start 3 nowych od 1500 oraz 0,85 retention — a także pełny wcześniejszy ciąg Elo dla **wszystkich 10 wytypowanych historycznych spotkań 2024/25** w tym zakresie. Godziny dostępności wyników poświadczają wcześniejsze niezależne GH Archive PushEvent 27.05.2024 i 02.10.2024. Prawdziwe RSA i dane pozostały u właściciela; w GitHub rejestrujemy wyłącznie agregaty odczytane ze zrzutu, nie prywatny pełny JSON: [dowód ilościowy](../data/audits/STEP14_OWNER_RSA_FULL_380_60_ELO_10_OF_10_SCREEN_2026-10-28.json).
+
+### Co zmienia się w statusie
+
+**Podbramka historycznej ciągłości Elo między 2023/24 a 2024/25 dla tych 10 konkretnych spotkań: PASS.** Nie jest to jeszcze: 380/380 indywidualnych dawnych `as-of` ratingów Elo sezonu 2023/24; pełne historyczne xG w oryginalnej definicji PitchAPI; cały kontrakt 121 cech +38 flag; ani oficjalny M1 TRAIN. Dodatkowe 370 spotkań i cały VALIDATION nie otrzymują z automatu certyfikacji z tych 10 przypadków.
+
+### Osobna bariera xG — bez zmiany oryginalnego modelu
+
+W `src/kb3_features.py` `fetch_xg` wybiera xG meczowe zespołu ze źródła ze zweryfikowaną klasą `VERIFIED_PREMATCH`, z `published_at_utc` i `captured_at_utc`, przy obowiązkowym opóźnieniu wyniku po wcześniejszym meczu. `xg_avg/xga_avg` w oknach 5/10/15 i odpowiednie flagi zależą od **tożsamości drużyny, meczu, definicji statystyki i realnego zegara dostępności przed targetem**, a nie tylko wartości numerycznej.
+
+Potwierdzony historyczny FPL/Opta `merged_gw.csv` obejmuje 29 725 wierszy xG zawodników i 380/380 meczów 2023/24, publiczny 27.05.2024; **nie zawiera poświadczenia oryginalnego zegara publikacji danych team xG przez PitchAPI** ani nie dowodzi identycznej definicji. Wcześniejszy badawczy odbiór PitchAPI z 2026 miał `provider_original_published_at_known=false`. Tego braku nie można zastąpić datą commita FPL ani aktualnym odczytem starszych danych. Nie podstawiamy sumy xG zawodników FPL ani Understat jako team xG PitchAPI bez jawnej, oddzielnej walidacji i decyzji o zmianie kontraktu cech.
+
+**Następny audyt xG w kroku 14:** sprawdzenie osobno dla 2023/24 oraz 2024/25 potencjalnych historycznie opublikowanych team-match xG (w tym ich identyfikatorów i metodologii), potwierdzenie niezależnego czasu publikacji, a dopiero potem badawcze porównanie równoważności z oryginalnymi wartościami PitchAPI — bez prywatnego eksportu i bez dopuszczenia modeli. Jeśli wymagany zegar lub równoważność nie istnieje, pozostaje `missing/null` z prawdziwą flagą braku, nie sztuczne zero ani domniemanie obserwacji.
+
+**Formalnie:** 13/29, **GATE14 PENDING**, oficjalny pierwotny `TRAIN_PIT 0/760`, `VALIDATION_PIT 0/380`, M1 nie trenowany, M0 i zamrożone 20 prognoz nietknięte. Zewnętrzne API sportowe nie zostało ponownie odpytywane w tym potwierdzeniu.
