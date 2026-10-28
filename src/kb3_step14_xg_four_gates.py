@@ -170,7 +170,9 @@ def inspect_real_old_2023(*,fetcher=fetch):
         raise XGFourGateError("HISTORICAL_GHARCHIVE_CLOCK_CHANGED")
     base=f"https://raw.githubusercontent.com/{FULL_2023['repo']}/{FULL_2023['commit']}/"
     fixtures=fetcher(base+FULL_2023["path"])
-    players=fetcher(base+FULL_MERGED_PATH)
+    players=fetcher(base+FULL_MERGED_PATH,limit=40_000_001)
+    if len(players)>=40_000_001:
+        raise XGFourGateError("OLD_SOURCE_EXCEEDS_BOUNDED_READ")
     src=extract_public_xg(fixtures,players,published_at=FULL_2023["push"],
                           pinned_fixture_sha=FULL_2023["sha"],
                           pinned_player_sha=FULL_MERGED_SHA)
