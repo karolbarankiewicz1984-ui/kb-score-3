@@ -1,0 +1,40 @@
+name: KB3 Step14 original PitchAPI xG publication and same-match semantics
+
+on:
+  push:
+    branches: [step14/pitchapi-original-xg-publication-and-semantic-crosscheck-20261028]
+    paths:
+      - 'src/kb3_step14_pitchapi_xg_semantics.py'
+      - 'scripts/step14_owner_pitchapi_xg_same_fixture_local.py'
+      - 'tests/test_step14_pitchapi_xg_semantics.py'
+      - 'tests/test_step14_owner_pitchapi_xg_semantic_local.py'
+      - '.github/workflows/kb3-step14-pitchapi-xg-publication-semantics.yml'
+  pull_request:
+    paths:
+      - 'src/kb3_step14_pitchapi_xg_semantics.py'
+      - 'scripts/step14_owner_pitchapi_xg_same_fixture_local.py'
+      - 'tests/test_step14_pitchapi_xg_semantics.py'
+      - 'tests/test_step14_owner_pitchapi_xg_semantic_local.py'
+      - '.github/workflows/kb3-step14-pitchapi-xg-publication-semantics.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  offline-safety-mathematical-semantics:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Confirm clean syntax
+        run: python -m compileall -q src/kb3_step14_pitchapi_xg_semantics.py scripts/step14_owner_pitchapi_xg_same_fixture_local.py
+      - name: Shot versus team xG with same match and side
+        run: python -m unittest discover -s tests -p 'test_step14_pitchapi_xg_semantics.py' -v
+      - name: Mock owner-only RSA and API request budget
+        run: python -m unittest discover -s tests -p 'test_step14_owner_pitchapi_xg_semantic_local.py' -v
+      - name: Confirm previously certified public FPL source remains unchanged
+        run: python -m unittest discover -s tests -p 'test_step14_xg_four_gates.py' -v
