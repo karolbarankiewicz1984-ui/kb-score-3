@@ -133,7 +133,17 @@ def compare_live(key,*,provider_factory=None,fetcher=fetch):
                                     k=item["key"]
                                     if k.isascii() and k.replace("_","").isalnum() and len(k)<=45:
                                         labels.append(k)
-                raise BSourceError("STATS_ALL_PUBLIC_SCHEMA_KEYS:"+",".join(sorted(set(labels))[:32])) from None
+                expected_meta=[]
+                for pp in periods if isinstance(periods,list) else []:
+                    if not isinstance(pp,dict) or pp.get("period")!="All":continue
+                    for gg in pp.get("groups",[]):
+                        if not isinstance(gg,dict):continue
+                        group=next((gg[k] for k in ("name","group_name","title")
+                                    if isinstance(gg.get(k),str)),"UNKNOWN_GROUP")
+                        for item in gg.get("items",[]):
+                            if isinstance(item,dict) and item.get("key")=="expected_goals":
+                                expected_meta.append((str(group)[:60],str(item.get("format_type"))[:30]))
+                raise BSourceError("STATS_XG_ITEMS:"+repr(expected_meta)+"_KEYS:"+",".join(sorted(set(labels))[:12])) from None
             raise
     result=aggregate(observed)
     result["schema"]="kb3-step14-B-real-2023-pitchapi-vs-old-fpl-exact-380-identity-6-samples-v1"
