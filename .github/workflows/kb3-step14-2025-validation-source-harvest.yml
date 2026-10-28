@@ -1,0 +1,36 @@
+name: KB3 Step14 2024 full and 2025 26 in-season independent archive proof
+
+on:
+  push:
+    branches: [step14/full-historical-2023-2026-source-lineage-20261028]
+    paths:
+      - 'scripts/step14_validation_2025_fpl_historic_source_harvest.py'
+      - 'tests/test_step14_validation_2025_source_harvest.py'
+      - '.github/workflows/kb3-step14-2025-validation-source-harvest.yml'
+  pull_request:
+    paths:
+      - 'scripts/step14_validation_2025_fpl_historic_source_harvest.py'
+      - 'tests/test_step14_validation_2025_source_harvest.py'
+      - '.github/workflows/kb3-step14-2025-validation-source-harvest.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  original-2025-old-asof-source-recovery:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Validate strict historical independent server-source proof
+        run: python -m unittest discover -s tests -p 'test_step14_validation_2025_source_harvest.py' -v
+      - name: Historical 2024 full previous season and four 2025 26 source snapshots
+        run: python -m scripts.step14_validation_2025_fpl_historic_source_harvest --out "$RUNNER_TEMP/KB3_2025_SOURCE_ARCHIVED_PROOF.json"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: KB3_STEP14_2024_END_2025_VALIDATION_HISTORIC_SOURCES
+          path: ${{ runner.temp }}/KB3_2025_SOURCE_ARCHIVED_PROOF.json
+          retention-days: 90
+          if-no-files-found: error
