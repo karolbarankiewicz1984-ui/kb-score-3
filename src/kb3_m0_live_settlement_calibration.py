@@ -147,13 +147,31 @@ def settle(db_path,real_observations,*,now=None):
 
 def _historical_pairs(db,*,model_version=MODEL):
     rows=db.execute("""SELECT s.forecast_id,p.kickoff_utc,s.actual_result_observed_at_utc,
-          p.p_1,p.p_x,p.p_2,s.outcome_1x2,p.model_version_id,p.phase
+          p.p_1,p.p_x,p.p_2,s.outcome_1x2,p.model_version_id,p.phase,
+          p.parameter_sha256,p.generated_at_utc
        FROM m0_shadow_1x2_settlements s
        JOIN m0_shadow_1x2_forecasts p ON p.forecast_id=s.forecast_id
        WHERE p.model_version_id=? AND p.phase='EARLY'
        ORDER BY p.kickoff_utc,p.forecast_id""",(model_version,)).fetchall()
     return [{"id":r[0],"kickoff":as_utc(r[1]),"settled":as_utc(r[2]),
-      "p":{"1":r[3],"X":r[4],"2":r[5]},"label":r[6]} for r in rows]
+      "p":{"1":r[3],"X":r[4],"2":r[5]},"label":r[6],
+      "parameter_sha256":r[9],"generated":as_utc(r[10])} for r in rows]
+
+def _homogeneous_m0_parameter_contract(pairs):
+    """Never pool forecasts of distinct parameter snapshots under same model ID."""
+    keys={r["parameter_sha256"] for r in pairs}
+    if len(keys)>1:
+        raise ResultSafetyError("MIXED_M0_PARAMETER_VERSIONS_CANNOT_BE_CALIBRATED_TOGETHER")
+    if pairs and (not keys or not all(isinstance(k,str) and len(k)==64 for k in keys)):
+        raise ResultSafetyError("M0_PARAMETER_VERSION_SHA_MISSING")
+    return next(iter(keys)) if keys else None
+
+def _strict_post_fit_holdout(pairs,fit_at_utc,review_at_utc):
+    """Independent post-fit forecasts and outcomes; not pre-fitted future kickoffs."""
+    return [r for r in pairs
+        if r["generated"]>fit_at_utc
+        and r["kickoff"]>fit_at_utc
+        and r["settled"]<=review_at_utc]
 
 def audit_and_prepare_calibration(db_path,*,now=None):
     now=now or datetime.now(timezone.utc)
@@ -162,6 +180,7 @@ def audit_and_prepare_calibration(db_path,*,now=None):
         db.execute("PRAGMA foreign_keys=ON")
         db.executescript((ROOT/"migrations/004_m0_shadow_settlements_and_calibration.sql").read_text())
         pairs=_historical_pairs(db)
+        _homogeneous_m0_parameter_contract(pairs)
         metrics=(score_predictions([x["p"] for x in pairs],[x["label"] for x in pairs])
                  if pairs else None)
         candidate=db.execute("""SELECT candidate_id,fitted_at_utc,fitted_temperature,
@@ -195,8 +214,7 @@ def audit_and_prepare_calibration(db_path,*,now=None):
                 new_candidate=payload|{"candidate_sha256":cid}
         if candidate is not None:
             cid,created,temperature,n=candidate
-            after=[x for x in pairs if x["kickoff"]>as_utc(created)
-                   and x["settled"]<=now]
+            after=_strict_post_fit_holdout(pairs,as_utc(created),now)
             already_reviewed=db.execute("""SELECT review_id FROM
                 m0_shadow_calibration_holdout_reviews WHERE candidate_id=?""",(cid,)).fetchone()
             if len(after)>=50 and not already_reviewed:
