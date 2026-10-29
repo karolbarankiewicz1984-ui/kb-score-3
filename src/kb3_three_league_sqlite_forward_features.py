@@ -20,6 +20,9 @@ ROOT=Path(__file__).resolve().parents[1]
 SCHEMA="kb3-step14-true-network-three-league-sqlite-m0-121-38-pit-observed-freeze-v1"
 MODEL="M0_ELO_POISSON_UNFITTED_SHADOW_FEATURES_V1"
 MIN_PREMATCH=timedelta(minutes=90)
+# Step16 acceleration changes fixture COVERAGE only, never model inputs/parameters.
+ACCEL_MAX_TARGETS_PER_LEAGUE=10
+ACCEL_HORIZON_HOURS=96
 class M0FreezeError(ValueError):pass
 
 def opaque_sql_id(kind,orig):
@@ -59,7 +62,12 @@ def matches_receipts(receipts):
         raise M0FreezeError("THREE_LEAGUES_TWO_SEASONS_REQUIRED")
     return found,xg
 
-def observed_three_league_snapshots(receipts,*,cutoff_utc=None):
+def observed_three_league_snapshots(receipts,*,cutoff_utc=None,
+                                    target_limit=4,horizon_hours=None):
+    if (type(target_limit) is not int or not 1<=target_limit<=10 or
+            (horizon_hours is not None and
+             (type(horizon_hours) is not int or not 2<=horizon_hours<=168))):
+        raise M0FreezeError("UNSAFE_TARGET_COVERAGE_SETTINGS")
     found,xg=matches_receipts(receipts)
     cutoff=utc_dt(cutoff_utc or utc_now())
     snapshots=[];sources=[];per_league=Counter()
@@ -80,8 +88,10 @@ def observed_three_league_snapshots(receipts,*,cutoff_utc=None):
         eligible=sorted((m for m in games
             if m["status"] in ("upcoming","not_started","scheduled")
                and as_utc(m["time_utc"])>cutoff+MIN_PREMATCH
-               and m.get("score_home") is None and m.get("score_away") is None),
-            key=lambda m:(m["time_utc"],m["id"]))[:4]
+               and m.get("score_home") is None and m.get("score_away") is None
+               and (horizon_hours is None or
+                    as_utc(m["time_utc"])<=cutoff+timedelta(hours=horizon_hours))),
+            key=lambda m:(m["time_utc"],m["id"]))[:target_limit]
         # A kickoff less than 90m away is not silently frozen.
         if not eligible:continue
         predecessor_games=[]
@@ -155,15 +165,21 @@ def observed_three_league_snapshots(receipts,*,cutoff_utc=None):
                 raise M0FreezeError("ORIGINAL_PIT_GATE_OVERRIDDEN")
             snapshots.append((country,title,target,snapshot))
             per_league[title]+=1
-    if len(snapshots)!=12 or dict(per_league)!={"LaLiga":4,"Serie A":4,"Bundesliga":4}:
-        raise M0FreezeError("THREE_TIMES_FOUR_PREMATCH_SNAPSHOTS_REQUIRED")
+    if target_limit==4 and horizon_hours is None:
+        if len(snapshots)!=12 or dict(per_league)!={"LaLiga":4,"Serie A":4,"Bundesliga":4}:
+            raise M0FreezeError("THREE_TIMES_FOUR_PREMATCH_SNAPSHOTS_REQUIRED")
+    elif (len(snapshots)>3*target_limit or
+          any(x>target_limit for x in per_league.values())):
+        raise M0FreezeError("ACCELERATED_TARGET_COUNT_INVALID")
     if any(as_utc(x[2]["time_utc"])<=cutoff+MIN_PREMATCH for x in snapshots):
         raise M0FreezeError("FROZEN_TARGET_ALREADY_STARTED")
     return snapshots,sources,cutoff
 
-def commit_sqlite(db_path,receipts,*,cutoff_utc,raw_cipher_sha,raw_chain_sha):
+def commit_sqlite(db_path,receipts,*,cutoff_utc,raw_cipher_sha,raw_chain_sha,
+                  target_limit=4,horizon_hours=None):
     snapshots,sources,cutoff=observed_three_league_snapshots(
-        receipts,cutoff_utc=cutoff_utc)
+        receipts,cutoff_utc=cutoff_utc,target_limit=target_limit,
+        horizon_hours=horizon_hours)
     path=Path(db_path);path.parent.mkdir(parents=True,exist_ok=True)
     create=not path.exists()
     with sqlite3.connect(path) as db:
@@ -248,13 +264,16 @@ def commit_sqlite(db_path,receipts,*,cutoff_utc,raw_cipher_sha,raw_chain_sha):
         daily=db.execute("""SELECT league_country,COUNT(*)
              FROM m0_forward_feature_records WHERE snapshot_day_utc=?
              GROUP BY league_country""",(cutoff.date().isoformat(),)).fetchall()
-        if dict(daily)!={"ESP":4,"ITA":4,"GER":4}:
+        expected=dict(Counter(c for c,_,_,_ in snapshots))
+        if dict(daily)!=expected or any(v>target_limit for v in expected.values()):
             raise M0FreezeError("SQLITE_FROZEN_COUNTS_MISMATCH")
         fk=db.execute("PRAGMA foreign_key_check").fetchall()
         if fk:raise M0FreezeError("SQLITE_REFERENTIAL_INTEGRITY_FAIL")
         if db.execute("SELECT COUNT(*) FROM predictions").fetchone()[0] !=0:
             raise M0FreezeError("NO_AUTOMATIC_FORECAST_ALLOWED")
-    return {"schema":SCHEMA,"frozen_feature_snapshots_today":12,
+    return {"schema":SCHEMA,"frozen_feature_snapshots_today":len(snapshots),
+      "target_limit_per_league":target_limit,
+      "target_horizon_hours":horizon_hours,
       "total_immutable_snapshots_in_db":rows,
       "by_country":dict(daily),
       "numeric_fields_per_snapshot":121,"missing_flags_per_snapshot":38,

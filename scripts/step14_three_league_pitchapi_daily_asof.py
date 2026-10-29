@@ -1,6 +1,6 @@
 """Daily prospective as-observed source capture for 3 independently audited leagues.
 
-No forecast fit/settlement/calibration. 4 next matches/league, prior 15 games
+No forecast fit/settlement/calibration. Up to 10 eligible 96-hour targets/league, prior 15 games
 per team across 2025/26+2026/27; retrieve up to 6 previously UNSAMPLED
 finished predecessors per league/day (shots + stats) with true UTC/hash chain.
 Entire raw response RSA AES-GCM sealed in GitHub private repo. The public
@@ -41,11 +41,20 @@ def already_sampled(base):
                 seen.add((match["country"],match["native_match_id_sha256"]))
     return seen
 
-def candidate_predecessors(current,old,now,seen,country):
+def candidate_predecessors(current,old,now,seen,country,*,target_limit=4,horizon_hours=None):
+    if (type(target_limit) is not int or not 1<=target_limit<=10 or
+            (horizon_hours is not None and
+             (type(horizon_hours) is not int or not 2<=horizon_hours<=168))):
+        raise DailyLeagueError("UNSAFE_PREDECESSOR_TARGET_SETTINGS")
     future=sorted([m for m in current if m["status"] in ("upcoming","not_started","scheduled")
-                   and as_utc(m["time_utc"])>now],
-                  key=lambda m:(m["time_utc"],m["id"]))[:4]
-    if not future:raise DailyLeagueError("NO_FUTURE_TARGET_"+country)
+                   and as_utc(m["time_utc"])>now
+                   and (horizon_hours is None or
+                        as_utc(m["time_utc"])<=now+timedelta(hours=horizon_hours))],
+                  key=lambda m:(m["time_utc"],m["id"]))[:target_limit]
+    if not future:
+        if horizon_hours is None:
+            raise DailyLeagueError("NO_FUTURE_TARGET_"+country)
+        return [],[],0,0
     completed=[m for m in current+old if m["status"]=="finished"
         and as_utc(m["time_utc"])+timedelta(hours=3)<=now]
     wanted={}
@@ -109,8 +118,13 @@ def capture(*,root,key,public_pem,client_factory=None,now=None,
             if current is None or old is None:raise DailyLeagueError("CURRENT_OR_PREV_LEAGUE_SOURCE_FAILED_"+country)
             c=current.get("matches");p=old.get("matches")
             summary,_=coverage(c,p,now,expected,title)
-            futures,prior,needed,unseen=candidate_predecessors(c,p,now,previous_seen,country)
+            futures,prior,needed,unseen=candidate_predecessors(
+                c,p,now,previous_seen,country,target_limit=10,horizon_hours=96)
             summary["prior_unique_matches_needed_for_four_targets"]=needed
+            summary["prospective_target_limit_per_league"]=10
+            summary["prospective_target_horizon_hours"]=96
+            summary["prospective_targets_selected"]=len(futures)
+            summary["prior_unique_matches_needed_for_selected_targets"]=needed
             summary["as_of_now_new_unsampled_prior_matches"]=unseen
             summary["new_prior_matches_selected_today"]=len(prior)
             summary["report_status"]="PROSPECTIVE_SOURCE_CAPTURE_ONLY_NOT_M0_MODEL"
@@ -136,7 +150,11 @@ def capture(*,root,key,public_pem,client_factory=None,now=None,
                     "state":state,
                     "original_first_published_at_utc":None,
                     "valid_for_2023_25_original_M1":False})
-        if not receipts or not any(x["state"]=="SOURCE_STATS_XG_VERIFIED" for x in sampled):
+        # No unsampled predecessor today is a valid state; it must not block
+        # prematch fixture/feature/probability capture. Attempted but ALL
+        # invalid xG requests remain a hard failure (no silent API degradation).
+        if (not receipts or
+              (sampled and not any(x["state"]=="SOURCE_STATS_XG_VERIFIED" for x in sampled))):
             raise DailyLeagueError("NO_AUTHENTIC_FINISHED_XG_SOURCE_OBTAINED")
         sealed=seal(receipts,public_pem,
             dest/"THREE_LEAGUE_DAILY_SOURCE.enc",
@@ -149,7 +167,8 @@ def capture(*,root,key,public_pem,client_factory=None,now=None,
         if ledger.exists():shutil.copy2(ledger,staging)
         feature_audit=commit_sqlite(staging,receipts,cutoff_utc=utc_now(),
             raw_cipher_sha=sealed["ciphertext_sha256"],
-            raw_chain_sha=sealed["proof"]["final_chain_sha256"])
+            raw_chain_sha=sealed["proof"]["final_chain_sha256"],
+            target_limit=10,horizon_hours=96)
         report={"schema":SCHEMA,
             "utc_day":day,"observation_start_utc":receipts[0]["started_at_utc"],
             "observation_end_utc":receipts[-1]["completed_at_utc"],
@@ -168,6 +187,9 @@ def capture(*,root,key,public_pem,client_factory=None,now=None,
             "three_league_M0_predictions_started":False,
             "original_Premier_League_2026_27_TEST_not_accessed":True,
             "frozen_M0_feature_snapshots":feature_audit["frozen_feature_snapshots_today"],
+            "M0_target_limit_per_league":feature_audit["target_limit_per_league"],
+            "M0_target_horizon_hours":feature_audit["target_horizon_hours"],
+            "M0_targets_by_country":feature_audit["by_country"],
             "M0_feature_fields":feature_audit["numeric_fields_per_snapshot"],
             "M0_missing_flags":feature_audit["missing_flags_per_snapshot"],
             "feature_sqlite_ledger_sha256":hashlib.sha256(staging.read_bytes()).hexdigest(),

@@ -103,6 +103,42 @@ class M0SQLFrozenLive(unittest.TestCase):
                 if m["status"]=="scheduled":m["time_utc"]=stamp(NOW-timedelta(minutes=10))
     with self.assertRaisesRegex(M0FreezeError,"THREE_TIMES_FOUR"):
         observed_three_league_snapshots(receipts,cutoff_utc=stamp(NOW+timedelta(minutes=1)))
+ def test_step16_accelerated_96h_expands_without_future_or_test(self):
+    t=NOW+timedelta(minutes=1)
+    expanded,src,cutoff=observed_three_league_snapshots(
+        fake_capture(),cutoff_utc=stamp(t),target_limit=10,horizon_hours=96)
+    self.assertGreater(len(expanded),12)
+    self.assertLessEqual(len(expanded),30)
+    self.assertEqual(len(src),6)
+    self.assertEqual({x[0] for x in expanded},{"ESP","ITA","GER"})
+    self.assertTrue(all(t+timedelta(minutes=90) < datetime.fromisoformat(
+        m["time_utc"].replace("Z","+00:00")) <= t+timedelta(hours=96)
+        for _,_,m,_ in expanded))
+    self.assertTrue(all(feat["training_allowed"] is False
+                        for _,_,_,feat in expanded))
+ def test_step16_accelerated_commit_is_append_only_and_counted(self):
+    with tempfile.TemporaryDirectory() as folder:
+        path=Path(folder)/"forward.sqlite"
+        r=commit_sqlite(path,fake_capture(),cutoff_utc=stamp(NOW+timedelta(minutes=1)),
+            raw_cipher_sha="a"*64,raw_chain_sha="b"*64,
+            target_limit=10,horizon_hours=96)
+        self.assertGreater(r["frozen_feature_snapshots_today"],12)
+        self.assertEqual(r["frozen_feature_snapshots_today"],sum(r["by_country"].values()))
+        self.assertLessEqual(max(r["by_country"].values()),10)
+        self.assertEqual(r["target_horizon_hours"],96)
+        with sqlite3.connect(path) as db:
+            self.assertEqual(db.execute("SELECT COUNT(*) FROM predictions").fetchone()[0],0)
+            self.assertEqual(db.execute("SELECT COUNT(*) FROM m0_forward_feature_records").fetchone()[0],
+                             r["frozen_feature_snapshots_today"])
+            self.assertEqual(db.execute("PRAGMA foreign_key_check").fetchall(),[])
+            with self.assertRaises(sqlite3.IntegrityError):
+                db.execute("DELETE FROM m0_forward_feature_records")
+ def test_step16_reject_unbounded_snapshot_configuration(self):
+    for limit,horizon in ((11,96),(0,96),(10,200),(10,1),(10,10.5)):
+        with self.subTest(limit=limit,horizon=horizon):
+            with self.assertRaisesRegex(M0FreezeError,"UNSAFE_TARGET_COVERAGE"):
+                observed_three_league_snapshots(fake_capture(),
+                    cutoff_utc=stamp(NOW),target_limit=limit,horizon_hours=horizon)
  def test_no_fixture_ID_alias_with_team(self):
     self.assertNotEqual(opaque_sql_id("fixture","m_111111"),
                         opaque_sql_id("team","m_111111"))

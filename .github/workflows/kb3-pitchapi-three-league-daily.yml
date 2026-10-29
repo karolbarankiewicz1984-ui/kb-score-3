@@ -46,6 +46,7 @@ jobs:
           python -m unittest discover -s tests -p 'test_step14_three_league_sqlite_forward_features.py' -v
           python -m unittest discover -s tests -p 'test_step14_m0_shadow_1x2_live_freeze.py' -v
       - name: Real 3-league fixtures plus unique earlier matches shots and team-xG
+        if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
         env:
           PITCHAPI_API_KEY: ${{ secrets.PITCHAPI_API_KEY }}
         run: |
@@ -53,6 +54,7 @@ jobs:
             --base data/pit_sidecar/pitchapi_three_league_daily \
             --public-key config/step11_archive_recipient_public.pem
       - name: Verify original raw SHA, TRUE UTC, exactly 3 league names and withheld TEST
+        if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
         run: |
           python - <<'PY'
           import json,datetime,hashlib
@@ -61,7 +63,13 @@ jobs:
           a=json.loads((p/'THREE_LEAGUE_DAILY_RECEIPT.json').read_text())
           m=json.loads((p/'THREE_LEAGUE_DAILY_SOURCE.manifest.json').read_text())
           assert hashlib.sha256((p/'THREE_LEAGUE_DAILY_SOURCE.enc').read_bytes()).hexdigest()==m['ciphertext_sha256']==a['source_ciphertext_sha256']
-          assert a['provider_calls']<=43 and a['newly_verified_match_shot_stat_pairs']>0
+          assert a['provider_calls']<=43
+          assert a['newly_verified_match_shot_stat_pairs']>=0
+          assert a['newly_verified_match_shot_stat_pairs']>0 or a['sampled']==[]
+          assert a['failed_provider_request_count']==0
+          assert a.get('M0_target_limit_per_league',4) in (4,10)
+          assert a.get('M0_target_horizon_hours') in (None,96)
+          assert 0 <= a['frozen_M0_feature_snapshots'] <= 3*a.get('M0_target_limit_per_league',4)
           assert {x['league'] for x in a['leagues']}=={'LaLiga','Serie A','Bundesliga'}
           assert a['original_Premier_League_2026_27_TEST_not_accessed']
           assert not a['three_league_M0_predictions_started'] and not a['model_fit_or_calibration_performed']
@@ -73,9 +81,12 @@ jobs:
               with sqlite3.connect(db) as conn:
                   assert conn.execute("PRAGMA integrity_check").fetchone()[0]=='ok'
                   assert conn.execute("SELECT COUNT(*) FROM m0_forward_feature_records WHERE snapshot_day_utc=?",
-                        (p.name,)).fetchone()[0]==12
+                        (p.name,)).fetchone()[0]==a['frozen_M0_feature_snapshots']
+                  if 'M0_targets_by_country' in a:
+                      rows=conn.execute('SELECT league_country,COUNT(*) FROM m0_forward_feature_records WHERE snapshot_day_utc=? GROUP BY league_country', (p.name,)).fetchall()
+                      assert dict(rows)==a['M0_targets_by_country']
                   assert conn.execute("SELECT COUNT(*) FROM predictions").fetchone()[0]==0
-              print("OBSERVED_M0_121X38_SQLITE_12_PREMATCH_FROZEN",p.name)
+              print("OBSERVED_M0_121X38_SQLITE_DYNAMIC_PREMATCH_FROZEN",p.name)
           else:
               # Legacy already-saved archive from before this forward implementation:
               # do not mislabel the old daily source as a new M0 snapshot.
