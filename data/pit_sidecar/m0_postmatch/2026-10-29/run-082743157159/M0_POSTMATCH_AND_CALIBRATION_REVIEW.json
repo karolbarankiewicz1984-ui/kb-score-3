@@ -1,0 +1,53 @@
+{
+  "M1_training_or_original_gate14_pass": false,
+  "calibration_auto_activated": false,
+  "captured_at_utc": "2026-10-29T08:27:44.421709Z",
+  "evaluation": {
+    "aggregate_score": null,
+    "as_of_utc": "2026-10-29T08:27:44.490540Z",
+    "candidate": null,
+    "diagnostics_available": false,
+    "future_holdout_minimum": 50,
+    "historic_M1_gate14_pass": false,
+    "new_calibration_candidate": null,
+    "new_holdout_review": null,
+    "original_TEST_leak": false,
+    "production_calibration_activated": false,
+    "schema": "kb3-real-PitchAPI-M0-1X2-settle-logloss-brier-sum3-and-forward-calibration-v1",
+    "scored_independent_matches": 0,
+    "temperature_fit_minimum": 100
+  },
+  "forecast_existing_preflight": {
+    "independently_existing_repo_forecast_hashes": 12,
+    "match_hash_identical": true,
+    "server_first_publication_utc_independently_proven": false
+  },
+  "network_call_count": 4,
+  "no_new_provider_subscription": true,
+  "original_Premier_League_TEST_accessed": false,
+  "original_source_chain_sha256": "4d7b41f131e2d5310f1f5e8778711fa36436fbe63229a28f4c603979b37f4f77",
+  "original_source_cipher_sha256": "a1feb3d73ae1bcd7ad8473fba1f76c1554c120cf36013a95a172239a7365ab54",
+  "original_source_encrypted": true,
+  "persistent_sqlite_after_sha256": "39fcaeae2fd660f531ec4778a3ee04f5c69dbb3da5a37abc5bcc09381399960f",
+  "processed_leagues": [
+    "ESP",
+    "ITA",
+    "GER"
+  ],
+  "receipt_sha256": "c6fd0f871bd1e3192104a33e056d8564be1d69c0b7a9f66716a354132123680d",
+  "schema": "kb3-step14-real-network-postmatch-3league-M0-1x2-scoring-v1",
+  "settlement": {
+    "actual_server_check_at_utc": "2026-10-29T08:27:44.439725Z",
+    "new_settlements": [],
+    "newly_settled": 0,
+    "original_M1_gate14_pass": false,
+    "original_PL_2026_27_TEST_used": false,
+    "pending_unsettled": 12,
+    "review_needed": [],
+    "schema": "kb3-real-PitchAPI-M0-1X2-settle-logloss-brier-sum3-and-forward-calibration-v1",
+    "skipped_reason_counts": {
+      "TOO_EARLY": 12
+    },
+    "total_settled": 0
+  }
+}
