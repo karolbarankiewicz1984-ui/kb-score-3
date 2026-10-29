@@ -25,6 +25,8 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
+      - name: Install public RSA archive dependency required by existing shared feature module
+        run: python -m pip install --disable-pip-version-check 'cryptography>=42,<47'
       - name: Unit tests 121+38 real-schema and original Step13 Poisson, immutable 1X2 freeze
         run: |
           python -m compileall -q src/kb3_m0_shadow_1x2_live_freeze.py
