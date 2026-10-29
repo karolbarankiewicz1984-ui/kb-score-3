@@ -377,11 +377,11 @@ def collect_receipts(client,*,mode,now):
     return receipts,chosen,calls
 
 def run(*,mode,client,now=None,db_path=DB,root=SOURCES,public_key=None):
-    now=now or utc_now()
-    require(now.utcoffset()==timedelta(0),"SERVER_UTC_REQUIRED")
+    now=now or datetime.now(timezone.utc)
+    require(isinstance(now,datetime) and now.utcoffset()==timedelta(0),"SERVER_UTC_REQUIRED")
     p,param_sha,manifest_sha=trained_params()
     receipts,chosen,calls=collect_receipts(client,mode=mode,now=now)
-    cutoff=utc_now()
+    cutoff=datetime.now(timezone.utc)
     day=cutoff.date().isoformat()
     folder=Path(root)/day/("forecast" if mode=="forecast" else "settle-"+cutoff.strftime("%H%M%S%f"))
     require(not folder.exists(),"IMMUTABLE_SOURCE_RUN_ALREADY_EXISTS")
