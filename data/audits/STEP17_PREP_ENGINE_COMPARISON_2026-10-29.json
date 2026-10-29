@@ -1,0 +1,57 @@
+{
+  "comparison_protocol": "same_fixtures_same_horizon_same_market_1X2_then_other_markets",
+  "data_origin": "EXISTING_PRIVATE_GITHUB_AUDITS",
+  "extra_api_cost_pln": 0,
+  "historical_720train_374val_reference": {
+    "catboost_no_xg": {
+      "brier_sum3": 0.631711174917612,
+      "log_loss": 1.0483520508961388,
+      "top1_accuracy": 0.4625668449197861,
+      "top1_ece_5_bins": 0.05188979520605402
+    },
+    "evaluation_domain": "HISTORICAL_RECONSTRUCTED_RESEARCH",
+    "features_in_catboost_no_xg": 85,
+    "historical_data_not_eligible_to_close_step16": true,
+    "historical_native_provider_PIT_certified": false,
+    "m0_elo_poisson": {
+      "brier_sum3": 0.6202985148675613,
+      "log_loss": 1.0351077036805323,
+      "top1_accuracy": 0.5,
+      "top1_ece_5_bins": 0.02359671526327326
+    },
+    "ml_minus_m0": {
+      "brier_sum3": 0.011412660050050705,
+      "log_loss": 0.013244347215606522
+    },
+    "model_versions_720_train_fixed": true,
+    "n_same_fixture_validation": 374,
+    "n_training": 720,
+    "not_proof_of_8_league_forward_predictive_success": true,
+    "recomputed_paired_cluster_ci": false,
+    "repeat_validation_tuning_allowed": false
+  },
+  "independent_8_league_forward_m0": {
+    "eligible_settled_predictions": 0,
+    "frozen_predictions": 73,
+    "other_engines_same_fixtures_frozen_and_settled": false,
+    "settled_predictions": 0
+  },
+  "missing_data_penalty": "explicit_available_and_missing_unique_fixture_counts",
+  "no_winner_auto_selected": true,
+  "original_premier_league_2026_27_test_touched": false,
+  "paired_bootstrap_unit": "ISO_WEEK_KICKOFF",
+  "predecessor_gate16": "PENDING",
+  "production_approval": false,
+  "ready_engines": {
+    "CATBOOST_NO_XG": "HISTORICAL_374_ONLY_NOT_LIVE_8_LEAGUE",
+    "CATBOOST_WITH_XG": "MISSING_LIVE_HISTORIC_PIT_VALID_XG_AND_MODEL",
+    "ELO_ONLY": "SPEC_DEFINED_NO_SAME_GAME_FROZEN_PROBS",
+    "ENSEMBLE": "MISSING_FROZEN_COMPONENTS_AND_TRAIN_ONLY_WEIGHTS",
+    "M0_ELO_POISSON_720TRAIN": "HISTORICAL_374_AND_FORWARD_73_UNSETTLED"
+  },
+  "schema": "kb3-step17-preparation-live-historical-readiness-v1",
+  "sha256": "751fd51eb681dd2e4378497fdefd135570dc74e6946c54e927388527edd73fca",
+  "status": "IN_PROGRESS_PREPARATION_ONLY",
+  "step": 17,
+  "step17_gate": "PENDING_DEPENDENCY_STEP16"
+}
