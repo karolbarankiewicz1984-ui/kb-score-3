@@ -1,0 +1,96 @@
+{
+  "schema": "kb3-step15-verified-selected-goal-markets-374-research-v1",
+  "date": "2026-10-29",
+  "result": "REAL_VALIDATION_RESEARCH_PASS_GATE15_FORMAL_PENDING",
+  "source_run": "https://github.com/karolbarankiewicz1984-ui/kb-score-3/actions/runs/40920143414",
+  "job_id": 123610841957,
+  "full_artifact_id": 12918051653,
+  "full_artifact_name": "KB3_STEP15_REAL_374_GOAL_MARKET_METRICS_RESEARCH",
+  "full_report_ttl_note": "Full 22-market per-bin report is a 90-day Actions artifact. Code and selected verified metrics are permanently versioned in Git.",
+  "train_720": true,
+  "validation_374": 374,
+  "number_of_binary_market_contracts": 22,
+  "over_2_5": {
+    "brier": 0.2503897806463762,
+    "ece_5bins": 0.052670279765597613,
+    "log_loss": 0.6941541685623018,
+    "n": 374,
+    "reliability_5bins": [
+      {
+        "bin": 0,
+        "mean_probability": null,
+        "n": 0,
+        "observed_frequency": null
+      },
+      {
+        "bin": 1,
+        "mean_probability": null,
+        "n": 0,
+        "observed_frequency": null
+      },
+      {
+        "bin": 2,
+        "mean_probability": 0.59566966002878,
+        "n": 211,
+        "observed_frequency": 0.5402843601895735
+      },
+      {
+        "bin": 3,
+        "mean_probability": 0.6135729224923984,
+        "n": 163,
+        "observed_frequency": 0.5644171779141104
+      },
+      {
+        "bin": 4,
+        "mean_probability": null,
+        "n": 0,
+        "observed_frequency": null
+      }
+    ]
+  },
+  "btts_yes": {
+    "brier": 0.2470626633296494,
+    "ece_5bins": 0.042427709859255154,
+    "log_loss": 0.6873651532187113,
+    "n": 374,
+    "reliability_5bins": [
+      {
+        "bin": 0,
+        "mean_probability": null,
+        "n": 0,
+        "observed_frequency": null
+      },
+      {
+        "bin": 1,
+        "mean_probability": null,
+        "n": 0,
+        "observed_frequency": null
+      },
+      {
+        "bin": 2,
+        "mean_probability": 0.5901803524472398,
+        "n": 54,
+        "observed_frequency": 0.5370370370370371
+      },
+      {
+        "bin": 3,
+        "mean_probability": 0.6124944514225328,
+        "n": 320,
+        "observed_frequency": 0.571875
+      },
+      {
+        "bin": 4,
+        "mean_probability": null,
+        "n": 0,
+        "observed_frequency": null
+      }
+    ]
+  },
+  "historical_pit_original_certified": false,
+  "historical_source_class": "B_RECONSTRUCTED_PREDECESSORS_NOT_OLD_PIT",
+  "protected_test_2026_27_accessed": false,
+  "no_model_fitting_on_validation": true,
+  "original_m0_1x2_reference_unchanged": true,
+  "model_promoted": false,
+  "formal_gate15_pass": false
+}
