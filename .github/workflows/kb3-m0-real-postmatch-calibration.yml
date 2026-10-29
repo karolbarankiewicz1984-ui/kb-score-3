@@ -1,0 +1,118 @@
+name: KB3 M0 SHADOW real postmatch 1X2 settlement, log loss Brier and forward calibration
+on:
+  pull_request:
+    paths:
+      - src/kb3_m0_live_settlement_calibration.py
+      - scripts/step14_m0_postmatch_real.py
+      - migrations/004_m0_shadow_settlements_and_calibration.sql
+      - tests/test_step14_m0_actual_settlement_calibration.py
+      - .github/workflows/kb3-m0-real-postmatch-calibration.yml
+  push:
+    branches: [main]
+    paths:
+      - .github/workflows/kb3-m0-real-postmatch-calibration.yml
+  schedule:
+    - cron: '47 7,22 * * *'
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: kb3-three-league-feature-db-write
+  cancel-in-progress: false
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install existing RSA encryption dependency
+        run: python -m pip install --disable-pip-version-check 'cryptography>=42,<47'
+      - name: Guard all scoring, calibrated review and stop future-data leakage
+        run: |
+          python -m compileall -q src/kb3_m0_live_settlement_calibration.py scripts/step14_m0_postmatch_real.py
+          python -m unittest discover -s tests -p 'test_step14_m0_actual_settlement_calibration.py' -v
+          python -m unittest discover -s tests -p 'test_step14_m0_shadow_1x2_live_freeze.py' -v
+  real-postmatch-scoring:
+    if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+    needs: validate
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install already paid PitchAPI SDK and existing public RSA security dependency
+        run: python -m pip install --disable-pip-version-check 'pitchapi==0.1.6' 'cryptography>=42,<47'
+      - name: Read 3 real PitchAPI fixtures after kickoff and settle verified frozen SHA
+        env:
+          PITCHAPI_API_KEY: ${{ secrets.PITCHAPI_API_KEY }}
+        run: |
+          python -m scripts.step14_m0_postmatch_real \
+            --db data/forward_m0/kb3_forward_m0.sqlite \
+            --forecasts data/forecasts/m0_shadow_1x2 \
+            --evidence data/pit_sidecar/m0_postmatch \
+            --public-key config/step11_archive_recipient_public.pem
+      - name: Assert exact immutable forecast ledger, no TEST, and real scoring identities
+        run: |
+          python - <<'PY'
+          import datetime,hashlib,json,sqlite3
+          from pathlib import Path
+          dirs=sorted(Path('data/pit_sidecar/m0_postmatch').glob('*/run-*/M0_POSTMATCH_AND_CALIBRATION_REVIEW.json'))
+          assert dirs
+          receipt=json.loads(dirs[-1].read_text())
+          assert receipt['network_call_count']==4
+          assert receipt['processed_leagues']==['ESP','ITA','GER']
+          assert receipt['original_Premier_League_TEST_accessed'] is False
+          assert receipt['calibration_auto_activated'] is False
+          assert receipt['M1_training_or_original_gate14_pass'] is False
+          assert receipt['forecast_existing_preflight']['match_hash_identical']
+          assert receipt['forecast_existing_preflight']['independently_existing_repo_forecast_hashes']>=12
+          d=dirs[-1].parent
+          ciphertext=(d/'ORIGINAL_PITCHAPI_RESULTS.enc').read_bytes()
+          manifest=json.loads((d/'ORIGINAL_PITCHAPI_RESULTS.manifest.json').read_text())
+          assert hashlib.sha256(ciphertext).hexdigest()==manifest['ciphertext_sha256']==receipt['original_source_cipher_sha256']
+          dbp=Path('data/forward_m0/kb3_forward_m0.sqlite')
+          assert hashlib.sha256(dbp.read_bytes()).hexdigest()==receipt['persistent_sqlite_after_sha256']
+          with sqlite3.connect(dbp) as db:
+              assert db.execute('PRAGMA integrity_check').fetchone()[0]=='ok'
+              assert db.execute('PRAGMA foreign_key_check').fetchall()==[]
+              assert db.execute('SELECT COUNT(*) FROM predictions').fetchone()[0]==0
+              assert db.execute('SELECT COUNT(*) FROM m0_shadow_calibration_candidates WHERE production_approved!=0').fetchone()[0]==0
+              assert db.execute('SELECT COUNT(*) FROM m0_shadow_calibration_holdout_reviews WHERE approved_for_production!=0').fetchone()[0]==0
+              rows=db.execute('SELECT COUNT(*) FROM m0_shadow_1x2_settlements').fetchone()[0]
+              assert rows==receipt['settlement']['total_settled']
+          print('M0_REAL_POSTMATCH_SQLITE_SETTLEMENT_AND_CALIBRATION_GUARDS_OK',
+                'new=',receipt['settlement']['newly_settled'],
+                'total=',rows,
+                'fit=',receipt['evaluation']['candidate'] is not None)
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: KB3_REAL_M0_SCORE_LOGLOSS_BRIER_CALIBRATION_AND_SOURCE
+          path: |
+            data/forward_m0/kb3_forward_m0.sqlite
+            data/pit_sidecar/m0_postmatch/
+          retention-days: 30
+          if-no-files-found: warn
+      - name: Persist actual SHA-sealed source, append-only scoring and SQLite on main
+        run: |
+          git config user.name "kb3-m0-postmatch-bot"
+          git config user.email "kb3-m0-postmatch-bot@users.noreply.github.com"
+          git add -f data/forward_m0/kb3_forward_m0.sqlite
+          git add -f data/pit_sidecar/m0_postmatch/*/run-*/ORIGINAL_PITCHAPI_RESULTS.enc
+          git add -f data/pit_sidecar/m0_postmatch/*/run-*/ORIGINAL_PITCHAPI_RESULTS.manifest.json
+          git add -f data/pit_sidecar/m0_postmatch/*/run-*/M0_POSTMATCH_AND_CALIBRATION_REVIEW.json
+          if git diff --cached --quiet; then
+            echo 'No new audit evidence'
+          else
+            git commit -m 'm0: actual postmatch scores log-loss Brier and strictly gated calibration audit'
+            git pull --rebase origin main
+            git push origin HEAD:main
+          fi
