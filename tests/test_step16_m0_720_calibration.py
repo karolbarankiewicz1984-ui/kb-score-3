@@ -22,7 +22,8 @@ def sample(idx,params_sha,manifest_sha,*,before):
        "provider_match_id":"m_TEST_SYNTHETIC_"+str(idx),
        "home_team_id":"home"+str(idx),"away_team_id":"away"+str(idx),
        "kickoff_utc":stamp(kickoff),"generated_at_utc":stamp(captured),
-       "p_1x2":P,"phase":"EARLY","status":"RESEARCH_TRAIN720_UNCALIBRATED",
+       "p_1x2":P,"source_chain_sha256":"a"*64,
+       "phase":"EARLY","status":"RESEARCH_TRAIN720_UNCALIBRATED",
        "production_approved":False}
     x["forecast_sha256"]=hashobj(x)
     return x
