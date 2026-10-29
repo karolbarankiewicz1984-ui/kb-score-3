@@ -1,0 +1,50 @@
+{
+  "auto_promotion": false,
+  "cumulative_verified_xg_matches": 7,
+  "current_2026_capture_is_NOT_historic_2023_25_PIT": true,
+  "encrypted_source_sha256": "af0ebfd25a564073b7a3c33c99890109b4712eeec56e6000c3104d392dea9b68",
+  "future_form5_coverage": {
+    "complete_last5_both_team_xg": 0,
+    "future_targets_scanned": 74,
+    "missing_by_country": {
+      "BEL": 9,
+      "ESP": 10,
+      "FRA": 9,
+      "GER": 9,
+      "ITA": 10,
+      "NED": 9,
+      "POL": 9,
+      "TUR": 9
+    },
+    "research_only_no_fitted_xg_model": true
+  },
+  "gate17": "PENDING",
+  "hard_limit_calls": 33,
+  "leagues": [
+    "ESP",
+    "ITA",
+    "GER",
+    "FRA",
+    "NED",
+    "BEL",
+    "TUR",
+    "POL"
+  ],
+  "network_calls": 33,
+  "new_shots_stats_xg_verified": 7,
+  "observed_at_utc": "2026-10-29T22:13:34.163105Z",
+  "original_catboost_noxg_modified": false,
+  "original_m0_modified": false,
+  "original_provider_published_at_not_known": true,
+  "prior_matches_selected": 8,
+  "protected_premier_league_TEST_2026_27_requested": false,
+  "provider_error_types": {},
+  "report_sha256": "7ffac76ce379f1a36571b6906f98bbd9b371a5919f3f80aba4fee5274f7140ef",
+  "schema": "kb3-step17-native-xg-eight-asof-shadow-v1",
+  "source_chain_sha256": "8b3647f8881c1be7557e94b3c6f87d73543cf9fd8ad36ea3047f40d50857d8c2",
+  "trained_xg_catboost_exists": false,
+  "training_ready": false,
+  "xg_semantic_errors": {
+    "SemanticAuditError:NATIVE_SHOT_VS_FULL_MATCH_XG_DISAGREE": 1
+  }
+}
