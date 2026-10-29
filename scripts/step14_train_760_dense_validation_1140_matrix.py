@@ -45,6 +45,7 @@ def _source_rows(source,fetcher=fetch):
     stamped=_utc(source["push"])
     old={}
     schedules={}
+    invalid_old_finished_rows=0
     if source.get("provider")=="FPL":
         season=source["season"]
         nameurl=f"https://raw.githubusercontent.com/{source['repo']}/{source['commit']}/data/{season}/teams.csv"
@@ -66,8 +67,17 @@ def _source_rows(source,fetcher=fetch):
             if finished:
                 if (stamped-ko).total_seconds()<3*3600:raise RecoverError("OLD_FT_BEFORE_RESULT_LAG")
                 try:h,a=int(row["team_h_score"]),int(row["team_a_score"])
-                except (ValueError,TypeError) as exc:raise RecoverError("INVALID_HISTORIC_PUBLIC_SCORE") from exc
-                if not (0<=h<=30 and 0<=a<=30):raise RecoverError("HISTORIC_PUBLIC_SCORE_OUT_OF_RANGE")
+                except (ValueError,TypeError):
+                    # Old FPL row is marked finished but has no usable 90m FT:
+                    # never impute zero; omit this old predecessor, so any
+                    # candidate needing it will fail to reconstruct.
+                    invalid_old_finished_rows+=1
+                    schedules[key]=True
+                    continue
+                if not (0<=h<=30 and 0<=a<=30):
+                    invalid_old_finished_rows+=1
+                    schedules[key]=True
+                    continue
                 old[key]={"home":key[0],"away":key[1],"kickoff":ko,
                           "home_goals":h,"away_goals":a,
                           "home_xg":None,"away_xg":None}
@@ -95,6 +105,7 @@ def _source_rows(source,fetcher=fetch):
     return {"source":source,"commit":source["commit"],"witness":source["push"],
             "past":old,"schedules":schedules,
             "source_raw_sha256":source["sha"],
+            "quarantined_invalid_completed_result_rows":invalid_old_finished_rows,
             "source_time_independently_verified":True}
 
 def _original_schedule(native,allowed):
@@ -289,6 +300,8 @@ def run(root=ROOT,*,native_override=None,old_sources_override=None):
       "schema":SCHEMA,"original_frozen_760_TRAIN_380_VALIDATION":dict(part),
       "real_api_requests":api_calls,"original_native_exact_ID_sides_and_time":len(output),
       "historic_train_source_versions_verified":len(old_src),
+      "historical_TRAIN_invalid_old_completed_result_rows_quarantined":
+          sum(v["quarantined_invalid_completed_result_rows"] for v in old_src),
       "historic_validation_source_versions_verified":25,
       "distinct_original_TRAIN_with_historical_public_result_FORM5":counts["TRAIN"],
       "distinct_original_VALIDATION_with_historical_alternative_xG5":counts["VALIDATION"],
