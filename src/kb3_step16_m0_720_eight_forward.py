@@ -119,7 +119,8 @@ def validate_season(games,*,current):
     return {"all":len(games),"finished":past,"not_started":future,
             "teams":len(teams),"id_sha256":hashobj(sorted(ids))}
 
-def make_forecasts(receipts,*,cutoff,params,param_sha,manifest_sha):
+def make_forecasts(receipts,*,cutoff,params,param_sha,manifest_sha,challenger_engine=None,challenger_sink=None):
+    require((challenger_engine is None)==(challenger_sink is None),"CHALLENGER_SINK_PAIR_REQUIRED")
     grouped={}
     for rec in receipts:
         part=rec["resource"].split(":")
@@ -202,6 +203,8 @@ def make_forecasts(receipts,*,cutoff,params,param_sha,manifest_sha):
             item["forecast_sha256"]=hashobj(item)
             require(abs(sum(item["p_1x2"].values())-1)<1e-10,
                     "INVALID_FORECAST_PROBABILITY")
+            if challenger_engine is not None:
+                challenger_sink.extend(challenger_engine.records(features,item))
             rows.append(item);by_league[country]+=1
     require(len(rows)<=80 and len({(f["league_country"],f["provider_match_id"])
             for f in rows})==len(rows),"DUPLICATE_TARGET_OR_OVER_CAP")
@@ -264,7 +267,7 @@ def connect_db(db_path=DB):
             "RESEARCH_SQLITE_CORRUPTION")
     return db
 
-def freeze_sqlite(db_path,items,*,param_sha,manifest_sha,now):
+def freeze_sqlite(db_path,items,*,param_sha,manifest_sha,now,new_frozen_ids=None):
     with connect_db(db_path) as db:
         meta=db.execute("SELECT model,parameters_sha256,manifest_sha256 FROM model_meta").fetchall()
         if not meta:
@@ -292,6 +295,8 @@ def freeze_sqlite(db_path,items,*,param_sha,manifest_sha,now):
                   item["kickoff_utc"],item["generated_at_utc"],param_sha,
                   item["source_chain_sha256"],json.dumps(item,sort_keys=True,allow_nan=False)))
             added+=1
+            if new_frozen_ids is not None:
+                new_frozen_ids.add(item["forecast_sha256"])
         db.commit()
         require(db.execute("PRAGMA foreign_key_check").fetchall()==[],
                 "RESEARCH_FOREIGN_KEY_FAULT")
@@ -392,12 +397,27 @@ def run(*,mode,client,now=None,db_path=DB,root=SOURCES,public_key=None):
             folder/"SOURCE.enc",folder/"SOURCE.manifest.json")
         if dbp.exists():shutil.copy2(dbp,staging)
         if mode=="forecast":
+            from src.kb3_step17_forward_challengers import (
+                Challengers,freeze_new_challengers)
+            candidate_engine=Challengers()
+            candidates=[]
             forecasts,coverage,season_shapes=make_forecasts(receipts,cutoff=cutoff,
-                params=p,param_sha=param_sha,manifest_sha=manifest_sha)
+                params=p,param_sha=param_sha,manifest_sha=manifest_sha,
+                challenger_engine=candidate_engine,challenger_sink=candidates)
+            new_ids=set()
             new,total=freeze_sqlite(staging,forecasts,param_sha=param_sha,
-                                    manifest_sha=manifest_sha,now=cutoff)
+                                    manifest_sha=manifest_sha,now=cutoff,
+                                    new_frozen_ids=new_ids)
+            challenger_state=freeze_new_challengers(staging,candidates,new_m0_ids=new_ids)
+            require(challenger_state["new_challengers"]==2*new
+                    and challenger_state["new_common_fixture_pairs"]==new,
+                    "NOT_ALL_NEW_M0_MATCHES_HAVE_TWO_CHALLENGERS")
             extra={"new_forecasts":new,"total_forecasts":total,"coverage":coverage,
-                   "season_shapes":season_shapes}
+                   "season_shapes":season_shapes,
+                   "step17_challenger_research":challenger_state,
+                   "step17_challengers_are_independent_unfitted_research":True,
+                   "step17_challenger_host_artifact_proof_pending":True,
+                   "step17_gate":"PENDING_STEP16_AND_FULL_FAIR_BENCHMARK"}
             reportdir=Path(FORECASTS)/day
             # One report per UTC day; if day was previously frozen we must not
             # overwrite/replace its first publication proof.
