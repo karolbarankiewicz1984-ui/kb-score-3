@@ -1,0 +1,98 @@
+name: KB3 Step14 corrected 2023 2024 FPL historic 3.0 FT TRAIN 760 real final gate
+on:
+  pull_request:
+    paths:
+      - 'scripts/step14_train_760_decimal_FPL_FT_corrected_v2.py'
+      - 'tests/test_step14_760_decimal_FPL_FT_corrected_v2.py'
+      - '.github/workflows/kb3-step14-historic-fpl-decimal-ft-v2.yml'
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/kb3-step14-historic-fpl-decimal-ft-v2.yml'
+      - 'scripts/step14_train_760_decimal_FPL_FT_corrected_v2.py'
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  real-2023-2024-historic-FPL-whole-integer-scores-and-final-original-M1-gate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Check 3.0 valid; 3.5 nan future score rejected; original model gate unchanged
+        run: |
+          python -m compileall -q scripts/step14_train_760_decimal_FPL_FT_corrected_v2.py
+          python -m unittest discover -s tests -p 'test_step14_760_decimal_FPL_FT_corrected_v2.py' -v
+          python -m unittest discover -s tests -p 'test_step14_760_train_dense_gate.py' -v
+          python -m unittest discover -s tests -p 'test_step14_final_gate14_recheck.py' -v
+      - name: Install exact existing PitchAPI SDK
+        run: python -m pip install --disable-pip-version-check 'pitchapi==0.1.6'
+      - name: Recover genuine 2023 and 2024 historical source TRAIN whole-score, 109 VALIDATION and full 1140 121+38
+        env:
+          PITCHAPI_API_KEY: ${{ secrets.PITCHAPI_API_KEY }}
+        run: |
+          python -m scripts.step14_train_760_decimal_FPL_FT_corrected_v2 \
+            --out data/audits/STEP14_760_TRAIN_FPL_WHOLE_DECIMAL_CORRECTED_SUMMARY_2026-10-29.json \
+            --matrix data/audits/STEP14_760_TRAIN_FPL_WHOLE_DECIMAL_CORRECTED_1140x159_2026-10-29.jsonl.gz
+      - name: Re-evaluate original CatBoost M1 admission without training
+        run: |
+          python -m scripts.step14_train_validation_final_m1_fit_gate \
+            --source data/audits/STEP14_760_TRAIN_FPL_WHOLE_DECIMAL_CORRECTED_SUMMARY_2026-10-29.json \
+            --matrix data/audits/STEP14_760_TRAIN_FPL_WHOLE_DECIMAL_CORRECTED_1140x159_2026-10-29.jsonl.gz \
+            --out data/audits/STEP14_760_TRAIN_FPL_WHOLE_DECIMAL_CORRECTED_M1_FINAL_GATE_2026-10-29.json
+      - name: Check that legacy undercount was real, source and split correct
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import json,gzip,hashlib
+          d=Path('data/audits')
+          s=json.loads((d/'STEP14_760_TRAIN_FPL_WHOLE_DECIMAL_CORRECTED_SUMMARY_2026-10-29.json').read_text())
+          g=json.loads((d/'STEP14_760_TRAIN_FPL_WHOLE_DECIMAL_CORRECTED_M1_FINAL_GATE_2026-10-29.json').read_text())
+          raw=d/'STEP14_760_TRAIN_FPL_WHOLE_DECIMAL_CORRECTED_1140x159_2026-10-29.jsonl.gz'
+          with gzip.open(raw,'rt') as stream:
+              n=sum(1 for line in stream if line.strip())
+          assert n==1140
+          assert s['matrix_gzip_sha256']==hashlib.sha256(raw.read_bytes()).hexdigest()
+          assert s['distinct_original_TRAIN_with_historical_public_result_FORM5']>10
+          assert s['historical_decimal_dot_zero_score_cells_correctly_parsed']>0
+          assert s['distinct_original_VALIDATION_with_historical_public_result_FORM5']==109
+          assert s['distinct_original_VALIDATION_with_historical_alternative_xG5']==107
+          assert g['historically_published_alternative_TRAIN_FORM5']==s['distinct_original_TRAIN_with_historical_public_result_FORM5']
+          assert g['original_159_field_complete_per_match_TRAIN']==0
+          assert g['original_159_field_complete_per_match_VALIDATION']==0
+          assert not g['CatBoost_original_M1_fitted'] and g['GATE14']=='PENDING'
+          assert not g['protected_TEST_2026_27_used']
+          print('OLD_FPL_STRICT_INTEGERS_RESTORED',s['historical_decimal_dot_zero_score_cells_correctly_parsed'],
+                'CORRECTED_REAL_TRAIN',s['distinct_original_TRAIN_with_historical_public_result_FORM5'],
+                'VALIDATION',109,'ALTERNATIVE_XG5',107,
+                'ORIGINAL_GATE14',g['GATE14'])
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: KB3_REAL_CORRECTED_2023_2024_SOURCE_TRAIN_VALIDATION_GATE
+          path: |
+            data/audits/STEP14_760_TRAIN_FPL_WHOLE_DECIMAL_CORRECTED_SUMMARY_2026-10-29.json
+            data/audits/STEP14_760_TRAIN_FPL_WHOLE_DECIMAL_CORRECTED_1140x159_2026-10-29.jsonl.gz
+            data/audits/STEP14_760_TRAIN_FPL_WHOLE_DECIMAL_CORRECTED_M1_FINAL_GATE_2026-10-29.json
+          retention-days: 90
+          if-no-files-found: error
+      - name: Persist real corrected v2 audited output without touching old v1
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        run: |
+          git config user.name 'kb3-step14-audit-bot'
+          git config user.email 'kb3-step14-audit-bot@users.noreply.github.com'
+          git add -f data/audits/STEP14_760_TRAIN_FPL_WHOLE_DECIMAL_CORRECTED_SUMMARY_2026-10-29.json
+          git add -f data/audits/STEP14_760_TRAIN_FPL_WHOLE_DECIMAL_CORRECTED_1140x159_2026-10-29.jsonl.gz
+          git add -f data/audits/STEP14_760_TRAIN_FPL_WHOLE_DECIMAL_CORRECTED_M1_FINAL_GATE_2026-10-29.json
+          if git diff --cached --quiet; then
+            echo 'Already committed'
+          else
+            git commit -m 'step14: audit truly integer historical 3.0 FPL goals and rerun 760 TRAIN original GATE'
+            git pull --rebase origin main
+            git push origin HEAD:main
+          fi
