@@ -51,7 +51,10 @@ def candidate_predecessors(current,old,now,seen,country,*,target_limit=4,horizon
                    and (horizon_hours is None or
                         as_utc(m["time_utc"])<=now+timedelta(hours=horizon_hours))],
                   key=lambda m:(m["time_utc"],m["id"]))[:target_limit]
-    if not future:raise DailyLeagueError("NO_FUTURE_TARGET_"+country)
+    if not future:
+        if horizon_hours is None:
+            raise DailyLeagueError("NO_FUTURE_TARGET_"+country)
+        return [],[],0,0
     completed=[m for m in current+old if m["status"]=="finished"
         and as_utc(m["time_utc"])+timedelta(hours=3)<=now]
     wanted={}
@@ -147,7 +150,11 @@ def capture(*,root,key,public_pem,client_factory=None,now=None,
                     "state":state,
                     "original_first_published_at_utc":None,
                     "valid_for_2023_25_original_M1":False})
-        if not receipts or not any(x["state"]=="SOURCE_STATS_XG_VERIFIED" for x in sampled):
+        # No unsampled predecessor today is a valid state; it must not block
+        # prematch fixture/feature/probability capture. Attempted but ALL
+        # invalid xG requests remain a hard failure (no silent API degradation).
+        if (not receipts or
+              (sampled and not any(x["state"]=="SOURCE_STATS_XG_VERIFIED" for x in sampled))):
             raise DailyLeagueError("NO_AUTHENTIC_FINISHED_XG_SOURCE_OBTAINED")
         sealed=seal(receipts,public_pem,
             dest/"THREE_LEAGUE_DAILY_SOURCE.enc",
