@@ -40,6 +40,23 @@ class NewIncremental(unittest.TestCase):
     _,older,needed,_=candidate_predecessors(nxt,past,NOW,set(),"ITA")
     self.assertEqual((needed,len(older)),(1,1))
     self.assertEqual(older[0]["id"],"m_000002")
+ def test_step16_10_eligible_in_four_day_window_no_more_calls(self):
+    prior=[fixture(i,NOW-timedelta(days=30-i),"finished") for i in range(1,26)]
+    future=[fixture(500+i,NOW+timedelta(hours=4+i*4),"scheduled") for i in range(12)]
+    chosen,history,needed,unseen=candidate_predecessors(
+        future,prior,NOW,set(),"ESP",target_limit=10,horizon_hours=96)
+    self.assertEqual(len(chosen),10)
+    self.assertEqual(len(history),MAX_PRIORS_PER_LEAGUE)
+    self.assertEqual(MAX_CALLS,43)
+    self.assertEqual({x["id"] for x in chosen},{x["id"] for x in future[:10]})
+    self.assertTrue(all(x["status"]=="finished" for x in history))
+ def test_step16_96h_does_not_backfill_far_targets(self):
+    prior=[fixture(i,NOW-timedelta(days=i+2),"finished") for i in range(1,20)]
+    future=[fixture(501,NOW+timedelta(hours=12),"scheduled"),
+            fixture(502,NOW+timedelta(hours=110),"scheduled")]
+    chosen,_,_,_=candidate_predecessors(future,prior,NOW,set(),"GER",
+                        target_limit=10,horizon_hours=96)
+    self.assertEqual([x["id"] for x in chosen],["m_000501"])
  def test_one_competition_not_same_hash(self):
     self.assertNotEqual(opaque_hash("ESP","m_123456"),
                         opaque_hash("ITA","m_123456"))
