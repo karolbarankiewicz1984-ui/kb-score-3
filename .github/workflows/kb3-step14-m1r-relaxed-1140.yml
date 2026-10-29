@@ -1,0 +1,91 @@
+name: KB3 Step14 M1-R relaxed all 1140 chronological 48h complete 121 38 feature matrix
+on:
+  pull_request:
+    paths:
+      - 'scripts/step14_m1r_recompute_1140_relaxed_48h.py'
+      - 'tests/test_step14_m1r_relaxed_1140.py'
+      - '.github/workflows/kb3-step14-m1r-relaxed-1140.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/step14_m1r_recompute_1140_relaxed_48h.py'
+      - '.github/workflows/kb3-step14-m1r-relaxed-1140.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: kb3-step14-relaxed-m1r-1140-build
+  cancel-in-progress: false
+jobs:
+  actual-1140-relaxed-feature-replay:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Unit tests - no label leakage, 48h prior results, partial 121+38
+        run: |
+          python -m compileall -q scripts/step14_m1r_recompute_1140_relaxed_48h.py
+          python -m unittest discover -s tests -p 'test_step14_m1r_relaxed_1140.py' -v
+          python -m unittest discover -s tests -p 'test_step14_760_decimal_FPL_FT_corrected_v2.py' -v
+      - name: Existing authorized PitchAPI SDK
+        run: python -m pip install --disable-pip-version-check 'pitchapi==0.1.6'
+      - name: Real 1140 original PitchAPI 2023 2024 2025 replay, 48h and optional source xG separate
+        env:
+          PITCHAPI_API_KEY: ${{ secrets.PITCHAPI_API_KEY }}
+        run: |
+          python -m scripts.step14_m1r_recompute_1140_relaxed_48h \
+            --summary data/audits/STEP14_M1R_RELAXED_1140_48H_121x38_SUMMARY_2026-10-29.json \
+            --matrix data/audits/STEP14_M1R_RELAXED_1140_48H_121x38_RESEARCH_2026-10-29.jsonl.gz
+      - name: Actual source/matrix SHA and original 760/380 locked scope / GATE remains pending
+        run: |
+          python - <<'PY'
+          import gzip,hashlib,json
+          from pathlib import Path
+          p=Path('data/audits')
+          s=json.loads((p/'STEP14_M1R_RELAXED_1140_48H_121x38_SUMMARY_2026-10-29.json').read_text())
+          blob=p/'STEP14_M1R_RELAXED_1140_48H_121x38_RESEARCH_2026-10-29.jsonl.gz'
+          assert s['matrix_gzip_sha256']==hashlib.sha256(blob.read_bytes()).hexdigest()
+          with gzip.open(blob,'rt',encoding='utf8') as f:
+              rows=[json.loads(x) for x in f if x.strip()]
+          assert len(rows)==1140
+          assert s['original_760_TRAIN_380_VALIDATION_counts']=={'TRAIN':760,'VALIDATION':380}
+          assert s['real_PitchAPI_API_calls']==4
+          assert s['historical_predecessor_score_lag_hours']==48
+          assert 0<s['m1r_BASE_eligible_by_partition']['TRAIN']<=760
+          assert 0<s['m1r_BASE_eligible_by_partition']['VALIDATION']<=380
+          assert not s['original_2026_27_TEST_examined']
+          assert not s['original_CatBoost_M1_trained']
+          assert not s['no_training_or_validation_fit'] is False
+          assert s['original_M1_Gate14']=='PENDING'
+          for row in rows:
+              assert len(row['m1r_BASE_121_numeric_features'])==121
+              assert len(row['m1r_BASE_38_missing_flags'])==38
+              assert 'score_home' not in row and 'gh' not in row and 'ga' not in row
+              assert not row['original_M1_159_PIT_certified']
+          print('REAL_M1R_RELAXED_1140',s['m1r_BASE_eligible_by_partition'],s['m1r_BASE_cold_start_by_partition'],s['xg_from_previous_old_FPL74_v2_separate_overlay'],'GATE14',s['original_M1_Gate14'])
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: KB3_M1R_1140_RELAXED_48h_FROZEN_RESEARCH
+          path: |
+            data/audits/STEP14_M1R_RELAXED_1140_48H_121x38_SUMMARY_2026-10-29.json
+            data/audits/STEP14_M1R_RELAXED_1140_48H_121x38_RESEARCH_2026-10-29.jsonl.gz
+          if-no-files-found: error
+          retention-days: 90
+      - name: Save real source-based 1140-row M1-R results on main append-only
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        run: |
+          git config user.name kb3-step14-audit-bot
+          git config user.email kb3-step14-audit-bot@users.noreply.github.com
+          git add -f data/audits/STEP14_M1R_RELAXED_1140_48H_121x38_SUMMARY_2026-10-29.json
+          git add -f data/audits/STEP14_M1R_RELAXED_1140_48H_121x38_RESEARCH_2026-10-29.jsonl.gz
+          if ! git diff --cached --quiet; then
+            git commit -m 'step14: persist relaxed real 1140 native prematch research features with 48h result lag'
+            git pull --rebase origin main
+            git push origin HEAD:main
+          fi
