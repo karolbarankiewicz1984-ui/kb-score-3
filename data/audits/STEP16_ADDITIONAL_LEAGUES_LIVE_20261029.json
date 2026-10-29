@@ -1,0 +1,191 @@
+{
+  "candidate_count": 7,
+  "candidates": [
+    {
+      "advertised_free": true,
+      "catalog_both_seasons": true,
+      "country": "FRA",
+      "current": {
+        "finished": 72,
+        "fixture_ids_sha256": "e71286d789ee8cc498f65440c3fd375ad35ebc29cdb394ef037ed43e8e092e4d",
+        "fixtures": 306,
+        "future": 234,
+        "reason": "SEASON_FIXTURES_PRESENT",
+        "teams": 18,
+        "valid": true
+      },
+      "league": "Ligue 1",
+      "native_xg_sample_verified": true,
+      "previous": {
+        "finished": 306,
+        "fixture_ids_sha256": "fdc6f8aa7cd9d8877381b5b081c852a9f365f4e1a01677fefe560ceb9a1e09ca",
+        "fixtures": 306,
+        "future": 0,
+        "reason": "SEASON_FIXTURES_PRESENT",
+        "teams": 18,
+        "valid": true
+      },
+      "provider_fixture_access": true,
+      "ready": true,
+      "reason": "REAL_FIXTURES_AND_ONE_REAL_XG_PAIR_VERIFIED"
+    },
+    {
+      "advertised_free": true,
+      "catalog_both_seasons": true,
+      "country": "NED",
+      "current": {
+        "finished": 90,
+        "fixture_ids_sha256": "955f2a9441b3dd7c604edcd8a7128cf5d984d1ade874c184823b28dce95018bd",
+        "fixtures": 306,
+        "future": 216,
+        "reason": "SEASON_FIXTURES_PRESENT",
+        "teams": 18,
+        "valid": true
+      },
+      "league": "Eredivisie",
+      "native_xg_sample_verified": true,
+      "previous": {
+        "finished": 309,
+        "fixture_ids_sha256": "004d68e5267f1ef68f520b95506bbffb6ab3f96aff8e9374b4d6b449c6c06c31",
+        "fixtures": 309,
+        "future": 0,
+        "reason": "SEASON_FIXTURES_PRESENT",
+        "teams": 18,
+        "valid": true
+      },
+      "provider_fixture_access": true,
+      "ready": true,
+      "reason": "REAL_FIXTURES_AND_ONE_REAL_XG_PAIR_VERIFIED"
+    },
+    {
+      "catalog_both_seasons": false,
+      "country": "POR",
+      "league": "Primeira Liga",
+      "reason": "NOT_IN_CATALOG_BOTH_SEASONS"
+    },
+    {
+      "advertised_free": true,
+      "catalog_both_seasons": true,
+      "country": "BEL",
+      "current": {
+        "finished": 80,
+        "fixture_ids_sha256": "2413d8a96708966d4c63ba1235c16891381ad6b112e4deeb1ac9c18b576f52b2",
+        "fixtures": 306,
+        "future": 226,
+        "reason": "SEASON_FIXTURES_PRESENT",
+        "teams": 18,
+        "valid": true
+      },
+      "league": "Belgian Pro League",
+      "native_xg_sample_verified": true,
+      "previous": {
+        "finished": 313,
+        "fixture_ids_sha256": "790c4a6a6927c04f7ef6305343acffbec57a11696cb0d9da2da6adc6e8bca233",
+        "fixtures": 313,
+        "future": 0,
+        "reason": "SEASON_FIXTURES_PRESENT",
+        "teams": 16,
+        "valid": true
+      },
+      "provider_fixture_access": true,
+      "ready": true,
+      "reason": "REAL_FIXTURES_AND_ONE_REAL_XG_PAIR_VERIFIED"
+    },
+    {
+      "advertised_free": true,
+      "catalog_both_seasons": true,
+      "country": "TUR",
+      "current": {
+        "finished": 81,
+        "fixture_ids_sha256": "7725ce7e47f1b3d3300e57e5bbcce5c6e9ff1d9f0d3052f20b46b5aaff3c91d6",
+        "fixtures": 306,
+        "future": 225,
+        "reason": "SEASON_FIXTURES_PRESENT",
+        "teams": 18,
+        "valid": true
+      },
+      "league": "Super Lig",
+      "native_xg_sample_verified": true,
+      "previous": {
+        "finished": 306,
+        "fixture_ids_sha256": "e79147c5a77a213de25b6606c3b184feb6201d4520a5c676f95ef69a142e79b5",
+        "fixtures": 306,
+        "future": 0,
+        "reason": "SEASON_FIXTURES_PRESENT",
+        "teams": 18,
+        "valid": true
+      },
+      "provider_fixture_access": true,
+      "ready": true,
+      "reason": "REAL_FIXTURES_AND_ONE_REAL_XG_PAIR_VERIFIED"
+    },
+    {
+      "advertised_free": true,
+      "catalog_both_seasons": true,
+      "country": "POL",
+      "current": {
+        "finished": 106,
+        "fixture_ids_sha256": "e68e2753d5b8bff86b66da3c95e2af7ea1c1bd4197f8d0d698476409865b3e34",
+        "fixtures": 306,
+        "future": 200,
+        "reason": "SEASON_FIXTURES_PRESENT",
+        "teams": 18,
+        "valid": true
+      },
+      "league": "Ekstraklasa",
+      "native_xg_sample_verified": true,
+      "previous": {
+        "finished": 306,
+        "fixture_ids_sha256": "9f3d02dfbfdb4037a9019789003ed2ecaab0489505cb46f4260f37c70c6506f5",
+        "fixtures": 306,
+        "future": 0,
+        "reason": "SEASON_FIXTURES_PRESENT",
+        "teams": 18,
+        "valid": true
+      },
+      "provider_fixture_access": true,
+      "ready": true,
+      "reason": "REAL_FIXTURES_AND_ONE_REAL_XG_PAIR_VERIFIED"
+    },
+    {
+      "advertised_free": true,
+      "catalog_both_seasons": true,
+      "country": "ENG",
+      "current": {
+        "finished": 144,
+        "fixture_ids_sha256": "e9f10e869172c5e11e7012e79bf30446c5540390275a0a63c861745a45181a01",
+        "fixtures": 552,
+        "future": 408,
+        "reason": "SEASON_FIXTURES_PRESENT",
+        "teams": 24,
+        "valid": true
+      },
+      "league": "Championship",
+      "native_xg_sample_verified": false,
+      "previous": {
+        "finished": 0,
+        "future": 0,
+        "reason": "PREVIOUS_NOT_FINISHED",
+        "valid": false
+      },
+      "provider_fixture_access": true,
+      "ready": false,
+      "reason": "SEASON_COVERAGE_NOT_VERIFIED"
+    }
+  ],
+  "errors_type_only": [],
+  "hard_ceiling": 29,
+  "historic_provider_first_publication_proven": false,
+  "network_observed": true,
+  "new_leagues_live_pipeline_enabled": false,
+  "original_m0_or_m1_changed": false,
+  "premier_league_2026_27_test_results_requested": false,
+  "production_auto_enabled": false,
+  "provider_calls": 23,
+  "report_sha256": "0d566684e1bc44b6367f7ebd545f72b7b884b123e5657927c076e09f02cd41cc",
+  "schema": "kb3-step16-pitchapi-additional-leagues-readonly-feasibility-v1",
+  "step16_gate": "PENDING",
+  "target_result_used_for_model_fitting": false,
+  "utc_observed": "2026-10-29T19:20:26.772308Z",
+  "verified_full_1xg_pair_count": 5
+}
