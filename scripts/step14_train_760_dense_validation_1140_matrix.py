@@ -261,7 +261,15 @@ def run(root=ROOT,*,native_override=None,old_sources_override=None):
                             targetval=old["prematch_public_FORM5"][side][
                                 ("alternative_"+suffix) if suffix.startswith("xg") else suffix]
                             got=vals[f"{side}_all_5_{suffix}"]
-                            if (targetval is None and got is not None) or (
+                            if targetval is None and suffix in ("xg_avg","xga_avg"):
+                                # 2025 source has fewer than five valid xG values.
+                                # Its partial arithmetic mean is NOT a verified
+                                # five-match xG5, even when computable from 4/5.
+                                missing_flag=f"{side}_all_5_{suffix.split('_')[0]}"
+                                if masks.get(missing_flag) is not True:
+                                    raise RecoverError("2025_INCOMPLETE_XG_MISSING_FLAG_CONFLICT")
+                                vals[f"{side}_all_5_{suffix}"]=None
+                            elif (targetval is None and got is not None) or (
                                 targetval is not None and (got is None or abs(targetval-got)>0.00001)):
                                 raise RecoverError("2025_OLD_PREMATCH_NUMERIC_SOURCE_CHANGED")
                     used_validation.add(native)
