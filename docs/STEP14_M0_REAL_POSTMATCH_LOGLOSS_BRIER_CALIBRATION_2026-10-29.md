@@ -33,3 +33,17 @@ To **kalibracja samych prawdopodobieństw** `temperature_probabilities`, NIE tre
 ## Status względem 29 kroków
 
 To **przyspieszony PILOTAŻ** elementów 16,21,22,24,26–27, nie formalne ich zaliczenie i nie zmiana planu. **Krok 14 i oryginalny M1 nadal GATE14 PENDING, 13/29**. Nie wykonano jeszcze niezależnego Google Drive backupu produkcyjnej SQLite. Pierwsze 12 rzeczywistych prognoz M0 były utworzone 29.10.2026 przed meczami; dopóki żaden z nich się nie zakończył, **0 prawdziwych rozliczeń jest całkowicie prawidłowym wynikiem** i brak oceny skuteczności. Przy każdym kolejnym uruchomieniu warunki i prawdziwe liczności są zapisywane w nowym raporcie.
+
+
+## Potwierdzenie rzeczywistego uruchomienia — 29.10.2026
+
+**POTWIERDZONE na `main`**, nie tylko założenie lub test syntetyczny. [GitHub Actions #40842252221](https://github.com/karolbarankiewicz1984-ui/kb-score-3/actions/runs/40842252221) **SUCCESS**: 8/8 testów osłon rozliczeń i przyszłej kalibracji + 6/6 testów matematyki i przedmeczowego freeze; 4 prawdziwe zapytania PitchAPI przez wcześniej skonfigurowany klucz.
+
+O 29.10.2026 08:27:44 UTC rzeczywisty przebieg dał **0 nowych / 0 łącznie rozliczeń**, ponieważ 12 świeżo zamrożonych prognoz dotyczy jeszcze nierozpoczętych lub niezakończonych spotkań. Log loss/Brier/ECE dla rzeczywistej próby pozostają **`null` / niedostępne**, a kalibrator 100+50 **nie został dopasowany**. Jest to zamierzone zachowanie chroniące przed dopisywaniem wyników z przyszłości.
+
+Sprawdzono po wykonaniu fizyczną obecność na `main`:
+- [raport na dziś](../data/pit_sidecar/m0_postmatch/2026-10-29/run-082743157159/M0_POSTMATCH_AND_CALIBRATION_REVIEW.json), zawiera `network_call_count=4`, 0/0 settlement, `candidate=null`, `aggregate_score=null`, `original_Premier_League_TEST_accessed=false`;
+- `ORIGINAL_PITCHAPI_RESULTS.enc` (28 787 B) oraz `ORIGINAL_PITCHAPI_RESULTS.manifest.json` z oryginalnymi źródłami RSA/AES-GCM, SHA i rzeczywistym UTC;
+- `data/forward_m0/kb3_forward_m0.sqlite` (2 985 984 B), z utworzonymi tabelami 004, bez modyfikacji 12 uprzednio zamrożonych prognoz. Test SQLite `integrity_check=ok`, `foreign_key_check=[]`, oryginalna tabela `predictions=0`, żadna kalibracja nie została aktywowana.
+
+Harmonogram jest zapisany na `main` jako cron **07:47 UTC i 22:47 UTC codziennie**; kolejne wykonania potrzebują własnego wyniku/raportu, a nie deklaracji sukcesu z wyprzedzeniem. 29-etapowy plan: formalnie nadal 13/29; `GATE14=PENDING`.
