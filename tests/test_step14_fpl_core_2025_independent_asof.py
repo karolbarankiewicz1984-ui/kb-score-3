@@ -30,7 +30,7 @@ class FPLCoreHistoricPreMatchTests(unittest.TestCase):
         teams="code,id,name,fotmob_name\n1,1,Manchester City,Manchester City\n2,2,Wolves,Wolverhampton Wanderers\n"
         with self.assertRaisesRegex(CandidateError,"NOT_PREMIER_LEAGUE_20_TEAMS"):
             _read_teams(teams.encode())
-        prior={"1":"manchester city","2":"wolverhampton wanderers"}
+        prior={1:"manchester city",2:"wolverhampton wanderers"}
         raw=("match_id,finished,kickoff_time,home_team,away_team,home_score,away_score,"
              "home_expected_goals_xg,away_expected_goals_xg\n"
              "25-26-prem-manchester-city-vs-wolves,True,2025-11-01T15:00:00,1,2,2,1,1.5,0.7\n"
@@ -53,6 +53,11 @@ class FPLCoreHistoricPreMatchTests(unittest.TestCase):
             item={"home":"a","away":names[n+1],"ko":when,"key":k}
             games.append(item)
             prior[k]={"home_goals":2,"away_goals":1,"home_xg":1.1,"away_xg":0.4}
+        for n in range(5):
+            when=_utc(f"2025-10-{21+n:02d}T15:00:00Z")
+            k=("h",names[n+1],when.isoformat())
+            games.append({"home":"h","away":names[n+1],"ko":when,"key":k})
+            prior[k]={"home_goals":1,"away_goals":0,"home_xg":0.8,"away_xg":0.3}
         target={"home":"a","away":"h","ko":_utc("2025-11-08T15:00:00Z"),
                 "key":("a","h",_utc("2025-11-08T15:00:00Z").isoformat())}
         result=_qualify_target(target,_utc("2025-11-07T17:03:33Z"),prior,games+[target])
