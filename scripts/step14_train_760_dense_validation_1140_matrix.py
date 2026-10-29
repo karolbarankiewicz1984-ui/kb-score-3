@@ -255,8 +255,8 @@ def run(root=ROOT,*,native_override=None,old_sources_override=None):
                     masks=d["research_missing_flags_not_native_PitchAPI"]
                     # Each candidate is source-backed in exact old version.
                     for side in ("home","away"):
-                        if vals.get(f"{side}_all_5_xg_avg") is None:
-                            raise RecoverError("DENSE_XG5_FROZEN_SOURCE_MISMATCH")
+                        if vals.get(f"{side}_all_5_points_avg") is None:
+                            raise RecoverError("DENSE_FORM5_FROZEN_SOURCE_MISMATCH")
                         for suffix in ("points_avg","gf_avg","ga_avg","xg_avg","xga_avg"):
                             targetval=old["prematch_public_FORM5"][side][
                                 ("alternative_"+suffix) if suffix.startswith("xg") else suffix]
