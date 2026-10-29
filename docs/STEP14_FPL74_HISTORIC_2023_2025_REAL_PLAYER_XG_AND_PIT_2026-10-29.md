@@ -1,3 +1,5 @@
+**KOREKTA — obowiązujący wynik to 40 historycznie poświadczonych ALTERNATYWNYCH xG5 TRAIN, nie 31.** W trzech starych plikach FPL 2024/25 od GW22 występowało 49 pól przy starym nagłówku 42 pól; skorygowano format z zachowaniem oryginalnych SHA. Pełna [obowiązująca dokumentacja v2](STEP14_FPL74_HISTORIC_REAL_XG_CORRECTED_40_TRAIN_2026-10-29.md). Ten dokument v1 zachowano jako audyt historyczny.
+
 # KB Score 3.0 — etap 14: 74 rewizje FPL 2023/24–2024/25 i prawdziwe archiwalne xG
 
 **29.10.2026.** Ostatnie zatwierdzone wykonanie testowe: [GitHub Actions #40895972167](https://github.com/karolbarankiewicz1984-ui/kb-score-3/actions/runs/40895972167) — **SUCCESS**. Kod wdrożony przez [PR #96](https://github.com/karolbarankiewicz1984-ui/kb-score-3/pull/96).
