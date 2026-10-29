@@ -20,4 +20,15 @@
 - **Uruchomienie pierwsze tego samego dnia**: osobny jednokrotny workflow `.github/workflows/kb3-m0-one-time-initial-freeze.yml` pobiera nowe 43 źródła, aby uniknąć podmiany już utrwalonego `THREE_LEAGUE_DAILY_RECEIPT.json` i dopisać do pustej jeszcze bazy. Kolejne dni obsługuje istniejący [trójligowy harmonogram](../.github/workflows/kb3-pitchapi-three-league-daily.yml) 06:17 UTC z 12 nowymi wierszami i nadal oryginalnym archiwum.
 - **Następny krok** po udanym zamrożeniu cech: kontrole dopuszczenia M0 → prognozy 1X2/Poisson w osobnej `model_version` → niezależny dowód publikacji przed kickoff → settlement i porównanie log loss/Brier → dopiero **100+50** próbek do oceny kandydata temperatury. Nie powielać tego etapu w tym PR.
 
-**Status wykonań:** wyniki rzeczywistych workflow oraz obecność `data/forward_m0/kb3_forward_m0.sqlite` na main wymagają osobnego sprawdzenia po scaleniu. Dopóki ich nie potwierdzono, stwierdzenie „dane naprawdę zamrożono w bazie” byłoby przedwczesne.
+## Faktycznie wykonany pierwszy zapis 29.10.2026 — WERYFIKACJA NA MAIN
+
+[Realne Actions #40834611730](https://github.com/karolbarankiewicz1984-ui/kb-score-3/actions/runs/40834611730) **SUCCESS**, 7/7 testów end-to-end feature SQLite + 7/7 testów istniejącego kolektora, 43 prawdziwe wywołania PitchAPI zakończone 29.10.2026 o **07:19:01.988 UTC**. Źródła odczytywano od **07:18:50.421 UTC**. **12 zamrożonych cechowych migawek M0**, cztery z każdej `ESP/ITA/GER`. Każda z nich ma 121 numeric/nullable features, 38 missing flags i 159 indywidualnie sprawdzonych dat dostępności danych; miała do rozpoczęcia meczu >=90 min w momencie zamrażania, a własne realne daty i historyczny poprzednik musiały być wcześniejsze niż `feature_cutoff_utc`.
+
+Po odczycie GitHub `main` potwierdzono:
+- [Prawdziwa trwała baza SQLite](../data/forward_m0/kb3_forward_m0.sqlite), **2 891 776 bajtów**, hash git blob `7fbb72912190b07b2af1ae53cfbbf4cad946c943`, a SHA256 bajtów SQLite zapisany w źródłowym raporcie: `c68b41c35dd3228f354679ced32e19fe89214eb22a68d0de6f41f4d5eefd6c1a`.
+- [Potwierdzony raport freeze](../data/pit_sidecar/pitchapi_three_league_forward_initial/2026-10-29/THREE_LEAGUE_DAILY_RECEIPT.json) wskazuje 12 rekordów po 121+38, 43 źródła, brak treningu i brak dostępu do chronionego TEST.
+- Rzeczywisty chroniony szyfrogram `data/pit_sidecar/pitchapi_three_league_forward_initial/2026-10-29/THREE_LEAGUE_DAILY_SOURCE.enc`, **114 195 bajtów** i odpowiadający manifest `THREE_LEAGUE_DAILY_SOURCE.manifest.json`; obydwa pliki faktycznie są w `main` (sprawdzone przez GitHub tree).
+- W realnym workflow SQLite `PRAGMA integrity_check='ok'`, `PRAGMA foreign_key_check=[]`, 12 `feature_snapshots`, 12 `m0_forward_feature_records`, 0 `predictions`, 0 dopuszczonych oryginalnych rekordów M1.
+
+Kolejne obserwacje zapisze codzienny [trójligowy collector](../.github/workflows/kb3-pitchapi-three-league-daily.yml), a jego prawdziwy wynik za następną datę wymaga oddzielnej kontroli. **Działa przygotowanie danych i trwały freeze cech. Jeszcze NIE działa automatyczne generowanie M0 1X2, jego zamrażanie i rozliczanie, niezależny backup Drive ani kalibracja.** `GATE14=PENDING`, formalnie 13/29.
+
