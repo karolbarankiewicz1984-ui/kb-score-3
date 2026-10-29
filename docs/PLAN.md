@@ -230,6 +230,7 @@
 - **DOWÓD ZALICZENIA:** Wykres/raport kalibracji, protokół podziału i wyniki przed/po.
 - **ZALEŻY OD:** Kroki 14–15.
 - **STATUS:** W REALIZACJI od 29.10.2026 | GATE16 PENDING | kalibracja: >=100 zamrożonych i rozliczonych prawdziwych prognoz tej samej wersji i >=50 późniejszych niezależnych próbek | TEST 2026/27 zamknięty; bez automatycznego wdrożenia | [Karta startu](STEP_16_KICKOFF_2026-10-29.md) | ODBIÓR: —
+- **RÓWNOLEGŁY STRUMIEŃ BADAWCZY 8 LIG, M0 720-TRAIN:** 29.10.2026 uruchomiony niezależny stały model `M0_ELO_POISSON_RESEARCH_720TRAIN_V1` (ELO + Poisson dopasowane tylko na 720 TRAIN). [Rzeczywisty GitHub Actions SUCCESS #40943149804](https://github.com/karolbarankiewicz1984-ui/kb-score-3/actions/runs/40943149804): 73 odrębne prognozy przedmeczowe na ośmiu ligach (ESP9 ITA10 GER9 FRA9 NED9 BEL9 TUR9 POL9), 17 prawdziwych API calls; SQLite źródło i archiwum rzeczywiście utrwalone. [Raport uruchomienia](STEP16_EIGHT_LEAGUE_M0_720_FORWARD_LAUNCH_2026-10-29.md). **Rozliczenia 0, obowiązują 100+50, brak niezależnego poświadczenia pierwszego czasu publikacji — GATE16 PENDING.** Nie mieszać historycznego 3-ligowego SHADOW z nowym dopasowanym M0. Parametry wyłącznie RESEARCH, nie CHAMPION.
 
 #### Krok 17 — Porównanie silników  [NIE ROZPOCZĘTO]
 
