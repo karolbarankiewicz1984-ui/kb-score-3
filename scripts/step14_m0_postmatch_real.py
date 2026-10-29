@@ -111,8 +111,8 @@ def run(*,key,public_pem,db_path,report_root,evidence_root,now=None,
                     dest/"ORIGINAL_PITCHAPI_RESULTS.manifest.json")
         staging=dest/"STAGING_M0.sqlite"
         shutil.copy2(db_path,staging)
-        settled=settle(staging,sources,now=utc_now())
-        audit=audit_and_prepare_calibration(staging,now=utc_now())
+        settled=settle(staging,sources,now=datetime.now(timezone.utc))
+        audit=audit_and_prepare_calibration(staging,now=datetime.now(timezone.utc))
         with sqlite3.connect(staging) as db:
             if db.execute("PRAGMA integrity_check").fetchone()[0]!="ok":
                 raise PostmatchRunError("POSTMATCH_SQLITE_INTEGRITY")
