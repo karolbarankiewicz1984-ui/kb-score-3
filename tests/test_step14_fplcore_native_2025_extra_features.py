@@ -46,7 +46,7 @@ class RealJoinAndRecoveredFieldsTests(unittest.TestCase):
                 before[key]={"home_goals":2,"away_goals":1,"home_xg":1.5,"away_xg":0.5}
         target={"home":"a","away":"b","ko":_utc("2025-11-08T15:00:00Z")}
         report=_candidate(target,games+[dict(target,key=("a","b",target["ko"].isoformat()))],
-                         {"prematch_previous_completed_games":before},
+                         before,
                          {"witness":"2025-11-07T17:03:33Z","commit":"test"})
         self.assertEqual(len(report["research_features_not_native_PitchAPI"]),121)
         self.assertEqual(len(report["research_missing_flags_not_native_PitchAPI"]),38)
