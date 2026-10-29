@@ -219,7 +219,7 @@
 - **BRAMKA ODBIORU / TEST PASS:** Over 3,5 nie większy niż Over 2,5; wyniki wszystkich rynków zgodne z definicją 90 minut; testy znanych rozkładów przechodzą.
 - **DOWÓD ZALICZENIA:** Testy własności matematycznych i raport prób na spotkaniach testowych.
 - **ZALEŻY OD:** Kroki 13–14.
-- **STATUS:** W REALIZACJI od 29.10.2026 | ETAP: adapter M0 O/U 1,5–3,5, BTTS, team totals + testy matematyczne PASS [CI #40919562014](https://github.com/karolbarankiewicz1984-ui/kb-score-3/actions/runs/40919562014) | GATE15: PENDING do rzeczywistej oceny i niezależnego odbioru | [Postęp i ograniczenia](STEP_15_PROGRESS_2026-10-29.md) | DATA ODBIORU: —
+- **STATUS:** W REALIZACJI od 29.10.2026 | TEST: matematyka PASS [#40919562014](https://github.com/karolbarankiewicz1984-ui/kb-score-3/actions/runs/40919562014); prawdziwy retrospektywny TRAIN 720 / VALIDATION 374 i 22 rynki po 374 próby PASS TECHNICZNY [#40920143414](https://github.com/karolbarankiewicz1984-ui/kb-score-3/actions/runs/40920143414) | GATE15: PENDING — porównanie z wariantem ML i niezależny odbiór nadal otwarte | [Postęp oraz Brier/log loss O2,5 i BTTS](STEP_15_PROGRESS_2026-10-29.md) | DATA ODBIORU: —
 
 #### Krok 16 — Kalibracja prawdopodobieństw  [NIE ROZPOCZĘTO]
 
