@@ -41,3 +41,9 @@ Do pełnego oryginalnego odbioru nadal brakuje:
 3. Pełnego coverage historycznych TRAIN 760 i VALIDATION 380 — aktualne 18 to **badawczy podzbiór źródłowo poświadczony**, nie automatyczne dopuszczenie tych 18 do modelu oryginalnego.
 
 Nie wolno mylić technicznego PASS dopasowania i odzyskania części statystyk z matematycznym zatwierdzeniem oryginalnego M1.
+
+## Potwierdzenie końcowe po scaleniu do main
+
+[PR #92](https://github.com/karolbarankiewicz1984-ui/kb-score-3/pull/92) **MERGED**. [GitHub Actions main #40870289735](https://github.com/karolbarankiewicz1984-ui/kb-score-3/actions/runs/40870289735) **SUCCESS**, w tym testy, oba rzeczywiste skrypty, 8 połączeń do PitchAPI, wygenerowanie dwóch artefaktów oraz skuteczny zapis trwałych raportów w prywatnym `main`. Pliki pobrano ponownie po zapisie:
+- [Native 18/18 i xG](../data/audits/STEP14_2025_FPLCORE_NATIVE_18_XG_SEMANTICS_2026-10-29.json): 18/18 dokładnych połączeń, 0 błędów, 12 porównanych xG, MAE = 0, MAX = 0 na badawczej próbce.
+- [Wektor badawczy 121+38 z brakami](../data/audits/STEP14_2025_FPLCORE_EXTENDED_121_38_PARTIAL_2026-10-29.json): 18 rekordów, 102 nazwy numeryczne z ≥1 odzyskaną wartością, 1336 wartości liczbowych, 499 flag. **19 niedostępnych nazw cech** dotyczą pełnego Elo / wcześniejszych sezonów / średniego Elo rywali. To techniczne pola nieodtworzone przez to jedno źródło, nie podstawiane fikcyjnymi danymi.
