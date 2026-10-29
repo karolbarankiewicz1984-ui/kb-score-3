@@ -39,7 +39,9 @@ class M1RTrainOnlyTests(unittest.TestCase):
         self.assertTrue(len(sel)>=15)
         self.assertTrue(all("_xg" not in name and "_xga" not in name for name in sel))
         # Even a new VAL-only variable must not alter the selected feature names.
-        for row in val:row["m1r_BASE_121_numeric_features"]["home_all_5_days_since_last"]=99.0 if "home_all_5_days_since_last" in EXPECTED_FEATURES else None
+        self.assertNotIn("home_venue_games_available",names)
+        for row in val:
+            row["m1r_BASE_121_numeric_features"]["home_venue_games_available"]=float(len(row["fixture_id"]))
         _,_,sel2,_,_=prepare_features(tr+val)
         self.assertEqual(sel,sel2)
 if __name__=="__main__":unittest.main()
