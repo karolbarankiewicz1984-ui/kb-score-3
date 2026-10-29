@@ -242,6 +242,7 @@
 - **ZALEŻY OD:** Krok 16.
 - **STATUS:** W REALIZACJI — FAZA PRZYGOTOWAWCZA (29.10.2026) | TEST: wspólna architektura + parowany scorer i CI offline | GATE17: PENDING, wymaga GATE16 | LINK: [protokół rozpoczęcia](STEP17_PREPARATION_ENGINE_COMPARISON_2026-10-29.md) | DATA ODBIORU: —
 - **PRACA RÓWNOLEGŁA:** benchmark 1X2-90min EARLY na identycznych meczach; brakujące dane jawne; historyczne 374 i nadchodzące forward 8 lig osobno. Bez awansu Championa i bez ponownego fit na 374 VAL.
+- **DALEJ — URUCHOMIENIE RÓWNOLEGŁE:** Wdrożono do codziennego ośmioligowego M0 720-TRAIN modele Elo-only i stały CatBoost bez xG, dokładnie wspólny cutoff/cechy/fixture, dedykowane append-only i GitHub artifact-time proof, tylko dla NOWYCH freeze. [Kod i ograniczenia](STEP17_PARALLEL_ELO_CATBOOST_NOXG_FORWARD_2026-10-29.md); [19 testów i realny main SUCCESS](https://github.com/karolbarankiewicz1984-ui/kb-score-3/actions/runs/40961493566). W pierwszym runie po merge: **0 nowych par** (dzisiejsze 73 M0 wcześniej zamrożone, niebackfillowane), 0 settlement, brak awansu. GATE17 PENDING.
 
 #### Krok 18 — Wybór Champion — wersja bazowa  [NIE ROZPOCZĘTO]
 
