@@ -73,5 +73,6 @@ jobs:
             echo 'No new audit evidence to commit.'
           else
             git commit -m 'audit: append immutable real PitchAPI three-league source evidence'
+            git pull --rebase origin main
             git push origin HEAD:main
           fi
