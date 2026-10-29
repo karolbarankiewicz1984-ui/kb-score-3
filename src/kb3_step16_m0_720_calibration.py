@@ -33,7 +33,8 @@ CREATE TABLE IF NOT EXISTS m0720_github_push_proofs (
  github_commit_sha TEXT NOT NULL,
  github_server_event_utc TEXT NOT NULL,
  original_forecast_sha256 TEXT NOT NULL,
- source TEXT NOT NULL CHECK(source='GITHUB_SERVER_PUSH_EVENT_PLUS_HISTORICAL_DB_BYTES'),
+ source TEXT NOT NULL CHECK(source IN ('GITHUB_SERVER_PUSH_EVENT_PLUS_HISTORICAL_DB_BYTES',
+   'GITHUB_SERVER_ACTIONS_ARTIFACT_PLUS_EXACT_DB_BYTES')),
  audit_utc TEXT NOT NULL,
  CHECK(length(github_commit_sha)=40),
  CHECK(length(original_forecast_sha256)=64)
@@ -81,6 +82,16 @@ CREATE TRIGGER IF NOT EXISTS m0720_holdout_no_delete BEFORE DELETE ON m0720_hold
 """
 
 def ensure_schema(db):
+    # Older deployed 29 October schema allowed only PushEvent. GitHub's own
+    # bot push is absent from /events; Actions artifact is valid host evidence.
+    # Only re-create this strictly EMPTY audit table (never touch predictions,
+    # settlements or nonempty evidence). A populated legacy schema fails closed.
+    old=db.execute("""SELECT sql FROM sqlite_master WHERE type='table'
+                      AND name='m0720_github_push_proofs'""").fetchone()
+    if old is not None and "GITHUB_SERVER_ACTIONS_ARTIFACT_PLUS_EXACT_DB_BYTES" not in old[0]:
+        count=db.execute("SELECT COUNT(*) FROM m0720_github_push_proofs").fetchone()[0]
+        require(count==0,"NONEMPTY_LEGACY_PROOF_SCHEMA_NEEDS_REVIEW")
+        db.execute("DROP TABLE m0720_github_push_proofs")
     db.executescript(PROOF_SQL)
     require(db.execute("PRAGMA foreign_key_check").fetchall()==[],
             "CALIBRATION_FOREIGN_KEY_FAILURE")
@@ -195,7 +206,8 @@ def append_proofs(db_path,proofs,*,now):
         for p in proofs:
             orig={k:v for k,v in p.items() if k!="proof_id"}
             require(p["proof_id"]==hashobj(orig) and
-                    p["source"]=="GITHUB_SERVER_PUSH_EVENT_PLUS_HISTORICAL_DB_BYTES"
+                    p["source"] in ("GITHUB_SERVER_PUSH_EVENT_PLUS_HISTORICAL_DB_BYTES",
+                        "GITHUB_SERVER_ACTIONS_ARTIFACT_PLUS_EXACT_DB_BYTES")
                     and p["model"]==MODEL and p["forecast_id"]==p["original_forecast_sha256"],
                     "UNVERIFIED_PUSH_PROOF")
             row=db.execute("""SELECT kickoff_utc,captured_at_utc FROM forecasts
@@ -348,3 +360,167 @@ def calibrate_if_eligible(db_path=DB,*,now=None):
                 "missing_to_fit":max(0,MIN_FIT-len(rows)) if not candidate else 0,
                 "missing_post_fit_holdout":(max(0,MIN_HOLDOUT-len(after)) if candidate else MIN_HOLDOUT),
                 "original_premier_league_TEST_accessed":False}
+
+
+# Fallback when GitHub does not surface bot-generated PushEvents: GitHub itself
+# stamps the uploaded Actions artifact before kickoff. Its *exact binary SQLite*
+# must contain the original forecast ID and unaltered payload. The run/zip
+# metadata is retrieved from GitHub API, not local Git commit timestamps.
+def _gh_json(url,token,*,timeout=15):
+    req=urllib.request.Request(url,headers={
+        "Authorization":"Bearer "+token,
+        "Accept":"application/vnd.github+json",
+        "X-GitHub-Api-Version":"2022-11-28",
+        "User-Agent":"KB3-Step16-M0-artifact-auditor"})
+    with urllib.request.urlopen(req,timeout=timeout) as reply:
+        return json.load(reply)
+
+def _gh_artifact_zip(url,token,*,limit=30*1024*1024):
+    from urllib.parse import urlparse
+    class NoRedirect(urllib.request.HTTPRedirectHandler):
+        def redirect_request(self,req,fp,code,msg,headers,newurl):
+            return None
+    req=urllib.request.Request(url,headers={
+        "Authorization":"Bearer "+token,
+        "Accept":"application/vnd.github+json",
+        "User-Agent":"KB3-Step16-M0-artifact-auditor"})
+    opener=urllib.request.build_opener(NoRedirect)
+    try:
+        with opener.open(req,timeout=20) as reply:
+            data=reply.read(limit+1)
+    except urllib.error.HTTPError as exc:
+        if exc.code not in (301,302,303,307,308):
+            raise
+        target=exc.headers.get("Location","")
+        u=urlparse(target)
+        require(u.scheme=="https" and bool(u.hostname)
+                and u.hostname.lower() not in ("localhost","127.0.0.1","::1"),
+                "UNTRUSTED_GITHUB_ARTIFACT_REDIRECT")
+        # Follow signed GitHub-selected storage URL *without* bearer credentials.
+        with urllib.request.urlopen(
+                urllib.request.Request(target,headers={"User-Agent":"KB3-Step16-auditor"}),
+                timeout=30) as response:
+            data=response.read(limit+1)
+    require(0<len(data)<=limit,"GITHUB_ARTIFACT_SIZE_LIMIT")
+    return data
+
+def _zip_frozen_rows(blob,*,max_uncompressed=80*1024*1024):
+    import io,zipfile
+    try:
+        with zipfile.ZipFile(io.BytesIO(blob)) as archive:
+            names=[n for n in archive.namelist()
+                   if n.endswith("/kb3_forward_eight.sqlite") or
+                      n=="kb3_forward_eight.sqlite"]
+            require(len(names)==1,"NO_UNIQUE_GITHUB_ARCHIVED_EIGHT_LEAGUE_DB")
+            meta=archive.getinfo(names[0])
+            require(0<meta.file_size<=max_uncompressed,
+                    "GITHUB_ARCHIVED_SQLITE_TOO_LARGE")
+            data=archive.read(names[0])
+            require(len(data)==meta.file_size,
+                    "GITHUB_ARCHIVED_SQLITE_TRUNCATED")
+    except (zipfile.BadZipFile,RuntimeError,ValueError) as exc:
+        raise Research720Error("GITHUB_ARTIFACT_ZIP_INVALID") from exc
+    with tempfile.TemporaryDirectory() as folder:
+        p=Path(folder)/"historic.sqlite"
+        p.write_bytes(data)
+        try:
+            with sqlite3.connect("file:"+str(p)+"?immutable=1",uri=True) as db:
+                require(db.execute("PRAGMA integrity_check").fetchone()[0]=="ok",
+                        "GITHUB_ARCHIVED_SQLITE_INTEGRITY_FAIL")
+                model,params,manifest=db.execute(
+                    "SELECT model,parameters_sha256,manifest_sha256 FROM model_meta").fetchone()
+                expected,sha,msha=trained_params()
+                require(model==MODEL and params==sha and manifest==msha,
+                        "GITHUB_ARCHIVED_MODEL_VERSION_OR_SHA_DIFFER")
+                rows=db.execute("""SELECT id,payload_json,kickoff_utc,
+                         captured_at_utc,params_sha256 FROM forecasts
+                         WHERE model=?""",(MODEL,)).fetchall()
+                found={}
+                for fid,payload,kick,captured,p_sha in rows:
+                    obj=json.loads(payload)
+                    require(obj.get("forecast_sha256")==fid and
+                        hashobj({k:v for k,v in obj.items() if k!="forecast_sha256"})==fid
+                        and obj.get("params_sha256")==p_sha==sha
+                        and obj.get("model_version")==MODEL,
+                        "GITHUB_ARCHIVED_FORECAST_SHA_TAMPERED")
+                    found[fid]=(kick,captured,p_sha)
+                return found
+        except (sqlite3.DatabaseError,ValueError,TypeError) as exc:
+            raise Research720Error("GITHUB_ARCHIVED_SQLITE_INVALID") from exc
+
+def github_actions_artifact_proofs(db_path,*,token,now,max_runs=60):
+    """GitHub server-upload timestamp + SHA-verified forecast in archived Actions ZIP.
+
+    Exclude PR jobs; archive expires after retention. Missing/unauthorized results
+    are reported PENDING, never replaced with invented commit times or outcomes.
+    """
+    require(now.tzinfo is not None and now.utcoffset()==timedelta(0),
+            "GITHUB_ARTIFACT_PROOF_UTC_REQUIRED")
+    if not token:
+        return [],{"state":"NO_GITHUB_ACTIONS_API_TOKEN",
+                    "runs_checked":0,"artifacts_examined":0,"verified":0}
+    with connect_db(db_path) as db:
+        ensure_schema(db)
+        pending=db.execute("""SELECT id,kickoff_utc,captured_at_utc,params_sha256
+                   FROM forecasts WHERE id NOT IN
+                   (SELECT forecast_id FROM m0720_github_push_proofs)""").fetchall()
+    if not pending:
+        return [],{"state":"NO_NEW_UNATTESTED_FORECASTS",
+                    "runs_checked":0,"artifacts_examined":0,"verified":0}
+    url=f"https://api.github.com/repos/{REPO}/actions/workflows/kb3-step16-m0-720-eight-forward.yml/runs?per_page=100"
+    try:
+        data=_gh_json(url,token)
+        runs=data.get("workflow_runs",[])
+        require(isinstance(runs,list),"GITHUB_ACTIONS_RUNS_BAD_FORMAT")
+    except (urllib.error.URLError,TimeoutError,OSError,ValueError,Research720Error) as e:
+        return [],{"state":"GITHUB_ACTIONS_RUNS_UNAVAILABLE_"+type(e).__name__,
+                    "runs_checked":0,"artifacts_examined":0,"verified":0}
+    selected=[];n_artifacts=0;blocked=0;unproven={x[0]:x for x in pending}
+    # Earlier proofs have priority, even when later uploaded artifacts contain
+    # the same existing immutable forecasts.
+    valid_runs=sorted((x for x in runs
+         if x.get("status")=="completed" and x.get("conclusion")=="success"
+         and x.get("event") in ("push","schedule","workflow_dispatch")
+         and x.get("path")==".github/workflows/kb3-step16-m0-720-eight-forward.yml"
+         and isinstance(x.get("head_sha"),str) and len(x["head_sha"])==40),
+         key=lambda z:(z.get("created_at",""),z.get("id",0)))[:max_runs]
+    for run in valid_runs:
+        if not unproven:break
+        try:
+            rstart=as_utc(run["created_at"])
+            rend=as_utc(run["updated_at"])
+            if rstart>now or rend>now+timedelta(minutes=1):continue
+            artifacts=_gh_json(f"https://api.github.com/repos/{REPO}/actions/runs/{run['id']}/artifacts?per_page=100",token).get("artifacts",[])
+            for art in artifacts:
+                if art.get("name")!="KB3_STEP16_M0_720_EIGHT_LEAGUE_FREEZE_SETTLEMENT_SOURCE_EVIDENCE" or art.get("expired") is True:continue
+                server=as_utc(art["created_at"])
+                if not rstart<=server<=rend+timedelta(minutes=1):
+                    continue
+                applicable={fid:row for fid,row in unproven.items()
+                    if as_utc(row[2])<=server<=as_utc(row[1])-LEAD}
+                if not applicable:continue
+                n_artifacts+=1
+                archive=_gh_artifact_zip(art["archive_download_url"],token)
+                actual=_zip_frozen_rows(archive)
+                for fid,row in applicable.items():
+                    if actual.get(fid)==(row[1],row[2],row[3]):
+                        p={"forecast_id":fid,"model":MODEL,
+                           "github_event_id":"actions-artifact:"+str(art["id"]),
+                           "github_commit_sha":run["head_sha"],
+                           "github_server_event_utc":stamp(server),
+                           "original_forecast_sha256":fid,
+                           "source":"GITHUB_SERVER_ACTIONS_ARTIFACT_PLUS_EXACT_DB_BYTES",
+                           "audit_utc":stamp(now)}
+                        selected.append(p|{"proof_id":hashobj(p)})
+                        del unproven[fid]
+        except (urllib.error.URLError,TimeoutError,OSError,
+                Research720Error,KeyError,TypeError,ValueError) as exc:
+            blocked+=1
+            continue
+    return selected,{"state":"GITHUB_ARTIFACT_AUDIT_COMPLETED",
+                      "runs_checked":len(valid_runs),
+                      "artifacts_examined":n_artifacts,
+                      "artifact_errors":blocked,
+                      "verified":len(selected),
+                      "still_unproven":len(unproven),
+                      "server_created_at_used_not_git_author_timestamp":True}

@@ -10,7 +10,7 @@ from src.kb3_step16_m0_720_eight_forward import (
     MODEL,freeze_sqlite,trained_params,stamp,hashobj,Research720Error)
 from src.kb3_step16_m0_720_calibration import (
     append_proofs,calibrate_if_eligible,inspect_event_proofs,MIN_FIT,MIN_HOLDOUT,
-    github_events)
+    github_events,github_actions_artifact_proofs,_zip_frozen_rows)
 NOW=datetime.now(timezone.utc).replace(microsecond=0)
 P={"1":0.52,"X":0.27,"2":0.21}
 def sample(idx,params_sha,manifest_sha,*,before):
@@ -126,4 +126,66 @@ class GateTests(unittest.TestCase):
                 c.execute("UPDATE m0720_calibrators SET temperature=4")
             with self.assertRaises(sqlite3.IntegrityError):
                 c.execute("DELETE FROM m0720_github_push_proofs")
+ def test_github_artifact_server_time_exact_archived_sqlite_not_commit_date(self):
+    import io,zipfile
+    p,sha,manifest=trained_params()
+    one=sample(100,sha,manifest,before=False)
+    with tempfile.TemporaryDirectory() as td:
+        db=Path(td)/"proof-source.sqlite"
+        freeze_sqlite(db,[one],param_sha=sha,manifest_sha=manifest,now=NOW)
+        buf=io.BytesIO()
+        with zipfile.ZipFile(buf,"w",zipfile.ZIP_DEFLATED) as z:
+            z.writestr("forward_m0_720_eight/kb3_forward_eight.sqlite",db.read_bytes())
+        blob=buf.getvalue()
+        self.assertIn(one["forecast_sha256"],_zip_frozen_rows(blob))
+        rstart=as_dt(one["generated_at_utc"])-timedelta(minutes=2)
+        upload=as_dt(one["generated_at_utc"])+timedelta(minutes=1)
+        rend=as_dt(one["generated_at_utc"])+timedelta(minutes=3)
+        run={"id":919,"path":".github/workflows/kb3-step16-m0-720-eight-forward.yml",
+             "event":"push","status":"completed","conclusion":"success",
+             "head_sha":"b"*40,"created_at":stamp(rstart),"updated_at":stamp(rend)}
+        artifact={"id":5001,"name":"KB3_STEP16_M0_720_EIGHT_LEAGUE_FREEZE_SETTLEMENT_SOURCE_EVIDENCE",
+                  "created_at":stamp(upload),"expired":False,
+                  "archive_download_url":"https://api.github.com/test/zip"}
+        def api(url,token):
+            return {"workflow_runs":[run]} if "/workflows/" in url else {"artifacts":[artifact]}
+        with patch("src.kb3_step16_m0_720_calibration._gh_json",side_effect=api),patch(
+             "src.kb3_step16_m0_720_calibration._gh_artifact_zip",return_value=blob):
+            found,report=github_actions_artifact_proofs(
+                db,token="SYNTHETIC_TOKEN",now=NOW+timedelta(days=10))
+        self.assertEqual(len(found),1)
+        self.assertEqual(report["verified"],1)
+        self.assertEqual(found[0]["source"],
+                         "GITHUB_SERVER_ACTIONS_ARTIFACT_PLUS_EXACT_DB_BYTES")
+        self.assertEqual(append_proofs(db,found,now=NOW+timedelta(days=10)),1)
+        with sqlite3.connect(db) as conn:
+            rec=conn.execute("SELECT source FROM m0720_github_push_proofs").fetchone()
+            self.assertEqual(rec[0],found[0]["source"])
+ def test_github_artifact_after_kickoff_cannot_attest_prognosis(self):
+    import io,zipfile
+    p,sha,manifest=trained_params()
+    one=sample(100,sha,manifest,before=False)
+    with tempfile.TemporaryDirectory() as td:
+        db=Path(td)/"proof-source.sqlite"
+        freeze_sqlite(db,[one],param_sha=sha,manifest_sha=manifest,now=NOW)
+        buf=io.BytesIO()
+        with zipfile.ZipFile(buf,"w",zipfile.ZIP_DEFLATED) as z:
+            z.writestr("forward_m0_720_eight/kb3_forward_eight.sqlite",db.read_bytes())
+        late=as_dt(one["kickoff_utc"])+timedelta(minutes=1)
+        run={"id":929,"path":".github/workflows/kb3-step16-m0-720-eight-forward.yml",
+             "event":"push","status":"completed","conclusion":"success",
+             "head_sha":"b"*40,
+             "created_at":stamp(late-timedelta(minutes=5)),
+             "updated_at":stamp(late+timedelta(minutes=2))}
+        art={"id":5002,"name":"KB3_STEP16_M0_720_EIGHT_LEAGUE_FREEZE_SETTLEMENT_SOURCE_EVIDENCE",
+             "created_at":stamp(late),"expired":False,
+             "archive_download_url":"https://api.github.com/test/zip"}
+        def api(url,token):
+            return {"workflow_runs":[run]} if "/workflows/" in url else {"artifacts":[art]}
+        with patch("src.kb3_step16_m0_720_calibration._gh_json",side_effect=api),patch(
+             "src.kb3_step16_m0_720_calibration._gh_artifact_zip",return_value=buf.getvalue()):
+            found,report=github_actions_artifact_proofs(
+                db,token="SYNTHETIC_TOKEN",now=NOW+timedelta(days=10))
+        self.assertEqual(found,[])
+        self.assertEqual(report["verified"],0)
 if __name__=="__main__":unittest.main()

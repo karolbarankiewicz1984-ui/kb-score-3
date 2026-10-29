@@ -28,6 +28,7 @@ on:
         default: forecast
 permissions:
   contents: write
+  actions: read
 concurrency:
   group: kb3-step16-eight-league-m0-720-research-db
   cancel-in-progress: false
