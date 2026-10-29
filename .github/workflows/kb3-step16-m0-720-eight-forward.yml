@@ -1,0 +1,124 @@
+name: KB3 Step16 parallel fitted M0 720-TRAIN eight league forward research
+on:
+  pull_request:
+    paths:
+      - src/kb3_step16_m0_720_eight_forward.py
+      - scripts/step16_m0_720_eight_run.py
+      - tests/test_step16_m0_720_eight_forward.py
+      - .github/workflows/kb3-step16-m0-720-eight-forward.yml
+  push:
+    branches: [main]
+    paths:
+      - src/kb3_step16_m0_720_eight_forward.py
+      - scripts/step16_m0_720_eight_run.py
+      - tests/test_step16_m0_720_eight_forward.py
+      - .github/workflows/kb3-step16-m0-720-eight-forward.yml
+  schedule:
+    - cron: '21 6 * * *'
+    - cron: '17 8,22 * * *'
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: 'Run mode (forecast/settle)'
+        required: true
+        type: choice
+        options: [forecast, settle]
+        default: forecast
+permissions:
+  contents: write
+concurrency:
+  group: kb3-step16-eight-league-m0-720-research-db
+  cancel-in-progress: false
+jobs:
+  anti-leakage-and-data-safety:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install existing public encryption support
+        run: python -m pip install --disable-pip-version-check 'cryptography>=42,<47'
+      - name: Check research params, eight league domains, real chronology, immutable SQLite
+        run: |
+          python -m compileall -q src/kb3_step16_m0_720_eight_forward.py scripts/step16_m0_720_eight_run.py
+          python -m unittest discover -s tests -p 'test_step16_m0_720_eight_forward.py' -v
+  real-eighth-league-fitted-M0-shadow:
+    if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+    needs: anti-leakage-and-data-safety
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install already used PitchAPI SDK and source evidence encryption
+        run: python -m pip install --disable-pip-version-check 'pitchapi==0.1.6' 'cryptography>=42,<47'
+      - name: Choose mode; never run provider from pull request
+        id: mode
+        env:
+          EVENT_KIND: ${{ github.event_name }}
+          CRON: ${{ github.event.schedule }}
+          USER_MODE: ${{ inputs.mode }}
+        run: |
+          if [ "$EVENT_KIND" = workflow_dispatch ] && [ "$USER_MODE" = settle ]; then
+            MODE=settle
+          elif [ "$EVENT_KIND" = schedule ] && [ "$CRON" != "21 6 * * *" ]; then
+            MODE=settle
+          else
+            MODE=forecast
+          fi
+          echo "mode=$MODE" >> "$GITHUB_OUTPUT"
+          echo "Chosen research mode: $MODE"
+      - name: Real encrypted before-kickoff research forecast or verified postmatch
+        env:
+          PITCHAPI_API_KEY: ${{ secrets.PITCHAPI_API_KEY }}
+          RUN_MODE: ${{ steps.mode.outputs.mode }}
+        run: python -m scripts.step16_m0_720_eight_run --mode "$RUN_MODE"
+      - name: Verify full immutable independent database and no legacy DB modification
+        run: |
+          python - <<'PY'
+          import sqlite3,json
+          from pathlib import Path
+          from src.kb3_step16_m0_720_eight_forward import MODEL,trained_params
+          db=Path('data/forward_m0_720_eight/kb3_forward_eight.sqlite')
+          assert db.is_file()
+          params,sha,manifest=trained_params()
+          with sqlite3.connect(db) as cn:
+              assert cn.execute('PRAGMA integrity_check').fetchone()[0]=='ok'
+              assert cn.execute('PRAGMA foreign_key_check').fetchall()==[]
+              assert cn.execute('SELECT model,parameters_sha256,manifest_sha256 FROM model_meta').fetchall()==[(MODEL,sha,manifest)]
+              f=cn.execute('SELECT COUNT(*) FROM forecasts').fetchone()[0]
+              s=cn.execute('SELECT COUNT(*) FROM settlements').fetchone()[0]
+              assert f>=s and f>=0
+              assert cn.execute("SELECT COUNT(*) FROM forecasts WHERE league='ENG'").fetchone()[0]==0
+          print('REAL_EIGHT_LEAGUE_RESEARCH_M0',f,s,'ORIGINAL_TEST_EXCLUDED')
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: KB3_STEP16_M0_720_EIGHT_LEAGUE_FREEZE_SETTLEMENT_SOURCE_EVIDENCE
+          path: |
+            data/forward_m0_720_eight/
+            data/forecasts/m0_720_eight/
+            data/pit_sidecar/m0_720_eight/
+          retention-days: 30
+          if-no-files-found: warn
+      - name: Persist completely separate immutable research samples in private main
+        run: |
+          git config user.name 'kb3-step16-forward-bot'
+          git config user.email 'kb3-step16-forward-bot@users.noreply.github.com'
+          if test -d data/forward_m0_720_eight; then git add -f data/forward_m0_720_eight/; fi
+          if test -d data/forecasts/m0_720_eight; then git add -f data/forecasts/m0_720_eight/; fi
+          if test -d data/pit_sidecar/m0_720_eight; then git add -f data/pit_sidecar/m0_720_eight/; fi
+          if git diff --cached --quiet; then
+            echo 'No new independent M0-720 research files.'
+          else
+            git commit -m 'kb3 step16: 8 league fixed M0-720 real pregame and result samples'
+            git pull --rebase origin main
+            git push origin HEAD:main
+          fi
