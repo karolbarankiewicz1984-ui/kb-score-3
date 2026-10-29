@@ -9,6 +9,7 @@
 - **[USTALENIA WIĄŻĄCE — ADR 29.10.2026: bieżący M0, dane PIT, prognozy, magazyny i kalibracja 100+50](docs/ADR_2026-10-29_FORWARD_M0_PIT_CALIBRATION_STORAGE.md)** — sprawdzać przed każdą zmianą KB Score 3.0; odróżnia rzeczywiste wdrożenie od planu. 
 - [29.10.2026 — rzeczywisty audyt 3 lig PitchAPI i kolektor danych: LaLiga, Serie A, Bundesliga](docs/STEP14_PITCHAPI_THREE_LEAGUE_LIVE_AUDIT_AND_CAPTURE_2026-10-29.md) (test 13 + 43 żądania, zaszyfrowane oryginały, bez TEST/kalibracji)
 - [29.10.2026 — SQLite i prawdziwe przedmeczowe M0 121+38, wersjonowane append-only](docs/STEP14_LIVE_M0_SQLITE_121_38_FORWARD_FREEZE_2026-10-29.md)
+- [29.10.2026 — pierwsze 12 rzeczywistych M0 Elo+Poisson 1/X/2 SHADOW zamrożonych przed kickoff](docs/STEP14_M0_REAL_PREMATCH_1X2_SHADOW_2026-10-29.md) (nieprzetrenowane, niekalibrowane)
 - [PLAN — mapa wszystkich 29 kroków](docs/PLAN.md)
 - [Krok 12 — rzeczywisty indeks 1520 meczów i kopia Google Drive (stan w trakcie prac)](docs/STEP_12_REAL_INDEX_2026-10-26.md)
 - [Krok 12 — dokumentacja metody TRAIN/VALIDATION/TEST](docs/STEP_12_PROGRESS.md)
