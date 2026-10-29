@@ -1,0 +1,87 @@
+name: KB3 Step14 original 2025 native IDs and independent xG research features
+on:
+  pull_request:
+    paths:
+      - 'scripts/step14_fplcore_native_2025_crosswalk_semantics.py'
+      - 'scripts/step14_fplcore_2025_extended_field_recovery.py'
+      - 'tests/test_step14_fplcore_native_2025_extra_features.py'
+      - '.github/workflows/kb3-step14-2025-native-xg-extended-recovery.yml'
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/kb3-step14-2025-native-xg-extended-recovery.yml'
+      - 'scripts/step14_fplcore_native_2025_crosswalk_semantics.py'
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: kb3-step14-2025-native-xg-expansion
+  cancel-in-progress: false
+jobs:
+  real-native-crosswalk-xg-and-partial-feature-recovery:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Test provenance and missingness
+        run: |
+          python -m compileall -q scripts/step14_fplcore_native_2025_crosswalk_semantics.py scripts/step14_fplcore_2025_extended_field_recovery.py
+          python -m unittest discover -s tests -p 'test_step14_fplcore_native_2025_extra_features.py' -v
+          python -m unittest discover -s tests -p 'test_step14_final_gate14_recheck.py' -v
+          python -m unittest discover -s tests -p 'test_step14_pitchapi_xg_semantics.py' -v
+      - name: Reconstruct historical witnessed public FORM5 10 15 home away and masks
+        run: |
+          python -m scripts.step14_fplcore_2025_extended_field_recovery --out data/audits/STEP14_2025_FPLCORE_EXTENDED_121_38_PARTIAL_2026-10-29.json
+      - name: Install existing PitchAPI SDK
+        run: python -m pip install --disable-pip-version-check 'pitchapi==0.1.6'
+      - name: Real 2025 original native fixture and prior xG source comparison
+        env:
+          PITCHAPI_API_KEY: ${{ secrets.PITCHAPI_API_KEY }}
+        run: |
+          python -m scripts.step14_fplcore_native_2025_crosswalk_semantics --output data/audits/STEP14_2025_FPLCORE_NATIVE_18_XG_SEMANTICS_2026-10-29.json
+      - name: Validate no original M1 admission or TEST use
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          p=Path('data/audits')
+          n=json.loads((p/'STEP14_2025_FPLCORE_NATIVE_18_XG_SEMANTICS_2026-10-29.json').read_text())
+          f=json.loads((p/'STEP14_2025_FPLCORE_EXTENDED_121_38_PARTIAL_2026-10-29.json').read_text())
+          assert n['actual_PitchAPI_native_fixture_ID_exact_side_and_kickoff_joins'] + len(n['public_targets_without_exact_native_match'])==18
+          assert f['historical_public_targets_with_research_values']==18
+          assert f['original_Step11_field_name_count']==121 and f['original_Step11_missing_mask_name_count']==38
+          assert not n['original_M1_training_allowed'] and not f['original_M1_fit_allowed']
+          assert n['official_121_plus_38_PIT_validation_eligible']==0
+          assert n['original_GATE14']=='PENDING' and f['GATE14']=='PENDING'
+          assert n['no_TEST_labels_or_target_scores_or_odds_read'] and not f['all_target_scores_or_TEST_labels_read']
+          print('NATIVE_JOIN',n['actual_PitchAPI_native_fixture_ID_exact_side_and_kickoff_joins'],
+                'RESEARCH_FIELDS',len(f['recoverable_research_numeric_fields_with_any_witnessed_value']),
+                'SLOTS',f['non_null_research_numeric_slots'],
+                'XG',n['xg_semantic_retrospective_2025_same_finished_fixture_test'])
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: KB3_2025_18_NATIVE_JOIN_XG_SEMANTICS_REMAINING_FEATURES
+          path: |
+            data/audits/STEP14_2025_FPLCORE_NATIVE_18_XG_SEMANTICS_2026-10-29.json
+            data/audits/STEP14_2025_FPLCORE_EXTENDED_121_38_PARTIAL_2026-10-29.json
+          retention-days: 90
+          if-no-files-found: error
+      - name: Archive output to main without extra encryption
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        run: |
+          git config user.name 'kb3-step14-audit-bot'
+          git config user.email 'kb3-step14-audit-bot@users.noreply.github.com'
+          git add -f data/audits/STEP14_2025_FPLCORE_NATIVE_18_XG_SEMANTICS_2026-10-29.json data/audits/STEP14_2025_FPLCORE_EXTENDED_121_38_PARTIAL_2026-10-29.json
+          if git diff --cached --quiet; then
+            echo 'Already present'
+          else
+            git commit -m 'step14: store witnessed original 18 native joins and remaining research features'
+            git pull --rebase origin main
+            git push origin HEAD:main
+          fi
