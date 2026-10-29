@@ -1,0 +1,85 @@
+name: KB3 Step14 complete 1140x159 PIT recovery and real CatBoost M1 decision
+on:
+  pull_request:
+    paths:
+      - 'scripts/step14_final_gate14_recheck.py'
+      - 'tests/test_step14_final_gate14_recheck.py'
+      - '.github/workflows/kb3-step14-final-five-stage-gate.yml'
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/kb3-step14-final-five-stage-gate.yml'
+      - 'scripts/step14_final_gate14_recheck.py'
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: kb3-step14-five-stage-admission
+  cancel-in-progress: false
+jobs:
+  real-public-source-and-full-159-field-audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Strict negative controls against data leakage and fake historic timestamps
+        run: |
+          python -m compileall -q scripts/step14_final_gate14_recheck.py
+          python -m unittest discover -s tests -p 'test_step14_final_gate14_recheck.py' -v
+          python -m unittest discover -s tests -p 'test_step14_validation_2025_source_harvest.py' -v
+      - name: Check five real archived source candidates for season 2025-26 and 2024-25
+        run: |
+          python -m scripts.step14_validation_2025_fpl_historic_source_harvest --out "$RUNNER_TEMP/STEP14_2025_GHARCHIVE_SOURCE_RECHECK.json"
+      - name: Create full original 1140 x 159 PIT field matrix and enforce honest GATE14
+        run: |
+          python -m scripts.step14_final_gate14_recheck \
+            --source "$RUNNER_TEMP/STEP14_2025_GHARCHIVE_SOURCE_RECHECK.json" \
+            --report data/audits/STEP14_FINAL_1140x159_PIT_GATE_2026-10-29.json \
+            --matrix data/audits/STEP14_FINAL_1140x159_PIT_MATRIX_2026-10-29.jsonl.gz
+          cp "$RUNNER_TEMP/STEP14_2025_GHARCHIVE_SOURCE_RECHECK.json" data/audits/STEP14_2025_REAL_ARCHIVE_RECHECK_2026-10-29.json
+          python - <<'PY'
+          import gzip,json,hashlib
+          from pathlib import Path
+          p=Path('data/audits/STEP14_FINAL_1140x159_PIT_GATE_2026-10-29.json')
+          r=json.loads(p.read_text())
+          q=Path('data/audits/STEP14_FINAL_1140x159_PIT_MATRIX_2026-10-29.jsonl.gz')
+          assert hashlib.sha256(q.read_bytes()).hexdigest()==r['matrix_gzip_sha256']
+          with gzip.open(q,'rt',encoding='utf-8') as f:
+              rows=[json.loads(line) for line in f]
+          assert len(rows)==1140 and r['matrix_evidence_slots']==181260
+          assert r['original_full_PIT_train_rows']==0 and r['original_full_PIT_validation_rows']==0
+          assert r['original_PitchAPI_historical_xg_first_available_at'] is None
+          assert r['allow_M1_fit'] is False and r['gate14']=='PENDING'
+          assert r['original_heldout_TEST_labels_read'] is False
+          assert r['real_CatBoost_M1_model_exported'] is False
+          print('REAL_1140x159_PIT_MATRIX_AUDITED; CATBOOST_FIT_CORRECTLY_BLOCKED')
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: STEP14_REAL_1140x159_2025_XG_M1_FINAL_GATE_AUDIT
+          path: |
+            data/audits/STEP14_FINAL_1140x159_PIT_GATE_2026-10-29.json
+            data/audits/STEP14_FINAL_1140x159_PIT_MATRIX_2026-10-29.jsonl.gz
+            data/audits/STEP14_2025_REAL_ARCHIVE_RECHECK_2026-10-29.json
+          retention-days: 90
+          if-no-files-found: error
+      - name: Preserve actual source and matrix audit on private main (no encryption)
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        run: |
+          git config user.name "kb3-step14-audit-bot"
+          git config user.email "kb3-step14-audit-bot@users.noreply.github.com"
+          git add -f data/audits/STEP14_FINAL_1140x159_PIT_GATE_2026-10-29.json
+          git add -f data/audits/STEP14_FINAL_1140x159_PIT_MATRIX_2026-10-29.jsonl.gz
+          git add -f data/audits/STEP14_2025_REAL_ARCHIVE_RECHECK_2026-10-29.json
+          if git diff --cached --quiet; then
+            echo "Already recorded"
+          else
+            git commit -m 'step14: archive real 2025 evidence attempt and full honest 1140x159 M1 admission audit'
+            git pull --rebase origin main
+            git push origin HEAD:main
+          fi
