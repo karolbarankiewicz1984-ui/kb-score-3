@@ -1,0 +1,106 @@
+name: KB3 Step17 eight-league real native xG predecessor shadow (NO MODEL FIT)
+on:
+  pull_request:
+    paths:
+      - src/kb3_step17_xg_capture.py
+      - scripts/step17_native_xg_eight_run.py
+      - tests/test_step17_xg_capture.py
+      - .github/workflows/kb3-step17-native-xg-eight-daily.yml
+  push:
+    branches: [main]
+    paths:
+      - src/kb3_step17_xg_capture.py
+      - scripts/step17_native_xg_eight_run.py
+      - tests/test_step17_xg_capture.py
+      - .github/workflows/kb3-step17-native-xg-eight-daily.yml
+  schedule:
+    - cron: '41 6 * * *'
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: kb3-step17-eight-native-xg-immutable-research
+  cancel-in-progress: false
+jobs:
+  offline-xg-semantic-and-time-audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install original source archive crypto
+        run: python -m pip install --disable-pip-version-check 'cryptography>=42,<47'
+      - name: Verify eight identities, exact shots vs stats, temporal lags, no xG cheating
+        run: |
+          python -m compileall -q src/kb3_step17_xg_capture.py scripts/step17_native_xg_eight_run.py
+          python -m unittest discover -s tests -p 'test_step17_xg_capture.py' -v
+          python -m unittest discover -s tests -p 'test_step14_pitchapi_xg_semantics.py' -v
+  real-eight-native-xg-source:
+    if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+    needs: offline-xg-semantic-and-time-audit
+    runs-on: ubuntu-latest
+    timeout-minutes: 22
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install existing provider SDK and public evidence encryption
+        run: python -m pip install --disable-pip-version-check 'pitchapi==0.1.6' 'cryptography>=42,<47'
+      - name: Fetch at most 33 existing-plan PitchAPI requests, independently encrypted
+        env:
+          PITCHAPI_API_KEY: ${{ secrets.PITCHAPI_API_KEY }}
+        run: python -m scripts.step17_native_xg_eight_run
+      - name: Verify true original encrypted sources, pure eight league, no fitting
+        run: |
+          python - <<'PY'
+          import json,sqlite3,hashlib
+          from datetime import datetime,timezone
+          from pathlib import Path
+          from src.kb3_step17_xg_capture import DB,ARCHIVE,MAX_CALLS
+          day=datetime.now(timezone.utc).date().isoformat()
+          d=ARCHIVE/day
+          info=json.loads((d/'XG_READINESS_RECEIPT.json').read_text())
+          manifest=json.loads((d/'XG_SOURCE.manifest.json').read_text())
+          assert info['network_calls']<=MAX_CALLS
+          assert len(info['leagues'])==8 and 'ENG' not in info['leagues']
+          assert info['training_ready'] is False
+          assert info['trained_xg_catboost_exists'] is False
+          assert info['original_m0_modified'] is False
+          assert info['protected_premier_league_TEST_2026_27_requested'] is False
+          assert hashlib.sha256((d/'XG_SOURCE.enc').read_bytes()).hexdigest()==manifest['ciphertext_sha256']==info['encrypted_source_sha256']
+          with sqlite3.connect(DB) as cn:
+              assert cn.execute('PRAGMA integrity_check').fetchone()[0]=='ok'
+              n=cn.execute('SELECT COUNT(*) FROM observed_native_xg').fetchone()[0]
+              assert n==info['cumulative_verified_xg_matches']
+          print('STEP17_ACTUAL_NATIVE_XG_OBSERVATIONS',n,
+                'NEW',info['new_shots_stats_xg_verified'],
+                'FORM5_READY',info['future_form5_coverage']['complete_last5_both_team_xg'],
+                'NO_XG_CATBOOST_FITTED')
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: KB3_STEP17_EIGHT_NATIVE_XG_ENCRYPTED_SHADOW
+          path: |
+            data/forward_step17_xg_eight/
+            data/pit_sidecar/step17_native_xg_eight/
+          retention-days: 30
+          if-no-files-found: warn
+      - name: Persist separate append-only native xG research on private main
+        run: |
+          git config user.name kb3-step17-xg-bot
+          git config user.email kb3-step17-xg-bot@users.noreply.github.com
+          if test -d data/forward_step17_xg_eight; then git add -f data/forward_step17_xg_eight/; fi
+          if test -d data/pit_sidecar/step17_native_xg_eight; then git add -f data/pit_sidecar/step17_native_xg_eight/; fi
+          if git diff --cached --quiet; then
+            echo 'No new native eight-league xG source proofs'
+          else
+            git commit -m 'KB3 step17: real eight-league independent observed native xG evidence, NO fit'
+            git pull --rebase origin main
+            git push origin HEAD:main
+          fi
