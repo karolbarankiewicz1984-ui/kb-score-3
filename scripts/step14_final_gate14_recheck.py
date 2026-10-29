@@ -188,10 +188,10 @@ def write(report, rows, out, matrix):
         raise Gate14EvidenceError("NO_OVERWRITE_OF_PRIOR_EVIDENCE")
     with gzip.open(grid, "wt", encoding="utf-8", compresslevel=9) as f:
         for row in rows:
-            f.write(json.dumps(row, sort_keys=True, ensure_ascii=False)+"\\n")
+            f.write(json.dumps(row, sort_keys=True, ensure_ascii=False)+"\n")
     # Note: gzip transport compresses the matrix, it does not encrypt it.
     report["matrix_gzip_sha256"] = hashlib.sha256(grid.read_bytes()).hexdigest()
-    target.write_text(json.dumps(report, sort_keys=True, ensure_ascii=False, indent=2)+"\\n",
+    target.write_text(json.dumps(report, sort_keys=True, ensure_ascii=False, indent=2)+"\n",
                       encoding="utf-8")
 
 def main():
