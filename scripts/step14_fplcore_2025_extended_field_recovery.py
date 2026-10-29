@@ -106,7 +106,7 @@ def _candidate(target,all_2025,history,source):
         relevant=sorted([p for p in all_2025 if p["ko"]<target["ko"]
                         and team in (p["home"],p["away"])],
                         key=lambda p:p["ko"],reverse=True)
-        observed=[history["prematch_previous_completed_games"].get(p["key"]) for p in relevant]
+        observed=[history.get(p["key"]) for p in relevant]
         all_complete=all(v is not None for v in observed)
         if all_complete:
             values[side+"_games_available"]=len(relevant)
@@ -121,7 +121,7 @@ def _candidate(target,all_2025,history,source):
         for category in ("all","venue"):
             for n in (5,10,15):
                 d=_team_window(target,team,category,n,all_2025,
-                    history["prematch_previous_completed_games"],source["witness"])
+                    history,source["witness"])
                 stem=f"{side}_{category}_{n}"
                 for fld in ("n","points_avg","gf_avg","ga_avg","opponent_elo_avg",
                             "xg_n","xg_avg","xga_n","xga_avg"):
