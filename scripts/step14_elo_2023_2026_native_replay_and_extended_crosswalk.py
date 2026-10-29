@@ -193,6 +193,7 @@ def validate_expansion(rows,root=ROOT):
         if _utc(target["source_publication_witness_utc"])>=row["kickoff"]:
             raise EloReconstructionError("OLD_SOURCE_NOT_BEFORE_NATIVE_TARGET")
         matched.append({"native_fixture_id":row["fixture_id"],
+            "public_pair":[key[0],key[1]],
             "native_home_team_id":row["home_id"],"native_away_team_id":row["away_id"],
             "native_kickoff_utc":target["target_kickoff_utc"],
             "source_SHA":target["evidence_source_commit"],
