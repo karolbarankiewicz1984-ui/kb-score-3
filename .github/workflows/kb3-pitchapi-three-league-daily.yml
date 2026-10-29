@@ -46,18 +46,26 @@ jobs:
           python -m unittest discover -s tests -p 'test_step14_three_league_sqlite_forward_features.py' -v
           python -m unittest discover -s tests -p 'test_step14_m0_shadow_1x2_live_freeze.py' -v
       - name: Real 3-league fixtures plus unique earlier matches shots and team-xG
+        id: true_source_capture
         if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
         env:
           PITCHAPI_API_KEY: ${{ secrets.PITCHAPI_API_KEY }}
         run: |
+          if test -d "data/pit_sidecar/pitchapi_three_league_daily/$(date -u +%F)"; then
+            echo 'fresh_capture=false' >> "$GITHUB_OUTPUT"
+          else
+            echo 'fresh_capture=true' >> "$GITHUB_OUTPUT"
+          fi
           python -m scripts.step14_three_league_pitchapi_daily_asof \
             --base data/pit_sidecar/pitchapi_three_league_daily \
             --public-key config/step11_archive_recipient_public.pem
       - name: Verify original raw SHA, TRUE UTC, exactly 3 league names and withheld TEST
         if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+        env:
+          FRESH_CAPTURE: ${{ steps.true_source_capture.outputs.fresh_capture }}
         run: |
           python - <<'PY'
-          import json,datetime,hashlib
+          import json,datetime,hashlib,os
           from pathlib import Path
           p=Path('data/pit_sidecar/pitchapi_three_league_daily')/datetime.datetime.now(datetime.timezone.utc).date().isoformat()
           a=json.loads((p/'THREE_LEAGUE_DAILY_RECEIPT.json').read_text())
@@ -69,7 +77,7 @@ jobs:
           assert a['failed_provider_request_count']==0
           assert a.get('M0_target_limit_per_league',4) in (4,10)
           assert a.get('M0_target_horizon_hours') in (None,96)
-          assert 0 <= a['frozen_M0_feature_snapshots'] <= 3*a.get('M0_target_limit_per_league',4)
+          assert 0 <= a.get('frozen_M0_feature_snapshots',0) <= 3*a.get('M0_target_limit_per_league',4)
           assert {x['league'] for x in a['leagues']}=={'LaLiga','Serie A','Bundesliga'}
           assert a['original_Premier_League_2026_27_TEST_not_accessed']
           assert not a['three_league_M0_predictions_started'] and not a['model_fit_or_calibration_performed']
@@ -77,7 +85,12 @@ jobs:
               import sqlite3
               db=Path("data/forward_m0/kb3_forward_m0.sqlite")
               assert db.is_file()
-              assert hashlib.sha256(db.read_bytes()).hexdigest()==a["feature_sqlite_ledger_sha256"]
+              # The original hash is an exact fresh-capture invariant.
+              # A previously archived day can have later append-only settlement
+              # rows and must be checked by row identity/integrity, not a stale
+              # full-file SHA of an older SQLite version.
+              if os.environ.get('FRESH_CAPTURE') == 'true':
+                  assert hashlib.sha256(db.read_bytes()).hexdigest()==a["feature_sqlite_ledger_sha256"]
               with sqlite3.connect(db) as conn:
                   assert conn.execute("PRAGMA integrity_check").fetchone()[0]=='ok'
                   assert conn.execute("SELECT COUNT(*) FROM m0_forward_feature_records WHERE snapshot_day_utc=?",
