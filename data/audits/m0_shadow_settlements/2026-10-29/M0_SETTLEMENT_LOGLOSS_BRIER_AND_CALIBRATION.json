@@ -1,0 +1,22 @@
+{
+  "automatic_production_calibration": false,
+  "calibration_reviews": [
+    {
+      "calibration_training_min": 100,
+      "later_independent_holdout_min": 50,
+      "n_unique_resolved": 0,
+      "needed_for_first_fit": 100,
+      "production_approved": false,
+      "state": "COLLECTING"
+    }
+  ],
+  "individual_settlements": [],
+  "newly_settled": 0,
+  "now_utc": "2026-10-29T09:15:51.041940Z",
+  "original_M1_gate14_pass": false,
+  "original_heldout_PL_TEST_accessed": false,
+  "remaining_pending": 0,
+  "report_sha256": "3fc13295bd45707abedc91eb72e8b5351de87acf37bef5384e3adf5217a64463",
+  "schema": "kb3-m0-real-shadow-settlement-logloss-brier-v1",
+  "total_settled": 0
+}
