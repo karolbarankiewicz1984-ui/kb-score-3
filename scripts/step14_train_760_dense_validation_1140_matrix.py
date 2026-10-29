@@ -261,10 +261,16 @@ def run(root=ROOT,*,native_override=None,old_sources_override=None):
                             targetval=old["prematch_public_FORM5"][side][
                                 ("alternative_"+suffix) if suffix.startswith("xg") else suffix]
                             got=vals[f"{side}_all_5_{suffix}"]
-                            if got is None or abs(targetval-got)>0.00001:
+                            if (targetval is None and got is not None) or (
+                                targetval is not None and (got is None or abs(targetval-got)>0.00001)):
                                 raise RecoverError("2025_OLD_PREMATCH_NUMERIC_SOURCE_CHANGED")
                     used_validation.add(native)
-                    source={"status":"PINNED_HISTORIC_ALTERNATIVE_PUBLIC_F5_XG5",
+                    both_xg5=all(vals.get(f"{side}_all_5_xg_avg") is not None
+                                 and vals.get(f"{side}_all_5_xga_avg") is not None
+                                 for side in ("home","away"))
+                    source={"status":("PINNED_HISTORIC_ALTERNATIVE_PUBLIC_F5_XG5"
+                                      if both_xg5 else
+                                      "PINNED_HISTORIC_ALTERNATIVE_PUBLIC_F5_XG_MISSING"),
                             "sha":src["commit"],"witness_utc":src["witness"],
                             "provider":"FPL-Core-Insights"}
             if set(vals)!=EXPECTED_FEATURES or set(masks)!=EXPECTED_MISSING:
@@ -296,6 +302,10 @@ def run(root=ROOT,*,native_override=None,old_sources_override=None):
     counts={k:sum(1 for row in output if row["partition"]==k
               and row["history_public_asof_source"]["status"].startswith("PINNED"))
             for k in ("TRAIN","VALIDATION")}
+    validation_full_xg5=sum(
+        r["partition"]=="VALIDATION" and
+        r["history_public_asof_source"]["status"]=="PINNED_HISTORIC_ALTERNATIVE_PUBLIC_F5_XG5"
+        for r in output)
     reported={
       "schema":SCHEMA,"original_frozen_760_TRAIN_380_VALIDATION":dict(part),
       "real_api_requests":api_calls,"original_native_exact_ID_sides_and_time":len(output),
@@ -304,7 +314,8 @@ def run(root=ROOT,*,native_override=None,old_sources_override=None):
           sum(v["quarantined_invalid_completed_result_rows"] for v in old_src),
       "historic_validation_source_versions_verified":25,
       "distinct_original_TRAIN_with_historical_public_result_FORM5":counts["TRAIN"],
-      "distinct_original_VALIDATION_with_historical_alternative_xG5":counts["VALIDATION"],
+      "distinct_original_VALIDATION_with_historical_public_result_FORM5":counts["VALIDATION"],
+      "distinct_original_VALIDATION_with_historical_alternative_xG5":validation_full_xg5,
       "new_validation_targets_beyond_prior_57":counts["VALIDATION"]-57,
       "public_source_nonnull_numeric_slots_by_partition":dict(source_fields),
       "public_source_numerics_are_alternative_to_original_PitchAPI":True,
