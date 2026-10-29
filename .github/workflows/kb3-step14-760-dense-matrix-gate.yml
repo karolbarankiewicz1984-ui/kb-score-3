@@ -1,0 +1,109 @@
+name: KB3 Step14 phases 1 2 3 4 real 760 TRAIN plus dense VALIDATION plus GATE14
+on:
+  pull_request:
+    paths:
+      - 'scripts/step14_2025_dense_25_historical_witnesses.py'
+      - 'scripts/step14_train_760_dense_validation_1140_matrix.py'
+      - 'scripts/step14_train_validation_final_m1_fit_gate.py'
+      - 'tests/test_step14_760_train_dense_gate.py'
+      - '.github/workflows/kb3-step14-760-dense-matrix-gate.yml'
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/kb3-step14-760-dense-matrix-gate.yml'
+      - 'scripts/step14_train_760_dense_validation_1140_matrix.py'
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: kb3-step14-760-train-25-dense-validation-final-gate
+  cancel-in-progress: false
+jobs:
+  actual-760-training-sources-25-validation-121-38-and-final-M1-gate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Test no source-date manipulation, no future match and original gate isolation
+        run: |
+          python -m compileall -q scripts/step14_2025_dense_25_historical_witnesses.py scripts/step14_train_760_dense_validation_1140_matrix.py scripts/step14_train_validation_final_m1_fit_gate.py
+          python -m unittest discover -s tests -p 'test_step14_760_train_dense_gate.py' -v
+          python -m unittest discover -s tests -p 'test_step14_2025_2023_elo_extended_sources.py' -v
+          python -m unittest discover -s tests -p 'test_step14_final_gate14_recheck.py' -v
+      - name: PHASE 2 historical VALIDATION source densification, real old 25 server-witnessed commits
+        run: |
+          python -m scripts.step14_2025_dense_25_historical_witnesses \
+            --out data/audits/STEP14_2025_FPLCORE_DENSE_25_INDEPENDENT_ASOF_2026-10-29.json
+      - name: Install original SDK with existing PitchAPI access
+        run: python -m pip install --disable-pip-version-check 'pitchapi==0.1.6'
+      - name: PHASES 1 and 3 original 760 TRAIN from 2023 2024 old evidence, plus dense 2025 380 VALIDATION and separate 1140 real Elo
+        env:
+          PITCHAPI_API_KEY: ${{ secrets.PITCHAPI_API_KEY }}
+        run: |
+          python -m scripts.step14_train_760_dense_validation_1140_matrix \
+            --out data/audits/STEP14_760_TRAIN_DENSE_VALIDATION_121_38_SOURCE_MATRIX_SUMMARY_2026-10-29.json \
+            --matrix data/audits/STEP14_760_TRAIN_DENSE_VALIDATION_1140x159_RESEARCH_2026-10-29.jsonl.gz
+      - name: PHASE 4 real original CatBoost M1 fit admission GATE14
+        run: |
+          python -m scripts.step14_train_validation_final_m1_fit_gate \
+            --source data/audits/STEP14_760_TRAIN_DENSE_VALIDATION_121_38_SOURCE_MATRIX_SUMMARY_2026-10-29.json \
+            --matrix data/audits/STEP14_760_TRAIN_DENSE_VALIDATION_1140x159_RESEARCH_2026-10-29.jsonl.gz \
+            --out data/audits/STEP14_760_DENSE_FINAL_ORIGINAL_M1_FIT_GATE_2026-10-29.json
+      - name: Verify 760 plus 380 source matrix actual contents, original M1 NOT trained
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import gzip,hashlib,json
+          d=Path('data/audits')
+          source=json.loads((d/'STEP14_760_TRAIN_DENSE_VALIDATION_121_38_SOURCE_MATRIX_SUMMARY_2026-10-29.json').read_text())
+          dense=json.loads((d/'STEP14_2025_FPLCORE_DENSE_25_INDEPENDENT_ASOF_2026-10-29.json').read_text())
+          gate=json.loads((d/'STEP14_760_DENSE_FINAL_ORIGINAL_M1_FIT_GATE_2026-10-29.json').read_text())
+          matrix=d/'STEP14_760_TRAIN_DENSE_VALIDATION_1140x159_RESEARCH_2026-10-29.jsonl.gz'
+          with gzip.open(matrix,'rt') as f:
+              records=[json.loads(x) for x in f if x.strip()]
+          assert len(records)==1140
+          assert source['original_frozen_760_TRAIN_380_VALIDATION']=={'TRAIN':760,'VALIDATION':380}
+          assert gate['original_TRAIN_total']==760 and gate['original_VALIDATION_total']==380
+          assert source['distinct_original_VALIDATION_with_historical_alternative_xG5']==dense['historically_public_source_FORM5_targets']
+          assert source['distinct_original_TRAIN_with_historical_public_result_FORM5']==gate['historically_published_alternative_TRAIN_FORM5']
+          assert dense['all_original_57_preserved'] and dense['historically_public_source_FORM5_targets']>=57
+          assert not source['official_fit_M1_allowed'] and not gate['CatBoost_original_M1_fitted']
+          assert source['GATE14']=='PENDING' and gate['GATE14']=='PENDING'
+          assert not gate['protected_TEST_2026_27_used']
+          assert source['matrix_gzip_sha256']==hashlib.sha256(matrix.read_bytes()).hexdigest()
+          print('TRAIN_PUBLIC_FORM5',source['distinct_original_TRAIN_with_historical_public_result_FORM5'],
+                'VALIDATION_PUBLIC_ALTERNATIVE_XG5',dense['historically_public_source_FORM5_targets'],
+                'NEW_OVER_57',dense['new_distinct_targets_beyond_57'],
+                'ORIGINAL_MODEL_GATE14',gate['GATE14'])
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: KB3_STEP14_REAL_TRAIN760_DENSE_VALIDATION_1140x159_AND_FINAL_GATE
+          path: |
+            data/audits/STEP14_2025_FPLCORE_DENSE_25_INDEPENDENT_ASOF_2026-10-29.json
+            data/audits/STEP14_760_TRAIN_DENSE_VALIDATION_121_38_SOURCE_MATRIX_SUMMARY_2026-10-29.json
+            data/audits/STEP14_760_TRAIN_DENSE_VALIDATION_1140x159_RESEARCH_2026-10-29.jsonl.gz
+            data/audits/STEP14_760_DENSE_FINAL_ORIGINAL_M1_FIT_GATE_2026-10-29.json
+          retention-days: 90
+          if-no-files-found: error
+      - name: Archive the four real final artifacts into private main
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        run: |
+          git config user.name 'kb3-step14-audit-bot'
+          git config user.email 'kb3-step14-audit-bot@users.noreply.github.com'
+          git add -f data/audits/STEP14_2025_FPLCORE_DENSE_25_INDEPENDENT_ASOF_2026-10-29.json
+          git add -f data/audits/STEP14_760_TRAIN_DENSE_VALIDATION_121_38_SOURCE_MATRIX_SUMMARY_2026-10-29.json
+          git add -f data/audits/STEP14_760_TRAIN_DENSE_VALIDATION_1140x159_RESEARCH_2026-10-29.jsonl.gz
+          git add -f data/audits/STEP14_760_DENSE_FINAL_ORIGINAL_M1_FIT_GATE_2026-10-29.json
+          if git diff --cached --quiet; then
+            echo 'Already saved'
+          else
+            git commit -m 'step14: persist real 760 public source TRAIN 25 dense validation 1140x159 and M1 audit'
+            git pull --rebase origin main
+            git push origin HEAD:main
+          fi
