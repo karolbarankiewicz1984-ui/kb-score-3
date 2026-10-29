@@ -1,0 +1,2470 @@
+{
+  "GATE14": "PENDING",
+  "M1_trained": false,
+  "TEST_2026_27_examined": false,
+  "distinct_alternative_source_xg5_targets": 57,
+  "full_native_121_38_M1_PIT_rows_certified": 0,
+  "historical_versions_count": 14,
+  "new_source_versions_count": 10,
+  "new_unique_targets_beyond_original_18": 39,
+  "old_historic_GitHub_server_source_clocks_verified": true,
+  "original_confirmed_18_preserved": true,
+  "original_native_fixture_IDs_revalidated_for_new_targets": false,
+  "public_no_score_reference_size": 380,
+  "schema": "kb3-step14-2025-fplcore-extended-old-GitHub-witnessed-public-FORM5-xG-v1",
+  "source_feature_semantics_not_original_native_PitchAPI": true,
+  "source_repo": "olbauday/FPL-Core-Insights",
+  "sources": [
+    {
+      "alternative_xG5_complete_future_targets": 0,
+      "exact_public_reference_prior_rows": 29,
+      "gameweek_file_sha256": {
+        "1": "f857bc9cc749b6bcd991bfe45ceda42bd6fee89ad6b34083259f97261aa7d9cd",
+        "2": "ed4c57467f8dd99d8a3cc24d56596184ee69711d9c491667cd98877df4061fa3",
+        "3": "2d218d8da13e893eee120c12446f14398c872c251bfe36e92eb4a20498794586",
+        "4": "345b3ef4385926dffa6c03491afd4f3f744e4b4ca436969ba18e615d6fd6f50a"
+      },
+      "public_FORM5_future_targets": 0,
+      "quarantined_gameweeks": {
+        "3": "FUTURE_OR_RECENT_FT_IN_OLD_SNAPSHOT_QUARANTINED"
+      },
+      "sha": "35932486961bb9a7eb8fbb710ad33ec21a28b1da",
+      "team_file_sha256": "033e9ba83a23db656869959754d342f515a5167528db8414be13ff8a8718ed34",
+      "valid_prior_premier_league_rows": 30,
+      "witness": {
+        "commit": "35932486961bb9a7eb8fbb710ad33ec21a28b1da",
+        "github_run_id": 17822709032,
+        "proof": "GITHUB_SERVER_ACTIONS_MAIN_HEAD_SHA_EXISTED_BY",
+        "provider_original_xg_first_published_verified": false,
+        "repo": "olbauday/FPL-Core-Insights",
+        "run_url": "https://github.com/olbauday/FPL-Core-Insights/actions/runs/17822709032",
+        "server_created_at_utc": "2025-09-18T08:24:28Z"
+      }
+    },
+    {
+      "alternative_xG5_complete_future_targets": 10,
+      "exact_public_reference_prior_rows": 98,
+      "gameweek_file_sha256": {
+        "1": "f857bc9cc749b6bcd991bfe45ceda42bd6fee89ad6b34083259f97261aa7d9cd",
+        "10": "cbfe567ca477eed175c4fedd4c3b275a9654a01fdbe3b2737f5e6aa707e85528",
+        "2": "ed4c57467f8dd99d8a3cc24d56596184ee69711d9c491667cd98877df4061fa3",
+        "3": "6b9963c9d17082d48920cb0fb6d8a9b504944485669ed3fba6ccafc900b0352e",
+        "4": "345b3ef4385926dffa6c03491afd4f3f744e4b4ca436969ba18e615d6fd6f50a",
+        "5": "d50c050f82190fd5fde1b1d57cdc5dc086daed1854a86a5d997f2db6b50c6b7d",
+        "6": "3f741e62ec596b78af4844a6522bcf10dcb84408e3944a304c13d4e617802b92",
+        "7": "7161b1066706d728425adca16c2a22c25893430a3928038bdf792e623e983732",
+        "8": "4ea008bba12bd8cec7b76c6e5c02067dca81bb4f52d9ae99aa0e21e79ecbc8ff",
+        "9": "b581c48229ee5e020cf51d0ae89dfbe80b89508b8e1e96606b821a333d8fcbd9"
+      },
+      "public_FORM5_future_targets": 10,
+      "quarantined_gameweeks": {},
+      "sha": "173bd03f01a9808dbbcf9c42e8ad1112b63429ac",
+      "team_file_sha256": "fe3ef049a8b4afa4b0a0f8ff0b116f1bb555af022f08ca48ddf2ad98747eb56a",
+      "valid_prior_premier_league_rows": 100,
+      "witness": {
+        "commit": "173bd03f01a9808dbbcf9c42e8ad1112b63429ac",
+        "github_run_id": 19175468717,
+        "proof": "GITHUB_SERVER_ACTIONS_MAIN_HEAD_SHA_EXISTED_BY",
+        "provider_original_xg_first_published_verified": false,
+        "repo": "olbauday/FPL-Core-Insights",
+        "run_url": "https://github.com/olbauday/FPL-Core-Insights/actions/runs/19175468717",
+        "server_created_at_utc": "2025-11-07T17:03:33Z"
+      }
+    },
+    {
+      "alternative_xG5_complete_future_targets": 10,
+      "exact_public_reference_prior_rows": 108,
+      "gameweek_file_sha256": {
+        "1": "f857bc9cc749b6bcd991bfe45ceda42bd6fee89ad6b34083259f97261aa7d9cd",
+        "10": "91ee638805a54577fada2e6afb4352a5b32cb9a1716d7af1e390099110b51f89",
+        "11": "f320bd47fc7f3d478412fffa36f1d6495063a7b622fabdb0bb042a852f0be697",
+        "12": "e057aa04ff6cbf86650b3f8b6c3d244dd68962db8b6ef04fd028872290a2446e",
+        "2": "ed4c57467f8dd99d8a3cc24d56596184ee69711d9c491667cd98877df4061fa3",
+        "3": "62c9265a46d91bfcbc849cf5f42035eac7525ce6e9b37bf19e68e8761f1c3ec0",
+        "4": "345b3ef4385926dffa6c03491afd4f3f744e4b4ca436969ba18e615d6fd6f50a",
+        "5": "5134f5be0ccc9ef6e4d4e897d67416df0fa9f72333e079bab03420a66e93fb10",
+        "6": "84f771d335b129b8650ba92370c8a47b65c7539044e13b7e665f516785e94ff4",
+        "7": "2d606d8df59c0471cc827fef7bff9008e8870d5ccb299002037cbfdf0607ce05",
+        "8": "4ea008bba12bd8cec7b76c6e5c02067dca81bb4f52d9ae99aa0e21e79ecbc8ff",
+        "9": "dd68c487a7450fe5fb60da3dfddd1b8fdf4487ff00a02f20deefa71ec24ff241"
+      },
+      "public_FORM5_future_targets": 10,
+      "quarantined_gameweeks": {},
+      "sha": "126b9ffec2076a9a42458e7e4fd5d555968f305d",
+      "team_file_sha256": "fe3ef049a8b4afa4b0a0f8ff0b116f1bb555af022f08ca48ddf2ad98747eb56a",
+      "valid_prior_premier_league_rows": 110,
+      "witness": {
+        "commit": "126b9ffec2076a9a42458e7e4fd5d555968f305d",
+        "github_run_id": 19279791484,
+        "proof": "GITHUB_SERVER_ACTIONS_MAIN_HEAD_SHA_EXISTED_BY",
+        "provider_original_xg_first_published_verified": false,
+        "repo": "olbauday/FPL-Core-Insights",
+        "run_url": "https://github.com/olbauday/FPL-Core-Insights/actions/runs/19279791484",
+        "server_created_at_utc": "2025-11-11T22:06:28Z"
+      }
+    },
+    {
+      "alternative_xG5_complete_future_targets": 10,
+      "exact_public_reference_prior_rows": 89,
+      "gameweek_file_sha256": {
+        "1": "dee3d264daa673400e405a80231ee8054ecab8bdcfc7c30cb6e9b3baa10630f9",
+        "10": "d517e86075b4438d07e984dd269a53a4e88b7577d0473ff281fe7c66f832b1de",
+        "11": "34c0d221099b903149c78fc191b143d1d7db5a3390f130332d8078a31f04f79f",
+        "12": "8cc6146350f890f305af22a8278b81a382a2c8354ece4952b3518bb5e0182b1c",
+        "13": "9f6fee3a4b3f756a01f0b63cfd7b8709e0fe864f6031a0b6ba8d93ca0f22e19d",
+        "14": "64d32d483fa0b798cf36bee2c02c12547f1b0edda303a8f48974898e8dde8a6d",
+        "15": "c25fb755d18fcbe6d6616c2c6283571acdfe605b8659ff10d2b76bf1837dad61",
+        "2": "535ae56576ab999e290359a71e1d46d566b6438ec8bdd64306b2b38516c45827",
+        "3": "d50c9a094814ec9a1ba61448e72e8342a228e4e5edc2697244e28f72a3d7cd8f",
+        "4": "9690abda0cc26d50d40b0503fb468e03a582951243d21a932353a39bd75b7a55",
+        "5": "01f36e1829a48f5561ede48bd0be2f4884fe1ebf198ca745652b140e458dea90",
+        "6": "c1dec00a3fa5add59c65828db504f666a64a1028712df6f8da0b48c58f89c93a",
+        "7": "a32987b57a54e93f925b15038f39319a3cd8d0ca67ccec596adc622c727b6136",
+        "8": "111f77e7bd7f493f32edcf52384e7f3eb449437dd9b04b1b02434d4c555e9bb0",
+        "9": "4d35115e823f0c6df0e100add96f5476695c8de1f12d8e5d6af51146853bd204"
+      },
+      "public_FORM5_future_targets": 10,
+      "quarantined_gameweeks": {
+        "1": "FUTURE_OR_RECENT_FT_IN_OLD_SNAPSHOT_QUARANTINED",
+        "2": "FUTURE_OR_RECENT_FT_IN_OLD_SNAPSHOT_QUARANTINED",
+        "3": "FUTURE_OR_RECENT_FT_IN_OLD_SNAPSHOT_QUARANTINED",
+        "4": "FUTURE_OR_RECENT_FT_IN_OLD_SNAPSHOT_QUARANTINED",
+        "7": "FUTURE_OR_RECENT_FT_IN_OLD_SNAPSHOT_QUARANTINED",
+        "9": "FUTURE_OR_RECENT_FT_IN_OLD_SNAPSHOT_QUARANTINED"
+      },
+      "sha": "49c4a6573492e7c5fb020ee4d650e60baf0f138b",
+      "team_file_sha256": "fe3ef049a8b4afa4b0a0f8ff0b116f1bb555af022f08ca48ddf2ad98747eb56a",
+      "valid_prior_premier_league_rows": 90,
+      "witness": {
+        "commit": "49c4a6573492e7c5fb020ee4d650e60baf0f138b",
+        "github_run_id": 20071891722,
+        "proof": "GITHUB_SERVER_ACTIONS_MAIN_HEAD_SHA_EXISTED_BY",
+        "provider_original_xg_first_published_verified": false,
+        "repo": "olbauday/FPL-Core-Insights",
+        "run_url": "https://github.com/olbauday/FPL-Core-Insights/actions/runs/20071891722",
+        "server_created_at_utc": "2025-12-09T17:04:53Z"
+      }
+    },
+    {
+      "alternative_xG5_complete_future_targets": 10,
+      "exact_public_reference_prior_rows": 108,
+      "gameweek_file_sha256": {
+        "1": "dee3d264daa673400e405a80231ee8054ecab8bdcfc7c30cb6e9b3baa10630f9",
+        "10": "85573518411c740e21c7b8e73e9f6f5ece0a283b851f98b5ead33e9ace1982ce",
+        "11": "bebd5af6b647fdfea5c51c5aed57346e908929270bd3a1734aaed93b04f5f886",
+        "12": "8cc6146350f890f305af22a8278b81a382a2c8354ece4952b3518bb5e0182b1c",
+        "13": "835e464561f7adf99f84450ccf4a15101c9a4043f3609e2fae7c07b6d59b51b0",
+        "14": "64d32d483fa0b798cf36bee2c02c12547f1b0edda303a8f48974898e8dde8a6d",
+        "15": "c25fb755d18fcbe6d6616c2c6283571acdfe605b8659ff10d2b76bf1837dad61",
+        "16": "7ca2f23480db6b17aecbff75eeee4d72c11a225fbfcb72f554314c0109adc13f",
+        "17": "23ec200dd00daa01bece9e07bb25734b6ce3f915dcaacd3ce72a5ff952a12072",
+        "2": "535ae56576ab999e290359a71e1d46d566b6438ec8bdd64306b2b38516c45827",
+        "3": "7f867bbb0b57e15ee92843852f447c74120f27550b9467a5e59a386ed2dccfd4",
+        "4": "9690abda0cc26d50d40b0503fb468e03a582951243d21a932353a39bd75b7a55",
+        "5": "dc6958bfdd16d972b486aa496566eae683c6aee39c72d022cc734b8528d42ac6",
+        "6": "32a310c1d2256522fc9bac6aff0b1d9a03f1510e1f6eff35f18c28c3e230fe6e",
+        "7": "8c54d3f6705122e31d031c6ef3799b95919314eae50990fd58759513f30e4b6c",
+        "8": "111f77e7bd7f493f32edcf52384e7f3eb449437dd9b04b1b02434d4c555e9bb0",
+        "9": "eaac75949e2610089dceb267ae714af68b853fc5d3084706adcaa11447f15444"
+      },
+      "public_FORM5_future_targets": 10,
+      "quarantined_gameweeks": {
+        "1": "FUTURE_OR_RECENT_FT_IN_OLD_SNAPSHOT_QUARANTINED",
+        "2": "FUTURE_OR_RECENT_FT_IN_OLD_SNAPSHOT_QUARANTINED",
+        "3": "FUTURE_OR_RECENT_FT_IN_OLD_SNAPSHOT_QUARANTINED",
+        "4": "FUTURE_OR_RECENT_FT_IN_OLD_SNAPSHOT_QUARANTINED",
+        "9": "FUTURE_OR_RECENT_FT_IN_OLD_SNAPSHOT_QUARANTINED"
+      },
+      "sha": "1a3e9917b4a9e5bd3629557354dc7b7f4c17924f",
+      "team_file_sha256": "fe3ef049a8b4afa4b0a0f8ff0b116f1bb555af022f08ca48ddf2ad98747eb56a",
+      "valid_prior_premier_league_rows": 110,
+      "witness": {
+        "commit": "1a3e9917b4a9e5bd3629557354dc7b7f4c17924f",
+        "github_run_id": 20376914645,
+        "proof": "GITHUB_SERVER_ACTIONS_MAIN_HEAD_SHA_EXISTED_BY",
+        "provider_original_xg_first_published_verified": false,
+        "repo": "olbauday/FPL-Core-Insights",
+        "run_url": "https://github.com/olbauday/FPL-Core-Insights/actions/runs/20376914645",
+        "server_created_at_utc": "2025-12-19T17:03:42Z"
+      }
+    },
+    {
+      "alternative_xG5_complete_future_targets": 8,
+      "exact_public_reference_prior_rows": 142,
+      "gameweek_file_sha256": {
+        "1": "dee3d264daa673400e405a80231ee8054ecab8bdcfc7c30cb6e9b3baa10630f9",
+        "10": "2eed8ce88ffcba96e3335a606e6d9e9f92054f954f0bccc35c0fba88d525680e",
+        "11": "1eb7178ff4d520e2b7144ca853a15f4163cc1c16759e7dc1e76d328a511ee676",
+        "12": "8cc6146350f890f305af22a8278b81a382a2c8354ece4952b3518bb5e0182b1c",
+        "13": "0a5d0aa28f8f33c7972aa00edb9254ce4bbdabac94eb17207c2f3ee138933dbd",
+        "14": "64d32d483fa0b798cf36bee2c02c12547f1b0edda303a8f48974898e8dde8a6d",
+        "15": "c25fb755d18fcbe6d6616c2c6283571acdfe605b8659ff10d2b76bf1837dad61",
+        "16": "5f67bca871c312d7783cb64653663971cf370c85be7e96c201587234ce8286b6",
+        "17": "0fa4097ce9c90889a611348261a390075735565d60160a1ad602c0c2db3e26e8",
+        "18": "66afdac238d042b794c4e79bd1db43295ccf0c1df1759c4e9dd1201badf39df2",
+        "19": "dab220378e36d5fe0654f2f82eab076f8cbb344ada69be99948c86a1e1ab581c",
+        "2": "535ae56576ab999e290359a71e1d46d566b6438ec8bdd64306b2b38516c45827",
+        "3": "fd65eca7a7dcd3f8d452053afaaa605f1759b8c9795872d674251d1caf69f332",
+        "4": "9690abda0cc26d50d40b0503fb468e03a582951243d21a932353a39bd75b7a55",
+        "5": "52fdf228c33eeebd694d74035767b7df4442dec32aeedf3219952f3f102f5e60",
+        "6": "d757052a2562afb851e4cdd4f61f9b7ae55698084497d1e029b1d8346aa7cba9",
+        "7": "75c1e22951513b2a7d4eb6526d662d180854ff18e0143007eddc0ad7dd0f1a62",
+        "8": "111f77e7bd7f493f32edcf52384e7f3eb449437dd9b04b1b02434d4c555e9bb0",
+        "9": "10e578bb3ee85919593eaf21dbe6284f6c52b6a618c16840ad1e8416d35ad36f"
+      },
+      "public_FORM5_future_targets": 8,
+      "quarantined_gameweeks": {
+        "1": "FUTURE_OR_RECENT_FT_IN_OLD_SNAPSHOT_QUARANTINED",
+        "2": "FUTURE_OR_RECENT_FT_IN_OLD_SNAPSHOT_QUARANTINED",
+        "3": "FUTURE_OR_RECENT_FT_IN_OLD_SNAPSHOT_QUARANTINED",
+        "4": "FUTURE_OR_RECENT_FT_IN_OLD_SNAPSHOT_QUARANTINED"
+      },
+      "sha": "59a4cd678579a38b5937bd07afe5635ed3be9e29",
+      "team_file_sha256": "fe3ef049a8b4afa4b0a0f8ff0b116f1bb555af022f08ca48ddf2ad98747eb56a",
+      "valid_prior_premier_league_rows": 146,
+      "witness": {
+        "commit": "59a4cd678579a38b5937bd07afe5635ed3be9e29",
+        "github_run_id": 20642294092,
+        "proof": "GITHUB_SERVER_ACTIONS_MAIN_HEAD_SHA_EXISTED_BY",
+        "provider_original_xg_first_published_verified": false,
+        "repo": "olbauday/FPL-Core-Insights",
+        "run_url": "https://github.com/olbauday/FPL-Core-Insights/actions/runs/20642294092",
+        "server_created_at_utc": "2026-01-01T17:04:13Z"
+      }
+    },
+    {
+      "alternative_xG5_complete_future_targets": 0,
+      "exact_public_reference_prior_rows": 156,
+      "gameweek_file_sha256": {
+        "1": "dee3d264daa673400e405a80231ee8054ecab8bdcfc7c30cb6e9b3baa10630f9",
+        "10": "eb7b1acf09e7148062cca62adbb38b769bd325cb313811c9e6ee8a3055fab5c0",
+        "11": "5abe8c0484558d0fa5c516d0edcbf5d66c2c33294bedf85ab3bd893d10f622e2",
+        "12": "8cc6146350f890f305af22a8278b81a382a2c8354ece4952b3518bb5e0182b1c",
+        "13": "d57e58c71191cf7390e0c7cf3e399d36bb0981b8af950c618b6700a71d98ff5e",
+        "14": "64d32d483fa0b798cf36bee2c02c12547f1b0edda303a8f48974898e8dde8a6d",
+        "15": "c25fb755d18fcbe6d6616c2c6283571acdfe605b8659ff10d2b76bf1837dad61",
+        "16": "53e58b3c2709dd6f062d5cd65556e33cd7974ac1adb2aa91c93e95af07bd84e1",
+        "17": "608b7f0e5d445c649b451d09f4962728d4e2a6662afedeb61aa433cc2b4aedc6",
+        "18": "01193ba88d4d33bc74a8cb74b38e244ae6663ac304a61f4306b93c45b6d304f0",
+        "19": "2b7e042ff4f7950f7515c3292ead11e76b875fcddff177f9d0766efa3426b539",
+        "2": "535ae56576ab999e290359a71e1d46d566b6438ec8bdd64306b2b38516c45827",
+        "20": "7b075a34c483b468d1ee46af3594f57772890fe8d5c4fefd8cb514cebd540cb2",
+        "21": "815361607cf7f553f52b467cdf8f901463dec2c798f09f50e1fec229367d9999",
+        "3": "13ef03819340eb072d1595d31dd1a72cac9e1e9264580fab01c546cc06562be8",
+        "4": "9690abda0cc26d50d40b0503fb468e03a582951243d21a932353a39bd75b7a55",
+        "5": "219aa6d9e0dd27750859ce764d177816c103229c5020acc45bf2282b7bc0ca22",
+        "6": "e9d5b1e5bf3b556f9f9c50253e4d2ab4a58f8f53e6cc70f5c6d43814f94de583",
+        "7": "e0012678408e7c3a9fb458adab04a3517f3bbb4fac32ac33b73819ca409c67b2",
+        "8": "111f77e7bd7f493f32edcf52384e7f3eb449437dd9b04b1b02434d4c555e9bb0",
+        "9": "4dc4adcf9cc62b8d439fc95831052649a1d2cd23ef642a7323ca12f12912d18b"
+      },
+      "public_FORM5_future_targets": 0,
+      "quarantined_gameweeks": {
+        "1": "FUTURE_OR_RECENT_FT_IN_OLD_SNAPSHOT_QUARANTINED",
+        "2": "FUTURE_OR_RECENT_FT_IN_OLD_SNAPSHOT_QUARANTINED",
+        "21": "INVALID_MATCH_SCORE_QUARANTINED",
+        "4": "FUTURE_OR_RECENT_FT_IN_OLD_SNAPSHOT_QUARANTINED"
+      },
+      "sha": "dd71bba4a8eb5bc71f3749b7458554bd50749672",
+      "team_file_sha256": "fe3ef049a8b4afa4b0a0f8ff0b116f1bb555af022f08ca48ddf2ad98747eb56a",
+      "valid_prior_premier_league_rows": 170,
+      "witness": {
+        "commit": "dd71bba4a8eb5bc71f3749b7458554bd50749672",
+        "github_run_id": 20859461952,
+        "proof": "GITHUB_SERVER_ACTIONS_MAIN_HEAD_SHA_EXISTED_BY",
+        "provider_original_xg_first_published_verified": false,
+        "repo": "olbauday/FPL-Core-Insights",
+        "run_url": "https://github.com/olbauday/FPL-Core-Insights/actions/runs/20859461952",
+        "server_created_at_utc": "2026-01-09T17:06:07Z"
+      }
+    },
+    {
+      "alternative_xG5_complete_future_targets": 0,
+      "exact_public_reference_prior_rows": 240,
+      "gameweek_file_sha256": {
+        "1": "ccd38493f0e100221d053b0cb6c4459e7735c7a91d5f9264ac071353d3e1f114",
+        "10": "ed65effd6f7f529122142da8ff3a9faf407c9caf39db3a11fd583d071fc3d15a",
+        "11": "5abe8c0484558d0fa5c516d0edcbf5d66c2c33294bedf85ab3bd893d10f622e2",
+        "12": "c59bf3f4dba4eb34f3b4159b220839df6dba4eca63c5cbad6b8c5883b592efc8",
+        "13": "d57e58c71191cf7390e0c7cf3e399d36bb0981b8af950c618b6700a71d98ff5e",
+        "14": "64d32d483fa0b798cf36bee2c02c12547f1b0edda303a8f48974898e8dde8a6d",
+        "15": "92605e7437a22d00b1b7831a890ccd79a91817c63541cf92d28eb24d16a89123",
+        "16": "3cce1bfff12a4a3e0d7ad77ecfc53b698375551d5e28f9817cc4a7006ff53af0",
+        "17": "c5792c2c756d7a9b2f8665ae41f8b965eb480a2d059fc3e57cf1d7dd562c3041",
+        "18": "efc2ed43aa309361ac3cbb4f1d3cd00d0c74b88efbcd29a919f9cb9178634bd7",
+        "19": "c97ee4adc3b099d5d0fdaccb34b6631fca0b2f797180bb583299aab1a23535c7",
+        "2": "57edf12c2050b3d397be156723a4a88457a2f7484f5178542be65f01fec0f79f",
+        "20": "382cabaadbda3c36e94f58bf66ba65b9d8280a0a89bf83e5afe3cc49ebc8131d",
+        "21": "3667e6b54415306bd7ae846687b8f8619991b7ebfd67458435653c0244f12253",
+        "22": "efed89901a127cb66752267ec6905c9529265cfc8186da8297e88fc02c194098",
+        "23": "1dc56a9684f1047c4235d11ea598ccd3cf5db60d8bbb0c3bee59fba10e913beb",
+        "24": "57f6f7b510a528680d3e4a0a12abc94f4e398e2faa119bb32dee2e07e29d8ad2",
+        "3": "d867cb75f24e2a2afe45d00c319489067e0618ea27265d8987e28411ad2dff66",
+        "4": "ddd5f9a12bb606256321d7e4ac57c8927741e230784f21c2b59ffd3a2a5fbafa",
+        "5": "f9eee9ad7183a7e35dc579df421d34b8eb2d390156232955eb21a6b2ad77d224",
+        "6": "503e3da4be93f306434886140253813b752f7dafc7562b8ca874244da85c4612",
+        "7": "ff52fc574ecb1a41faa62f421de71b877044532934052440d38bd38ab7d07341",
+        "8": "9daab82ac2dd8cc9efe2e2274ead5272a6b874d9925a228458bfa84034de0f74",
+        "9": "02c04293c3149e09587867810c61a1c1838bfe819e75790be315c2c7d196b51c"
+      },
+      "public_FORM5_future_targets": 0,
+      "quarantined_gameweeks": {},
+      "sha": "2c00c3886c421d488ff017d83e96631474b80847",
+      "team_file_sha256": "a78fb8e6a4f7d994afea7e8b1810d0fff0d14275e09be7ec28133dd8e0ba9bff",
+      "valid_prior_premier_league_rows": 240,
+      "witness": {
+        "commit": "2c00c3886c421d488ff017d83e96631474b80847",
+        "github_run_id": 21817774292,
+        "proof": "GITHUB_SERVER_ACTIONS_MAIN_HEAD_SHA_EXISTED_BY",
+        "provider_original_xg_first_published_verified": false,
+        "repo": "olbauday/FPL-Core-Insights",
+        "run_url": "https://github.com/olbauday/FPL-Core-Insights/actions/runs/21817774292",
+        "server_created_at_utc": "2026-02-09T08:31:00Z"
+      }
+    },
+    {
+      "alternative_xG5_complete_future_targets": 8,
+      "exact_public_reference_prior_rows": 270,
+      "gameweek_file_sha256": {
+        "1": "ccd38493f0e100221d053b0cb6c4459e7735c7a91d5f9264ac071353d3e1f114",
+        "10": "1ba4b50970e44ac990b9baa9daa9f2a7bb3620d0caa4002bf2fdf8532956bf3f",
+        "11": "5abe8c0484558d0fa5c516d0edcbf5d66c2c33294bedf85ab3bd893d10f622e2",
+        "12": "c8e63ff2bec13d91edee2febfbae471051832536244c012f40ff2ddab792455b",
+        "13": "d57e58c71191cf7390e0c7cf3e399d36bb0981b8af950c618b6700a71d98ff5e",
+        "14": "64d32d483fa0b798cf36bee2c02c12547f1b0edda303a8f48974898e8dde8a6d",
+        "15": "8ec2b84fcea901b71265816e33c0a764b8f5ffa0c9ba2a7dd172acc267ddd4ae",
+        "16": "029cb8b2ad0931280cc1212744049d8119c92c28bbe3fcc0fee0d25a8b4f83ad",
+        "17": "cd294c0690ad2f5f6b742e272b9675f93627080fb220c8c15b547195ff0393f4",
+        "18": "efc2ed43aa309361ac3cbb4f1d3cd00d0c74b88efbcd29a919f9cb9178634bd7",
+        "19": "c97ee4adc3b099d5d0fdaccb34b6631fca0b2f797180bb583299aab1a23535c7",
+        "2": "ad297f35715fb51834ab394ccc4253e7c9bf6a46baa5803032032761fc99b996",
+        "20": "382cabaadbda3c36e94f58bf66ba65b9d8280a0a89bf83e5afe3cc49ebc8131d",
+        "21": "3667e6b54415306bd7ae846687b8f8619991b7ebfd67458435653c0244f12253",
+        "22": "b78169b5191a94c5853933840e4da08e2c952ffad7df0b9c4f6d0c4654df0d01",
+        "23": "fee1b0b9040959269be42c1da1cace3a13744b0dad3940ad4e973ce2597960b3",
+        "24": "ba3e8feb935d16b04ba85bee1a4585d2cbb4657e6c9a04245276c38aed9c60a6",
+        "25": "66c7221f1eee73a4403eb7282e17ed74e511fbbb9f565f42edbd0bfab43722c1",
+        "26": "3af01f32ad2b54dd400659b859b64c0a53d0e4e27ad4470b9381abb6a6465960",
+        "27": "732d900d82fced87126f819b434f7d2dc6f4ae0d713f9491d818efd4542d8393",
+        "3": "d867cb75f24e2a2afe45d00c319489067e0618ea27265d8987e28411ad2dff66",
+        "4": "3b3360bc23937a89a91bda8ba191cef08a4cc895c231744f5378eb820c58e8b1",
+        "5": "37c018a2e0ef0a4f191beb3361895967ccb31400f1ff38ac6623c3aa7855bdcf",
+        "6": "967070a1268a96e40b41418d1b77de576a5ffbe45e0388d9ad4c55f20682dcf1",
+        "7": "ff52fc574ecb1a41faa62f421de71b877044532934052440d38bd38ab7d07341",
+        "8": "6fbcc84f2dbe3fb314b0d4a83aee46b3c5e7c87c8ac23409008b53391eaaea50",
+        "9": "efd458a3ba4f65dfe536405fa022507d0bad4ed9a30560c89e34f6589c7f0d9a"
+      },
+      "public_FORM5_future_targets": 8,
+      "quarantined_gameweeks": {},
+      "sha": "fde4aaa35eabb9d0a247039f99b34ab46a7f7de6",
+      "team_file_sha256": "a78fb8e6a4f7d994afea7e8b1810d0fff0d14275e09be7ec28133dd8e0ba9bff",
+      "valid_prior_premier_league_rows": 271,
+      "witness": {
+        "commit": "fde4aaa35eabb9d0a247039f99b34ab46a7f7de6",
+        "github_run_id": 22362135047,
+        "proof": "GITHUB_SERVER_ACTIONS_MAIN_HEAD_SHA_EXISTED_BY",
+        "provider_original_xg_first_published_verified": false,
+        "repo": "olbauday/FPL-Core-Insights",
+        "run_url": "https://github.com/olbauday/FPL-Core-Insights/actions/runs/22362135047",
+        "server_created_at_utc": "2026-02-24T17:22:54Z"
+      }
+    },
+    {
+      "alternative_xG5_complete_future_targets": 0,
+      "exact_public_reference_prior_rows": 280,
+      "gameweek_file_sha256": {
+        "1": "ccd38493f0e100221d053b0cb6c4459e7735c7a91d5f9264ac071353d3e1f114",
+        "10": "d573e2a1d559e786a20db078829b153361ddd39e9565a57fd56b5718588e5a27",
+        "11": "5abe8c0484558d0fa5c516d0edcbf5d66c2c33294bedf85ab3bd893d10f622e2",
+        "12": "7fd565536fb9a7f7d1787c8f0b6ddbd3721e0f0e343d12d8a01d6aa4f1a0a3df",
+        "13": "d57e58c71191cf7390e0c7cf3e399d36bb0981b8af950c618b6700a71d98ff5e",
+        "14": "64d32d483fa0b798cf36bee2c02c12547f1b0edda303a8f48974898e8dde8a6d",
+        "15": "9f2a932a12a542cd9fd75b6d0b08b50e6fe63f9ca52549314aaad685bb3f1767",
+        "16": "51ff891347c37455427582f8c2b9b4ad99a5da5b201a9e330a93ed7178bfd8aa",
+        "17": "91fbcb28ea441bdf54fb3de7d2df75f13b098dc5f48498ad98600115064d09c0",
+        "18": "efc2ed43aa309361ac3cbb4f1d3cd00d0c74b88efbcd29a919f9cb9178634bd7",
+        "19": "c97ee4adc3b099d5d0fdaccb34b6631fca0b2f797180bb583299aab1a23535c7",
+        "2": "87ec0e3e2fdf33f80530c86c89675db000a7c74808e4e1b334bf84f06aa58bd5",
+        "20": "382cabaadbda3c36e94f58bf66ba65b9d8280a0a89bf83e5afe3cc49ebc8131d",
+        "21": "3667e6b54415306bd7ae846687b8f8619991b7ebfd67458435653c0244f12253",
+        "22": "cac91b1aad51b0808c7ea90f2f68753aafba9dca45e08babf298fdac77aa6a5a",
+        "23": "83d194cd2f90229286f139e6e4ee4ef2fff2cf6a9b33fb7a2ae808f6d8f162b7",
+        "24": "faa5971d957cb149fbdf540179963e561f6c1a721670bd33af30b68a68007d5a",
+        "25": "10192e15d4627759f65f71cb4226dda03c08f06825ab4bfa9207bba1f82d6a40",
+        "26": "3af01f32ad2b54dd400659b859b64c0a53d0e4e27ad4470b9381abb6a6465960",
+        "27": "26a04eef42a3172a14e4833d950a235c456163828ec740d73a346d99ccd7b369",
+        "28": "695c28929439d7b43b2fc9f49f371f68fc25cccaa759f2aee97ff5c70030dd8d",
+        "3": "d867cb75f24e2a2afe45d00c319489067e0618ea27265d8987e28411ad2dff66",
+        "4": "62a77159199e3fae4df5771ea0d2253a0c45dac4326a7fd188e9f9cce84a8045",
+        "5": "0e148d3c147ed020e4f85770f3301af488a22c4cb2ef04289478f15c4feace8d",
+        "6": "08238fe8e61f0ac6638a396825fdede7ec0d8f23974b83087001ab1613326839",
+        "7": "ff52fc574ecb1a41faa62f421de71b877044532934052440d38bd38ab7d07341",
+        "8": "0d505491406170bbbdeb5ed29201c119d7e449157597534b558d5e57d58d317c",
+        "9": "f958f4374cd416def67d004932a1a3161bcc62d0caa39bd40bab549bd878e3d4"
+      },
+      "public_FORM5_future_targets": 0,
+      "quarantined_gameweeks": {},
+      "sha": "326b639b21979961dc2a6e1b06db388f8b7431e6",
+      "team_file_sha256": "a78fb8e6a4f7d994afea7e8b1810d0fff0d14275e09be7ec28133dd8e0ba9bff",
+      "valid_prior_premier_league_rows": 281,
+      "witness": {
+        "commit": "326b639b21979961dc2a6e1b06db388f8b7431e6",
+        "github_run_id": 22965280628,
+        "proof": "GITHUB_SERVER_ACTIONS_MAIN_HEAD_SHA_EXISTED_BY",
+        "provider_original_xg_first_published_verified": false,
+        "repo": "olbauday/FPL-Core-Insights",
+        "run_url": "https://github.com/olbauday/FPL-Core-Insights/actions/runs/22965280628",
+        "server_created_at_utc": "2026-03-11T17:18:18Z"
+      }
+    },
+    {
+      "alternative_xG5_complete_future_targets": 1,
+      "exact_public_reference_prior_rows": 303,
+      "gameweek_file_sha256": {
+        "1": "ccd38493f0e100221d053b0cb6c4459e7735c7a91d5f9264ac071353d3e1f114",
+        "10": "d573e2a1d559e786a20db078829b153361ddd39e9565a57fd56b5718588e5a27",
+        "11": "5abe8c0484558d0fa5c516d0edcbf5d66c2c33294bedf85ab3bd893d10f622e2",
+        "12": "7fd565536fb9a7f7d1787c8f0b6ddbd3721e0f0e343d12d8a01d6aa4f1a0a3df",
+        "13": "d57e58c71191cf7390e0c7cf3e399d36bb0981b8af950c618b6700a71d98ff5e",
+        "14": "64d32d483fa0b798cf36bee2c02c12547f1b0edda303a8f48974898e8dde8a6d",
+        "15": "8c6d47e7e0449d955c4593a0ba536901cef0366772bac37c5478af984514ce7f",
+        "16": "31ee3bf3c7f007836745b671d2ec12524a7499d56a25057910eb787dd7b8e30b",
+        "17": "3fadc31ee65704c1ca15feae3359724be3c8eb27723e9be1b1a7c1f2bb578d48",
+        "18": "efc2ed43aa309361ac3cbb4f1d3cd00d0c74b88efbcd29a919f9cb9178634bd7",
+        "19": "c97ee4adc3b099d5d0fdaccb34b6631fca0b2f797180bb583299aab1a23535c7",
+        "2": "c45cc3658a50cb03b7f63aafcdca043ea647209db619637cc11aef69a836ac9d",
+        "20": "382cabaadbda3c36e94f58bf66ba65b9d8280a0a89bf83e5afe3cc49ebc8131d",
+        "21": "3667e6b54415306bd7ae846687b8f8619991b7ebfd67458435653c0244f12253",
+        "22": "c80e1034957dc217f431bb0f3e6038398988508fb3ba157282c06e7de4c11ba6",
+        "23": "83d194cd2f90229286f139e6e4ee4ef2fff2cf6a9b33fb7a2ae808f6d8f162b7",
+        "24": "faa5971d957cb149fbdf540179963e561f6c1a721670bd33af30b68a68007d5a",
+        "25": "16f341462072eb9b05aeac9cadb91106e5a6e4c898c2d88f76f4bc8b99eff5d5",
+        "26": "3af01f32ad2b54dd400659b859b64c0a53d0e4e27ad4470b9381abb6a6465960",
+        "27": "edbe7980197b4ade1a8e78bf9ff55a07c02590acf63188e761c5afd27430b621",
+        "28": "49fd53e003350020be92d0c112e95e16c3a1be9c57ab1a0a1398c0ccaefec50e",
+        "29": "31ac51b51815be0f9adab0e6041249e2b1a932a4ece572494791b769af07d604",
+        "3": "d867cb75f24e2a2afe45d00c319489067e0618ea27265d8987e28411ad2dff66",
+        "30": "af1ebdc39e84640c7aafc3579ab5a1c9bdd11e72e0a127774163221cb81c4dfd",
+        "31": "4732afb6d01adb35224fae277c59f10ddb7e94a7ec4bf4b64796816837c6c8d8",
+        "4": "793298c1fb246f9acc5216c2c5d79090f35a6a62f9403b20b6e9770e54093e8a",
+        "5": "91eec110145f1d60ff38ec9ec1bb93d5dbcc8b522207ac2ce0d07831de9d0bf2",
+        "6": "08238fe8e61f0ac6638a396825fdede7ec0d8f23974b83087001ab1613326839",
+        "7": "ff52fc574ecb1a41faa62f421de71b877044532934052440d38bd38ab7d07341",
+        "8": "06e6785095dd24ed15f0dc3973604d5e5ed44336725679361cfe224c8d17bba1",
+        "9": "6b7d3845306f0a258fc5d62d325ab7fe5120cf4009576ac9e13f7408dce57676"
+      },
+      "public_FORM5_future_targets": 1,
+      "quarantined_gameweeks": {},
+      "sha": "0584db7dd55de2d3c35d3799ea479c80ad5d233a",
+      "team_file_sha256": "a78fb8e6a4f7d994afea7e8b1810d0fff0d14275e09be7ec28133dd8e0ba9bff",
+      "valid_prior_premier_league_rows": 309,
+      "witness": {
+        "commit": "0584db7dd55de2d3c35d3799ea479c80ad5d233a",
+        "github_run_id": 23637824776,
+        "proof": "GITHUB_SERVER_ACTIONS_MAIN_HEAD_SHA_EXISTED_BY",
+        "provider_original_xg_first_published_verified": false,
+        "repo": "olbauday/FPL-Core-Insights",
+        "run_url": "https://github.com/olbauday/FPL-Core-Insights/actions/runs/23637824776",
+        "server_created_at_utc": "2026-03-27T08:31:03Z"
+      }
+    },
+    {
+      "alternative_xG5_complete_future_targets": 0,
+      "exact_public_reference_prior_rows": 303,
+      "gameweek_file_sha256": {
+        "1": "ccd38493f0e100221d053b0cb6c4459e7735c7a91d5f9264ac071353d3e1f114",
+        "10": "d573e2a1d559e786a20db078829b153361ddd39e9565a57fd56b5718588e5a27",
+        "11": "5abe8c0484558d0fa5c516d0edcbf5d66c2c33294bedf85ab3bd893d10f622e2",
+        "12": "7fd565536fb9a7f7d1787c8f0b6ddbd3721e0f0e343d12d8a01d6aa4f1a0a3df",
+        "13": "d57e58c71191cf7390e0c7cf3e399d36bb0981b8af950c618b6700a71d98ff5e",
+        "14": "64d32d483fa0b798cf36bee2c02c12547f1b0edda303a8f48974898e8dde8a6d",
+        "15": "8c6d47e7e0449d955c4593a0ba536901cef0366772bac37c5478af984514ce7f",
+        "16": "e09abea09d7ae0ccb5ce5c091ebd6d2467ab5da1b31f7fc3aedd5bfdab05bc24",
+        "17": "ecb6f9496ecbb04fbe82b1b2555a9b7ed09d64d2985d25aec8f9fee1e01ddf8c",
+        "18": "efc2ed43aa309361ac3cbb4f1d3cd00d0c74b88efbcd29a919f9cb9178634bd7",
+        "19": "c97ee4adc3b099d5d0fdaccb34b6631fca0b2f797180bb583299aab1a23535c7",
+        "2": "e64485faaaf86e84b42cf8c6a425f908bda33d7a046dca63bac512a0a6f2b90b",
+        "20": "382cabaadbda3c36e94f58bf66ba65b9d8280a0a89bf83e5afe3cc49ebc8131d",
+        "21": "3667e6b54415306bd7ae846687b8f8619991b7ebfd67458435653c0244f12253",
+        "22": "8de79b190f7d55cc60c2ad2cab79626e8aaef5a9e979ede97507d2b481cebe00",
+        "23": "83d194cd2f90229286f139e6e4ee4ef2fff2cf6a9b33fb7a2ae808f6d8f162b7",
+        "24": "faa5971d957cb149fbdf540179963e561f6c1a721670bd33af30b68a68007d5a",
+        "25": "98ee8ee52be462c55df0efa3015d0dd04ed29b7332bfff20ff947672d9fb5c9e",
+        "26": "d4d18c935edff7d098dd8b1d42194b458ef436ce6629fca9f90258b4e83ad627",
+        "27": "06392140d19ebd4941c72730611c37cdf70c19c6763f25426fd965ed1270a9ff",
+        "28": "7c4a9e4f48a5b018c42e345fb1b417aee599d4be417ff7c9ab001ef9d4559d18",
+        "29": "31ac51b51815be0f9adab0e6041249e2b1a932a4ece572494791b769af07d604",
+        "3": "d867cb75f24e2a2afe45d00c319489067e0618ea27265d8987e28411ad2dff66",
+        "30": "1abbadaab83582237d85c9942c93142be98f13af4c4337a3f44682712f1579e7",
+        "31": "a8f3bec107630fd1fcaf1846a77cf2105508a97e2f633511fec15945d558596e",
+        "32": "0d19c1cec909101ffb9841b4c588364dd9e776f7445e85e1a780d60e2f5dd992",
+        "33": "a6215cdbc98ef2a7cd8b6088d9c99f0b98a201eed43c6615e3ac4b3482d79a93",
+        "4": "8a054039f91ae054715cc2a3897b7e470438b31e09300a628bc7b98b497eed81",
+        "5": "d03785c3d1a8285a3becc08ba585481d32fe9da0c0483cf05954d29b6111f79c",
+        "6": "08238fe8e61f0ac6638a396825fdede7ec0d8f23974b83087001ab1613326839",
+        "7": "ff52fc574ecb1a41faa62f421de71b877044532934052440d38bd38ab7d07341",
+        "8": "06e6785095dd24ed15f0dc3973604d5e5ed44336725679361cfe224c8d17bba1",
+        "9": "f5471c57f4087828fd009bf222ca36d6526de84e44f81aaa23ed83ea86a29fe0"
+      },
+      "public_FORM5_future_targets": 0,
+      "quarantined_gameweeks": {},
+      "sha": "cf95db2c2fc3635e8f5ff53a53af31efed9e7130",
+      "team_file_sha256": "a78fb8e6a4f7d994afea7e8b1810d0fff0d14275e09be7ec28133dd8e0ba9bff",
+      "valid_prior_premier_league_rows": 309,
+      "witness": {
+        "commit": "cf95db2c2fc3635e8f5ff53a53af31efed9e7130",
+        "github_run_id": 24436336657,
+        "proof": "GITHUB_SERVER_ACTIONS_MAIN_HEAD_SHA_EXISTED_BY",
+        "provider_original_xg_first_published_verified": false,
+        "repo": "olbauday/FPL-Core-Insights",
+        "run_url": "https://github.com/olbauday/FPL-Core-Insights/actions/runs/24436336657",
+        "server_created_at_utc": "2026-04-15T04:25:45Z"
+      }
+    },
+    {
+      "alternative_xG5_complete_future_targets": 0,
+      "exact_public_reference_prior_rows": 305,
+      "gameweek_file_sha256": {
+        "1": "ccd38493f0e100221d053b0cb6c4459e7735c7a91d5f9264ac071353d3e1f114",
+        "10": "d573e2a1d559e786a20db078829b153361ddd39e9565a57fd56b5718588e5a27",
+        "11": "5abe8c0484558d0fa5c516d0edcbf5d66c2c33294bedf85ab3bd893d10f622e2",
+        "12": "7fd565536fb9a7f7d1787c8f0b6ddbd3721e0f0e343d12d8a01d6aa4f1a0a3df",
+        "13": "d57e58c71191cf7390e0c7cf3e399d36bb0981b8af950c618b6700a71d98ff5e",
+        "14": "64d32d483fa0b798cf36bee2c02c12547f1b0edda303a8f48974898e8dde8a6d",
+        "15": "8c6d47e7e0449d955c4593a0ba536901cef0366772bac37c5478af984514ce7f",
+        "16": "5970b6b8b9d04762cd5257aff3023fdfb194b5adf0438eaa18c825dfe4f8dbad",
+        "17": "3e6b0029e89ce9e7e48288c128bcc7c0a9e62ff94f717dee6dcf3f63cec2e066",
+        "18": "efc2ed43aa309361ac3cbb4f1d3cd00d0c74b88efbcd29a919f9cb9178634bd7",
+        "19": "c97ee4adc3b099d5d0fdaccb34b6631fca0b2f797180bb583299aab1a23535c7",
+        "2": "f97af551db240162d66f5094be3daf5133913fb57571b0ec47abdab5d25ff15b",
+        "20": "382cabaadbda3c36e94f58bf66ba65b9d8280a0a89bf83e5afe3cc49ebc8131d",
+        "21": "3667e6b54415306bd7ae846687b8f8619991b7ebfd67458435653c0244f12253",
+        "22": "0af94e87c4602a168b901d126394bb81fa919e2922abe938e63429a12a42d0d0",
+        "23": "83d194cd2f90229286f139e6e4ee4ef2fff2cf6a9b33fb7a2ae808f6d8f162b7",
+        "24": "faa5971d957cb149fbdf540179963e561f6c1a721670bd33af30b68a68007d5a",
+        "25": "db01dee7374d99ff31af9e37612eff702d7b13a1a4caf9debe2d97aee4d4fe04",
+        "26": "d4d18c935edff7d098dd8b1d42194b458ef436ce6629fca9f90258b4e83ad627",
+        "27": "4f0a7a98ce7ce310b59902b6b59c12bbc09cca279c33931fb832a1e44bd21653",
+        "28": "c10b9d10d5374a3c705771d607568e0b0ff983bfea86994a4ad480287a2ac421",
+        "29": "31ac51b51815be0f9adab0e6041249e2b1a932a4ece572494791b769af07d604",
+        "3": "d867cb75f24e2a2afe45d00c319489067e0618ea27265d8987e28411ad2dff66",
+        "30": "2cb7ae71cd2a07da4aec19100446ef1f4c6b867c4da49384957a1470fc23d3b5",
+        "31": "c2743a79fd56a169cc8fbd16659d0463b689d836587e46122cb04642ff01186c",
+        "32": "720e6a424cb07555020ac66bf9702d82779452111eca1ebfa1b19b632d5321ea",
+        "33": "dc90522b303427c8a5fb4b20e7069294c65f79a4fe8163da8791de61c0949ed5",
+        "34": "6e46a8030e1989a178d49d3ce40c9d883df069a02c5ab5e41308a4181db55b29",
+        "35": "053dd8b6c4fcc8432bae8a44368f1181db17290e8f5f26c3d18f2056e6aa7672",
+        "4": "75297ff802e8b9d10838050f93ac9ca0c1f3f25c778bd205e25b67750cb55f98",
+        "5": "26c2ace8a45f8e31f9916be5646c6ea4dbeffa1ad3f7c2ff974b2da64e775f5b",
+        "6": "08238fe8e61f0ac6638a396825fdede7ec0d8f23974b83087001ab1613326839",
+        "7": "ff52fc574ecb1a41faa62f421de71b877044532934052440d38bd38ab7d07341",
+        "8": "27fd04ff985d9f110a6da21e78e4de18da0ded9a8fd542a7b9d4ba3ea106b382",
+        "9": "e2451748135effec3680b0da7f7599d1c67ffd08bdaf037b292e0f3d7d4fb60c"
+      },
+      "public_FORM5_future_targets": 0,
+      "quarantined_gameweeks": {
+        "34": "MISSING_TIME_QUARANTINED"
+      },
+      "sha": "137ff45d53197e3a6839339a92b5d6ea0f0f0da8",
+      "team_file_sha256": "a78fb8e6a4f7d994afea7e8b1810d0fff0d14275e09be7ec28133dd8e0ba9bff",
+      "valid_prior_premier_league_rows": 332,
+      "witness": {
+        "commit": "137ff45d53197e3a6839339a92b5d6ea0f0f0da8",
+        "github_run_id": 25224669814,
+        "proof": "GITHUB_SERVER_ACTIONS_MAIN_HEAD_SHA_EXISTED_BY",
+        "provider_original_xg_first_published_verified": false,
+        "repo": "olbauday/FPL-Core-Insights",
+        "run_url": "https://github.com/olbauday/FPL-Core-Insights/actions/runs/25224669814",
+        "server_created_at_utc": "2026-05-01T17:21:56Z"
+      }
+    },
+    {
+      "alternative_xG5_complete_future_targets": 0,
+      "exact_public_reference_prior_rows": 305,
+      "gameweek_file_sha256": {
+        "1": "ccd38493f0e100221d053b0cb6c4459e7735c7a91d5f9264ac071353d3e1f114",
+        "10": "d573e2a1d559e786a20db078829b153361ddd39e9565a57fd56b5718588e5a27",
+        "11": "5abe8c0484558d0fa5c516d0edcbf5d66c2c33294bedf85ab3bd893d10f622e2",
+        "12": "7fd565536fb9a7f7d1787c8f0b6ddbd3721e0f0e343d12d8a01d6aa4f1a0a3df",
+        "13": "d57e58c71191cf7390e0c7cf3e399d36bb0981b8af950c618b6700a71d98ff5e",
+        "14": "64d32d483fa0b798cf36bee2c02c12547f1b0edda303a8f48974898e8dde8a6d",
+        "15": "8c6d47e7e0449d955c4593a0ba536901cef0366772bac37c5478af984514ce7f",
+        "16": "1d611e351a42bdb476db27dbb916236da981e2b0bfd72ada32873bab4b852994",
+        "17": "cc260747227129a684e8ce9ac6bbc44cce8adab533d2fe8c036b1f5e690b2e23",
+        "18": "efc2ed43aa309361ac3cbb4f1d3cd00d0c74b88efbcd29a919f9cb9178634bd7",
+        "19": "c97ee4adc3b099d5d0fdaccb34b6631fca0b2f797180bb583299aab1a23535c7",
+        "2": "7233a6a19dd48a15bed0f5c85caca029b6e14936e8c8bf65004ddfb9639c4af2",
+        "20": "382cabaadbda3c36e94f58bf66ba65b9d8280a0a89bf83e5afe3cc49ebc8131d",
+        "21": "3667e6b54415306bd7ae846687b8f8619991b7ebfd67458435653c0244f12253",
+        "22": "978c271544f601fd9ee2f5b133c2c80c220c7ae1b089944f033e00dfd208424f",
+        "23": "83d194cd2f90229286f139e6e4ee4ef2fff2cf6a9b33fb7a2ae808f6d8f162b7",
+        "24": "faa5971d957cb149fbdf540179963e561f6c1a721670bd33af30b68a68007d5a",
+        "25": "204686bab64b20f2a008cc3009f198ae5239f1b1c5260a87cf77bfabfed0aa66",
+        "26": "b13441c6a0f7a783c87ef50727d8944e0745914ba9bc244bc0534faa8e661316",
+        "27": "05b83592ec1267cbca792e282cb7605b2bcf5e0e2c00667f311df30927696d6e",
+        "28": "32a3f1d071fb093097c6306fe00e22d1704c3cfd774cbf3d4b717d56a225c486",
+        "29": "31ac51b51815be0f9adab0e6041249e2b1a932a4ece572494791b769af07d604",
+        "3": "d867cb75f24e2a2afe45d00c319489067e0618ea27265d8987e28411ad2dff66",
+        "30": "037cc0d1bf7e34cf333d5e11b8c7dcc7452bbb42e5951f7e21817b21ede210bc",
+        "31": "f07d27539eb67aa147e0bbbd934d0be68664b6cb6c766afc905e7a7230b3d730",
+        "32": "aa1498e025f86d47620f46317f0ed867e24cb2c891355184ef663a070592302e",
+        "33": "982577a766f4ea8999f7e40b59fbcbeab97af84708e82127475de7b3e1a4283e",
+        "34": "f102d5b0eea7d7a4dbfe2eff9610c501fe89ddc536233f9a9fb93aedc8c3d9f6",
+        "35": "93e21f3a34726ddea35145a486621d66b74d49136e3afa82cab0a52c52ac1678",
+        "36": "e0efd1b5fe5f76d67ee3dfe6abfc1320bafef6e665df2174e85a48611ec0235a",
+        "37": "d2852f94911af13fb4d3b55efe4b9f7ab74e9e837ddb5ce9a9c0a2d55548e6e8",
+        "4": "039d9b6170a9ba7abf10417b0a86a351b402d96140d91623855b4238cb39d47f",
+        "5": "9759efb2e7bffc49e2e48883fe85dde6363509223540a5f881fcc017bfde8210",
+        "6": "08238fe8e61f0ac6638a396825fdede7ec0d8f23974b83087001ab1613326839",
+        "7": "ff52fc574ecb1a41faa62f421de71b877044532934052440d38bd38ab7d07341",
+        "8": "27fd04ff985d9f110a6da21e78e4de18da0ded9a8fd542a7b9d4ba3ea106b382",
+        "9": "e58cc771da833edc52e2e503b25f8460b43536e9688ba0523db5868d0b2d75d4"
+      },
+      "public_FORM5_future_targets": 0,
+      "quarantined_gameweeks": {
+        "34": "MISSING_TIME_QUARANTINED",
+        "35": "MISSING_TIME_QUARANTINED",
+        "36": "MISSING_TIME_QUARANTINED"
+      },
+      "sha": "254862a0b966d43c428840dfbf550b84c8d47094",
+      "team_file_sha256": "a78fb8e6a4f7d994afea7e8b1810d0fff0d14275e09be7ec28133dd8e0ba9bff",
+      "valid_prior_premier_league_rows": 332,
+      "witness": {
+        "commit": "254862a0b966d43c428840dfbf550b84c8d47094",
+        "github_run_id": 25661785696,
+        "proof": "GITHUB_SERVER_ACTIONS_MAIN_HEAD_SHA_EXISTED_BY",
+        "provider_original_xg_first_published_verified": false,
+        "repo": "olbauday/FPL-Core-Insights",
+        "run_url": "https://github.com/olbauday/FPL-Core-Insights/actions/runs/25661785696",
+        "server_created_at_utc": "2026-05-11T09:25:47Z"
+      }
+    }
+  ],
+  "targets": [
+    {
+      "alternative_xg_is_not_PitchAPI_original_48_features": true,
+      "evidence_github_run_id": 19175468717,
+      "evidence_source_commit": "173bd03f01a9808dbbcf9c42e8ad1112b63429ac",
+      "native_pitchapi_fixture_id_join_proven": false,
+      "original_121_plus_38_eligible": false,
+      "prematch_public_FORM5": {
+        "away": {
+          "alternative_xg_avg": 1.418,
+          "alternative_xg_missing": false,
+          "alternative_xga_avg": 1.334,
+          "ga_avg": 1.4,
+          "gf_avg": 2.0,
+          "points_avg": 2.0,
+          "previous_prematch_5_source_rows_found": 5
+        },
+        "home": {
+          "alternative_xg_avg": 0.9019999999999999,
+          "alternative_xg_missing": false,
+          "alternative_xga_avg": 1.5,
+          "ga_avg": 1.0,
+          "gf_avg": 1.4,
+          "points_avg": 1.4,
+          "previous_prematch_5_source_rows_found": 5
+        }
+      },
+      "source_is_not_native_PitchAPI": true,
+      "source_publication_witness_utc": "2025-11-07T17:03:33Z",
+      "target_kickoff_utc": "2025-11-08T12:30:00Z",
+      "target_public_away": "manchester united",
+      "target_public_home": "tottenham hotspur"
+    },
+    {
+      "alternative_xg_is_not_PitchAPI_original_48_features": true,
+      "evidence_github_run_id": 19175468717,
+      "evidence_source_commit": "173bd03f01a9808dbbcf9c42e8ad1112b63429ac",
+      "native_pitchapi_fixture_id_join_proven": false,
+      "original_121_plus_38_eligible": false,
+      "prematch_public_FORM5": {
+        "away": {
+          "alternative_xg_avg": 1.028,
+          "alternative_xg_missing": false,
+          "alternative_xga_avg": 1.3559999999999999,
+          "ga_avg": 1.8,
+          "gf_avg": 1.2,
+          "points_avg": 0.6,
+          "previous_prematch_5_source_rows_found": 5
+        },
+        "home": {
+          "alternative_xg_avg": 1.198,
+          "alternative_xg_missing": false,
+          "alternative_xga_avg": 1.7079999999999997,
+          "ga_avg": 1.6,
+          "gf_avg": 0.8,
+          "points_avg": 1.0,
+          "previous_prematch_5_source_rows_found": 5
+        }
+      },
+      "source_is_not_native_PitchAPI": true,
+      "source_publication_witness_utc": "2025-11-07T17:03:33Z",
+      "target_kickoff_utc": "2025-11-08T15:00:00Z",
+      "target_public_away": "fulham",
+      "target_public_home": "everton"
+    },
+    {
+      "alternative_xg_is_not_PitchAPI_original_48_features": true,
+      "evidence_github_run_id": 19175468717,
+      "evidence_source_commit": "173bd03f01a9808dbbcf9c42e8ad1112b63429ac",
+      "native_pitchapi_fixture_id_join_proven": false,
+      "original_121_plus_38_eligible": false,
+      "prematch_public_FORM5": {
+        "away": {
+          "alternative_xg_avg": 0.6239999999999999,
+          "alternative_xg_missing": false,
+          "alternative_xga_avg": 1.9780000000000002,
+          "ga_avg": 2.2,
+          "gf_avg": 1.4,
+          "points_avg": 1.2,
+          "previous_prematch_5_source_rows_found": 5
+        },
+        "home": {
+          "alternative_xg_avg": 0.8620000000000001,
+          "alternative_xg_missing": false,
+          "alternative_xga_avg": 1.578,
+          "ga_avg": 1.6,
+          "gf_avg": 1.0,
+          "points_avg": 0.8,
+          "previous_prematch_5_source_rows_found": 5
+        }
+      },
+      "source_is_not_native_PitchAPI": true,
+      "source_publication_witness_utc": "2025-11-07T17:03:33Z",
+      "target_kickoff_utc": "2025-11-08T15:00:00Z",
+      "target_public_away": "burnley",
+      "target_public_home": "west ham united"
+    },
+    {
+      "alternative_xg_is_not_PitchAPI_original_48_features": true,
+      "evidence_github_run_id": 19175468717,
+      "evidence_source_commit": "173bd03f01a9808dbbcf9c42e8ad1112b63429ac",
+      "native_pitchapi_fixture_id_join_proven": false,
+      "original_121_plus_38_eligible": false,
+      "prematch_public_FORM5": {
+        "away": {
+          "alternative_xg_avg": 2.0100000000000002,
+          "alternative_xg_missing": false,
+          "alternative_xga_avg": 0.458,
+          "ga_avg": 0.2,
+          "gf_avg": 1.6,
+          "points_avg": 3.0,
+          "previous_prematch_5_source_rows_found": 5
+        },
+        "home": {
+          "alternative_xg_avg": 1.036,
+          "alternative_xg_missing": false,
+          "alternative_xga_avg": 1.218,
+          "ga_avg": 0.8,
+          "gf_avg": 1.2,
+          "points_avg": 2.0,
+          "previous_prematch_5_source_rows_found": 5
+        }
+      },
+      "source_is_not_native_PitchAPI": true,
+      "source_publication_witness_utc": "2025-11-07T17:03:33Z",
+      "target_kickoff_utc": "2025-11-08T17:30:00Z",
+      "target_public_away": "arsenal",
+      "target_public_home": "sunderland"
+    },
+    {
+      "alternative_xg_is_not_PitchAPI_original_48_features": true,
+      "evidence_github_run_id": 19175468717,
+      "evidence_source_commit": "173bd03f01a9808dbbcf9c42e8ad1112b63429ac",
+      "native_pitchapi_fixture_id_join_proven": false,
+      "original_121_plus_38_eligible": false,
+      "prematch_public_FORM5": {
+        "away": {
+          "alternative_xg_avg": 0.9719999999999999,
+          "alternative_xg_missing": false,
+          "alternative_xga_avg": 1.1199999999999999,
+          "ga_avg": 2.0,
+          "gf_avg": 0.8,
+          "points_avg": 0.4,
+          "previous_prematch_5_source_rows_found": 5
+        },
+        "home": {
+          "alternative_xg_avg": 1.6099999999999999,
+          "alternative_xg_missing": false,
+          "alternative_xga_avg": 1.508,
+          "ga_avg": 1.2,
+          "gf_avg": 1.6,
+          "points_avg": 1.8,
+          "previous_prematch_5_source_rows_found": 5
+        }
+      },
+      "source_is_not_native_PitchAPI": true,
+      "source_publication_witness_utc": "2025-11-07T17:03:33Z",
+      "target_kickoff_utc": "2025-11-08T20:00:00Z",
+      "target_public_away": "wolverhampton wanderers",
+      "target_public_home": "chelsea"
+    },
+    {
+      "alternative_xg_is_not_PitchAPI_original_48_features": true,
+      "evidence_github_run_id": 19175468717,
+      "evidence_source_commit": "173bd03f01a9808dbbcf9c42e8ad1112b63429ac",
+      "native_pitchapi_fixture_id_join_proven": false,
+      "original_121_plus_38_eligible": false,
+      "prematch_public_FORM5": {
+        "away": {
+          "alternative_xg_avg": 1.084,
+          "alternative_xg_missing": false,
+          "alternative_xga_avg": 1.8780000000000001,
+          "ga_avg": 1.8,
+          "gf_avg": 2.2,
+          "points_avg": 1.6,
+          "previous_prematch_5_source_rows_found": 5
+        },
+        "home": {
+          "alternative_xg_avg": 0.8719999999999999,
+          "alternative_xg_missing": false,
+          "alternative_xga_avg": 0.932,
+          "ga_avg": 1.0,
+          "gf_avg": 1.6,
+          "points_avg": 2.4,
+          "previous_prematch_5_source_rows_found": 5
+        }
+      },
+      "source_is_not_native_PitchAPI": true,
+      "source_publication_witness_utc": "2025-11-07T17:03:33Z",
+      "target_kickoff_utc": "2025-11-09T14:00:00Z",
+      "target_public_away": "afc bournemouth",
+      "target_public_home": "aston villa"
+    },
+    {
+      "alternative_xg_is_not_PitchAPI_original_48_features": true,
+      "evidence_github_run_id": 19175468717,
+      "evidence_source_commit": "173bd03f01a9808dbbcf9c42e8ad1112b63429ac",
+      "native_pitchapi_fixture_id_join_proven": false,
+      "original_121_plus_38_eligible": false,
+      "prematch_public_FORM5": {
+        "away": {
+          "alternative_xg_avg": 1.568,
+          "alternative_xg_missing": false,
+          "alternative_xga_avg": 1.314,
+          "ga_avg": 1.6,
+          "gf_avg": 1.4,
+          "points_avg": 1.2,
+          "previous_prematch_5_source_rows_found": 5
+        },
+        "home": {
+          "alternative_xg_avg": 1.658,
+          "alternative_xg_missing": false,
+          "alternative_xga_avg": 1.2459999999999998,
+          "ga_avg": 1.2,
+          "gf_avg": 1.6,
+          "points_avg": 1.8,
+          "previous_prematch_5_source_rows_found": 5
+        }
+      },
+      "source_is_not_native_PitchAPI": true,
+      "source_publication_witness_utc": "2025-11-07T17:03:33Z",
+      "target_kickoff_utc": "2025-11-09T14:00:00Z",
+      "target_public_away": "newcastle united",
+      "target_public_home": "brentford"
+    },
+    {
+      "alternative_xg_is_not_PitchAPI_original_48_features": true,
+      "evidence_github_run_id": 19175468717,
+      "evidence_source_commit": "173bd03f01a9808dbbcf9c42e8ad1112b63429ac",
+      "native_pitchapi_fixture_id_join_proven": false,
+      "original_121_plus_38_eligible": false,
+      "prematch_public_FORM5": {
+        "away": {
+          "alternative_xg_avg": 1.6600000000000001,
+          "alternative_xg_missing": false,
+          "alternative_xga_avg": 1.0799999999999998,
+          "ga_avg": 1.4,
+          "gf_avg": 2.2,
+          "points_avg": 2.0,
+          "previous_prematch_5_source_rows_found": 5
+        },
+        "home": {
+          "alternative_xg_avg": 1.904,
+          "alternative_xg_missing": false,
+          "alternative_xga_avg": 1.5539999999999998,
+          "ga_avg": 1.4,
+          "gf_avg": 1.6,
+          "points_avg": 1.4,
+          "previous_prematch_5_source_rows_found": 5
+        }
+      },
+      "source_is_not_native_PitchAPI": true,
+      "source_publication_witness_utc": "2025-11-07T17:03:33Z",
+      "target_kickoff_utc": "2025-11-09T14:00:00Z",
+      "target_public_away": "brighton and hove albion",
+      "target_public_home": "crystal palace"
+    },
+    {
+      "alternative_xg_is_not_PitchAPI_original_48_features": true,
+      "evidence_github_run_id": 19175468717,
+      "evidence_source_commit": "173bd03f01a9808dbbcf9c42e8ad1112b63429ac",
+      "native_pitchapi_fixture_id_join_proven": false,
+      "original_121_plus_38_eligible": false,
+      "prematch_public_FORM5": {
+        "away": {
+          "alternative_xg_avg": 1.42,
+          "alternative_xg_missing": false,
+          "alternative_xga_avg": 1.112,
+          "ga_avg": 2.0,
+          "gf_avg": 1.0,
+          "points_avg": 0.8,
+          "previous_prematch_5_source_rows_found": 5
+        },
+        "home": {
+          "alternative_xg_avg": 1.344,
+          "alternative_xg_missing": false,
+          "alternative_xga_avg": 1.5739999999999998,
+          "ga_avg": 2.0,
+          "gf_avg": 0.4,
+          "points_avg": 0.2,
+          "previous_prematch_5_source_rows_found": 5
+        }
+      },
+      "source_is_not_native_PitchAPI": true,
+      "source_publication_witness_utc": "2025-11-07T17:03:33Z",
+      "target_kickoff_utc": "2025-11-09T14:00:00Z",
+      "target_public_away": "leeds united",
+      "target_public_home": "nottingham forest"
+    },
+    {
+      "alternative_xg_is_not_PitchAPI_original_48_features": true,
+      "evidence_github_run_id": 19175468717,
+      "evidence_source_commit": "173bd03f01a9808dbbcf9c42e8ad1112b63429ac",
+      "native_pitchapi_fixture_id_join_proven": false,
+      "original_121_plus_38_eligible": false,
+      "prematch_public_FORM5": {
+        "away": {
+          "alternative_xg_avg": 1.666,
+          "alternative_xg_missing": false,
+          "alternative_xga_avg": 1.4460000000000002,
+          "ga_avg": 1.6,
+          "gf_avg": 1.2,
+          "points_avg": 0.6,
+          "previous_prematch_5_source_rows_found": 5
+        },
+        "home": {
+          "alternative_xg_avg": 1.7459999999999998,
+          "alternative_xg_missing": false,
+          "alternative_xga_avg": 0.688,
+          "ga_avg": 0.6,
+          "gf_avg": 2.2,
+          "points_avg": 2.4,
+          "previous_prematch_5_source_rows_found": 5
+        }
+      },
+      "source_is_not_native_PitchAPI": true,
+      "source_publication_witness_utc": "2025-11-07T17:03:33Z",
+      "target_kickoff_utc": "2025-11-09T16:30:00Z",
+      "target_public_away": "liverpool",
+      "target_public_home": "manchester city"
+    },
+    {
+      "alternative_xg_is_not_PitchAPI_original_48_features": true,
+      "evidence_github_run_id": 19279791484,
+      "evidence_source_commit": "126b9ffec2076a9a42458e7e4fd5d555968f305d",
+      "native_pitchapi_fixture_id_join_proven": false,
+      "original_121_plus_38_eligible": false,
+      "prematch_public_FORM5": {
+        "away": {
+          "alternative_xg_avg": 1.932,
+          "alternative_xg_missing": false,
+          "alternative_xga_avg": 1.1400000000000001,
+          "ga_avg": 0.6,
+          "gf_avg": 2.0,
+          "points_avg": 2.4,
+          "previous_prematch_5_source_rows_found": 5
+        },
+        "home": {
+          "alternative_xg_avg": 0.792,
+          "alternative_xg_missing": false,
+          "alternative_xga_avg": 2.164,
+          "ga_avg": 1.8,
+          "gf_avg": 1.6,
+          "points_avg": 1.2,
+          "previous_prematch_5_source_rows_found": 5
+        }
+      },
+      "source_is_not_native_PitchAPI": true,
+      "source_publication_witness_utc": "2025-11-11T22:06:28Z",
+      "target_kickoff_utc": "2025-11-22T12:30:00Z",
+      "target_public_away": "chelsea",
+      "target_public_home": "burnley"
+    },
+    {
+      "alternative_xg_is_not_PitchAPI_original_48_features": true,
+      "evidence_github_run_id": 19279791484,
+      "evidence_source_commit": "126b9ffec2076a9a42458e7e4fd5d555968f305d",
+      "native_pitchapi_fixture_id_join_proven": false,
+      "original_121_plus_38_eligible": false,
+      "prematch_public_FORM5": {
+        "away": {
+          "alternative_xg_avg": 1.228,
+          "alternative_xg_missing": false,
+          "alternative_xga_avg": 1.6800000000000002,
+          "ga_avg": 1.8,
+          "gf_avg": 1.4,
+          "points_avg": 1.2,
+          "previous_prematch_5_source_rows_found": 5
+        },
+        "home": {
+          "alternative_xg_avg": 1.292,
+          "alternative_xg_missing": false,
+          "alternative_xga_avg": 1.8040000000000003,
+          "ga_avg": 2.2,
+          "gf_avg": 1.8,
+          "points_avg": 1.4,
+          "previous_prematch_5_source_rows_found": 5
+        }
+      },
+      "source_is_not_native_PitchAPI": true,
+      "source_publication_witness_utc": "2025-11-11T22:06:28Z",
+      "target_kickoff_utc": "2025-11-22T15:00:00Z",
+      "target_public_away": "west ham united",
+      "target_public_home": "afc bournemouth"
+    },
+    {
+      "alternative_xg_is_not_PitchAPI_original_48_features": true,
+      "evidence_github_run_id": 19279791484,
+      "evidence_source_commit": "126b9ffec2076a9a42458e7e4fd5d555968f305d",
+      "native_pitchapi_fixture_id_join_proven": false,
+      "original_121_plus_38_eligible": false,
+      "prematch_public_FORM5": {
+        "away": {
+          "alternative_xg_avg": 1.7879999999999998,
+          "alternative_xg_missing": false,
+          "alternative_xga_avg": 0.9239999999999998,
+          "ga_avg": 1.2,
+          "gf_avg": 1.6,
+          "points_avg": 1.8,
+          "previous_prematch_5_source_rows_found": 5
+        },
+        "home": {
+          "alternative_xg_avg": 1.334,
+          "alternative_xg_missing": false,
+          "alternative_xga_avg": 0.8879999999999999,
+          "ga_avg": 1.2,
+          "gf_avg": 1.6,
+          "points_avg": 1.6,
+          "previous_prematch_5_source_rows_found": 5
+        }
+      },
+      "source_is_not_native_PitchAPI": true,
+      "source_publication_witness_utc": "2025-11-11T22:06:28Z",
+      "target_kickoff_utc": "2025-11-22T15:00:00Z",
+      "target_public_away": "brentford",
+      "target_public_home": "brighton and hove albion"
+    },
+    {
+      "alternative_xg_is_not_PitchAPI_original_48_features": true,
+      "evidence_github_run_id": 19279791484,
+      "evidence_source_commit": "126b9ffec2076a9a42458e7e4fd5d555968f305d",
+      "native_pitchapi_fixture_id_join_proven": false,
+      "original_121_plus_38_eligible": false,
+      "prematch_public_FORM5": {
+        "away": {
+          "alternative_xg_avg": 0.8859999999999999,
+          "alternative_xg_missing": false,
+          "alternative_xga_avg": 1.306,
+          "ga_avg": 1.2,
+          "gf_avg": 1.4,
+          "points_avg": 1.6,
+          "previous_prematch_5_source_rows_found": 5
+        },
+        "home": {
+          "alternative_xg_avg": 0.9280000000000002,
+          "alternative_xg_missing": false,
+          "alternative_xga_avg": 1.364,
+          "ga_avg": 1.6,
+          "gf_avg": 1.0,
+          "points_avg": 0.6,
+          "previous_prematch_5_source_rows_found": 5
+        }
+      },
+      "source_is_not_native_PitchAPI": true,
+      "source_publication_witness_utc": "2025-11-11T22:06:28Z",
+      "target_kickoff_utc": "2025-11-22T15:00:00Z",
+      "target_public_away": "sunderland",
+      "target_public_home": "fulham"
+    },
+    {
+      "alternative_xg_is_not_PitchAPI_original_48_features": true,
+      "evidence_github_run_id": 19279791484,
+      "evidence_source_commit": "126b9ffec2076a9a42458e7e4fd5d555968f305d",
+      "native_pitchapi_fixture_id_join_proven": false,
+      "original_121_plus_38_eligible": false,
+      "prematch_public_FORM5": {
+        "away": {
+          "alternative_xg_avg": 1.508,
+          "alternative_xg_missing": false,
+          "alternative_xga_avg": 1.4739999999999998,
+          "ga_avg": 2.0,
+          "gf_avg": 1.0,
+          "points_avg": 0.8,
+          "previous_prematch_5_source_rows_found": 5
+        },
+        "home": {
+          "alternative_xg_avg": 1.3579999999999999,
+          "alternative_xg_missing": false,
+          "alternative_xga_avg": 1.276,
+          "ga_avg": 1.8,
+          "gf_avg": 1.0,
+          "points_avg": 0.6,
+          "previous_prematch_5_source_rows_found": 5
+        }
+      },
+      "source_is_not_native_PitchAPI": true,
+      "source_publication_witness_utc": "2025-11-11T22:06:28Z",
+      "target_kickoff_utc": "2025-11-22T15:00:00Z",
+      "target_public_away": "nottingham forest",
+      "target_public_home": "liverpool"
+    },
+    {
+      "alternative_xg_is_not_PitchAPI_original_48_features": true,
+      "evidence_github_run_id": 19279791484,
+      "evidence_source_commit": "126b9ffec2076a9a42458e7e4fd5d555968f305d",
+      "native_pitchapi_fixture_id_join_proven": false,
+      "original_121_plus_38_eligible": false,
+      "prematch_public_FORM5": {
+        "away": {
+          "alternative_xg_avg": 1.562,
+          "alternative_xg_missing": false,
+          "alternative_xga_avg": 1.1800000000000002,
+          "ga_avg": 1.2,
+          "gf_avg": 1.2,
+          "points_avg": 1.0,
+          "previous_prematch_5_source_rows_found": 5
+        },
+        "home": {
+          "alternative_xg_avg": 0.8059999999999998,
+          "alternative_xg_missing": false,
+          "alternative_xga_avg": 1.6059999999999999,
+          "ga_avg": 2.4,
+          "gf_avg": 0.6,
+          "points_avg": 0.2,
+          "previous_prematch_5_source_rows_found": 5
+        }
+      },
+      "source_is_not_native_PitchAPI": true,
+      "source_publication_witness_utc": "2025-11-11T22:06:28Z",
+      "target_kickoff_utc": "2025-11-22T15:00:00Z",
+      "target_public_away": "crystal palace",
+      "target_public_home": "wolverhampton wanderers"
+    },
+    {
+      "alternative_xg_is_not_PitchAPI_original_48_features": true,
+      "evidence_github_run_id": 19279791484,
+      "evidence_source_commit": "126b9ffec2076a9a42458e7e4fd5d555968f305d",
+      "native_pitchapi_fixture_id_join_proven": false,
+      "original_121_plus_38_eligible": false,
+      "prematch_public_FORM5": {
+        "away": {
+          "alternative_xg_avg": 1.6480000000000001,
+          "alternative_xg_missing": false,
+          "alternative_xga_avg": 0.75,
+          "ga_avg": 0.4,
+          "gf_avg": 1.8,
+          "points_avg": 2.4,
+          "previous_prematch_5_source_rows_found": 5
+        },
+        "home": {
+          "alternative_xg_avg": 1.5539999999999998,
+          "alternative_xg_missing": false,
+          "alternative_xga_avg": 1.4320000000000002,
+          "ga_avg": 1.8,
+          "gf_avg": 1.4,
+          "points_avg": 1.2,
+          "previous_prematch_5_source_rows_found": 5
+        }
+      },
+      "source_is_not_native_PitchAPI": true,
+      "source_publication_witness_utc": "2025-11-11T22:06:28Z",
+      "target_kickoff_utc": "2025-11-22T17:30:00Z",
+      "target_public_away": "manchester city",
+      "target_public_home": "newcastle united"
+    },
+    {
+      "alternative_xg_is_not_PitchAPI_original_48_features": true,
+      "evidence_github_run_id": 19279791484,
+      "evidence_source_commit": "126b9ffec2076a9a42458e7e4fd5d555968f305d",
+      "native_pitchapi_fixture_id_join_proven": false,
+      "original_121_plus_38_eligible": false,
+      "prematch_public_FORM5": {
+        "away": {
+          "alternative_xg_avg": 0.858,
+          "alternative_xg_missing": false,
+          "alternative_xga_avg": 1.152,
+          "ga_avg": 0.8,
+          "gf_avg": 1.8,
+          "points_avg": 2.4,
+          "previous_prematch_5_source_rows_found": 5
+        },
+        "home": {
+          "alternative_xg_avg": 1.218,
+          "alternative_xg_missing": false,
+          "alternative_xga_avg": 1.4140000000000001,
+          "ga_avg": 2.2,
+          "gf_avg": 0.8,
+          "points_avg": 0.6,
+          "previous_prematch_5_source_rows_found": 5
+        }
+      },
+      "source_is_not_native_PitchAPI": true,
+      "source_publication_witness_utc": "2025-11-11T22:06:28Z",
+      "target_kickoff_utc": "2025-11-23T14:00:00Z",
+      "target_public_away": "aston villa",
+      "target_public_home": "leeds united"
+    },
+    {
+      "alternative_xg_is_not_PitchAPI_original_48_features": true,
+      "evidence_github_run_id": 19279791484,
+      "evidence_source_commit": "126b9ffec2076a9a42458e7e4fd5d555968f305d",
+      "native_pitchapi_fixture_id_join_proven": false,
+      "original_121_plus_38_eligible": false,
+      "prematch_public_FORM5": {
+        "away": {
+          "alternative_xg_avg": 0.9179999999999999,
+          "alternative_xg_missing": false,
+          "alternative_xga_avg": 1.426,
+          "ga_avg": 1.2,
+          "gf_avg": 1.6,
+          "points_avg": 1.4,
+          "previous_prematch_5_source_rows_found": 5
+        },
+        "home": {
+          "alternative_xg_avg": 2.018,
+          "alternative_xg_missing": false,
+          "alternative_xga_avg": 0.44800000000000006,
+          "ga_avg": 0.4,
+          "gf_avg": 1.6,
+          "points_avg": 2.6,
+          "previous_prematch_5_source_rows_found": 5
+        }
+      },
+      "source_is_not_native_PitchAPI": true,
+      "source_publication_witness_utc": "2025-11-11T22:06:28Z",
+      "target_kickoff_utc": "2025-11-23T16:30:00Z",
+      "target_public_away": "tottenham hotspur",
+      "target_public_home": "arsenal"
+    },
+    {
+      "alternative_xg_is_not_PitchAPI_original_48_features": true,
+      "evidence_github_run_id": 19279791484,
+      "evidence_source_commit": "126b9ffec2076a9a42458e7e4fd5d555968f305d",
+      "native_pitchapi_fixture_id_join_proven": false,
+      "original_121_plus_38_eligible": false,
+      "prematch_public_FORM5": {
+        "away": {
+          "alternative_xg_avg": 1.3399999999999999,
+          "alternative_xg_missing": false,
+          "alternative_xga_avg": 1.55,
+          "ga_avg": 1.4,
+          "gf_avg": 1.0,
+          "points_avg": 1.4,
+          "previous_prematch_5_source_rows_found": 5
+        },
+        "home": {
+          "alternative_xg_avg": 1.138,
+          "alternative_xg_missing": false,
+          "alternative_xga_avg": 1.128,
+          "ga_avg": 1.2,
+          "gf_avg": 2.2,
+          "points_avg": 2.2,
+          "previous_prematch_5_source_rows_found": 5
+        }
+      },
+      "source_is_not_native_PitchAPI": true,
+      "source_publication_witness_utc": "2025-11-11T22:06:28Z",
+      "target_kickoff_utc": "2025-11-24T20:00:00Z",
+      "target_public_away": "everton",
+      "target_public_home": "manchester united"
+    },
+    {
+      "alternative_xg_is_not_PitchAPI_original_48_features": true,
+      "evidence_github_run_id": 20071891722,
+      "evidence_source_commit": "49c4a6573492e7c5fb020ee4d650e60baf0f138b",
+      "native_pitchapi_fixture_id_join_proven": false,
+      "original_121_plus_38_eligible": false,
+      "prematch_public_FORM5": {
+        "away": {
+          "alternative_xg_avg": 1.014,
+          "alternative_xg_missing": false,
+          "alternative_xga_avg": 1.016,
+          "ga_avg": 0.8,
+          "gf_avg": 1.6,
+          "points_avg": 2.4,
+          "previous_prematch_5_source_rows_found": 5
+        },
+        "home": {
+          "alternative_xg_avg": 1.562,
+          "alternative_xg_missing": false,
+          "alternative_xga_avg": 1.212,
+          "ga_avg": 0.8,
+          "gf_avg": 1.4,
+          "points_avg": 1.6,
+          "previous_prematch_5_source_rows_found": 5
+        }
+      },
+      "source_is_not_native_PitchAPI": true,
+      "source_publication_witness_utc": "2025-12-09T17:04:53Z",
+      "target_kickoff_utc": "2025-12-13T15:00:00Z",
+      "target_public_away": "everton",
+      "target_public_home": "chelsea"
+    },
+    {
+      "alternative_xg_is_not_PitchAPI_original_48_features": true,
+      "evidence_github_run_id": 20071891722,
+      "evidence_source_commit": "49c4a6573492e7c5fb020ee4d650e60baf0f138b",
+      "native_pitchapi_fixture_id_join_proven": false,
+      "original_121_plus_38_eligible": false,
+      "prematch_public_FORM5": {
+        "away": {
+          "alternative_xg_avg": 1.436,
+          "alternative_xg_missing": false,
+          "alternative_xga_avg": 1.4899999999999998,
+          "ga_avg": 1.2,
+          "gf_avg": 1.6,
+          "points_avg": 1.6,
+          "previous_prematch_5_source_rows_found": 5
+        },
+        "home": {
+          "alternative_xg_avg": 1.41,
+          "alternative_xg_missing": false,
+          "alternative_xga_avg": 1.0619999999999998,
+          "ga_avg": 2.0,
+          "gf_avg": 1.2,
+          "points_avg": 1.0,
+          "previous_prematch_5_source_rows_found": 5
+        }
+      },
+      "source_is_not_native_PitchAPI": true,
+      "source_publication_witness_utc": "2025-12-09T17:04:53Z",
+      "target_kickoff_utc": "2025-12-13T15:00:00Z",
+      "target_public_away": "brighton and hove albion",
+      "target_public_home": "liverpool"
+    },
+    {
+      "alternative_xg_is_not_PitchAPI_original_48_features": true,
+      "evidence_github_run_id": 20071891722,
+      "evidence_source_commit": "49c4a6573492e7c5fb020ee4d650e60baf0f138b",
+      "native_pitchapi_fixture_id_join_proven": false,
+      "original_121_plus_38_eligible": false,
+      "prematch_public_FORM5": {
+        "away": {
+          "alternative_xg_avg": 0.9400000000000002,
+          "alternative_xg_missing": false,
+          "alternative_xga_avg": 1.266,
+          "ga_avg": 2.0,
+          "gf_avg": 1.6,
+          "points_avg": 1.2,
+          "previous_prematch_5_source_rows_found": 5
+        },
+        "home": {
+          "alternative_xg_avg": 0.9880000000000001,
+          "alternative_xg_missing": false,
+          "alternative_xga_avg": 2.056,
+          "ga_avg": 2.2,
+          "gf_avg": 0.8,
+          "points_avg": 0.0,
+          "previous_prematch_5_source_rows_found": 5
+        }
+      },
+      "source_is_not_native_PitchAPI": true,
+      "source_publication_witness_utc": "2025-12-09T17:04:53Z",
+      "target_kickoff_utc": "2025-12-13T17:30:00Z",
+      "target_public_away": "fulham",
+      "target_public_home": "burnley"
+    },
+    {
+      "alternative_xg_is_not_PitchAPI_original_48_features": true,
+      "evidence_github_run_id": 20071891722,
+      "evidence_source_commit": "49c4a6573492e7c5fb020ee4d650e60baf0f138b",
+      "native_pitchapi_fixture_id_join_proven": false,
+      "original_121_plus_38_eligible": false,
+      "prematch_public_FORM5": {
+        "away": {
+          "alternative_xg_avg": 0.716,
+          "alternative_xg_missing": false,
+          "alternative_xga_avg": 2.08,
+          "ga_avg": 2.2,
+          "gf_avg": 0.2,
+          "points_avg": 0.0,
+          "previous_prematch_5_source_rows_found": 5
+        },
+        "home": {
+          "alternative_xg_avg": 1.732,
+          "alternative_xg_missing": false,
+          "alternative_xga_avg": 0.7819999999999999,
+          "ga_avg": 1.2,
+          "gf_avg": 2.0,
+          "points_avg": 1.6,
+          "previous_prematch_5_source_rows_found": 5
+        }
+      },
+      "source_is_not_native_PitchAPI": true,
+      "source_publication_witness_utc": "2025-12-09T17:04:53Z",
+      "target_kickoff_utc": "2025-12-13T20:00:00Z",
+      "target_public_away": "wolverhampton wanderers",
+      "target_public_home": "arsenal"
+    },
+    {
+      "alternative_xg_is_not_PitchAPI_original_48_features": true,
+      "evidence_github_run_id": 20071891722,
+      "evidence_source_commit": "49c4a6573492e7c5fb020ee4d650e60baf0f138b",
+      "native_pitchapi_fixture_id_join_proven": false,
+      "original_121_plus_38_eligible": false,
+      "prematch_public_FORM5": {
+        "away": {
+          "alternative_xg_avg": 2.324,
+          "alternative_xg_missing": false,
+          "alternative_xga_avg": 1.206,
+          "ga_avg": 1.6,
+          "gf_avg": 3.0,
+          "points_avg": 2.4,
+          "previous_prematch_5_source_rows_found": 5
+        },
+        "home": {
+          "alternative_xg_avg": 1.218,
+          "alternative_xg_missing": false,
+          "alternative_xga_avg": 1.008,
+          "ga_avg": 0.6,
+          "gf_avg": 1.2,
+          "points_avg": 2.0,
+          "previous_prematch_5_source_rows_found": 5
+        }
+      },
+      "source_is_not_native_PitchAPI": true,
+      "source_publication_witness_utc": "2025-12-09T17:04:53Z",
+      "target_kickoff_utc": "2025-12-14T14:00:00Z",
+      "target_public_away": "manchester city",
+      "target_public_home": "crystal palace"
+    },
+    {
+      "alternative_xg_is_not_PitchAPI_original_48_features": true,
+      "evidence_github_run_id": 20071891722,
+      "evidence_source_commit": "49c4a6573492e7c5fb020ee4d650e60baf0f138b",
+      "native_pitchapi_fixture_id_join_proven": false,
+      "original_121_plus_38_eligible": false,
+      "prematch_public_FORM5": {
+        "away": {
+          "alternative_xg_avg": 0.958,
+          "alternative_xg_missing": false,
+          "alternative_xga_avg": 1.052,
+          "ga_avg": 2.0,
+          "gf_avg": 1.6,
+          "points_avg": 1.0,
+          "previous_prematch_5_source_rows_found": 5
+        },
+        "home": {
+          "alternative_xg_avg": 1.258,
+          "alternative_xg_missing": false,
+          "alternative_xga_avg": 1.284,
+          "ga_avg": 1.2,
+          "gf_avg": 1.4,
+          "points_avg": 1.8,
+          "previous_prematch_5_source_rows_found": 5
+        }
+      },
+      "source_is_not_native_PitchAPI": true,
+      "source_publication_witness_utc": "2025-12-09T17:04:53Z",
+      "target_kickoff_utc": "2025-12-14T14:00:00Z",
+      "target_public_away": "tottenham hotspur",
+      "target_public_home": "nottingham forest"
+    },
+    {
+      "alternative_xg_is_not_PitchAPI_original_48_features": true,
+      "evidence_github_run_id": 20071891722,
+      "evidence_source_commit": "49c4a6573492e7c5fb020ee4d650e60baf0f138b",
+      "native_pitchapi_fixture_id_join_proven": false,
+      "original_121_plus_38_eligible": false,
+      "prematch_public_FORM5": {
+        "away": {
+          "alternative_xg_avg": 1.688,
+          "alternative_xg_missing": false,
+          "alternative_xga_avg": 1.6460000000000001,
+          "ga_avg": 1.6,
+          "gf_avg": 2.2,
+          "points_avg": 2.0,
+          "previous_prematch_5_source_rows_found": 5
+        },
+        "home": {
+          "alternative_xg_avg": 0.61,
+          "alternative_xg_missing": false,
+          "alternative_xga_avg": 1.908,
+          "ga_avg": 1.8,
+          "gf_avg": 1.2,
+          "points_avg": 1.0,
+          "previous_prematch_5_source_rows_found": 5
+        }
+      },
+      "source_is_not_native_PitchAPI": true,
+      "source_publication_witness_utc": "2025-12-09T17:04:53Z",
+      "target_kickoff_utc": "2025-12-14T14:00:00Z",
+      "target_public_away": "newcastle united",
+      "target_public_home": "sunderland"
+    },
+    {
+      "alternative_xg_is_not_PitchAPI_original_48_features": true,
+      "evidence_github_run_id": 20071891722,
+      "evidence_source_commit": "49c4a6573492e7c5fb020ee4d650e60baf0f138b",
+      "native_pitchapi_fixture_id_join_proven": false,
+      "original_121_plus_38_eligible": false,
+      "prematch_public_FORM5": {
+        "away": {
+          "alternative_xg_avg": 1.8499999999999996,
+          "alternative_xg_missing": false,
+          "alternative_xga_avg": 1.4860000000000002,
+          "ga_avg": 1.0,
+          "gf_avg": 2.6,
+          "points_avg": 3.0,
+          "previous_prematch_5_source_rows_found": 5
+        },
+        "home": {
+          "alternative_xg_avg": 1.178,
+          "alternative_xg_missing": false,
+          "alternative_xga_avg": 2.0040000000000004,
+          "ga_avg": 1.6,
+          "gf_avg": 1.4,
+          "points_avg": 1.2,
+          "previous_prematch_5_source_rows_found": 5
+        }
+      },
+      "source_is_not_native_PitchAPI": true,
+      "source_publication_witness_utc": "2025-12-09T17:04:53Z",
+      "target_kickoff_utc": "2025-12-14T14:00:00Z",
+      "target_public_away": "aston villa",
+      "target_public_home": "west ham united"
+    },
+    {
+      "alternative_xg_is_not_PitchAPI_original_48_features": true,
+      "evidence_github_run_id": 20071891722,
+      "evidence_source_commit": "49c4a6573492e7c5fb020ee4d650e60baf0f138b",
+      "native_pitchapi_fixture_id_join_proven": false,
+      "original_121_plus_38_eligible": false,
+      "prematch_public_FORM5": {
+        "away": {
+          "alternative_xg_avg": 1.67,
+          "alternative_xg_missing": false,
+          "alternative_xga_avg": 2.03,
+          "ga_avg": 2.4,
+          "gf_avg": 2.0,
+          "points_avg": 0.8,
+          "previous_prematch_5_source_rows_found": 5
+        },
+        "home": {
+          "alternative_xg_avg": 1.5899999999999999,
+          "alternative_xg_missing": false,
+          "alternative_xga_avg": 1.296,
+          "ga_avg": 1.6,
+          "gf_avg": 1.4,
+          "points_avg": 1.2,
+          "previous_prematch_5_source_rows_found": 5
+        }
+      },
+      "source_is_not_native_PitchAPI": true,
+      "source_publication_witness_utc": "2025-12-09T17:04:53Z",
+      "target_kickoff_utc": "2025-12-14T16:30:00Z",
+      "target_public_away": "leeds united",
+      "target_public_home": "brentford"
+    },
+    {
+      "alternative_xg_is_not_PitchAPI_original_48_features": true,
+      "evidence_github_run_id": 20071891722,
+      "evidence_source_commit": "49c4a6573492e7c5fb020ee4d650e60baf0f138b",
+      "native_pitchapi_fixture_id_join_proven": false,
+      "original_121_plus_38_eligible": false,
+      "prematch_public_FORM5": {
+        "away": {
+          "alternative_xg_avg": 1.8599999999999999,
+          "alternative_xg_missing": false,
+          "alternative_xga_avg": 1.1720000000000002,
+          "ga_avg": 2.0,
+          "gf_avg": 0.8,
+          "points_avg": 0.4,
+          "previous_prematch_5_source_rows_found": 5
+        },
+        "home": {
+          "alternative_xg_avg": 1.8860000000000003,
+          "alternative_xg_missing": false,
+          "alternative_xga_avg": 0.8320000000000001,
+          "ga_avg": 1.2,
+          "gf_avg": 1.8,
+          "points_avg": 1.6,
+          "previous_prematch_5_source_rows_found": 5
+        }
+      },
+      "source_is_not_native_PitchAPI": true,
+      "source_publication_witness_utc": "2025-12-09T17:04:53Z",
+      "target_kickoff_utc": "2025-12-15T20:00:00Z",
+      "target_public_away": "afc bournemouth",
+      "target_public_home": "manchester united"
+    },
+    {
+      "alternative_xg_is_not_PitchAPI_original_48_features": true,
+      "evidence_github_run_id": 20376914645,
+      "evidence_source_commit": "1a3e9917b4a9e5bd3629557354dc7b7f4c17924f",
+      "native_pitchapi_fixture_id_join_proven": false,
+      "original_121_plus_38_eligible": false,
+      "prematch_public_FORM5": {
+        "away": {
+          "alternative_xg_avg": 1.3139999999999998,
+          "alternative_xg_missing": false,
+          "alternative_xga_avg": 1.3840000000000001,
+          "ga_avg": 0.8,
+          "gf_avg": 1.2,
+          "points_avg": 1.6,
+          "previous_prematch_5_source_rows_found": 5
+        },
+        "home": {
+          "alternative_xg_avg": 1.65,
+          "alternative_xg_missing": false,
+          "alternative_xga_avg": 1.2340000000000002,
+          "ga_avg": 1.2,
+          "gf_avg": 2.0,
+          "points_avg": 2.0,
+          "previous_prematch_5_source_rows_found": 5
+        }
+      },
+      "source_is_not_native_PitchAPI": true,
+      "source_publication_witness_utc": "2025-12-19T17:03:42Z",
+      "target_kickoff_utc": "2025-12-20T12:30:00Z",
+      "target_public_away": "chelsea",
+      "target_public_home": "newcastle united"
+    },
+    {
+      "alternative_xg_is_not_PitchAPI_original_48_features": true,
+      "evidence_github_run_id": 20376914645,
+      "evidence_source_commit": "1a3e9917b4a9e5bd3629557354dc7b7f4c17924f",
+      "native_pitchapi_fixture_id_join_proven": false,
+      "original_121_plus_38_eligible": false,
+      "prematch_public_FORM5": {
+        "away": {
+          "alternative_xg_avg": 1.28,
+          "alternative_xg_missing": false,
+          "alternative_xga_avg": 1.8980000000000001,
+          "ga_avg": 2.2,
+          "gf_avg": 0.8,
+          "points_avg": 0.0,
+          "previous_prematch_5_source_rows_found": 5
+        },
+        "home": {
+          "alternative_xg_avg": 1.9100000000000001,
+          "alternative_xg_missing": false,
+          "alternative_xga_avg": 1.49,
+          "ga_avg": 2.0,
+          "gf_avg": 1.6,
+          "points_avg": 0.6,
+          "previous_prematch_5_source_rows_found": 5
+        }
+      },
+      "source_is_not_native_PitchAPI": true,
+      "source_publication_witness_utc": "2025-12-19T17:03:42Z",
+      "target_kickoff_utc": "2025-12-20T15:00:00Z",
+      "target_public_away": "burnley",
+      "target_public_home": "afc bournemouth"
+    },
+    {
+      "alternative_xg_is_not_PitchAPI_original_48_features": true,
+      "evidence_github_run_id": 20376914645,
+      "evidence_source_commit": "1a3e9917b4a9e5bd3629557354dc7b7f4c17924f",
+      "native_pitchapi_fixture_id_join_proven": false,
+      "original_121_plus_38_eligible": false,
+      "prematch_public_FORM5": {
+        "away": {
+          "alternative_xg_avg": 0.58,
+          "alternative_xg_missing": false,
+          "alternative_xga_avg": 1.576,
+          "ga_avg": 1.4,
+          "gf_avg": 1.0,
+          "points_avg": 1.4,
+          "previous_prematch_5_source_rows_found": 5
+        },
+        "home": {
+          "alternative_xg_avg": 1.738,
+          "alternative_xg_missing": false,
+          "alternative_xga_avg": 1.7179999999999995,
+          "ga_avg": 1.6,
+          "gf_avg": 1.6,
+          "points_avg": 1.4,
+          "previous_prematch_5_source_rows_found": 5
+        }
+      },
+      "source_is_not_native_PitchAPI": true,
+      "source_publication_witness_utc": "2025-12-19T17:03:42Z",
+      "target_kickoff_utc": "2025-12-20T15:00:00Z",
+      "target_public_away": "sunderland",
+      "target_public_home": "brighton and hove albion"
+    },
+    {
+      "alternative_xg_is_not_PitchAPI_original_48_features": true,
+      "evidence_github_run_id": 20376914645,
+      "evidence_source_commit": "1a3e9917b4a9e5bd3629557354dc7b7f4c17924f",
+      "native_pitchapi_fixture_id_join_proven": false,
+      "original_121_plus_38_eligible": false,
+      "prematch_public_FORM5": {
+        "away": {
+          "alternative_xg_avg": 0.7819999999999999,
+          "alternative_xg_missing": false,
+          "alternative_xga_avg": 1.916,
+          "ga_avg": 1.8,
+          "gf_avg": 1.2,
+          "points_avg": 0.6,
+          "previous_prematch_5_source_rows_found": 5
+        },
+        "home": {
+          "alternative_xg_avg": 2.2600000000000002,
+          "alternative_xg_missing": false,
+          "alternative_xga_avg": 1.5,
+          "ga_avg": 1.6,
+          "gf_avg": 3.0,
+          "points_avg": 2.4,
+          "previous_prematch_5_source_rows_found": 5
+        }
+      },
+      "source_is_not_native_PitchAPI": true,
+      "source_publication_witness_utc": "2025-12-19T17:03:42Z",
+      "target_kickoff_utc": "2025-12-20T15:00:00Z",
+      "target_public_away": "west ham united",
+      "target_public_home": "manchester city"
+    },
+    {
+      "alternative_xg_is_not_PitchAPI_original_48_features": true,
+      "evidence_github_run_id": 20376914645,
+      "evidence_source_commit": "1a3e9917b4a9e5bd3629557354dc7b7f4c17924f",
+      "native_pitchapi_fixture_id_join_proven": false,
+      "original_121_plus_38_eligible": false,
+      "prematch_public_FORM5": {
+        "away": {
+          "alternative_xg_avg": 1.262,
+          "alternative_xg_missing": false,
+          "alternative_xga_avg": 1.494,
+          "ga_avg": 1.6,
+          "gf_avg": 1.0,
+          "points_avg": 0.8,
+          "previous_prematch_5_source_rows_found": 5
+        },
+        "home": {
+          "alternative_xg_avg": 0.758,
+          "alternative_xg_missing": false,
+          "alternative_xga_avg": 1.6219999999999999,
+          "ga_avg": 2.0,
+          "gf_avg": 0.4,
+          "points_avg": 0.0,
+          "previous_prematch_5_source_rows_found": 5
+        }
+      },
+      "source_is_not_native_PitchAPI": true,
+      "source_publication_witness_utc": "2025-12-19T17:03:42Z",
+      "target_kickoff_utc": "2025-12-20T15:00:00Z",
+      "target_public_away": "brentford",
+      "target_public_home": "wolverhampton wanderers"
+    },
+    {
+      "alternative_xg_is_not_PitchAPI_original_48_features": true,
+      "evidence_github_run_id": 20376914645,
+      "evidence_source_commit": "1a3e9917b4a9e5bd3629557354dc7b7f4c17924f",
+      "native_pitchapi_fixture_id_join_proven": false,
+      "original_121_plus_38_eligible": false,
+      "prematch_public_FORM5": {
+        "away": {
+          "alternative_xg_avg": 1.666,
+          "alternative_xg_missing": false,
+          "alternative_xga_avg": 1.1400000000000001,
+          "ga_avg": 1.4,
+          "gf_avg": 1.6,
+          "points_avg": 1.6,
+          "previous_prematch_5_source_rows_found": 5
+        },
+        "home": {
+          "alternative_xg_avg": 0.8480000000000001,
+          "alternative_xg_missing": false,
+          "alternative_xga_avg": 1.308,
+          "ga_avg": 2.2,
+          "gf_avg": 1.2,
+          "points_avg": 0.8,
+          "previous_prematch_5_source_rows_found": 5
+        }
+      },
+      "source_is_not_native_PitchAPI": true,
+      "source_publication_witness_utc": "2025-12-19T17:03:42Z",
+      "target_kickoff_utc": "2025-12-20T17:30:00Z",
+      "target_public_away": "liverpool",
+      "target_public_home": "tottenham hotspur"
+    },
+    {
+      "alternative_xg_is_not_PitchAPI_original_48_features": true,
+      "evidence_github_run_id": 20376914645,
+      "evidence_source_commit": "1a3e9917b4a9e5bd3629557354dc7b7f4c17924f",
+      "native_pitchapi_fixture_id_join_proven": false,
+      "original_121_plus_38_eligible": false,
+      "prematch_public_FORM5": {
+        "away": {
+          "alternative_xg_avg": 1.5539999999999998,
+          "alternative_xg_missing": false,
+          "alternative_xga_avg": 0.7699999999999999,
+          "ga_avg": 1.0,
+          "gf_avg": 2.0,
+          "points_avg": 2.0,
+          "previous_prematch_5_source_rows_found": 5
+        },
+        "home": {
+          "alternative_xg_avg": 0.932,
+          "alternative_xg_missing": false,
+          "alternative_xga_avg": 1.3499999999999999,
+          "ga_avg": 1.2,
+          "gf_avg": 1.2,
+          "points_avg": 1.8,
+          "previous_prematch_5_source_rows_found": 5
+        }
+      },
+      "source_is_not_native_PitchAPI": true,
+      "source_publication_witness_utc": "2025-12-19T17:03:42Z",
+      "target_kickoff_utc": "2025-12-20T20:00:00Z",
+      "target_public_away": "arsenal",
+      "target_public_home": "everton"
+    },
+    {
+      "alternative_xg_is_not_PitchAPI_original_48_features": true,
+      "evidence_github_run_id": 20376914645,
+      "evidence_source_commit": "1a3e9917b4a9e5bd3629557354dc7b7f4c17924f",
+      "native_pitchapi_fixture_id_join_proven": false,
+      "original_121_plus_38_eligible": false,
+      "prematch_public_FORM5": {
+        "away": {
+          "alternative_xg_avg": 1.484,
+          "alternative_xg_missing": false,
+          "alternative_xga_avg": 1.168,
+          "ga_avg": 1.2,
+          "gf_avg": 1.2,
+          "points_avg": 1.8,
+          "previous_prematch_5_source_rows_found": 5
+        },
+        "home": {
+          "alternative_xg_avg": 1.818,
+          "alternative_xg_missing": false,
+          "alternative_xga_avg": 1.6620000000000001,
+          "ga_avg": 2.0,
+          "gf_avg": 2.0,
+          "points_avg": 1.0,
+          "previous_prematch_5_source_rows_found": 5
+        }
+      },
+      "source_is_not_native_PitchAPI": true,
+      "source_publication_witness_utc": "2025-12-19T17:03:42Z",
+      "target_kickoff_utc": "2025-12-20T20:00:00Z",
+      "target_public_away": "crystal palace",
+      "target_public_home": "leeds united"
+    },
+    {
+      "alternative_xg_is_not_PitchAPI_original_48_features": true,
+      "evidence_github_run_id": 20376914645,
+      "evidence_source_commit": "1a3e9917b4a9e5bd3629557354dc7b7f4c17924f",
+      "native_pitchapi_fixture_id_join_proven": false,
+      "original_121_plus_38_eligible": false,
+      "prematch_public_FORM5": {
+        "away": {
+          "alternative_xg_avg": 2.418,
+          "alternative_xg_missing": false,
+          "alternative_xga_avg": 1.02,
+          "ga_avg": 1.6,
+          "gf_avg": 2.2,
+          "points_avg": 1.6,
+          "previous_prematch_5_source_rows_found": 5
+        },
+        "home": {
+          "alternative_xg_avg": 1.634,
+          "alternative_xg_missing": false,
+          "alternative_xga_avg": 1.372,
+          "ga_avg": 1.4,
+          "gf_avg": 2.4,
+          "points_avg": 3.0,
+          "previous_prematch_5_source_rows_found": 5
+        }
+      },
+      "source_is_not_native_PitchAPI": true,
+      "source_publication_witness_utc": "2025-12-19T17:03:42Z",
+      "target_kickoff_utc": "2025-12-21T16:30:00Z",
+      "target_public_away": "manchester united",
+      "target_public_home": "aston villa"
+    },
+    {
+      "alternative_xg_is_not_PitchAPI_original_48_features": true,
+      "evidence_github_run_id": 20376914645,
+      "evidence_source_commit": "1a3e9917b4a9e5bd3629557354dc7b7f4c17924f",
+      "native_pitchapi_fixture_id_join_proven": false,
+      "original_121_plus_38_eligible": false,
+      "prematch_public_FORM5": {
+        "away": {
+          "alternative_xg_avg": 1.13,
+          "alternative_xg_missing": false,
+          "alternative_xga_avg": 1.22,
+          "ga_avg": 1.0,
+          "gf_avg": 1.4,
+          "points_avg": 1.8,
+          "previous_prematch_5_source_rows_found": 5
+        },
+        "home": {
+          "alternative_xg_avg": 1.306,
+          "alternative_xg_missing": false,
+          "alternative_xga_avg": 1.482,
+          "ga_avg": 2.0,
+          "gf_avg": 2.2,
+          "points_avg": 1.8,
+          "previous_prematch_5_source_rows_found": 5
+        }
+      },
+      "source_is_not_native_PitchAPI": true,
+      "source_publication_witness_utc": "2025-12-19T17:03:42Z",
+      "target_kickoff_utc": "2025-12-22T20:00:00Z",
+      "target_public_away": "nottingham forest",
+      "target_public_home": "fulham"
+    },
+    {
+      "alternative_xg_is_not_PitchAPI_original_48_features": true,
+      "evidence_github_run_id": 20642294092,
+      "evidence_source_commit": "59a4cd678579a38b5937bd07afe5635ed3be9e29",
+      "native_pitchapi_fixture_id_join_proven": false,
+      "original_121_plus_38_eligible": false,
+      "prematch_public_FORM5": {
+        "away": {
+          "alternative_xg_avg": 1.338,
+          "alternative_xg_missing": false,
+          "alternative_xga_avg": 1.574,
+          "ga_avg": 1.8,
+          "gf_avg": 2.0,
+          "points_avg": 1.8,
+          "previous_prematch_5_source_rows_found": 5
+        },
+        "home": {
+          "alternative_xg_avg": 1.4420000000000002,
+          "alternative_xg_missing": false,
+          "alternative_xga_avg": 1.35,
+          "ga_avg": 1.8,
+          "gf_avg": 0.8,
+          "points_avg": 1.2,
+          "previous_prematch_5_source_rows_found": 5
+        }
+      },
+      "source_is_not_native_PitchAPI": true,
+      "source_publication_witness_utc": "2026-01-01T17:04:13Z",
+      "target_kickoff_utc": "2026-01-01T17:30:00Z",
+      "target_public_away": "fulham",
+      "target_public_home": "crystal palace"
+    },
+    {
+      "alternative_xg_is_not_PitchAPI_original_48_features": true,
+      "evidence_github_run_id": 20642294092,
+      "evidence_source_commit": "59a4cd678579a38b5937bd07afe5635ed3be9e29",
+      "native_pitchapi_fixture_id_join_proven": false,
+      "original_121_plus_38_eligible": false,
+      "prematch_public_FORM5": {
+        "away": {
+          "alternative_xg_avg": 2.168,
+          "alternative_xg_missing": false,
+          "alternative_xga_avg": 1.1720000000000002,
+          "ga_avg": 1.4,
+          "gf_avg": 2.4,
+          "points_avg": 1.8,
+          "previous_prematch_5_source_rows_found": 5
+        },
+        "home": {
+          "alternative_xg_avg": 1.46,
+          "alternative_xg_missing": false,
+          "alternative_xga_avg": 1.182,
+          "ga_avg": 1.2,
+          "gf_avg": 2.0,
+          "points_avg": 2.2,
+          "previous_prematch_5_source_rows_found": 5
+        }
+      },
+      "source_is_not_native_PitchAPI": true,
+      "source_publication_witness_utc": "2026-01-01T17:04:13Z",
+      "target_kickoff_utc": "2026-01-01T17:30:00Z",
+      "target_public_away": "leeds united",
+      "target_public_home": "liverpool"
+    },
+    {
+      "alternative_xg_is_not_PitchAPI_original_48_features": true,
+      "evidence_github_run_id": 20642294092,
+      "evidence_source_commit": "59a4cd678579a38b5937bd07afe5635ed3be9e29",
+      "native_pitchapi_fixture_id_join_proven": false,
+      "original_121_plus_38_eligible": false,
+      "prematch_public_FORM5": {
+        "away": {
+          "alternative_xg_avg": 1.032,
+          "alternative_xg_missing": false,
+          "alternative_xga_avg": 1.214,
+          "ga_avg": 1.4,
+          "gf_avg": 1.2,
+          "points_avg": 1.4,
+          "previous_prematch_5_source_rows_found": 5
+        },
+        "home": {
+          "alternative_xg_avg": 1.216,
+          "alternative_xg_missing": false,
+          "alternative_xga_avg": 1.796,
+          "ga_avg": 1.2,
+          "gf_avg": 1.4,
+          "points_avg": 1.4,
+          "previous_prematch_5_source_rows_found": 5
+        }
+      },
+      "source_is_not_native_PitchAPI": true,
+      "source_publication_witness_utc": "2026-01-01T17:04:13Z",
+      "target_kickoff_utc": "2026-01-01T20:00:00Z",
+      "target_public_away": "tottenham hotspur",
+      "target_public_home": "brentford"
+    },
+    {
+      "alternative_xg_is_not_PitchAPI_original_48_features": true,
+      "evidence_github_run_id": 20642294092,
+      "evidence_source_commit": "59a4cd678579a38b5937bd07afe5635ed3be9e29",
+      "native_pitchapi_fixture_id_join_proven": false,
+      "original_121_plus_38_eligible": false,
+      "prematch_public_FORM5": {
+        "away": {
+          "alternative_xg_avg": 1.9060000000000001,
+          "alternative_xg_missing": false,
+          "alternative_xga_avg": 1.06,
+          "ga_avg": 1.0,
+          "gf_avg": 3.2,
+          "points_avg": 3.0,
+          "previous_prematch_5_source_rows_found": 5
+        },
+        "home": {
+          "alternative_xg_avg": 0.696,
+          "alternative_xg_missing": false,
+          "alternative_xga_avg": 1.436,
+          "ga_avg": 1.0,
+          "gf_avg": 0.6,
+          "points_avg": 1.2,
+          "previous_prematch_5_source_rows_found": 5
+        }
+      },
+      "source_is_not_native_PitchAPI": true,
+      "source_publication_witness_utc": "2026-01-01T17:04:13Z",
+      "target_kickoff_utc": "2026-01-01T20:00:00Z",
+      "target_public_away": "manchester city",
+      "target_public_home": "sunderland"
+    },
+    {
+      "alternative_xg_is_not_PitchAPI_original_48_features": true,
+      "evidence_github_run_id": 20642294092,
+      "evidence_source_commit": "59a4cd678579a38b5937bd07afe5635ed3be9e29",
+      "native_pitchapi_fixture_id_join_proven": false,
+      "original_121_plus_38_eligible": false,
+      "prematch_public_FORM5": {
+        "away": {
+          "alternative_xg_avg": 1.096,
+          "alternative_xg_missing": false,
+          "alternative_xga_avg": 1.1560000000000001,
+          "ga_avg": 1.6,
+          "gf_avg": 0.8,
+          "points_avg": 0.6,
+          "previous_prematch_5_source_rows_found": 5
+        },
+        "home": {
+          "alternative_xg_avg": 1.5260000000000002,
+          "alternative_xg_missing": false,
+          "alternative_xga_avg": 1.9000000000000004,
+          "ga_avg": 1.8,
+          "gf_avg": 2.0,
+          "points_avg": 2.4,
+          "previous_prematch_5_source_rows_found": 5
+        }
+      },
+      "source_is_not_native_PitchAPI": true,
+      "source_publication_witness_utc": "2026-01-01T17:04:13Z",
+      "target_kickoff_utc": "2026-01-03T12:30:00Z",
+      "target_public_away": "nottingham forest",
+      "target_public_home": "aston villa"
+    },
+    {
+      "alternative_xg_is_not_PitchAPI_original_48_features": true,
+      "evidence_github_run_id": 20642294092,
+      "evidence_source_commit": "59a4cd678579a38b5937bd07afe5635ed3be9e29",
+      "native_pitchapi_fixture_id_join_proven": false,
+      "original_121_plus_38_eligible": false,
+      "prematch_public_FORM5": {
+        "away": {
+          "alternative_xg_avg": 1.444,
+          "alternative_xg_missing": false,
+          "alternative_xga_avg": 1.7440000000000002,
+          "ga_avg": 1.8,
+          "gf_avg": 1.0,
+          "points_avg": 0.4,
+          "previous_prematch_5_source_rows_found": 5
+        },
+        "home": {
+          "alternative_xg_avg": 1.7100000000000002,
+          "alternative_xg_missing": false,
+          "alternative_xga_avg": 1.866,
+          "ga_avg": 1.4,
+          "gf_avg": 0.8,
+          "points_avg": 0.6,
+          "previous_prematch_5_source_rows_found": 5
+        }
+      },
+      "source_is_not_native_PitchAPI": true,
+      "source_publication_witness_utc": "2026-01-01T17:04:13Z",
+      "target_kickoff_utc": "2026-01-03T15:00:00Z",
+      "target_public_away": "burnley",
+      "target_public_home": "brighton and hove albion"
+    },
+    {
+      "alternative_xg_is_not_PitchAPI_original_48_features": true,
+      "evidence_github_run_id": 20642294092,
+      "evidence_source_commit": "59a4cd678579a38b5937bd07afe5635ed3be9e29",
+      "native_pitchapi_fixture_id_join_proven": false,
+      "original_121_plus_38_eligible": false,
+      "prematch_public_FORM5": {
+        "away": {
+          "alternative_xg_avg": 1.236,
+          "alternative_xg_missing": false,
+          "alternative_xga_avg": 1.8080000000000003,
+          "ga_avg": 2.0,
+          "gf_avg": 1.0,
+          "points_avg": 0.4,
+          "previous_prematch_5_source_rows_found": 5
+        },
+        "home": {
+          "alternative_xg_avg": 0.834,
+          "alternative_xg_missing": false,
+          "alternative_xga_avg": 1.75,
+          "ga_avg": 2.2,
+          "gf_avg": 0.8,
+          "points_avg": 0.2,
+          "previous_prematch_5_source_rows_found": 5
+        }
+      },
+      "source_is_not_native_PitchAPI": true,
+      "source_publication_witness_utc": "2026-01-01T17:04:13Z",
+      "target_kickoff_utc": "2026-01-03T15:00:00Z",
+      "target_public_away": "west ham united",
+      "target_public_home": "wolverhampton wanderers"
+    },
+    {
+      "alternative_xg_is_not_PitchAPI_original_48_features": true,
+      "evidence_github_run_id": 20642294092,
+      "evidence_source_commit": "59a4cd678579a38b5937bd07afe5635ed3be9e29",
+      "native_pitchapi_fixture_id_join_proven": false,
+      "original_121_plus_38_eligible": false,
+      "prematch_public_FORM5": {
+        "away": {
+          "alternative_xg_avg": 2.1279999999999997,
+          "alternative_xg_missing": false,
+          "alternative_xga_avg": 1.264,
+          "ga_avg": 1.0,
+          "gf_avg": 2.0,
+          "points_avg": 2.4,
+          "previous_prematch_5_source_rows_found": 5
+        },
+        "home": {
+          "alternative_xg_avg": 2.054,
+          "alternative_xg_missing": false,
+          "alternative_xga_avg": 2.088,
+          "ga_avg": 2.2,
+          "gf_avg": 1.6,
+          "points_avg": 0.8,
+          "previous_prematch_5_source_rows_found": 5
+        }
+      },
+      "source_is_not_native_PitchAPI": true,
+      "source_publication_witness_utc": "2026-01-01T17:04:13Z",
+      "target_kickoff_utc": "2026-01-03T17:30:00Z",
+      "target_public_away": "arsenal",
+      "target_public_home": "afc bournemouth"
+    },
+    {
+      "alternative_xg_is_not_PitchAPI_original_48_features": true,
+      "evidence_github_run_id": 22362135047,
+      "evidence_source_commit": "fde4aaa35eabb9d0a247039f99b34ab46a7f7de6",
+      "native_pitchapi_fixture_id_join_proven": false,
+      "original_121_plus_38_eligible": false,
+      "prematch_public_FORM5": {
+        "away": {
+          "alternative_xg_avg": 1.236,
+          "alternative_xg_missing": false,
+          "alternative_xga_avg": 1.294,
+          "ga_avg": 0.6,
+          "gf_avg": 1.0,
+          "points_avg": 1.6,
+          "previous_prematch_5_source_rows_found": 5
+        },
+        "home": {
+          "alternative_xg_avg": 0.9559999999999998,
+          "alternative_xg_missing": false,
+          "alternative_xga_avg": 2.19,
+          "ga_avg": 1.6,
+          "gf_avg": 0.6,
+          "points_avg": 0.4,
+          "previous_prematch_5_source_rows_found": 5
+        }
+      },
+      "source_is_not_native_PitchAPI": true,
+      "source_publication_witness_utc": "2026-02-24T17:22:54Z",
+      "target_kickoff_utc": "2026-02-27T20:00:00Z",
+      "target_public_away": "aston villa",
+      "target_public_home": "wolverhampton wanderers"
+    },
+    {
+      "alternative_xg_is_not_PitchAPI_original_48_features": true,
+      "evidence_github_run_id": 22362135047,
+      "evidence_source_commit": "fde4aaa35eabb9d0a247039f99b34ab46a7f7de6",
+      "native_pitchapi_fixture_id_join_proven": false,
+      "original_121_plus_38_eligible": false,
+      "prematch_public_FORM5": {
+        "away": {
+          "alternative_xg_avg": 0.962,
+          "alternative_xg_missing": false,
+          "alternative_xga_avg": 1.496,
+          "ga_avg": 2.0,
+          "gf_avg": 1.0,
+          "points_avg": 0.6,
+          "previous_prematch_5_source_rows_found": 5
+        },
+        "home": {
+          "alternative_xg_avg": 1.5520000000000003,
+          "alternative_xg_missing": false,
+          "alternative_xga_avg": 1.7920000000000003,
+          "ga_avg": 0.8,
+          "gf_avg": 1.6,
+          "points_avg": 2.2,
+          "previous_prematch_5_source_rows_found": 5
+        }
+      },
+      "source_is_not_native_PitchAPI": true,
+      "source_publication_witness_utc": "2026-02-24T17:22:54Z",
+      "target_kickoff_utc": "2026-02-28T12:30:00Z",
+      "target_public_away": "sunderland",
+      "target_public_home": "afc bournemouth"
+    },
+    {
+      "alternative_xg_is_not_PitchAPI_original_48_features": true,
+      "evidence_github_run_id": 22362135047,
+      "evidence_source_commit": "fde4aaa35eabb9d0a247039f99b34ab46a7f7de6",
+      "native_pitchapi_fixture_id_join_proven": false,
+      "original_121_plus_38_eligible": false,
+      "prematch_public_FORM5": {
+        "away": {
+          "alternative_xg_avg": 1.608,
+          "alternative_xg_missing": false,
+          "alternative_xga_avg": 1.186,
+          "ga_avg": 1.0,
+          "gf_avg": 1.6,
+          "points_avg": 1.6,
+          "previous_prematch_5_source_rows_found": 5
+        },
+        "home": {
+          "alternative_xg_avg": 1.736,
+          "alternative_xg_missing": false,
+          "alternative_xga_avg": 1.4560000000000002,
+          "ga_avg": 1.2,
+          "gf_avg": 1.8,
+          "points_avg": 1.8,
+          "previous_prematch_5_source_rows_found": 5
+        }
+      },
+      "source_is_not_native_PitchAPI": true,
+      "source_publication_witness_utc": "2026-02-24T17:22:54Z",
+      "target_kickoff_utc": "2026-02-28T15:00:00Z",
+      "target_public_away": "west ham united",
+      "target_public_home": "liverpool"
+    },
+    {
+      "alternative_xg_is_not_PitchAPI_original_48_features": true,
+      "evidence_github_run_id": 22362135047,
+      "evidence_source_commit": "fde4aaa35eabb9d0a247039f99b34ab46a7f7de6",
+      "native_pitchapi_fixture_id_join_proven": false,
+      "original_121_plus_38_eligible": false,
+      "prematch_public_FORM5": {
+        "away": {
+          "alternative_xg_avg": 1.4499999999999997,
+          "alternative_xg_missing": false,
+          "alternative_xga_avg": 1.45,
+          "ga_avg": 1.2,
+          "gf_avg": 1.0,
+          "points_avg": 1.0,
+          "previous_prematch_5_source_rows_found": 5
+        },
+        "home": {
+          "alternative_xg_avg": 1.576,
+          "alternative_xg_missing": false,
+          "alternative_xga_avg": 1.686,
+          "ga_avg": 2.4,
+          "gf_avg": 1.2,
+          "points_avg": 0.6,
+          "previous_prematch_5_source_rows_found": 5
+        }
+      },
+      "source_is_not_native_PitchAPI": true,
+      "source_publication_witness_utc": "2026-02-24T17:22:54Z",
+      "target_kickoff_utc": "2026-02-28T15:00:00Z",
+      "target_public_away": "everton",
+      "target_public_home": "newcastle united"
+    },
+    {
+      "alternative_xg_is_not_PitchAPI_original_48_features": true,
+      "evidence_github_run_id": 22362135047,
+      "evidence_source_commit": "fde4aaa35eabb9d0a247039f99b34ab46a7f7de6",
+      "native_pitchapi_fixture_id_join_proven": false,
+      "original_121_plus_38_eligible": false,
+      "prematch_public_FORM5": {
+        "away": {
+          "alternative_xg_avg": 1.682,
+          "alternative_xg_missing": false,
+          "alternative_xga_avg": 0.982,
+          "ga_avg": 0.8,
+          "gf_avg": 2.2,
+          "points_avg": 2.6,
+          "previous_prematch_5_source_rows_found": 5
+        },
+        "home": {
+          "alternative_xg_avg": 1.334,
+          "alternative_xg_missing": false,
+          "alternative_xga_avg": 1.7419999999999998,
+          "ga_avg": 1.8,
+          "gf_avg": 1.4,
+          "points_avg": 1.2,
+          "previous_prematch_5_source_rows_found": 5
+        }
+      },
+      "source_is_not_native_PitchAPI": true,
+      "source_publication_witness_utc": "2026-02-24T17:22:54Z",
+      "target_kickoff_utc": "2026-02-28T17:30:00Z",
+      "target_public_away": "manchester city",
+      "target_public_home": "leeds united"
+    },
+    {
+      "alternative_xg_is_not_PitchAPI_original_48_features": true,
+      "evidence_github_run_id": 22362135047,
+      "evidence_source_commit": "fde4aaa35eabb9d0a247039f99b34ab46a7f7de6",
+      "native_pitchapi_fixture_id_join_proven": false,
+      "original_121_plus_38_eligible": false,
+      "prematch_public_FORM5": {
+        "away": {
+          "alternative_xg_avg": 1.2680000000000002,
+          "alternative_xg_missing": false,
+          "alternative_xga_avg": 1.6720000000000002,
+          "ga_avg": 1.0,
+          "gf_avg": 0.8,
+          "points_avg": 1.0,
+          "previous_prematch_5_source_rows_found": 5
+        },
+        "home": {
+          "alternative_xg_avg": 1.072,
+          "alternative_xg_missing": false,
+          "alternative_xga_avg": 1.1460000000000001,
+          "ga_avg": 1.0,
+          "gf_avg": 0.8,
+          "points_avg": 0.8,
+          "previous_prematch_5_source_rows_found": 5
+        }
+      },
+      "source_is_not_native_PitchAPI": true,
+      "source_publication_witness_utc": "2026-02-24T17:22:54Z",
+      "target_kickoff_utc": "2026-03-01T14:00:00Z",
+      "target_public_away": "nottingham forest",
+      "target_public_home": "brighton and hove albion"
+    },
+    {
+      "alternative_xg_is_not_PitchAPI_original_48_features": true,
+      "evidence_github_run_id": 22362135047,
+      "evidence_source_commit": "fde4aaa35eabb9d0a247039f99b34ab46a7f7de6",
+      "native_pitchapi_fixture_id_join_proven": false,
+      "original_121_plus_38_eligible": false,
+      "prematch_public_FORM5": {
+        "away": {
+          "alternative_xg_avg": 1.24,
+          "alternative_xg_missing": false,
+          "alternative_xga_avg": 1.97,
+          "ga_avg": 2.4,
+          "gf_avg": 1.2,
+          "points_avg": 0.4,
+          "previous_prematch_5_source_rows_found": 5
+        },
+        "home": {
+          "alternative_xg_avg": 1.652,
+          "alternative_xg_missing": false,
+          "alternative_xga_avg": 1.6960000000000002,
+          "ga_avg": 2.0,
+          "gf_avg": 1.6,
+          "points_avg": 1.2,
+          "previous_prematch_5_source_rows_found": 5
+        }
+      },
+      "source_is_not_native_PitchAPI": true,
+      "source_publication_witness_utc": "2026-02-24T17:22:54Z",
+      "target_kickoff_utc": "2026-03-01T14:00:00Z",
+      "target_public_away": "tottenham hotspur",
+      "target_public_home": "fulham"
+    },
+    {
+      "alternative_xg_is_not_PitchAPI_original_48_features": true,
+      "evidence_github_run_id": 22362135047,
+      "evidence_source_commit": "fde4aaa35eabb9d0a247039f99b34ab46a7f7de6",
+      "native_pitchapi_fixture_id_join_proven": false,
+      "original_121_plus_38_eligible": false,
+      "prematch_public_FORM5": {
+        "away": {
+          "alternative_xg_avg": 2.692,
+          "alternative_xg_missing": false,
+          "alternative_xga_avg": 1.248,
+          "ga_avg": 1.4,
+          "gf_avg": 2.4,
+          "points_avg": 2.2,
+          "previous_prematch_5_source_rows_found": 5
+        },
+        "home": {
+          "alternative_xg_avg": 1.5899999999999999,
+          "alternative_xg_missing": false,
+          "alternative_xga_avg": 0.58,
+          "ga_avg": 0.8,
+          "gf_avg": 2.8,
+          "points_avg": 2.2,
+          "previous_prematch_5_source_rows_found": 5
+        }
+      },
+      "source_is_not_native_PitchAPI": true,
+      "source_publication_witness_utc": "2026-02-24T17:22:54Z",
+      "target_kickoff_utc": "2026-03-01T16:30:00Z",
+      "target_public_away": "chelsea",
+      "target_public_home": "arsenal"
+    },
+    {
+      "alternative_xg_is_not_PitchAPI_original_48_features": true,
+      "evidence_github_run_id": 23637824776,
+      "evidence_source_commit": "0584db7dd55de2d3c35d3799ea479c80ad5d233a",
+      "native_pitchapi_fixture_id_join_proven": false,
+      "original_121_plus_38_eligible": false,
+      "prematch_public_FORM5": {
+        "away": {
+          "alternative_xg_avg": 1.13,
+          "alternative_xg_missing": false,
+          "alternative_xga_avg": 1.8060000000000003,
+          "ga_avg": 2.6,
+          "gf_avg": 0.8,
+          "points_avg": 0.2,
+          "previous_prematch_5_source_rows_found": 5
+        },
+        "home": {
+          "alternative_xg_avg": 1.496,
+          "alternative_xg_missing": false,
+          "alternative_xga_avg": 1.5379999999999998,
+          "ga_avg": 1.2,
+          "gf_avg": 1.0,
+          "points_avg": 1.4,
+          "previous_prematch_5_source_rows_found": 5
+        }
+      },
+      "source_is_not_native_PitchAPI": true,
+      "source_publication_witness_utc": "2026-03-27T08:31:03Z",
+      "target_kickoff_utc": "2026-04-12T13:00:00Z",
+      "target_public_away": "tottenham hotspur",
+      "target_public_home": "sunderland"
+    }
+  ],
+  "total_distinct_prematch_public_FORM5_targets": 57
+}
