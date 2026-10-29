@@ -48,8 +48,8 @@ def source_at_version(item,reference,*,fetcher=_fetch_raw,gh_json=_get_json):
         buf,digest=fetcher(commit,f"data/2025-2026/By Gameweek/GW{gw}/matches.csv")
         try: return gw,digest,_read_matches(buf,witness=clock,teams=teams),None
         except CandidateError as exc:
-            if str(exc)=="FUTURE_OR_RECENT_FT_IN_OLD_SNAPSHOT":
-                return gw,digest,{},"FUTURE_FINISHED_FIXTURE_TIMESTAMP_QUARANTINED"
+            if str(exc) in ("FUTURE_OR_RECENT_FT_IN_OLD_SNAPSHOT", "INVALID_MATCH_SCORE"):
+                return gw,digest,{},str(exc)+"_QUARANTINED"
             raise
     with ThreadPoolExecutor(max_workers=7) as pool:
         jobs=[pool.submit(load,gw) for gw in range(1,top+1)]
