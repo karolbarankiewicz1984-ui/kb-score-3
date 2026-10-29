@@ -5,6 +5,9 @@ on:
       - src/kb3_step17_xg_capture.py
       - scripts/step17_native_xg_eight_run.py
       - tests/test_step17_xg_capture.py
+      - src/kb3_step17_xg_model_gate.py
+      - tests/test_step17_xg_model_gate.py
+      - scripts/step17_xg_model_gate_report.py
       - .github/workflows/kb3-step17-native-xg-eight-daily.yml
   push:
     branches: [main]
@@ -12,6 +15,9 @@ on:
       - src/kb3_step17_xg_capture.py
       - scripts/step17_native_xg_eight_run.py
       - tests/test_step17_xg_capture.py
+      - src/kb3_step17_xg_model_gate.py
+      - tests/test_step17_xg_model_gate.py
+      - scripts/step17_xg_model_gate_report.py
       - .github/workflows/kb3-step17-native-xg-eight-daily.yml
   schedule:
     - cron: '41 6 * * *'
@@ -36,6 +42,8 @@ jobs:
         run: |
           python -m compileall -q src/kb3_step17_xg_capture.py scripts/step17_native_xg_eight_run.py
           python -m unittest discover -s tests -p 'test_step17_xg_capture.py' -v
+          python -m unittest discover -s tests -p 'test_step17_xg_model_gate.py' -v
+          python -m scripts.step17_xg_model_gate_report
           python -m unittest discover -s tests -p 'test_step14_pitchapi_xg_semantics.py' -v
   real-eight-native-xg-source:
     if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
@@ -82,6 +90,8 @@ jobs:
                 'FORM5_READY',info['future_form5_coverage']['complete_last5_both_team_xg'],
                 'NO_XG_CATBOOST_FITTED')
           PY
+      - name: Report historical CatBoost xG train validity without false FIT
+        run: python -m scripts.step17_xg_model_gate_report
       - uses: actions/upload-artifact@v4
         if: always()
         with:
@@ -89,6 +99,7 @@ jobs:
           path: |
             data/forward_step17_xg_eight/
             data/pit_sidecar/step17_native_xg_eight/
+            data/audits/STEP17_CATBOOST_XG_TRAINING_GATE_2026-10-29.json
           retention-days: 30
           if-no-files-found: warn
       - name: Persist separate append-only native xG research on private main
@@ -97,6 +108,7 @@ jobs:
           git config user.email kb3-step17-xg-bot@users.noreply.github.com
           if test -d data/forward_step17_xg_eight; then git add -f data/forward_step17_xg_eight/; fi
           if test -d data/pit_sidecar/step17_native_xg_eight; then git add -f data/pit_sidecar/step17_native_xg_eight/; fi
+          git add -f data/audits/STEP17_CATBOOST_XG_TRAINING_GATE_2026-10-29.json
           if git diff --cached --quiet; then
             echo 'No new native eight-league xG source proofs'
           else
