@@ -1,3 +1,5 @@
+**UWAGA — skorygowano 29.10.2026:** wartość `TRAIN=10` w tym pierwotnym audycie v1 została ZANIŻONA przez odczyt historycznych całkowitych wyników FPL zapisanych jako `3.0`. Właściwy, ponownie sprawdzony rezultat to **54/760 TRAIN**. Do wszelkich dalszych decyzji należy używać [poprawionego audytu v2](STEP14_FINAL_CORRECTED_54_TRAIN_109_VALIDATION_ORIGINAL_M1_GATE_2026-10-29.md). Zachowano tę wersję v1 wyłącznie dla historii i pełnej odtwarzalności.
+
 # KB Score 3.0 — krok 14: rzeczywiste kroki 1–4, TRAIN 760 / VALIDATION 380 / macierz 1140×159
 
 **Data uruchomienia:** 29 października 2026 r. [Realny audyt GitHub Actions PR #40876429035](https://github.com/karolbarankiewicz1984-ui/kb-score-3/actions/runs/40876429035) — wyniki pracy nie są symulacją.
