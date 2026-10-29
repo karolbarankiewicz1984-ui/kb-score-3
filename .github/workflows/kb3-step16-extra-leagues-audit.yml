@@ -26,6 +26,8 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
+      - name: Install cryptographic dependency required by existing helper imports
+        run: python -m pip install --disable-pip-version-check 'cryptography>=42,<47'
       - name: Check full additional league safety tests without any provider API
         run: |
           python -m compileall -q scripts/step16_additional_leagues_audit.py
@@ -43,7 +45,7 @@ jobs:
         with:
           python-version: '3.11'
       - name: Install existing official PitchAPI SDK
-        run: python -m pip install --disable-pip-version-check 'pitchapi==0.1.6'
+        run: python -m pip install --disable-pip-version-check 'pitchapi==0.1.6' 'cryptography>=42,<47'
       - name: Read only seven allowable added leagues, their two seasons, one xG witness
         env:
           PITCHAPI_API_KEY: ${{ secrets.PITCHAPI_API_KEY }}
