@@ -1,0 +1,74 @@
+name: KB3 Step14 recover 2025-26 historic real public FORM5 and alternative xG
+on:
+  pull_request:
+    paths:
+      - 'scripts/step14_fpl_core_2025_independent_asof.py'
+      - 'tests/test_step14_fpl_core_2025_independent_asof.py'
+      - '.github/workflows/kb3-step14-2025-fplcore-historic-asof.yml'
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/kb3-step14-2025-fplcore-historic-asof.yml'
+      - 'scripts/step14_fpl_core_2025_independent_asof.py'
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  verify-old-GitHub-witnesses-and-recover-research-statistics:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Validate evidence gates, old source semantics and no future results
+        run: |
+          python -m compileall -q scripts/step14_fpl_core_2025_independent_asof.py
+          python -m unittest discover -s tests -p 'test_step14_fpl_core_2025_independent_asof.py' -v
+          python -m unittest discover -s tests -p 'test_step14_final_gate14_recheck.py' -v
+      - name: Read immutable old-season snapshots only when server Actions witnesses prove main existence
+        run: |
+          python -m scripts.step14_fpl_core_2025_independent_asof \
+            --out data/audits/STEP14_2025_FPLCORE_INDEPENDENT_ASOF_RECOVERY_2026-10-29.json
+      - name: Verify real 2025 archive proof, FORM5 candidates and preserve original CatBoost gate
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          p=Path("data/audits/STEP14_2025_FPLCORE_INDEPENDENT_ASOF_RECOVERY_2026-10-29.json")
+          r=json.loads(p.read_text())
+          assert r["real_historical_default_branch_server_witnesses"]==4
+          assert r["target_free_2025_26_reference_rows"]==380
+          assert r["new_distinct_published_public_FORM5_candidates"]>0
+          assert r["original_121_plus_38_eligible_validation"]==0
+          assert r["original_CatBoost_M1_fitted"] is False
+          assert r["gate14"]=="PENDING"
+          assert r["TRAIN_or_TEST_labels_or_odds_read"] is False
+          assert len({(x["target_public_home"],x["target_public_away"],x["target_kickoff_utc"])
+                      for x in r["candidates"]})==len(r["candidates"])
+          print("PUBLIC_HISTORIC_2025_FORM5_RECONSTRUCTED_BUT_ORIGINAL_NATIVE_M1_NOT_ADMITTED",
+                r["new_distinct_published_public_FORM5_candidates"],
+                r["new_distinct_published_public_alternative_xg_FORM5_candidates"])
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: KB3_2025_FPLCORE_REAL_HISTORIC_PREMATCH_RECONSTRUCTION
+          path: data/audits/STEP14_2025_FPLCORE_INDEPENDENT_ASOF_RECOVERY_2026-10-29.json
+          retention-days: 90
+          if-no-files-found: error
+      - name: Store actual corroborated source receipt and research-only partial features on main
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        run: |
+          git config user.name 'kb3-step14-audit-bot'
+          git config user.email 'kb3-step14-audit-bot@users.noreply.github.com'
+          git add -f data/audits/STEP14_2025_FPLCORE_INDEPENDENT_ASOF_RECOVERY_2026-10-29.json
+          if git diff --cached --quiet; then
+            echo 'Already recorded'
+          else
+            git commit -m 'step14: preserve real 2025 witnessed public prematch FORM5 and research-only xG'
+            git pull --rebase origin main
+            git push origin HEAD:main
+          fi
