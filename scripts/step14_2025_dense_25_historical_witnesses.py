@@ -6,9 +6,13 @@ committer dates to authorize features. Original 57 are invariant.
 """
 from __future__ import annotations
 import argparse,json
+from concurrent.futures import ThreadPoolExecutor,as_completed
 from pathlib import Path
 from scripts.step14_2025_expand_witnessed_form5_asof import (
-    ALL as OLD,source_at_version,ROOT,_utc)
+    ALL as OLD,ROOT,_utc)
+from scripts.step14_fpl_core_2025_independent_asof import (
+    actions_witness,_read_teams,_read_matches,_fetch_raw,_get_json,
+    _qualify_target,CandidateError)
 from scripts.step14_fpl_core_2025_independent_asof import _reference
 from scripts.step14_fplcore_native_2025_crosswalk_semantics import load_public
 
@@ -30,6 +34,57 @@ SOURCE_LIST=tuple(sorted((*OLD,*NEW),key=lambda s:_utc(s[3])))
 if len(SOURCE_LIST)!=25 or len({x[0] for x in SOURCE_LIST})!=25:
     raise ValueError("DENSE_HISTORICAL_SOURCE_SET_AMBIGUOUS")
 class DenseError(ValueError): pass
+
+def source_at_version(item,reference,*,fetcher=_fetch_raw,gh_json=_get_json,include_predecessors=False):
+    """New local v2: quarantine full malformed file including false future scores."""
+    commit,run,top,clock=item
+    witness=actions_witness(commit,run,clock,gh_json)
+    raw,teams_hash=fetcher(commit,"data/2025-2026/By Gameweek/GW10/teams.csv")
+    teams=_read_teams(raw)
+    history={}
+    quarantine={}
+    digests={}
+    corrupt={
+        "FUTURE_OR_RECENT_FT_IN_OLD_SNAPSHOT","INVALID_MATCH_SCORE",
+        "MISSING_TIME","INVALID_TIME","NON_UTC_TIME",
+        "FUTURE_MATCH_ALREADY_HAS_TARGET_RESULT","UNKNOWN_FINISHED_STATE",
+        "UNKNOWN_SOURCE_TEAM","INVALID_XG","NONFINITE_SOURCE_VALUE",
+    }
+    def load(gw):
+        buf,sha=fetcher(commit,f"data/2025-2026/By Gameweek/GW{gw}/matches.csv")
+        try: return gw,sha,_read_matches(buf,witness=clock,teams=teams),None
+        except CandidateError as exc:
+            if str(exc) in corrupt:
+                return gw,sha,{},str(exc)+"_ENTIRE_GAMEWEEK_QUARANTINED"
+            raise
+    with ThreadPoolExecutor(max_workers=7) as pool:
+        for fut in as_completed([pool.submit(load,gw) for gw in range(1,top+1)]):
+            gw,digest,matches,bad=fut.result()
+            digests[str(gw)]=digest
+            if bad:quarantine[str(gw)]=bad
+            for key,record in matches.items():
+                if key in history:raise DenseError("DUPLICATE_HISTORIC_FINISHED_MATCH_ACROSS_GW")
+                history[key]=record
+    wanted={x["key"] for x in reference}
+    past={k:v for k,v in history.items() if k in wanted}
+    selected=[]
+    for target in reference:
+        result=_qualify_target(target,_utc(clock),past,reference)
+        if result is None:continue
+        result["evidence_source_commit"]=commit
+        result["evidence_github_run_id"]=run
+        selected.append(result)
+    report={"sha":commit,"witness":witness,
+            "team_file_sha256":teams_hash,
+            "gameweek_file_sha256":dict(sorted(digests.items(),key=lambda x:int(x[0]))),
+            "quarantined_gameweeks":dict(sorted(quarantine.items(),key=lambda x:int(x[0]))),
+            "valid_prior_premier_league_rows":len(history),
+            "exact_public_reference_prior_rows":len(past),
+            "public_FORM5_future_targets":len(selected),
+            "alternative_xG5_complete_future_targets":sum(
+                all(not x["prematch_public_FORM5"][k]["alternative_xg_missing"]
+                   for k in ("home","away")) for x in selected)}
+    return (report,selected,past) if include_predecessors else (report,selected)
 
 def run(root=ROOT):
     root=Path(root)
