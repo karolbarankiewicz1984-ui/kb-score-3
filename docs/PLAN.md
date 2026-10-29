@@ -1,6 +1,8 @@
 # KB Score 3.0 — PLAN GŁÓWNY (kopia operacyjna GitHub)
 
 **Wersja źródłowa:** v1.1, Google Docs (aktualizowane po odbiorach). **Stan po odbiorze 27.10.2026:** **13/29 kroków zaliczonych** (01–13). Krok 13 ELO+Poisson ZALICZONO **w jego oryginalnym zakresie technicznym** po niezależnym audycie dowodów; realne badanie retrospektywne nie jest certyfikowanym PIT. Krok 14 W REALIZACJI: zabezpieczenia i syntetyczne próby na main (PR #45), realny PIT odmówiony (PR #47), a w izolacji wykonano osobny CatBoost BADAWCZY na prawdziwych, lecz retrospektywnych wynikach OpenFootball (PR #49). Produkcyjnego M1 na oryginalnym, certyfikowanym TRAIN nie wytrenowano. **Trening na historycznych danych z niepotwierdzonym PIT i wdrożenie produkcyjne nadal ZABLOKOWANE**. Wcześniejsze raporty badawcze zachowują oryginalne flagi i ograniczenia. Statusy w tej kopii aktualizujemy po odbiorach, ale **źródłem prawdy pozostaje [oryginał na Dysku Google](https://docs.google.com/document/d/10wjHL3r3OAuxtezwcIeWztxS8lwjhYon5GM3BLhI0xE/edit)**.
+> **Wiążący aneks decyzji do dalszego prowadzenia projektu (29.10.2026):** [ADR — bieżący M0, archiwum źródeł i prognoz, kalibracja 100+50, wydzielony TEST i SQLite/Drive](ADR_2026-10-29_FORWARD_M0_PIT_CALIBRATION_STORAGE.md). Przed modyfikacją etapów 14–27 i implementacją pilotów należy przeczytać go wraz z tym PLAN i dziennikiem zmian. Nie oznacza to zaliczenia formalnego kroku 14 ani włączenia produkcyjnego kalibratora.
+
 
 **Pozostałe dokumenty:** [DANE.md](DANE.md), [MODEL.md](MODEL.md), [ZMIANY.md](ZMIANY.md), [instrukcja bezpieczeństwa kroku 03](STEP_03_SECURITY_CHECKLIST.md). **Repozytorium:** https://github.com/karolbarankiewicz1984-ui/kb-score-3.
 

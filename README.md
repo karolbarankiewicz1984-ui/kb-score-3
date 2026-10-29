@@ -6,6 +6,7 @@
 
 **ŹRÓDŁO PRAWDY:** [Plan główny, bramki odbioru i dziennik na Google Drive](https://docs.google.com/document/d/10wjHL3r3OAuxtezwcIeWztxS8lwjhYon5GM3BLhI0xE/edit).
 
+- **[USTALENIA WIĄŻĄCE — ADR 29.10.2026: bieżący M0, dane PIT, prognozy, magazyny i kalibracja 100+50](docs/ADR_2026-10-29_FORWARD_M0_PIT_CALIBRATION_STORAGE.md)** — sprawdzać przed każdą zmianą KB Score 3.0; odróżnia rzeczywiste wdrożenie od planu. 
 - [PLAN — mapa wszystkich 29 kroków](docs/PLAN.md)
 - [Krok 12 — rzeczywisty indeks 1520 meczów i kopia Google Drive (stan w trakcie prac)](docs/STEP_12_REAL_INDEX_2026-10-26.md)
 - [Krok 12 — dokumentacja metody TRAIN/VALIDATION/TEST](docs/STEP_12_PROGRESS.md)
