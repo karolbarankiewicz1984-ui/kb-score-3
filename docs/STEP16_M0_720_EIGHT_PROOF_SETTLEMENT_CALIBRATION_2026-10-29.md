@@ -27,3 +27,9 @@ Pliki: `src/kb3_step16_m0_720_calibration.py`, `src/kb3_step16_m0_720_eight_forw
 
 ## Odbiór
 Testy offline wymagają bramek **99→brak T, 100→jeden T, 49 przyszłych→brak review, 50→jeden niezależny review**, SHA i blokad `UPDATE/DELETE`; bez odczytu z sieci podczas PR. Realny run po merge na `main` powinien podać rzeczywiste liczniki dowodów PushEvent oraz rozliczeń. Brak dostępnych zdarzeń GitHub w czasie uruchomienia lub brak faktycznie zakończonych spotkań NIE oznacza fikcyjnego 100/50 ani PASS kroku 16. Do formalnego zakończenia nadal brakuje niezależnego holdoutu i kontroli per-liga, a model nie zostaje Championem.
+
+## Aktualizacja rzeczywistego odbioru dowodów — 29.10.2026
+
+Po PR #113 audyt rzeczywistego [GitHub Actions #40952265632](https://github.com/karolbarankiewicz1984-ui/kb-score-3/actions/runs/40952265632) zakończył się **SUCCESS**. Gdy automatyczne PushEvents dla konta bota nie były dostępne, weryfikator przyjął wyłącznie oryginalny artefakt Actions o serwerowym czasie uploadu 19:47:22 UTC z pierwszego runu #40943149804. Odtworzono historyczny SQLite z ZIP i porównano dokładne SHA oryginalnych prognoz i modelu oraz 90-minutowy margines. **73/73 potwierdzonych, zero odrzuconych i zero uszkodzonych artefaktów.**
+
+[Trwale zapisany raport](../data/pit_sidecar/m0_720_eight/2026-10-29/settle-204838237706/RECEIPT.json) potwierdza jednocześnie `total_settlements=0` i `eligible_settled_unique=0`; T nie został dopasowany, holdout nie został uruchomiony. Zadania `schedule` pozostają aktywne. Do faktycznego potwierdzenia rozliczenia realnego wyniku trzeba doczekać się końca któregoś z 73 meczów; testy rozliczeń były offline. Zachowujemy GATE16 PENDING, 15/29.
