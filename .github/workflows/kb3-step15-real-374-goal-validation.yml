@@ -1,10 +1,5 @@
 name: KB3 Step15 real 374 goal-market validation research
 on:
-  pull_request:
-    paths:
-      - 'scripts/step15_real_validation_374_goal_markets.py'
-      - 'tests/test_step15_real_validation_374_goal_markets.py'
-      - '.github/workflows/kb3-step15-real-374-goal-validation.yml'
   workflow_dispatch:
 permissions:
   contents: read
