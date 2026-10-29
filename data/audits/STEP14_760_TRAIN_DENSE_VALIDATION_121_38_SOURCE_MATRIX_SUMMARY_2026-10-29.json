@@ -1,0 +1,33 @@
+{
+  "GATE14": "PENDING",
+  "TEST_examined": false,
+  "distinct_original_TRAIN_with_historical_public_result_FORM5": 10,
+  "distinct_original_VALIDATION_with_historical_alternative_xG5": 107,
+  "distinct_original_VALIDATION_with_historical_public_result_FORM5": 109,
+  "historic_train_source_versions_verified": 12,
+  "historic_validation_source_versions_verified": 25,
+  "historical_TRAIN_invalid_old_completed_result_rows_quarantined": 2050,
+  "matrix_gzip_sha256": "eb5477e30735d77a94f4ec8d1488c181c98b49cbaa09638e81fa580ea37468ac",
+  "matrix_rows": 1140,
+  "model_or_split_modified": false,
+  "new_validation_targets_beyond_prior_57": 52,
+  "nineteen_native_Elo_fields_retro_2026_not_historic_asof": true,
+  "official_fit_M1_allowed": false,
+  "original_159_contract_complete_PIT_TRAIN": 0,
+  "original_159_contract_complete_PIT_VALIDATION": 0,
+  "original_M1_trained": false,
+  "original_PitchAPI_xG_first_published_UTC_per_match": null,
+  "original_TRAIN_target_scores_read": false,
+  "original_frozen_760_TRAIN_380_VALIDATION": {
+    "TRAIN": 760,
+    "VALIDATION": 380
+  },
+  "original_native_exact_ID_sides_and_time": 1140,
+  "public_source_nonnull_numeric_slots_by_partition": {
+    "TRAIN": 540,
+    "VALIDATION": 8116
+  },
+  "public_source_numerics_are_alternative_to_original_PitchAPI": true,
+  "real_api_requests": 4,
+  "schema": "kb3-step14-full-760-train-plus-dense-validation-public-PIT-research-159-field-v1"
+}

@@ -1,0 +1,34 @@
+{
+  "CatBoost_original_M1_fitted": false,
+  "CatBoost_original_M1_metrics_real": null,
+  "GATE14": "PENDING",
+  "all_1140_retrospective_19_Elo_separated_from_hist_public": true,
+  "alternative_research_data_are_not_automatically_production_features": true,
+  "historically_published_alternative_TRAIN_FORM5": 10,
+  "historically_published_alternative_VALIDATION_FORM5": 109,
+  "historically_published_alternative_VALIDATION_FORM5_xG5": 107,
+  "native_2023_2026_per_field_capture_and_published_at_verified": false,
+  "native_fixture_IDs_unique": 1140,
+  "next_blockers": [
+    "original PitchAPI per-match 121+38 field capture and publication receipts",
+    "historically valid original team-level xG for TRAIN",
+    "sufficient original TRAIN and VALIDATION native as-of rows"
+  ],
+  "no_train_and_validation_original_fit_admission": true,
+  "original_121_features_per_row": 121,
+  "original_159_field_complete_per_match_TRAIN": 0,
+  "original_159_field_complete_per_match_VALIDATION": 0,
+  "original_38_missing_flags_per_row": 38,
+  "original_TRAIN_total": 760,
+  "original_VALIDATION_total": 380,
+  "original_team_xG_first_publication_receipts_verified": 0,
+  "phase_4_real_M1_fit_admission_review_completed": true,
+  "phases_1_2_3_completed": true,
+  "production_model_unchanged": true,
+  "protected_TEST_2026_27_used": false,
+  "public_research_nonnull_numeric_by_partition": {
+    "TRAIN": 540,
+    "VALIDATION": 8116
+  },
+  "schema": "kb3-step14-complete-760-380-external-source-121-38-final-M1-fit-gate-v1"
+}
