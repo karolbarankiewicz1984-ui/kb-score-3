@@ -42,13 +42,14 @@ jobs:
           assert r['exact_revisions_pinned']==74
           assert r['revision_counts_by_season']=={'2023-24':38,'2024-25':36}
           assert len(r['revisions'])==74
-          assert r['previously_external_clock_certified_FPL_commits']==12
-          assert r['independent_publication_NOT_proven_for_other_commits']==62
+          assert r['previously_direct_GHArchive_clock_certified_FPL_commits']==11
+          assert r['other_revisions_proven_public_no_later_than_GHArchive_witnessed_ancestor']==63
+          assert r['all_74_GHArchive_ancestry_upper_bounds_verified']
           assert r['no_original_catboost_training']
           assert r['GATE14']=='PENDING' and not r['TEST_2026_27_accessed']
           assert r['raw_old_player_xg_merged_files_available']>0
           print('REAL_74_FPL_XG_AUDIT',r['raw_old_player_xg_merged_files_available'],
-                'old merged files',r['old_player_xg_strict_sources_GHArchive_published'],
+                'old merged files',r['old_player_xg_strict_sources_with_historic_upper_bound_witness'],
                 'independently dated xG sources, not PitchAPI native')
           PY
       - uses: actions/upload-artifact@v4
