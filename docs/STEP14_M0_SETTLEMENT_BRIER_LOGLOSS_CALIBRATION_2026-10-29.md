@@ -19,3 +19,7 @@
 **Nie uruchomiono jeszcze niezależnego offsite backup SQLite Google Drive**, dlatego prywatny `main` i 30-dniowy artefakt GitHub Actions nie zastępują planowanego systemu kopii zapasowych. Brak jest też jeszcze rzeczywistych rozliczonych meczów z pierwszej próby, jeśli w czasie uruchomienia żaden z nich nie osiągnął stanu finished+3h.
 
 **Następne czynności:** po pierwszych zakończonych spotkaniach zweryfikować ich faktyczny wynik, znaczniki czasu, `log loss/Brier`, ciągłość kopii SQLite; później monitorować n100/150 i osobną chronologiczną walidację. Bez samowolnej zmiany metodologii.
+
+### 29.10.2026 — decyzja o wyłączeniu dubla
+
+Ten dokument opisuje **historyczny, zdublowany wariant**, a nie obowiązującą automatyzację. `.github/workflows/kb3-m0-shadow-daily-settlement.yml` odtąd wykonuje **wyłącznie testy regresyjne CI**, bez `schedule`, `workflow_dispatch`, klucza PitchAPI i uprawnienia zapisu. Zachowano kod oraz dotychczasowe rekordy do śledzenia pochodzenia, bez kolejnych live wpisów. Jedynym aktywnym robotem rozliczającym jest [KB3 M0 real postmatch](STEP14_M0_REAL_POSTMATCH_LOGLOSS_BRIER_CALIBRATION_2026-10-29.md) z tabelą `m0_shadow_1x2_settlements`, działający **07:47 i 22:47 UTC**, z trwałym SHA/RSA źródła. Nie wolno zsumować wyników z obu tabel jako niezależnych meczów. Progi badawcze i ochrona TEST 2026/27 nie ulegają zmianie.
