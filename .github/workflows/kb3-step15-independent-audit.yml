@@ -1,10 +1,5 @@
 name: KB3 Step15 independent second-score and coherence audit (frozen 374)
 on:
-  pull_request:
-    paths:
-      - 'scripts/step15_independent_market_audit.py'
-      - 'tests/test_step15_independent_market_audit.py'
-      - '.github/workflows/kb3-step15-independent-audit.yml'
   workflow_dispatch:
 permissions:
   contents: write

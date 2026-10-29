@@ -44,3 +44,7 @@ Pozostałe 20 rynków ma wyniki w **pełnym 22-rynkowym raporcie** (artifact ID 
 **Interpretacja:** Brier około 0,25 dla O2,5 jest bliski wartości z prognozy 50/50; nie jest to dowód dobrej przewagi nad innymi metodami. M0 nie został tu porównany z niezależnym ML goli ani skalibrowany (krok 16). To retrospektywny RESEARCH z umownym 48h po meczach, **nie** certyfikat prawdziwego historycznego PIT danych providerów i nie prognozy do obstawiania.
 
 **Koszty i re-run:** wykorzystano istniejące połączenie PitchAPI, bez nowego zakupu. Po pierwszym pozytywnym przebiegu workflow ponownej realnej ewaluacji ograniczono do ręcznego uruchomienia, żeby nie zużywać powtarzalnych zapytań API na każde zapisanie dokumentu. Status formalny: **14/29; krok 15 W REALIZACJI** do porównania z ewentualnym ML i niezależnego audytu kompletnego GATE15.
+
+## Pierwsze niezależne porównanie ML — kompletne
+
+Zakończono pełny jednorazowy challenger CatBoost goli, 720 TRAIN, 374 VALIDATION i 22 rynki. Niezależny audit 748 prognoz i 132 wyników metryk PASS; **M0 ma niższy Brier i log loss na 22/22 rynkach**. Zamrożone .cbm, prawdopodobieństwa i pełne raporty w repo na gałęzi [PR #103](https://github.com/karolbarankiewicz1984-ui/kb-score-3/pull/103). [Szczegółowa analiza](STEP15_ML_GOALS_VS_POISSON_REAL_374_2026-10-29.md). Status formalny **DO ODBIORU/GATE15 PENDING, 14/29**, brak awansu ML, TEST 2026/27 zamknięty.
