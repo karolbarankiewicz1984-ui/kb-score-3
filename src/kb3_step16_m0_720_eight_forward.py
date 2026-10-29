@@ -41,7 +41,9 @@ CALL_CAP_SETTLE=9    # one catalogue + current season per each of eight
 class Research720Error(ValueError): pass
 
 def stamp(t):
-    return as_utc(t).isoformat(timespec="microseconds").replace("+00:00","Z")
+    d=t if isinstance(t,datetime) else as_utc(t)
+    require(d.tzinfo is not None and d.utcoffset()==timedelta(0),"UTC_CLOCK_REQUIRED")
+    return d.isoformat(timespec="microseconds").replace("+00:00","Z")
 def hashobj(x):
     return hashlib.sha256(canonical(x)).hexdigest()
 def require(condition,reason):
