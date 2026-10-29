@@ -1,0 +1,28 @@
+{
+  "actual_counts": {
+    "brier": 0,
+    "log_loss": 0
+  },
+  "all_22_market_score_pairs_verified": true,
+  "all_748_model_by_fixture_market_coherence_checks_pass": true,
+  "all_market_definition_labels_from_native_90min_rebuilt": true,
+  "external_native_provider_calls": 4,
+  "formal_step15_pass": false,
+  "frozen_sha256": "d3bc0f5f1b756d347ec0b726b1fd46f73346e4932d0c87e22e7f709e74cfc721",
+  "full_report_sha256": "52e369a070cef8218299d3092cf13368197eeb3aea04450632d24ea0cff73bc0",
+  "historical_provider_pit_certified": false,
+  "macro_18_verified": true,
+  "models_verified_sha256": true,
+  "original_test_accessed": false,
+  "paired_fixtures": 374,
+  "predictions_verified_sha256": true,
+  "production_promotion": false,
+  "schema": "kb3-step15-independent-second-real-provider-score-audit-v1",
+  "score_checks": 132,
+  "score_types": [
+    "binary_brier",
+    "binary_log_loss",
+    "five_bin_ECE"
+  ],
+  "status": "PASS_INDEPENDENT_SCORE_AND_COHERENCE_VERIFICATION"
+}
