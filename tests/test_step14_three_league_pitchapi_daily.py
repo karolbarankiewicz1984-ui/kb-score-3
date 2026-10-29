@@ -57,6 +57,15 @@ class NewIncremental(unittest.TestCase):
     chosen,_,_,_=candidate_predecessors(future,prior,NOW,set(),"GER",
                         target_limit=10,horizon_hours=96)
     self.assertEqual([x["id"] for x in chosen],["m_000501"])
+ def test_step16_empty_nearby_window_is_not_false_error(self):
+    previous=[fixture(11,NOW-timedelta(days=15),"finished")]
+    distant=[fixture(501,NOW+timedelta(days=5),"scheduled")]
+    near,prior,needed,unseen=candidate_predecessors(
+        distant,previous,NOW,set(),"ESP",target_limit=10,horizon_hours=96)
+    self.assertEqual((near,prior,needed,unseen),([],[],0,0))
+ def test_step16_legacy_without_horizon_still_rejects_no_future(self):
+    with self.assertRaisesRegex(DailyLeagueError,"NO_FUTURE_TARGET"):
+        candidate_predecessors([],[],NOW,set(),"ESP")
  def test_one_competition_not_same_hash(self):
     self.assertNotEqual(opaque_hash("ESP","m_123456"),
                         opaque_hash("ITA","m_123456"))
