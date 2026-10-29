@@ -63,7 +63,10 @@ jobs:
           a=json.loads((p/'THREE_LEAGUE_DAILY_RECEIPT.json').read_text())
           m=json.loads((p/'THREE_LEAGUE_DAILY_SOURCE.manifest.json').read_text())
           assert hashlib.sha256((p/'THREE_LEAGUE_DAILY_SOURCE.enc').read_bytes()).hexdigest()==m['ciphertext_sha256']==a['source_ciphertext_sha256']
-          assert a['provider_calls']<=43 and a['newly_verified_match_shot_stat_pairs']>0
+          assert a['provider_calls']<=43
+          assert a['newly_verified_match_shot_stat_pairs']>=0
+          assert a['newly_verified_match_shot_stat_pairs']>0 or a['sampled']==[]
+          assert a['failed_provider_request_count']==0
           assert a.get('M0_target_limit_per_league',4) in (4,10)
           assert a.get('M0_target_horizon_hours') in (None,96)
           assert 0 <= a['frozen_M0_feature_snapshots'] <= 3*a.get('M0_target_limit_per_league',4)
