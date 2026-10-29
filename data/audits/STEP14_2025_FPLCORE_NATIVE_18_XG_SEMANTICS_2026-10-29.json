@@ -1,0 +1,297 @@
+{
+  "actual_PitchAPI_native_fixture_ID_exact_side_and_kickoff_joins": 18,
+  "native_fixture_crosswalk": [
+    {
+      "fplcore_old_source_commit": "173bd03f01a9808dbbcf9c42e8ad1112b63429ac",
+      "fplcore_old_source_witness_utc": "2025-11-07T17:03:33Z",
+      "kickoff_utc": "2025-11-08T12:30:00Z",
+      "native_PitchAPI_original_xg_asof_certified": false,
+      "native_away_team_id": "t_2I313i",
+      "native_home_team_id": "t_4A7FfD",
+      "native_pitchapi_fixture_id": "m_2J6XZy",
+      "original_m1_121_plus_38_pit_eligible": false,
+      "public_pair": [
+        "tottenham hotspur",
+        "manchester united"
+      ],
+      "same_native_match_home_away_and_kickoff": true
+    },
+    {
+      "fplcore_old_source_commit": "173bd03f01a9808dbbcf9c42e8ad1112b63429ac",
+      "fplcore_old_source_witness_utc": "2025-11-07T17:03:33Z",
+      "kickoff_utc": "2025-11-08T15:00:00Z",
+      "native_PitchAPI_original_xg_asof_certified": false,
+      "native_away_team_id": "t_1c1ZPD",
+      "native_home_team_id": "t_21IR9d",
+      "native_pitchapi_fixture_id": "m_0sWYsF",
+      "original_m1_121_plus_38_pit_eligible": false,
+      "public_pair": [
+        "everton",
+        "fulham"
+      ],
+      "same_native_match_home_away_and_kickoff": true
+    },
+    {
+      "fplcore_old_source_commit": "173bd03f01a9808dbbcf9c42e8ad1112b63429ac",
+      "fplcore_old_source_witness_utc": "2025-11-07T17:03:33Z",
+      "kickoff_utc": "2025-11-08T15:00:00Z",
+      "native_PitchAPI_original_xg_asof_certified": false,
+      "native_away_team_id": "t_0VMURm",
+      "native_home_team_id": "t_4LT5Yy",
+      "native_pitchapi_fixture_id": "m_109Kgf",
+      "original_m1_121_plus_38_pit_eligible": false,
+      "public_pair": [
+        "west ham united",
+        "burnley"
+      ],
+      "same_native_match_home_away_and_kickoff": true
+    },
+    {
+      "fplcore_old_source_commit": "173bd03f01a9808dbbcf9c42e8ad1112b63429ac",
+      "fplcore_old_source_witness_utc": "2025-11-07T17:03:33Z",
+      "kickoff_utc": "2025-11-08T17:30:00Z",
+      "native_PitchAPI_original_xg_asof_certified": false,
+      "native_away_team_id": "t_1gkhxH",
+      "native_home_team_id": "t_2xPV6y",
+      "native_pitchapi_fixture_id": "m_2KM5ri",
+      "original_m1_121_plus_38_pit_eligible": false,
+      "public_pair": [
+        "sunderland",
+        "arsenal"
+      ],
+      "same_native_match_home_away_and_kickoff": true
+    },
+    {
+      "fplcore_old_source_commit": "173bd03f01a9808dbbcf9c42e8ad1112b63429ac",
+      "fplcore_old_source_witness_utc": "2025-11-07T17:03:33Z",
+      "kickoff_utc": "2025-11-08T20:00:00Z",
+      "native_PitchAPI_original_xg_asof_certified": false,
+      "native_away_team_id": "t_18kSmS",
+      "native_home_team_id": "t_4R934X",
+      "native_pitchapi_fixture_id": "m_0bp90o",
+      "original_m1_121_plus_38_pit_eligible": false,
+      "public_pair": [
+        "chelsea",
+        "wolverhampton wanderers"
+      ],
+      "same_native_match_home_away_and_kickoff": true
+    },
+    {
+      "fplcore_old_source_commit": "173bd03f01a9808dbbcf9c42e8ad1112b63429ac",
+      "fplcore_old_source_witness_utc": "2025-11-07T17:03:33Z",
+      "kickoff_utc": "2025-11-09T14:00:00Z",
+      "native_PitchAPI_original_xg_asof_certified": false,
+      "native_away_team_id": "t_1iaglr",
+      "native_home_team_id": "t_4RqKpo",
+      "native_pitchapi_fixture_id": "m_4TV8pl",
+      "original_m1_121_plus_38_pit_eligible": false,
+      "public_pair": [
+        "aston villa",
+        "afc bournemouth"
+      ],
+      "same_native_match_home_away_and_kickoff": true
+    },
+    {
+      "fplcore_old_source_commit": "173bd03f01a9808dbbcf9c42e8ad1112b63429ac",
+      "fplcore_old_source_witness_utc": "2025-11-07T17:03:33Z",
+      "kickoff_utc": "2025-11-09T14:00:00Z",
+      "native_PitchAPI_original_xg_asof_certified": false,
+      "native_away_team_id": "t_2eQl9k",
+      "native_home_team_id": "t_2ihyjC",
+      "native_pitchapi_fixture_id": "m_1NM9yC",
+      "original_m1_121_plus_38_pit_eligible": false,
+      "public_pair": [
+        "brentford",
+        "newcastle united"
+      ],
+      "same_native_match_home_away_and_kickoff": true
+    },
+    {
+      "fplcore_old_source_commit": "173bd03f01a9808dbbcf9c42e8ad1112b63429ac",
+      "fplcore_old_source_witness_utc": "2025-11-07T17:03:33Z",
+      "kickoff_utc": "2025-11-09T14:00:00Z",
+      "native_PitchAPI_original_xg_asof_certified": false,
+      "native_away_team_id": "t_3eV7Ev",
+      "native_home_team_id": "t_4bz4EP",
+      "native_pitchapi_fixture_id": "m_18alle",
+      "original_m1_121_plus_38_pit_eligible": false,
+      "public_pair": [
+        "crystal palace",
+        "brighton and hove albion"
+      ],
+      "same_native_match_home_away_and_kickoff": true
+    },
+    {
+      "fplcore_old_source_commit": "173bd03f01a9808dbbcf9c42e8ad1112b63429ac",
+      "fplcore_old_source_witness_utc": "2025-11-07T17:03:33Z",
+      "kickoff_utc": "2025-11-09T14:00:00Z",
+      "native_PitchAPI_original_xg_asof_certified": false,
+      "native_away_team_id": "t_19Nr9K",
+      "native_home_team_id": "t_0msSwp",
+      "native_pitchapi_fixture_id": "m_4HzbpQ",
+      "original_m1_121_plus_38_pit_eligible": false,
+      "public_pair": [
+        "nottingham forest",
+        "leeds united"
+      ],
+      "same_native_match_home_away_and_kickoff": true
+    },
+    {
+      "fplcore_old_source_commit": "173bd03f01a9808dbbcf9c42e8ad1112b63429ac",
+      "fplcore_old_source_witness_utc": "2025-11-07T17:03:33Z",
+      "kickoff_utc": "2025-11-09T16:30:00Z",
+      "native_PitchAPI_original_xg_asof_certified": false,
+      "native_away_team_id": "t_0BrMnM",
+      "native_home_team_id": "t_0UCNPX",
+      "native_pitchapi_fixture_id": "m_4GyCKd",
+      "original_m1_121_plus_38_pit_eligible": false,
+      "public_pair": [
+        "manchester city",
+        "liverpool"
+      ],
+      "same_native_match_home_away_and_kickoff": true
+    },
+    {
+      "fplcore_old_source_commit": "59a4cd678579a38b5937bd07afe5635ed3be9e29",
+      "fplcore_old_source_witness_utc": "2026-01-01T17:04:13Z",
+      "kickoff_utc": "2026-01-01T17:30:00Z",
+      "native_PitchAPI_original_xg_asof_certified": false,
+      "native_away_team_id": "t_1c1ZPD",
+      "native_home_team_id": "t_4bz4EP",
+      "native_pitchapi_fixture_id": "m_3SHlpj",
+      "original_m1_121_plus_38_pit_eligible": false,
+      "public_pair": [
+        "crystal palace",
+        "fulham"
+      ],
+      "same_native_match_home_away_and_kickoff": true
+    },
+    {
+      "fplcore_old_source_commit": "59a4cd678579a38b5937bd07afe5635ed3be9e29",
+      "fplcore_old_source_witness_utc": "2026-01-01T17:04:13Z",
+      "kickoff_utc": "2026-01-01T17:30:00Z",
+      "native_PitchAPI_original_xg_asof_certified": false,
+      "native_away_team_id": "t_19Nr9K",
+      "native_home_team_id": "t_0BrMnM",
+      "native_pitchapi_fixture_id": "m_0GvKgn",
+      "original_m1_121_plus_38_pit_eligible": false,
+      "public_pair": [
+        "liverpool",
+        "leeds united"
+      ],
+      "same_native_match_home_away_and_kickoff": true
+    },
+    {
+      "fplcore_old_source_commit": "59a4cd678579a38b5937bd07afe5635ed3be9e29",
+      "fplcore_old_source_witness_utc": "2026-01-01T17:04:13Z",
+      "kickoff_utc": "2026-01-01T20:00:00Z",
+      "native_PitchAPI_original_xg_asof_certified": false,
+      "native_away_team_id": "t_4A7FfD",
+      "native_home_team_id": "t_2ihyjC",
+      "native_pitchapi_fixture_id": "m_17ob2P",
+      "original_m1_121_plus_38_pit_eligible": false,
+      "public_pair": [
+        "brentford",
+        "tottenham hotspur"
+      ],
+      "same_native_match_home_away_and_kickoff": true
+    },
+    {
+      "fplcore_old_source_commit": "59a4cd678579a38b5937bd07afe5635ed3be9e29",
+      "fplcore_old_source_witness_utc": "2026-01-01T17:04:13Z",
+      "kickoff_utc": "2026-01-01T20:00:00Z",
+      "native_PitchAPI_original_xg_asof_certified": false,
+      "native_away_team_id": "t_0UCNPX",
+      "native_home_team_id": "t_2xPV6y",
+      "native_pitchapi_fixture_id": "m_2Pc02P",
+      "original_m1_121_plus_38_pit_eligible": false,
+      "public_pair": [
+        "sunderland",
+        "manchester city"
+      ],
+      "same_native_match_home_away_and_kickoff": true
+    },
+    {
+      "fplcore_old_source_commit": "59a4cd678579a38b5937bd07afe5635ed3be9e29",
+      "fplcore_old_source_witness_utc": "2026-01-01T17:04:13Z",
+      "kickoff_utc": "2026-01-03T12:30:00Z",
+      "native_PitchAPI_original_xg_asof_certified": false,
+      "native_away_team_id": "t_0msSwp",
+      "native_home_team_id": "t_4RqKpo",
+      "native_pitchapi_fixture_id": "m_2Jf8Sg",
+      "original_m1_121_plus_38_pit_eligible": false,
+      "public_pair": [
+        "aston villa",
+        "nottingham forest"
+      ],
+      "same_native_match_home_away_and_kickoff": true
+    },
+    {
+      "fplcore_old_source_commit": "59a4cd678579a38b5937bd07afe5635ed3be9e29",
+      "fplcore_old_source_witness_utc": "2026-01-01T17:04:13Z",
+      "kickoff_utc": "2026-01-03T15:00:00Z",
+      "native_PitchAPI_original_xg_asof_certified": false,
+      "native_away_team_id": "t_0VMURm",
+      "native_home_team_id": "t_3eV7Ev",
+      "native_pitchapi_fixture_id": "m_0kkP8o",
+      "original_m1_121_plus_38_pit_eligible": false,
+      "public_pair": [
+        "brighton and hove albion",
+        "burnley"
+      ],
+      "same_native_match_home_away_and_kickoff": true
+    },
+    {
+      "fplcore_old_source_commit": "59a4cd678579a38b5937bd07afe5635ed3be9e29",
+      "fplcore_old_source_witness_utc": "2026-01-01T17:04:13Z",
+      "kickoff_utc": "2026-01-03T15:00:00Z",
+      "native_PitchAPI_original_xg_asof_certified": false,
+      "native_away_team_id": "t_4LT5Yy",
+      "native_home_team_id": "t_18kSmS",
+      "native_pitchapi_fixture_id": "m_3SZVN4",
+      "original_m1_121_plus_38_pit_eligible": false,
+      "public_pair": [
+        "wolverhampton wanderers",
+        "west ham united"
+      ],
+      "same_native_match_home_away_and_kickoff": true
+    },
+    {
+      "fplcore_old_source_commit": "59a4cd678579a38b5937bd07afe5635ed3be9e29",
+      "fplcore_old_source_witness_utc": "2026-01-01T17:04:13Z",
+      "kickoff_utc": "2026-01-03T17:30:00Z",
+      "native_PitchAPI_original_xg_asof_certified": false,
+      "native_away_team_id": "t_1gkhxH",
+      "native_home_team_id": "t_1iaglr",
+      "native_pitchapi_fixture_id": "m_2qrEtZ",
+      "original_m1_121_plus_38_pit_eligible": false,
+      "public_pair": [
+        "afc bournemouth",
+        "arsenal"
+      ],
+      "same_native_match_home_away_and_kickoff": true
+    }
+  ],
+  "no_TEST_labels_or_target_scores_or_odds_read": true,
+  "official_121_plus_38_PIT_validation_eligible": 0,
+  "original_GATE14": "PENDING",
+  "original_M1_training_allowed": false,
+  "original_SAFE_2025_validation_rows": 380,
+  "provider_API_requests": 8,
+  "provider_original_historical_per_value_published_at": null,
+  "public_research_target_candidates": 18,
+  "public_targets_without_exact_native_match": [],
+  "schema": "kb3-step14-native-PitchAPI-exact-18-witnessed-public-2025-fixture-and-2025-xg-semantics-v1",
+  "validation_season": "2025/2026",
+  "xg_semantic_retrospective_2025_same_finished_fixture_test": {
+    "FPL_Core_xg_not_proven_equivalent_to_PitchAPI_xg": true,
+    "actual_original_PitchAPI_provider_first_published_at_utc": null,
+    "different_old_2025_source_vs_current_2026_pitch_xg": true,
+    "maximum_absolute_xg_difference": 0.0,
+    "mean_absolute_xg_difference": 0.0,
+    "no_target_result_or_target_xg_sampled": true,
+    "number_of_differences_above_0_02": 0,
+    "original_native_same_match_xg_side_comparisons": 12,
+    "sample_only_preexisting_completed_games": 6
+  }
+}
