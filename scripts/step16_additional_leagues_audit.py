@@ -22,7 +22,7 @@ CANDIDATES = (
     ("FRA", "Ligue 1", ("ligue1", "ligue1mcdonalds")),
     ("NED", "Eredivisie", ("eredivisie",)),
     ("POR", "Primeira Liga", ("primeiraliga", "ligaportugalbetclic")),
-    ("BEL", "Belgian Pro League", ("jupilerproleague", "proleague", "firstdivisiona")),
+    ("BEL", "Belgian Pro League", ("jupilerproleague", "proleague", "firstdivisiona", "belgianproleague")),
     ("TUR", "Super Lig", ("superlig", "trendyolsuperlig")),
     ("POL", "Ekstraklasa", ("ekstraklasa", "pkobpekstraklasa")),
     ("ENG", "Championship", ("championship", "eflchampionship")),
