@@ -56,8 +56,13 @@ def evaluate(report,rows,compressed):
         raise GateReject("SAFE_TRAIN_VALIDATION_SPLIT_CHANGED")
     if report.get("distinct_original_TRAIN_with_historical_public_result_FORM5")!=public["TRAIN"]:
         raise GateReject("TRAIN_SOURCE_COUNT_CHANGED")
-    if report.get("distinct_original_VALIDATION_with_historical_alternative_xG5")!=public["VALIDATION"]:
+    if report.get("distinct_original_VALIDATION_with_historical_public_result_FORM5")!=public["VALIDATION"]:
         raise GateReject("VALIDATION_SOURCE_COUNT_CHANGED")
+    complete_xg5=sum(row["partition"]=="VALIDATION" and
+        row["history_public_asof_source"]["status"]=="PINNED_HISTORIC_ALTERNATIVE_PUBLIC_F5_XG5"
+        for row in rows)
+    if report.get("distinct_original_VALIDATION_with_historical_alternative_xG5")!=complete_xg5:
+        raise GateReject("VALIDATION_ALTERNATIVE_XG5_COUNT_CHANGED")
     if (report.get("original_159_contract_complete_PIT_TRAIN")!=0
         or report.get("original_159_contract_complete_PIT_VALIDATION")!=0
         or report.get("official_fit_M1_allowed") is not False
@@ -69,7 +74,8 @@ def evaluate(report,rows,compressed):
       "original_TRAIN_total":parts["TRAIN"],"original_VALIDATION_total":parts["VALIDATION"],
       "native_fixture_IDs_unique":len(ident),
       "historically_published_alternative_TRAIN_FORM5":public["TRAIN"],
-      "historically_published_alternative_VALIDATION_FORM5_xG5":public["VALIDATION"],
+      "historically_published_alternative_VALIDATION_FORM5":public["VALIDATION"],
+      "historically_published_alternative_VALIDATION_FORM5_xG5":complete_xg5,
       "public_research_nonnull_numeric_by_partition":dict(non_null),
       "original_121_features_per_row":121,
       "original_38_missing_flags_per_row":38,
