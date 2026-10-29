@@ -99,6 +99,11 @@ def markets_from_lambdas(home_lambda, away_lambda, *, params=None):
     h = _number(home_lambda, name="POISSON_LAMBDA", low=1e-6, high=8.0)
     a = _number(away_lambda, name="POISSON_LAMBDA", low=1e-6, high=8.0)
     hp, ap = _poisson_probs(h, p), _poisson_probs(a, p)
+    # Very small lambdas may terminate at 0/1 goal; retain exact higher
+    # Poisson terms so top-5 scorelines and exact 0..3 goals always exist.
+    for pmf, lam in ((hp, h), (ap, a)):
+        while len(pmf) < 4:
+            pmf.append(pmf[-1] * lam / len(pmf))
     mh, ma = math.fsum(hp), math.fsum(ap)
     mass = mh * ma
     if abs(mass-1) > 2*p.poisson_tail_tolerance + 1e-12:
