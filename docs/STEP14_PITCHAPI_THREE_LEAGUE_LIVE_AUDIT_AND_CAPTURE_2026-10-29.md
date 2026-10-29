@@ -14,6 +14,8 @@
 
 **Pozostałe** oznacza w tym jednorazowym odczycie jeszcze nierozpoczęte spotkania, nie trwałą prognozę liczby meczów po późniejszym terminie. Dostępna historia 15 oznacza dopasowane **poprzednie wyniki po natywnym `team_id` i `fixture_id`**, wliczając sezon poprzedni i wymuszając odczekanie min. 3 godzin od kickoff zakończonego spotkania. Brak wymaganych 15 oznacza poprawną maskę missingness, **nigdy zero**. Z tego wyniku **nie wynika**, że dla wszystkich historycznych 15 poprzedników pobrano i zweryfikowano xG — osobno potwierdzono po jednej parze `shots/stats` z każdej ligi.
 
+**Pierwszy rzeczywisty przebieg kolektora:** [GitHub Actions #40831483545](https://github.com/karolbarankiewicz1984-ui/kb-score-3/actions/runs/40831483545) **SUCCESS, 8/8 testów audytu + 7/7 testów inkrementacji, 43 prawdziwe zapytania**, 18/18 oryginalnych ukończonych spotkań ze zweryfikowanym xG i `stats` po sześć na ligę. Dla czterech następnych spotkań każdego kraju prawidłowy zbiór unikalnych historycznych poprzedników wynosi odpowiednio **96 LaLiga, 91 Serie A, 77 Bundesliga**. To **załącznik Actions na gałęzi PR**; trwałość po merge trzeba zweryfikować osobno poprzez zawartość `main` i sukces workflow na `main`. Twardy limit = 43 requesty, xG bez jawnej wartości w raportach. Nie uruchomiono prognoz.
+
 **Każda z trzech lig ma autentyczne odczytane xG strzałowe i meczowe**; walidator `src/kb3_step14_pitchapi_xg_semantics.py` odrzuca niezgodne `match_id/home_team.id/away_team.id`, duplikaty i inne rodzaje xG (xGOT/npxG). Nie wolno stawiać `provider_first_published_at` na podstawie dzisiejszego czasu odczytu.
 
 ## Zbieranie przyrostowe — koncepcja i implementacja
