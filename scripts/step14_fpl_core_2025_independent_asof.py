@@ -274,14 +274,26 @@ def audit(root, *, fetcher=_get, get_json=_get_json):
         teams = _read_teams(teams_raw)
         def load(gw):
             raw, hashvalue = _fetch_raw(commit, f"{base}/GW{gw}/matches.csv", fetcher)
-            return gw, hashvalue, _read_matches(raw, witness=asof, teams=teams)
+            try:
+                rows = _read_matches(raw, witness=asof, teams=teams)
+                return gw, hashvalue, rows, None
+            except CandidateError as exc:
+                if str(exc) == "FUTURE_OR_RECENT_FT_IN_OLD_SNAPSHOT":
+                    # Quarantine entire old gameweek, not just one offending row.
+                    # Some archived historic files show a finished August match
+                    # with a future January kickoff, so metadata is unsound.
+                    return gw, hashvalue, {}, "QUARANTINED_FUTURE_FINISHED_FIXTURE_TIME"
+                raise
         old = {}
         sources = {}
+        rejected = {}
         with ThreadPoolExecutor(max_workers=6) as pool:
             tasks = [pool.submit(load, gw) for gw in range(1, max_gw + 1)]
             for job in as_completed(tasks):
-                gw, checksum, rows = job.result()
+                gw, checksum, rows, reason = job.result()
                 sources[str(gw)] = checksum
+                if reason:
+                    rejected[str(gw)] = reason
                 for key, m in rows.items():
                     if key in old:
                         raise CandidateError("SAME_MATCH_IN_MULTIPLE_GAMEWEEKS")
@@ -292,6 +304,7 @@ def audit(root, *, fetcher=_get, get_json=_get_json):
         matched = {k:v for k,v in old.items() if k in target_keys}
         report = {"commit": commit, "witness": witness, "teams_sha256": teams_hash,
                   "source_match_file_sha256_by_gw": dict(sorted(sources.items(), key=lambda z:int(z[0]))),
+                  "quarantined_invalid_gameweeks": dict(sorted(rejected.items(), key=lambda z:int(z[0]))),
                   "completed_old_Premier_League_matches": len(old),
                   "previous_matches_matched_to_public_targetfree_reference": len(matched),
                   "matched_public_FORM5_future_targets": 0,
