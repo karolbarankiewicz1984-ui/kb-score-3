@@ -141,6 +141,15 @@ def capture(*,root,key,public_pem,client_factory=None,now=None,
         sealed=seal(receipts,public_pem,
             dest/"THREE_LEAGUE_DAILY_SOURCE.enc",
             dest/"THREE_LEAGUE_DAILY_SOURCE.manifest.json")
+        # Compute the 121+38 observed-before-kickoff features from these
+        # same network receipts, then transactionally prepare append-only SQLite.
+        from src.kb3_three_league_sqlite_forward_features import commit_sqlite
+        ledger=Path("data/forward_m0/kb3_forward_m0.sqlite")
+        staging=dest/"STAGING_FORWARD_M0.sqlite"
+        if ledger.exists():shutil.copy2(ledger,staging)
+        feature_audit=commit_sqlite(staging,receipts,cutoff_utc=utc_now(),
+            raw_cipher_sha=sealed["ciphertext_sha256"],
+            raw_chain_sha=sealed["proof"]["final_chain_sha256"])
         report={"schema":SCHEMA,
             "utc_day":day,"observation_start_utc":receipts[0]["started_at_utc"],
             "observation_end_utc":receipts[-1]["completed_at_utc"],
@@ -158,12 +167,20 @@ def capture(*,root,key,public_pem,client_factory=None,now=None,
             "this_is_not_121_plus_38_feature_matrix":True,
             "three_league_M0_predictions_started":False,
             "original_Premier_League_2026_27_TEST_not_accessed":True,
+            "frozen_M0_feature_snapshots":feature_audit["frozen_feature_snapshots_today"],
+            "M0_feature_fields":feature_audit["numeric_fields_per_snapshot"],
+            "M0_missing_flags":feature_audit["missing_flags_per_snapshot"],
+            "feature_sqlite_ledger_sha256":hashlib.sha256(staging.read_bytes()).hexdigest(),
+            "M0_feature_snapshot_schema":feature_audit["schema"],
+            "M0_features_observed_pre_kickoff_not_original_first_publication":True,
             "model_fit_or_calibration_performed":False,
             "original_pitchapi_published_at_2023_25_proven":False,
             "gate14_pass":False}
         (dest/"THREE_LEAGUE_DAILY_RECEIPT.json").write_text(
             json.dumps(report,sort_keys=True,ensure_ascii=False,indent=2)+"\n",
             encoding="utf8")
+        ledger.parent.mkdir(parents=True,exist_ok=True)
+        os.replace(staging,ledger)
         return report
     except BaseException:
         shutil.rmtree(dest,ignore_errors=True)
@@ -189,6 +206,7 @@ def main():
                         "needed":x["prior_unique_matches_needed_for_four_targets"]} for x in report["leagues"]],
             "verified_xg_pairs":report["newly_verified_match_shot_stat_pairs"],
             "calls":report["provider_calls"],"encrypted":True,
+            "frozen_M0_feature_snapshots":report["frozen_M0_feature_snapshots"],
             "M0_not_yet_enabled":True,"gate14_pass":False},sort_keys=True))
     except Exception as e:
         print("THREE_LEAGUE_DAILY_SOURCE_BLOCKED",type(e).__name__,
