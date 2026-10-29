@@ -41,3 +41,9 @@ Dane trafiają do **odizolowanego badawczego audytu historycznego**, nie do tabe
 ### Oczekiwany następny postęp
 
 Rozszerzyć liczbę historycznych punktów publikacji na więcej kolejek sezonu 2025/26, sprawdzić 380 oryginalnych native par z własnego historycznego audytu identyfikatorów i porównać definicję publicznego xG z PitchAPI; dopiero potem dopuszczać *konkretne cechy w oddzielnym kontrakcie*, nie retrospektywnie przerabiać GATE14.
+
+## Odbiór na main — potwierdzenie po scaleniu 29.10.2026
+
+[Pull request #91](https://github.com/karolbarankiewicz1984-ui/kb-score-3/pull/91) **MERGED**. [Rzeczywisty workflow main #40860757635](https://github.com/karolbarankiewicz1984-ui/kb-score-3/actions/runs/40860757635) **SUCCESS**, 4+5 testów PASS, prawdziwy ponowny odczyt źródeł i krok trwale zapisujący raport **SUCCESS**. Po zakończeniu niezależnie pobrano i sprawdzono utrwalony na `main` [wynik z 18 kandydatami](../data/audits/STEP14_2025_FPLCORE_INDEPENDENT_ASOF_RECOVERY_2026-10-29.json), raport zachowuje każdy wcześniejszy SHA, serwerową datę, liczbę spotkań i jawne odrzucenia.
+
+Rozbicie według wersji: wrzesień — 29 dokładnych wcześniej zakończonych spotkań, 0 nowych FORM5 i 1 plik GW w kwarantannie; listopad — 98 i **10 FORM5+xG5**, bez kwarantanny; styczeń — 142 i **8 FORM5+xG5**, 4 całe pliki GW w kwarantannie; marzec — 280 i 0 nowych FORM5, bez kwarantanny. Unikalny wynik to **18, nie 18+18 ani 10+8+inne źródła**. Żadna część kwarantanny nie jest przemycana do modelu. Wszystkie 18 to **tylko publiczne badawcze targety**; brak native-PitchAPI fixture-ID crosswalk i równoważności xG. M1 pozostaje niedopuszczony: `original_121_plus_38_eligible_validation=0`, `gate14=PENDING`.
