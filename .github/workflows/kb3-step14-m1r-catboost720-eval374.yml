@@ -1,0 +1,107 @@
+name: KB3 Step14 M1-R BASE real CatBoost 720 TRAIN 374 VAL against M0
+on:
+  pull_request:
+    paths:
+      - 'scripts/step14_m1r_train_real_catboost_720_evaluate_374.py'
+      - 'tests/test_step14_m1r_train_catboost_720_eval_374.py'
+      - '.github/workflows/kb3-step14-m1r-catboost720-eval374.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/step14_m1r_train_real_catboost_720_evaluate_374.py'
+      - '.github/workflows/kb3-step14-m1r-catboost720-eval374.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: kb3-m1r-base-fit-720-eval-374
+  cancel-in-progress: false
+jobs:
+  independent-research-m1r-catboost:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install fixed CatBoost and existing authorized PitchAPI SDK
+        run: |
+          python -m pip install --disable-pip-version-check "catboost==1.2.8" "pitchapi==0.1.6"
+      - name: Strict anti-leakage, M1-R 1140 and metric correctness unit tests
+        run: |
+          python -m compileall -q scripts/step14_m1r_train_real_catboost_720_evaluate_374.py
+          python -m unittest discover -s tests -p 'test_step14_m1r_train_catboost_720_eval_374.py' -v
+          python -m unittest discover -s tests -p 'test_step14_m1r_relaxed_1140.py' -v
+      - name: Train separate real CatBoost M1-R 720 and evaluate 374 vs two M0 baselines
+        env:
+          PITCHAPI_API_KEY: ${{ secrets.PITCHAPI_API_KEY }}
+        run: |
+          python -m scripts.step14_m1r_train_real_catboost_720_evaluate_374 \
+            --summary data/audits/STEP14_M1R_BASE_CATBOOST_720_374_REAL_METRICS_2026-10-29.json \
+            --predictions data/audits/STEP14_M1R_BASE_CATBOOST_374_FROZEN_PROBS_2026-10-29.jsonl.gz \
+            --model models/research/M1_R_BASE_CATBOOST_720_TRAIN_2026-10-29.cbm
+      - name: Verify immutability and hard 760 TRAIN / 380 VAL / TEST quarantine
+        run: |
+          python - <<'PY'
+          import gzip,hashlib,json,math
+          from pathlib import Path
+          p=Path('data/audits')
+          s=json.loads((p/'STEP14_M1R_BASE_CATBOOST_720_374_REAL_METRICS_2026-10-29.json').read_text())
+          probs=p/'STEP14_M1R_BASE_CATBOOST_374_FROZEN_PROBS_2026-10-29.jsonl.gz'
+          model=Path('models/research/M1_R_BASE_CATBOOST_720_TRAIN_2026-10-29.cbm')
+          assert s['training']==720 and s['validation']==374
+          assert s['all_1140_source_rows_matched']==1140
+          assert s['real_PitchAPI_API_calls']==4
+          assert s['original_GATE14']=='PENDING'
+          assert s['original_TEST_2026_27_never_requested']
+          assert s['feature_selection_based_only_on_TRAIN_720']
+          assert s['all_OPTIONAL_xg_and_source_overlay_excluded']
+          assert s['validation_evaluation_once_no_early_stopping']
+          assert s['predictions_sha256']==hashlib.sha256(probs.read_bytes()).hexdigest()
+          assert s['trained_model_sha256']==hashlib.sha256(model.read_bytes()).hexdigest()
+          with gzip.open(probs,'rt',encoding='utf8') as f:
+              entries=[json.loads(x) for x in f if x.strip()]
+          assert len(entries)==374
+          assert len({x['fixture_id'] for x in entries})==374
+          assert all(x['partition']=='VALIDATION' and
+             abs(sum(x['catboost_m1r_base_1x2'].values())-1)<1e-8 for x in entries)
+          assert all('label' not in x and 'score' not in x
+                     for row in entries for x in [dict(row)])
+          for k in ('catboost_m1r_base_validation',
+                    'm0_matched_720_train_reference_poisson_validation',
+                    'm0_original_760_train_frozen_reference_validation'):
+              m=s[k]
+              assert m['n']==374
+              assert all(math.isfinite(m[j]) for j in
+                   ('log_loss','brier_multiclass_sum3','top1_ece_5_bins','top1_accuracy'))
+              assert len(m['per_class_reliability_5_bins'])==3
+          print('SUCCESS M1R CATBOOST',s['catboost_m1r_base_validation']['log_loss'],
+                'M0 same-720',s['m0_matched_720_train_reference_poisson_validation']['log_loss'],
+                'Brier',s['catboost_m1r_base_validation']['brier_multiclass_sum3'],
+                s['m0_matched_720_train_reference_poisson_validation']['brier_multiclass_sum3'])
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: KB3_M1R_REAL_720_374_CATBOOST_M0_SCORE_CALIBRATION
+          path: |
+            data/audits/STEP14_M1R_BASE_CATBOOST_720_374_REAL_METRICS_2026-10-29.json
+            data/audits/STEP14_M1R_BASE_CATBOOST_374_FROZEN_PROBS_2026-10-29.jsonl.gz
+            models/research/M1_R_BASE_CATBOOST_720_TRAIN_2026-10-29.cbm
+          retention-days: 90
+          if-no-files-found: error
+      - name: Persist real research metrics and frozen model to main
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        run: |
+          git config user.name kb3-step14-research-bot
+          git config user.email kb3-step14-research-bot@users.noreply.github.com
+          git add -f data/audits/STEP14_M1R_BASE_CATBOOST_720_374_REAL_METRICS_2026-10-29.json
+          git add -f data/audits/STEP14_M1R_BASE_CATBOOST_374_FROZEN_PROBS_2026-10-29.jsonl.gz
+          git add -f models/research/M1_R_BASE_CATBOOST_720_TRAIN_2026-10-29.cbm
+          if ! git diff --cached --quiet; then
+            git commit -m 'step14: freeze isolated actual M1-R CatBoost 720/374 research validation and M0 calibration'
+            git pull --rebase origin main
+            git push origin HEAD:main
+          fi
