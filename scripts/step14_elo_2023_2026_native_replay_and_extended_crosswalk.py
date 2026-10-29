@@ -114,7 +114,7 @@ def _elo_fields_for(rec,ratings,lastyear,history,games,params):
     if len(values)!=19:raise EloReconstructionError("NOT_19_ELO_FIELDS")
     return values
 
-def replay(events,params=None):
+def replay(events,params=None,*,expected_fixtures=1140):
     params=params or EloParameters()
     ratings={};lastyear={};history=defaultdict(list);games=defaultdict(int)
     pending=[];out=[];updates=Counter(); snapshots={}
@@ -165,7 +165,7 @@ def replay(events,params=None):
             heappush(pending,(rec["kickoff"]+LAG,rec["fixture_id"],rec))
     while pending:
         _,_,old=heappop(pending);finish(old)
-    if sum(updates.values())!=1140 or len(out)!=1140:
+    if sum(updates.values())!=expected_fixtures or len(out)!=expected_fixtures:
         raise EloReconstructionError("NOT_ALL_1140_ELO_UPDATES_AND_SNAPSHOTS")
     return out,dict(updates),dict(ratings),dict(games)
 
