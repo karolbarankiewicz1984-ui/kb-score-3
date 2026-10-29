@@ -38,7 +38,12 @@ def api(url,token=None,attempts=4):
 def list_revisions(season,fetcher=api,token=None):
     path=f"data/{season}/fixtures.csv"
     encoded=path.replace("/","%2F")
-    url=f"https://api.github.com/repos/{REPO}/commits?path={encoded}&per_page=100"
+    # Catalog scope = edits up to historic season close, not post-season
+    # retrospective edits (2024-25 has one later 2025 summer revision).
+    # This filter never certifies prematch publication; Git DAG + GHArchive does.
+    until={"2023-24":"2024-06-01T00:00:00Z",
+           "2024-25":"2025-06-01T00:00:00Z"}[season]
+    url=f"https://api.github.com/repos/{REPO}/commits?path={encoded}&until={until}&per_page=100"
     doc=fetcher(url,token=token)
     if not isinstance(doc,list):raise ProofError("NOT_A_COMMIT_LIST")
     return [{"sha":x["sha"],"committer_date_INFORMATIONAL_ONLY":x["commit"]["committer"]["date"]}
