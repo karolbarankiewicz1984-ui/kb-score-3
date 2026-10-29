@@ -28,7 +28,6 @@ def audit(root=ROOT):
     if elo.get("schema")!=ELO_SCHEMA or elo.get("GATE14")!="PENDING" or elo.get("original_native_1140_full_chronological_Elo_replay_rows")!=1140:
         raise Coverage57Error("UNTRUSTED_RETRO_ELO_SOURCE")
     index={r["original_native_match_id"]:r for r in elo["research_elo_feature_rows"]}
-    link={r["native_kickoff_utc"]:[] for r in elo["strict_new_public_native_crosswalk"]}
     matched={}
     for entry in elo["strict_new_public_native_crosswalk"]:
         key=(entry["native_fixture_id"],entry["native_kickoff_utc"])
@@ -69,18 +68,6 @@ def audit(root=ROOT):
                 b=extra["research_features_not_native_PitchAPI"][f"{side}_all_5_{key}"]
                 if a is None or b is None or abs(a-b)>0.00001:
                     raise Coverage57Error("FORM5_DID_NOT_REPRODUCE_FROZEN_OLD_SHA")
-        candidates=[(m,e) for key,(m,e) in by_pairtime.items()
-              if key[1]==target["target_kickoff_utc"]
-              and e["original_native_match_id"]==m["native_fixture_id"]
-              and [target["target_public_home"],target["target_public_away"]]==[
-                  # Only use exact original 2025 native crosswalk pair.
-                  target["target_public_home"],target["target_public_away"]]
-              and m["source_SHA"]==target["evidence_source_commit"]]
-        # A shared kickoff can contain many matches; resolve by unique source SHA,
-        # exact old native fixture id mapping and one-to-one source target ordering.
-        # The prior native audit guaranteed 57 exact side/time pairs; use the
-        # fixed native fixture crosswalk's expected exact [home,away] mapping
-        # independently in the strict subcheck below.
         native=[m for m in elo["strict_new_public_native_crosswalk"] if
                 m["native_kickoff_utc"]==target["target_kickoff_utc"]
                 and m["source_SHA"]==target["evidence_source_commit"]
