@@ -83,16 +83,8 @@ def prepare_features(rows):
         if type(v) not in (bool,int,float) or not math.isfinite(v):
             raise M1RFitSafetyError("BAD_FEATURE_NUMERIC")
         return float(v)
-    def signature(vals):
-        return tuple("nan" if math.isnan(v) else v for v in vals)
-    # Feature availability is selected exclusively using 720 TRAIN.
-    # Remove exact constant columns; especially all missing xG variables.
-    selected=[]
-    for name in all_names:
-        values=[get(row,name) for row in training]
-        if len(set(signature(values)))!=1:  # wrong: signature returns one tuple
-            selected.append(name)
-    # corrected below: use distinct train observed+missing signatures.
+    # Select only variable columns, solely from the 720 TRAIN examples.
+    # Constant xG flags and empty xG columns are never exposed to the model.
     selected=[name for name in all_names if len(set(
          "nan" if math.isnan(get(row,name)) else get(row,name) for row in training))>1]
     if len(selected)<15 or len(selected)>159:
@@ -111,7 +103,7 @@ def _validate_label_sets(training,valid,actual):
             raise M1RFitSafetyError("NATIVE_TARGET_JOIN_DRIFT")
     yt=[_as_label(actual[r["fixture_id"]]["gh"],actual[r["fixture_id"]]["ga"]) for r in training]
     yv=[_as_label(actual[r["fixture_id"]]["gh"],actual[r["fixture_id"]]["ga"]) for r in valid]
-    if len(set(yt))!=3:return (_ for _ in ()).throw(M1RFitSafetyError("TRAIN_MISSING_1X2_CLASS"))
+    if len(set(yt))!=3:raise M1RFitSafetyError("TRAIN_MISSING_1X2_CLASS")
     return yt,yv
 
 def _score(probs,labels):
@@ -164,7 +156,7 @@ def _score(probs,labels):
     return out
 
 def train_evaluate(*,root=ROOT,native_override=None,model_out=None):
-    from catboost import CatBoostClassifier
+    from catboost import CatBoostClassifier,Pool
     root=Path(root)
     source,rows=load_frozen(root)
     train,valid,features,Xtr,Xval=prepare_features(rows)
@@ -180,7 +172,7 @@ def train_evaluate(*,root=ROOT,native_override=None,model_out=None):
     # for scoring. No eval_set, early_stopping_rounds, validation weights,
     # or optimization against the held-out season.
     clf=CatBoostClassifier(**PARAMS)
-    clf.fit(Xtr,yt,feature_names=features)
+    clf.fit(Pool(Xtr,label=yt,feature_names=features))
     classes=list(clf.classes_)
     if set(classes)!=set(CLASSES):raise M1RFitSafetyError("CATBOOST_NOT_ALL_1X2")
     cb_raw=clf.predict_proba(Xval)
