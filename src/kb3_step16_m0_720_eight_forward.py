@@ -411,6 +411,27 @@ def run(*,mode,client,now=None,db_path=DB,root=SOURCES,public_key=None):
                         results[(x[3],m["id"])]=m
             extra=settle_sqlite(staging,results,observed_at=cutoff,
                                 source_chain_sha=rawmeta["proof"]["final_chain_sha256"])
+            # Host-side PushEvent creation time + immutable bytes at its historical
+            # commit, NOT a user-controlled commit timestamp or self-declared clock.
+            # Missing repo event => no proof, no calibration; settlement still
+            # persists independently and can be audited on a later run.
+            from src.kb3_step16_m0_720_calibration import (
+                github_events,inspect_event_proofs,append_proofs,calibrate_if_eligible)
+            events,provider_state=github_events(os.environ.get("GH_TOKEN",""))
+            proposed,proof_audit=inspect_event_proofs(
+                staging,events,now=cutoff,repo_root=ROOT)
+            verified_count=append_proofs(staging,proposed,now=cutoff)
+            ready=calibrate_if_eligible(staging,now=cutoff)
+            extra.update({
+                "publication_proof_audit":{
+                   "provider_state":provider_state,
+                   "audited_event_count":proof_audit["events_considered"],
+                   "source_revisions_verified":proof_audit["historic_versions_verified"],
+                   "verified_rows_added_this_run":len(proposed),
+                   "verified_forecast_rows_total":verified_count,
+                   "github_commit_author_date_used_as_proof":False,
+                   "missing_push_events_are_not_assumed_pre_match":True},
+                "calibration_readiness":ready})
         report={"schema":"kb3-step16-8league-M0-720-TRAIN-forward-v1",
             "mode":mode,"model_version":MODEL,"params_sha256":param_sha,
             "manifest_sha256":manifest_sha,"run_utc":stamp(cutoff),
