@@ -19,6 +19,7 @@ import json
 import math
 from pathlib import Path
 from urllib.request import Request, urlopen
+from urllib.parse import quote
 from zoneinfo import ZoneInfo
 
 from src.kb3_step14_native_team_crosswalk import canonical_team_name
@@ -109,7 +110,7 @@ def _code(v):
     return int(n)
 
 def _fetch_raw(commit, path, fetcher=_get):
-    url = f"https://raw.githubusercontent.com/{REPO}/{commit}/{path}"
+    url = f"https://raw.githubusercontent.com/{REPO}/{commit}/{quote(path, safe='/')}"
     raw = fetcher(url)
     return raw, sha256(raw).hexdigest()
 
