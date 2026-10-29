@@ -1,0 +1,23 @@
+{
+  "captured_asof_later_future_targets_only": true,
+  "captured_at_utc": "2026-10-29T11:06:36.620583Z",
+  "ciphertext_sha256": "d4402b31741398e2e72f32ef98a01d195bccba4b9e954cd91663073a0d83e054",
+  "finished_prior_match_shot_stats_pairs_observed": 2,
+  "fixture_source_snapshot_sha256": "b1d95e7cd341bcd4e66d0dd2252521cbb0bea39cfdc24b1247801dbb59f32bc7",
+  "full_source_payloads_encrypted_with_existing_owner_PUBLIC_key": true,
+  "future_target_schedules_in_sealed_original": 4,
+  "gate14_pass": false,
+  "native_shot_stat_side_identity_checked": 2,
+  "old_2023_2025_original_PIT_recovered": false,
+  "owner_private_RSA_key_needed_in_Github": false,
+  "provider_call_count": 6,
+  "provider_call_hard_ceiling": 6,
+  "provider_original_first_publication_known": false,
+  "real_network_observation_ended_utc": "2026-10-29T11:06:36.601529Z",
+  "real_network_observation_started_utc": "2026-10-29T11:06:35.744044Z",
+  "real_train_M1_allowed": false,
+  "schema": "kb3-step14-C-prospective-PitchAPI-real-as-observed-receipt-v1",
+  "season": "2026/2027",
+  "source_archive_chain_sha256": "95f657a58aadd7975ce26e26100c0f4a1579b6b6919d999e63e575f705ef4ebc",
+  "target_results_written_as_public_values": false
+}
