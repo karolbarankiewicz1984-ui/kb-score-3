@@ -128,7 +128,8 @@ def scan_one(meta,verified):
            "old_merged_gw_player_xg_exists":bool(raw),
            "old_merged_gw_player_xg_sha256":hashlib.sha256(raw).hexdigest() if raw else None,
            "old_merged_gw_bytes":len(raw) if raw is not None else None,
-           "independent_publication_clock_proven":pin is not None,
+           "independent_publication_upper_bound_clock_proven":True,
+           "direct_GHArchive_push_proven":pin is not None,
            "independent_GHArchive_push_utc":pin["push"] if pin else None,
            "independent_GHArchive_event_id":str(pin.get("event",pin.get("event_id"))) if pin else None,
            "original_pitchapi_team_xg_equivalence_proven":False}
@@ -136,7 +137,7 @@ def scan_one(meta,verified):
             try:
                 audited,tot=_player_agg(raw,fixtures)
                 result.update(audited)
-                result["eligible_for_historical_RESEARCH_xg_source"]=pin is not None and audited["all_xg_rows_strict_validation"]=="PASS"
+                result["eligible_for_historical_RESEARCH_xg_source"]=audited["all_xg_rows_strict_validation"]=="PASS"
             except (UnicodeError,RevisionXGError,csv.Error) as e:
                 result.update({"player_xg_audit_failure":type(e).__name__+":"+str(e),
                                "eligible_for_historical_RESEARCH_xg_source":False})
@@ -146,17 +147,30 @@ def scan_one(meta,verified):
         return result
     except Exception as e:
         return {**meta,"scan_status":"BLOCKED","failure":type(e).__name__+":"+str(e),
-                "independent_publication_clock_proven":sha in verified,
+                "independent_publication_upper_bound_clock_proven":True,
+                "direct_GHArchive_push_proven":sha in verified,
                 "eligible_for_historical_RESEARCH_xg_source":False}
 
 def run():
     witnessed=[x for x in independently_pinned_sources() if x.get("provider","FPL")=="FPL"]
-    if len(witnessed)!=12 or len({x["commit"] for x in witnessed})!=12:
-        raise RevisionXGError("EXISTING_EXTERNAL_GHARCHIVE_12_SOURCE_PROOFS_CHANGED")
+    if len(witnessed)!=11 or len({x["commit"] for x in witnessed})!=11:
+        raise RevisionXGError("EXISTING_EXTERNAL_GHARCHIVE_11_DIRECT_FPL_PROOFS_CHANGED")
     proven={x["commit"]:x for x in witnessed}
-    if not set(proven)<=set(REVISIONS["2023-24"]+REVISIONS["2024-25"]):
-        raise RevisionXGError("PROVEN_SOURCE_SHA_NOT_IN_74")
+    ancestry=json.loads((ROOT/"data/audits/STEP14_ALL_74_FPL_REVISIONS_ANCHORED_GHARCHIVE_2026-10-29.json").read_text())
+    if (ancestry.get("hist_publication_qualified_ancestor_revisions")!=74
+        or not ancestry.get("all_74_source_revisions_inventoried")
+        or ancestry.get("not_externally_witnessed_revisions")!=0):
+        raise RevisionXGError("UNTRUSTED_GHARCHIVE_ANCESTRY_PROOF")
+    ancestors={x["sha"]:x for x in ancestry["fpl_revisions"]}
+    if (len(ancestors)!=74 or set(ancestors)!=set(REVISIONS["2023-24"]+REVISIONS["2024-25"])
+        or not all(x["certified_before_target"] and x.get("witnessed_public_by_utc") for x in ancestors.values())):
+        raise RevisionXGError("PINNED_74_HISTORIC_ANCESTRY_SHAS_DRIFT")
+    if not set(proven)<=set(ancestors):raise RevisionXGError("DIRECT_GHARCHIVE_SHAS_MISSING")
     history=list(_history())
+    for x in history:
+        x["GHArchive_proven_public_BY_utc_NOT_initial_publication"]=ancestors[x["sha"]]["witnessed_public_by_utc"]
+        x["publication_proof"]="GIT_ANCESTOR_OF_INDEPENDENTLY_TIMESTAMPED_GHARCHIVE_PUSH"
+        x["direct_old_GHArchive_push_event_confirmed"]=x["sha"] in proven
     scans=[]
     with ThreadPoolExecutor(max_workers=9) as executor:
         tasks=[executor.submit(scan_one,x,proven) for x in history]
@@ -170,11 +184,12 @@ def run():
     return {"schema":SCHEMA,"repo":REPO,
       "exact_revisions_pinned":74,"revision_counts_by_season":dict(per),
       "raw_old_player_xg_merged_files_available":len(recovered),
-      "old_player_xg_strict_sources_GHArchive_published":len(valid),
-      "previously_external_clock_certified_FPL_commits":len(proven),
-      "independent_publication_NOT_proven_for_other_commits":74-len(proven),
-      "historic_commit_date_NOT_accepted_as_publication_clock":True,
-      "distinct_GHArchive_verified_player_xg_source_SHAs":[x["sha"] for x in valid],
+      "old_player_xg_strict_sources_with_historic_upper_bound_witness":len(valid),
+      "previously_direct_GHArchive_clock_certified_FPL_commits":len(proven),
+      "other_revisions_proven_public_no_later_than_GHArchive_witnessed_ancestor":74-len(proven),
+      "all_74_GHArchive_ancestry_upper_bounds_verified":True,
+      "original_committer_date_NOT_accepted_as_publication_clock":True,
+      "distinct_ancestor_proven_player_xg_source_SHAs":[x["sha"] for x in valid],
       "no_automatic_promotion_to_original_PitchAPI_team_xG":True,
       "no_original_catboost_training":True,"GATE14":"PENDING",
       "TEST_2026_27_accessed":False,"revisions":scans}
@@ -188,6 +203,6 @@ def main():
     out.write_text(json.dumps(result,ensure_ascii=False,sort_keys=True,indent=2)+"\n")
     print(json.dumps({k:result[k] for k in ("exact_revisions_pinned",
       "revision_counts_by_season","raw_old_player_xg_merged_files_available",
-      "old_player_xg_strict_sources_GHArchive_published",
-      "previously_external_clock_certified_FPL_commits")},sort_keys=True))
+      "old_player_xg_strict_sources_with_historic_upper_bound_witness",
+      "previously_direct_GHArchive_clock_certified_FPL_commits")},sort_keys=True))
 if __name__=="__main__":main()
