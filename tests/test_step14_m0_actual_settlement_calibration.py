@@ -4,7 +4,8 @@ from pathlib import Path
 from src.kb3_three_league_sqlite_forward_features import commit_sqlite
 from src.kb3_m0_shadow_1x2_live_freeze import freeze
 from src.kb3_m0_live_settlement_calibration import (
-    settle,audit_and_prepare_calibration,_source_mapping,ResultSafetyError)
+    settle,audit_and_prepare_calibration,_source_mapping,ResultSafetyError,
+    _strict_post_fit_holdout,_homogeneous_m0_parameter_contract)
 from src.kb3_step14_m1_math_calibration import score_one,score_predictions
 from scripts.step14_m0_postmatch_real import verify_original_forecasts,PostmatchRunError
 from test_step14_three_league_sqlite_forward_features import fake_capture,season_rows,NOW,stamp
@@ -86,6 +87,29 @@ class SafeRealScoring(unittest.TestCase):
                     item["status"]="finished";item["score_home"]=5;item["score_away"]=0
         settled=settle(db,r,now=datetime.now(timezone.utc)+timedelta(seconds=2))
         self.assertEqual(settled["total_settled"],0)
+ def test_postfit_holdout_excludes_forecasts_generated_before_calibration(self):
+    cut=datetime(2026,10,20,10,tzinfo=timezone.utc)
+    review=cut+timedelta(days=15)
+    def row(i,generated,kickoff,settled):
+        return {"id":f"synthetic-{i}","generated":generated,
+            "kickoff":kickoff,"settled":settled,
+            "parameter_sha256":"a"*64}
+    sample=[row("precreated",cut-timedelta(hours=2),
+        cut+timedelta(days=1),cut+timedelta(days=1,hours=4)),
+        row("true_later",cut+timedelta(hours=1),
+        cut+timedelta(days=2),cut+timedelta(days=2,hours=4)),
+        row("later_unsettled",cut+timedelta(hours=1),
+        cut+timedelta(days=3),review+timedelta(hours=1))]
+    after=_strict_post_fit_holdout(sample,cut,review)
+    self.assertEqual([x["id"] for x in after],["synthetic-true_later"])
+ def test_future_calibration_must_never_pool_different_parameter_versions(self):
+    self.assertEqual(_homogeneous_m0_parameter_contract([
+       {"parameter_sha256":"a"*64},{"parameter_sha256":"a"*64}]),"a"*64)
+    with self.assertRaisesRegex(ResultSafetyError,"MIXED_M0_PARAMETER"):
+        _homogeneous_m0_parameter_contract([
+           {"parameter_sha256":"a"*64},{"parameter_sha256":"b"*64}])
+    with self.assertRaisesRegex(ResultSafetyError,"M0_PARAMETER_VERSION_SHA_MISSING"):
+        _homogeneous_m0_parameter_contract([{"parameter_sha256":""}])
  def test_missing_model_forecast_can_never_be_created_from_zero(self):
     with tempfile.TemporaryDirectory() as t:
         db=Path(t)/"blank.sqlite"
