@@ -1,0 +1,591 @@
+{
+  "all_1140_source_rows_matched": 1140,
+  "all_OPTIONAL_xg_and_source_overlay_excluded": true,
+  "catboost_m1r_base_validation": {
+    "brier_multiclass_mean3": 0.210570391639204,
+    "brier_multiclass_sum3": 0.631711174917612,
+    "log_loss": 1.0483520508961388,
+    "n": 374,
+    "per_class_reliability_5_bins": {
+      "1": [
+        {
+          "bin": 0,
+          "count": 50,
+          "mean_probability": 0.16495029269841427,
+          "observed_frequency": 0.18
+        },
+        {
+          "bin": 1,
+          "count": 169,
+          "mean_probability": 0.3112260423544588,
+          "observed_frequency": 0.3905325443786982
+        },
+        {
+          "bin": 2,
+          "count": 116,
+          "mean_probability": 0.48938544925525385,
+          "observed_frequency": 0.46551724137931033
+        },
+        {
+          "bin": 3,
+          "count": 39,
+          "mean_probability": 0.6594920375292791,
+          "observed_frequency": 0.717948717948718
+        },
+        {
+          "bin": 4,
+          "count": 0,
+          "mean_probability": null,
+          "observed_frequency": null
+        }
+      ],
+      "2": [
+        {
+          "bin": 0,
+          "count": 52,
+          "mean_probability": 0.1598805203197838,
+          "observed_frequency": 0.1346153846153846
+        },
+        {
+          "bin": 1,
+          "count": 159,
+          "mean_probability": 0.29571420125832465,
+          "observed_frequency": 0.23270440251572327
+        },
+        {
+          "bin": 2,
+          "count": 117,
+          "mean_probability": 0.4912441707354722,
+          "observed_frequency": 0.38461538461538464
+        },
+        {
+          "bin": 3,
+          "count": 45,
+          "mean_probability": 0.6706365712624606,
+          "observed_frequency": 0.5555555555555556
+        },
+        {
+          "bin": 4,
+          "count": 1,
+          "mean_probability": 0.8115660174246146,
+          "observed_frequency": 0.0
+        }
+      ],
+      "X": [
+        {
+          "bin": 0,
+          "count": 111,
+          "mean_probability": 0.16988462643688226,
+          "observed_frequency": 0.22522522522522523
+        },
+        {
+          "bin": 1,
+          "count": 263,
+          "mean_probability": 0.2585972028077661,
+          "observed_frequency": 0.2965779467680608
+        },
+        {
+          "bin": 2,
+          "count": 0,
+          "mean_probability": null,
+          "observed_frequency": null
+        },
+        {
+          "bin": 3,
+          "count": 0,
+          "mean_probability": null,
+          "observed_frequency": null
+        },
+        {
+          "bin": 4,
+          "count": 0,
+          "mean_probability": null,
+          "observed_frequency": null
+        }
+      ]
+    },
+    "top1_accuracy": 0.4625668449197861,
+    "top1_ece_5_bins": 0.05188979520605402,
+    "top1_reliability_5_bins": [
+      {
+        "bin": 0,
+        "count": 0,
+        "mean_confidence": null,
+        "observed_accuracy": null
+      },
+      {
+        "bin": 1,
+        "count": 56,
+        "mean_confidence": 0.3830732523129875,
+        "observed_accuracy": 0.375
+      },
+      {
+        "bin": 2,
+        "count": 233,
+        "mean_confidence": 0.49031879866806727,
+        "observed_accuracy": 0.4248927038626609
+      },
+      {
+        "bin": 3,
+        "count": 84,
+        "mean_confidence": 0.6654623234577691,
+        "observed_accuracy": 0.6309523809523809
+      },
+      {
+        "bin": 4,
+        "count": 1,
+        "mean_confidence": 0.8115660174246146,
+        "observed_accuracy": 0.0
+      }
+    ]
+  },
+  "catboost_version": "1.2.8",
+  "cold_start_excluded_TRAIN": 40,
+  "cold_start_excluded_VALIDATION": 6,
+  "delta_M1R_minus_M0_720_train_brier_sum3": 0.011412660050050705,
+  "delta_M1R_minus_M0_720_train_ece": 0.028293079942780755,
+  "delta_M1R_minus_M0_720_train_log_loss": 0.013244347215606522,
+  "feature_selection_based_only_on_TRAIN_720": true,
+  "fixed_hyperparameters": {
+    "allow_writing_files": false,
+    "depth": 4,
+    "iterations": 400,
+    "l2_leaf_reg": 8.0,
+    "learning_rate": 0.035,
+    "loss_function": "MultiClass",
+    "nan_mode": "Min",
+    "random_seed": 20261029,
+    "thread_count": 2,
+    "verbose": false
+  },
+  "frozen_feature_count": 85,
+  "frozen_feature_names": [
+    "miss:away_all_10_history",
+    "miss:away_all_15_history",
+    "miss:away_all_5_history",
+    "miss:away_venue_10_history",
+    "miss:away_venue_15_history",
+    "miss:away_venue_5_history",
+    "miss:home_all_10_history",
+    "miss:home_all_15_history",
+    "miss:home_all_5_history",
+    "miss:home_venue_10_history",
+    "miss:home_venue_15_history",
+    "miss:home_venue_5_history",
+    "num:away_all_10_ga_avg",
+    "num:away_all_10_gf_avg",
+    "num:away_all_10_n",
+    "num:away_all_10_opponent_elo_avg",
+    "num:away_all_10_points_avg",
+    "num:away_all_15_ga_avg",
+    "num:away_all_15_gf_avg",
+    "num:away_all_15_n",
+    "num:away_all_15_opponent_elo_avg",
+    "num:away_all_15_points_avg",
+    "num:away_all_5_ga_avg",
+    "num:away_all_5_gf_avg",
+    "num:away_all_5_n",
+    "num:away_all_5_opponent_elo_avg",
+    "num:away_all_5_points_avg",
+    "num:away_days_since_last_kickoff",
+    "num:away_elo",
+    "num:away_elo_games_available",
+    "num:away_games_available",
+    "num:away_prior_seasons_games_available",
+    "num:away_venue_10_ga_avg",
+    "num:away_venue_10_gf_avg",
+    "num:away_venue_10_n",
+    "num:away_venue_10_opponent_elo_avg",
+    "num:away_venue_10_points_avg",
+    "num:away_venue_15_ga_avg",
+    "num:away_venue_15_gf_avg",
+    "num:away_venue_15_n",
+    "num:away_venue_15_opponent_elo_avg",
+    "num:away_venue_15_points_avg",
+    "num:away_venue_5_ga_avg",
+    "num:away_venue_5_gf_avg",
+    "num:away_venue_5_n",
+    "num:away_venue_5_opponent_elo_avg",
+    "num:away_venue_5_points_avg",
+    "num:away_venue_games_available",
+    "num:elo_home_minus_away",
+    "num:home_all_10_ga_avg",
+    "num:home_all_10_gf_avg",
+    "num:home_all_10_n",
+    "num:home_all_10_opponent_elo_avg",
+    "num:home_all_10_points_avg",
+    "num:home_all_15_ga_avg",
+    "num:home_all_15_gf_avg",
+    "num:home_all_15_n",
+    "num:home_all_15_opponent_elo_avg",
+    "num:home_all_15_points_avg",
+    "num:home_all_5_ga_avg",
+    "num:home_all_5_gf_avg",
+    "num:home_all_5_n",
+    "num:home_all_5_opponent_elo_avg",
+    "num:home_all_5_points_avg",
+    "num:home_days_since_last_kickoff",
+    "num:home_elo",
+    "num:home_elo_games_available",
+    "num:home_games_available",
+    "num:home_prior_seasons_games_available",
+    "num:home_venue_10_ga_avg",
+    "num:home_venue_10_gf_avg",
+    "num:home_venue_10_n",
+    "num:home_venue_10_opponent_elo_avg",
+    "num:home_venue_10_points_avg",
+    "num:home_venue_15_ga_avg",
+    "num:home_venue_15_gf_avg",
+    "num:home_venue_15_n",
+    "num:home_venue_15_opponent_elo_avg",
+    "num:home_venue_15_points_avg",
+    "num:home_venue_5_ga_avg",
+    "num:home_venue_5_gf_avg",
+    "num:home_venue_5_n",
+    "num:home_venue_5_opponent_elo_avg",
+    "num:home_venue_5_points_avg",
+    "num:home_venue_games_available"
+  ],
+  "future_actual_PIT_certified": false,
+  "m0_and_m1r_validation_fixture_population_exact_same": true,
+  "m0_matched_720_fitted_train_parameters": {
+    "base_away_goals": 1.4381853609496382,
+    "base_home_goals": 1.6447363878515198,
+    "elo_goal_elasticity": 0.6,
+    "elo_home_advantage": 65.0,
+    "elo_k": 20.0,
+    "elo_scale": 400.0,
+    "initial_elo": 1500.0,
+    "poisson_max_goals": 64,
+    "poisson_tail_tolerance": 1e-12
+  },
+  "m0_matched_720_train_reference_poisson_validation": {
+    "brier_multiclass_mean3": 0.20676617162252045,
+    "brier_multiclass_sum3": 0.6202985148675613,
+    "log_loss": 1.0351077036805323,
+    "n": 374,
+    "per_class_reliability_5_bins": {
+      "1": [
+        {
+          "bin": 0,
+          "count": 2,
+          "mean_probability": 0.15887119876826067,
+          "observed_frequency": 0.0
+        },
+        {
+          "bin": 1,
+          "count": 151,
+          "mean_probability": 0.3291416877270921,
+          "observed_frequency": 0.2781456953642384
+        },
+        {
+          "bin": 2,
+          "count": 204,
+          "mean_probability": 0.48759504072454835,
+          "observed_frequency": 0.5049019607843137
+        },
+        {
+          "bin": 3,
+          "count": 17,
+          "mean_probability": 0.6485657486296513,
+          "observed_frequency": 0.7058823529411765
+        },
+        {
+          "bin": 4,
+          "count": 0,
+          "mean_probability": null,
+          "observed_frequency": null
+        }
+      ],
+      "2": [
+        {
+          "bin": 0,
+          "count": 23,
+          "mean_probability": 0.17179378347069055,
+          "observed_frequency": 0.17391304347826086
+        },
+        {
+          "bin": 1,
+          "count": 248,
+          "mean_probability": 0.3050483257862912,
+          "observed_frequency": 0.2540322580645161
+        },
+        {
+          "bin": 2,
+          "count": 101,
+          "mean_probability": 0.4640153817719097,
+          "observed_frequency": 0.45544554455445546
+        },
+        {
+          "bin": 3,
+          "count": 2,
+          "mean_probability": 0.6530024297476553,
+          "observed_frequency": 0.5
+        },
+        {
+          "bin": 4,
+          "count": 0,
+          "mean_probability": null,
+          "observed_frequency": null
+        }
+      ],
+      "X": [
+        {
+          "bin": 0,
+          "count": 15,
+          "mean_probability": 0.18507527019033712,
+          "observed_frequency": 0.3333333333333333
+        },
+        {
+          "bin": 1,
+          "count": 359,
+          "mean_probability": 0.23101929647638236,
+          "observed_frequency": 0.27298050139275765
+        },
+        {
+          "bin": 2,
+          "count": 0,
+          "mean_probability": null,
+          "observed_frequency": null
+        },
+        {
+          "bin": 3,
+          "count": 0,
+          "mean_probability": null,
+          "observed_frequency": null
+        },
+        {
+          "bin": 4,
+          "count": 0,
+          "mean_probability": null,
+          "observed_frequency": null
+        }
+      ]
+    },
+    "top1_accuracy": 0.5,
+    "top1_ece_5_bins": 0.02359671526327326,
+    "top1_reliability_5_bins": [
+      {
+        "bin": 0,
+        "count": 0,
+        "mean_confidence": null,
+        "observed_accuracy": null
+      },
+      {
+        "bin": 1,
+        "count": 50,
+        "mean_confidence": 0.3901652807713098,
+        "observed_accuracy": 0.5
+      },
+      {
+        "bin": 2,
+        "count": 305,
+        "mean_confidence": 0.47978669464515056,
+        "observed_accuracy": 0.4885245901639344
+      },
+      {
+        "bin": 3,
+        "count": 19,
+        "mean_confidence": 0.6490327676947044,
+        "observed_accuracy": 0.6842105263157895
+      },
+      {
+        "bin": 4,
+        "count": 0,
+        "mean_confidence": null,
+        "observed_accuracy": null
+      }
+    ]
+  },
+  "m0_original_760_train_frozen_reference_validation": {
+    "brier_multiclass_mean3": 0.20678045710205212,
+    "brier_multiclass_sum3": 0.6203413713061564,
+    "log_loss": 1.0351403302035709,
+    "n": 374,
+    "per_class_reliability_5_bins": {
+      "1": [
+        {
+          "bin": 0,
+          "count": 2,
+          "mean_probability": 0.15817130280622477,
+          "observed_frequency": 0.0
+        },
+        {
+          "bin": 1,
+          "count": 152,
+          "mean_probability": 0.32832930444061575,
+          "observed_frequency": 0.28289473684210525
+        },
+        {
+          "bin": 2,
+          "count": 203,
+          "mean_probability": 0.4863854223061267,
+          "observed_frequency": 0.5024630541871922
+        },
+        {
+          "bin": 3,
+          "count": 17,
+          "mean_probability": 0.6468203487562251,
+          "observed_frequency": 0.7058823529411765
+        },
+        {
+          "bin": 4,
+          "count": 0,
+          "mean_probability": null,
+          "observed_frequency": null
+        }
+      ],
+      "2": [
+        {
+          "bin": 0,
+          "count": 21,
+          "mean_probability": 0.1700777446992877,
+          "observed_frequency": 0.14285714285714285
+        },
+        {
+          "bin": 1,
+          "count": 249,
+          "mean_probability": 0.30488863278449396,
+          "observed_frequency": 0.25301204819277107
+        },
+        {
+          "bin": 2,
+          "count": 102,
+          "mean_probability": 0.4643930995892582,
+          "observed_frequency": 0.46078431372549017
+        },
+        {
+          "bin": 3,
+          "count": 2,
+          "mean_probability": 0.653740204884986,
+          "observed_frequency": 0.5
+        },
+        {
+          "bin": 4,
+          "count": 0,
+          "mean_probability": null,
+          "observed_frequency": null
+        }
+      ],
+      "X": [
+        {
+          "bin": 0,
+          "count": 14,
+          "mean_probability": 0.18475525076464355,
+          "observed_frequency": 0.2857142857142857
+        },
+        {
+          "bin": 1,
+          "count": 360,
+          "mean_probability": 0.23137323383836386,
+          "observed_frequency": 0.275
+        },
+        {
+          "bin": 2,
+          "count": 0,
+          "mean_probability": null,
+          "observed_frequency": null
+        },
+        {
+          "bin": 3,
+          "count": 0,
+          "mean_probability": null,
+          "observed_frequency": null
+        },
+        {
+          "bin": 4,
+          "count": 0,
+          "mean_probability": null,
+          "observed_frequency": null
+        }
+      ]
+    },
+    "top1_accuracy": 0.4946524064171123,
+    "top1_ece_5_bins": 0.018954636664294637,
+    "top1_reliability_5_bins": [
+      {
+        "bin": 0,
+        "count": 0,
+        "mean_confidence": null,
+        "observed_accuracy": null
+      },
+      {
+        "bin": 1,
+        "count": 50,
+        "mean_confidence": 0.39006405325359983,
+        "observed_accuracy": 0.46
+      },
+      {
+        "bin": 2,
+        "count": 305,
+        "mean_confidence": 0.47903061274179676,
+        "observed_accuracy": 0.4885245901639344
+      },
+      {
+        "bin": 3,
+        "count": 19,
+        "mean_confidence": 0.6475487546645157,
+        "observed_accuracy": 0.6842105263157895
+      },
+      {
+        "bin": 4,
+        "count": 0,
+        "mean_confidence": null,
+        "observed_accuracy": null
+      }
+    ]
+  },
+  "m0_original_760_train_params_from_prior_frozen_report": {
+    "base_away_goals": 1.4370968890275349,
+    "base_home_goals": 1.63733387301664,
+    "elo_goal_elasticity": 0.6,
+    "elo_home_advantage": 65.0,
+    "elo_k": 20.0,
+    "elo_scale": 400.0,
+    "initial_elo": 1500.0,
+    "poisson_max_goals": 64,
+    "poisson_tail_tolerance": 1e-12
+  },
+  "metric_definition": "Brier=sum_{c in 1,X,2}(p_c-y_c)^2; also Brier/3",
+  "model_classes_1x2": [
+    "1",
+    "2",
+    "X"
+  ],
+  "native_team_continuity": {
+    "2023_to_2024": 17,
+    "2024_to_2025": 17
+  },
+  "native_three_season_counts": {
+    "2023-24": 380,
+    "2024-25": 380,
+    "2025-26": 380
+  },
+  "original_760_380_partition_intact": true,
+  "original_GATE14": "PENDING",
+  "original_M0_predictions_untouched": true,
+  "original_TEST_2026_27_never_requested": true,
+  "original_m1_untouched": true,
+  "prediction_rows": 374,
+  "predictions_sha256": "1fa1e7768781c754af3d4b87a11ab248b8df99414cc49acf5ec733f353591500",
+  "real_PitchAPI_API_calls": 4,
+  "research_frozen_source_matrix_sha256": "aced6cd1855c2dd344b42734861ab2b2e72d80fd44409bd384d69b4fefc98560",
+  "schema": "kb3-step14-m1r-base-catboost-720-train-374-val-fixed-research-v1",
+  "status": "TRAINED_ISOLATED_RESEARCH_ONLY",
+  "target_labels_never_saved_in_prediction_file": true,
+  "trained_model_sha256": "07af285ff9dd45fa13dd54fd5e805270aff469434955cce998b601875f8fdab8",
+  "training": 720,
+  "training_algorithm": "CatBoostClassifier MultiClass independent research M1-R BASE",
+  "training_labels_1X2_counts": {
+    "1": 314,
+    "2": 238,
+    "X": 168
+  },
+  "validation": 374,
+  "validation_evaluation_once_no_early_stopping": true,
+  "validation_labels_1X2_counts": {
+    "1": 157,
+    "2": 114,
+    "X": 103
+  }
+}
