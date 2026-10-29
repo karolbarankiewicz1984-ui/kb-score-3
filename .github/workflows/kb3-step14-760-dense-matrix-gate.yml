@@ -69,7 +69,9 @@ jobs:
           assert len(records)==1140
           assert source['original_frozen_760_TRAIN_380_VALIDATION']=={'TRAIN':760,'VALIDATION':380}
           assert gate['original_TRAIN_total']==760 and gate['original_VALIDATION_total']==380
-          assert source['distinct_original_VALIDATION_with_historical_alternative_xG5']==dense['historically_public_source_FORM5_targets']
+          assert source['distinct_original_VALIDATION_with_historical_public_result_FORM5']==dense['historically_public_source_FORM5_targets']
+          assert source['distinct_original_VALIDATION_with_historical_alternative_xG5']==dense['historically_public_source_xg5_complete_targets']
+          assert gate['historically_published_alternative_VALIDATION_FORM5']==dense['historically_public_source_FORM5_targets']
           assert source['distinct_original_TRAIN_with_historical_public_result_FORM5']==gate['historically_published_alternative_TRAIN_FORM5']
           assert dense['all_original_57_preserved'] and dense['historically_public_source_FORM5_targets']>=57
           assert not source['official_fit_M1_allowed'] and not gate['CatBoost_original_M1_fitted']
@@ -77,7 +79,8 @@ jobs:
           assert not gate['protected_TEST_2026_27_used']
           assert source['matrix_gzip_sha256']==hashlib.sha256(matrix.read_bytes()).hexdigest()
           print('TRAIN_PUBLIC_FORM5',source['distinct_original_TRAIN_with_historical_public_result_FORM5'],
-                'VALIDATION_PUBLIC_ALTERNATIVE_XG5',dense['historically_public_source_FORM5_targets'],
+                'VALIDATION_PUBLIC_FORM5',dense['historically_public_source_FORM5_targets'],
+                'VALIDATION_PUBLIC_XG5_COMPLETE',dense['historically_public_source_xg5_complete_targets'],
                 'NEW_OVER_57',dense['new_distinct_targets_beyond_57'],
                 'ORIGINAL_MODEL_GATE14',gate['GATE14'])
           PY
