@@ -28,12 +28,12 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
+      - name: Install existing SDK and public-key archiver
+        run: python -m pip install --disable-pip-version-check 'pitchapi==0.1.6' 'cryptography>=42,<47'
       - name: Check contracts offline
         run: |
           python -m compileall -q scripts/step14_three_league_pitchapi_actual_audit.py
           python -m unittest discover -s tests -p 'test_step14_three_league_pitchapi_audit.py' -v
-      - name: Install existing SDK and public-key archiver
-        run: python -m pip install --disable-pip-version-check 'pitchapi==0.1.6' 'cryptography>=42,<47'
       - name: Read current and previous seasons for ESP ITA GER and verify real 3 match stats
         env:
           PITCHAPI_API_KEY: ${{ secrets.PITCHAPI_API_KEY }}
