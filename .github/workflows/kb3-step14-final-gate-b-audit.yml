@@ -1,0 +1,76 @@
+name: KB3 Step14 Gate B independent acceptance review and real 374 metrics
+on:
+  pull_request:
+    paths:
+      - 'scripts/step14_gate_b_independent_final_audit.py'
+      - 'tests/test_step14_gate_b_independent_final_audit.py'
+      - '.github/workflows/kb3-step14-final-gate-b-audit.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/step14_gate_b_independent_final_audit.py'
+      - '.github/workflows/kb3-step14-final-gate-b-audit.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: kb3-gate14-B-independent-final-audit
+  cancel-in-progress: false
+jobs:
+  verified-revised-acceptance:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Fixed CatBoost and PitchAPI
+        run: python -m pip install --disable-pip-version-check 'catboost==1.2.8' 'pitchapi==0.1.6'
+      - name: Independent scoring invariants and previous anti-leak tests
+        run: |
+          python -m compileall -q scripts/step14_gate_b_independent_final_audit.py
+          python -m unittest discover -s tests -p 'test_step14_gate_b_independent_final_audit.py' -v
+          python -m unittest discover -s tests -p 'test_step14_m1r_train_catboost_720_eval_374.py' -v
+          python -m unittest discover -s tests -p 'test_step14_m1r_relaxed_1140.py' -v
+      - name: Real independent audit of immutable 1140 features, 374 raw results and model
+        env:
+          PITCHAPI_API_KEY: ${{ secrets.PITCHAPI_API_KEY }}
+        run: |
+          python -m scripts.step14_gate_b_independent_final_audit \
+          --out data/audits/STEP14_GATE_B_INDEPENDENT_FINAL_ACCEPTANCE_2026-10-29.json
+      - name: Ensure real GATE-B PASS and original historical PIT remains PENDING
+        run: |
+          python - <<'PY'
+          import json
+          x=json.load(open('data/audits/STEP14_GATE_B_INDEPENDENT_FINAL_ACCEPTANCE_2026-10-29.json'))
+          assert x['status']=='PASS_REVISED_GATE14_B'
+          assert x['original_STRICT_GATE14']=='PENDING_NOT_CERTIFIED'
+          assert x['real_1140_pitchapi_fixture_ids_matched']==1140
+          assert x['original_TEST_2026_27_queried_or_processed'] is False
+          assert x['85_features_loaded_in_real_cbm']
+          assert x['374_unique_validation_labels_verified_against_native_results']
+          assert x['all_metrics_Brier_logloss_accuracy_ECE_and_class_bins_independently_recomputed']
+          assert x['research_winner']=='M0_MATCHED_720'
+          assert x['production_or_champion_promotion'] is False
+          print('FORMAL_B_PASS / ORIGINAL_PIT_NOT_CERTIFIED / CHAMPION_M0_UNCHANGED')
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: GATE14_B_INDEPENDENT_PASS_RESEARCH_ACCEPTANCE
+          path: data/audits/STEP14_GATE_B_INDEPENDENT_FINAL_ACCEPTANCE_2026-10-29.json
+          if-no-files-found: error
+          retention-days: 90
+      - name: Persist append-only independent gate acceptance audit on main
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        run: |
+          git config user.name kb3-gate14-audit-bot
+          git config user.email kb3-gate14-audit-bot@users.noreply.github.com
+          git add -f data/audits/STEP14_GATE_B_INDEPENDENT_FINAL_ACCEPTANCE_2026-10-29.json
+          if ! git diff --cached --quiet; then
+            git commit -m 'step14: independent versioned Gate14 B acceptance evidence, original strict gate pending'
+            git pull --rebase origin main
+            git push origin HEAD:main
+          fi
