@@ -1,84 +1,31 @@
-name: KB3 M0 real postmatch 1X2 settlement and calibration readiness
+# LEGACY worker retired 2026-10-29: the authoritative live settlement,
+# encrypted original PitchAPI evidence and immutable 100+50 calibration gate
+# run in kb3-m0-real-postmatch-calibration.yml, at 07:47 and 22:47 UTC.
+# Keep regression tests for old code, but NEVER start two settlement writers.
+name: KB3 M0 legacy settlement regression only (live writer retired)
 on:
-  push:
-    branches: [main]
-    paths:
-      - .github/workflows/kb3-m0-shadow-daily-settlement.yml
   pull_request:
     paths:
       - src/kb3_m0_shadow_settlement.py
       - migrations/004_m0_shadow_settlement_calibration.sql
       - tests/test_step14_m0_shadow_settlement.py
       - .github/workflows/kb3-m0-shadow-daily-settlement.yml
-  schedule:
-    - cron: '41 8 * * *'
-  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - .github/workflows/kb3-m0-shadow-daily-settlement.yml
 permissions:
-  contents: write
-concurrency:
-  group: kb3-three-league-feature-db-write
-  cancel-in-progress: false
+  contents: read
 jobs:
-  settlement:
+  legacy-regression-only:
     runs-on: ubuntu-latest
-    timeout-minutes: 12
+    timeout-minutes: 8
     steps:
       - uses: actions/checkout@v4
-        with:
-          persist-credentials: true
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-      - name: Install existing provider SDK and shared cryptography dependency
-        run: python -m pip install --disable-pip-version-check 'pitchapi==0.1.6' 'cryptography>=42,<47'
-      - name: Verify strict result timing and 1X2 mathematical controls
+      - name: Regression tests only - no PitchAPI, no settlements, no writes
         run: |
           python -m compileall -q src/kb3_m0_shadow_settlement.py
           python -m unittest discover -s tests -p 'test_step14_m0_shadow_settlement.py' -v
-      - name: Actually settle only already finished prior forecasts using live native PitchAPI
-        if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
-        env:
-          PITCHAPI_API_KEY: ${{ secrets.PITCHAPI_API_KEY }}
-        run: python -m src.kb3_m0_shadow_settlement --db data/forward_m0/kb3_forward_m0.sqlite --out-dir data/audits/m0_shadow_settlements
-      - name: Validate settlement unique and untouched original TEST
-        if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
-        run: |
-          python - <<'PY'
-          import sqlite3,datetime,json
-          from pathlib import Path
-          with sqlite3.connect('data/forward_m0/kb3_forward_m0.sqlite') as c:
-            assert c.execute('PRAGMA integrity_check').fetchone()[0]=='ok'
-            assert c.execute('PRAGMA foreign_key_check').fetchall()==[]
-            assert c.execute('SELECT COUNT(*) FROM predictions').fetchone()[0]==0
-            assert c.execute('SELECT COUNT(*) FROM m0_shadow_settlements WHERE log_loss < 0 OR brier_sum3<0 OR brier_sum3>2').fetchone()[0]==0
-          day=datetime.datetime.now(datetime.timezone.utc).date().isoformat()
-          path=Path('data/audits/m0_shadow_settlements')/day/'M0_SETTLEMENT_LOGLOSS_BRIER_AND_CALIBRATION.json'
-          r=json.loads(path.read_text())
-          assert not r['automatic_production_calibration']
-          assert not r['original_heldout_PL_TEST_accessed'] and not r['original_M1_gate14_pass']
-          assert r['newly_settled']>=0
-          print('M0_SETTLEMENT_CALIBRATION_REVIEW_SAFE',r['newly_settled'],r['total_settled'])
-          PY
-      - uses: actions/upload-artifact@v4
-        if: always()
-        with:
-          name: KB3_M0_REAL_SETTLEMENT_BRIER_LOGLOSS_CALIBRATION_REVIEW
-          path: |
-            data/forward_m0/kb3_forward_m0.sqlite
-            data/audits/m0_shadow_settlements/
-          retention-days: 30
-          if-no-files-found: warn
-      - name: Append real settlement evidence to private main
-        if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
-        run: |
-          git config user.name "kb3-settlement-bot"
-          git config user.email "kb3-settlement-bot@users.noreply.github.com"
-          git add -f data/forward_m0/kb3_forward_m0.sqlite
-          git add -f data/audits/m0_shadow_settlements/*/M0_SETTLEMENT_LOGLOSS_BRIER_AND_CALIBRATION.json
-          if git diff --cached --quiet; then
-            echo 'No new settlement data today.'
-          else
-            git commit -m 'm0: archive actual postmatch 1X2 settlements and 100-50 calibration readiness'
-            git pull --rebase origin main
-            git push origin HEAD:main
-          fi
