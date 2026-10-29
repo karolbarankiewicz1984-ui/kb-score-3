@@ -1,0 +1,99 @@
+name: KB3 Step14 74 old FPL 2024 mixed 42 49 column player xG correction v2
+on:
+  pull_request:
+    paths:
+      - 'scripts/step14_fpl74_2024_mixed_schema_xg_corrected_v2.py'
+      - 'tests/test_step14_fpl74_2024_mixed_schema_v2.py'
+      - '.github/workflows/kb3-step14-fpl74-2024-xg-schema-correction-v2.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/step14_fpl74_2024_mixed_schema_xg_corrected_v2.py'
+      - '.github/workflows/kb3-step14-fpl74-2024-xg-schema-correction-v2.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: kb3-step14-fpl74-historic-xg-2024-mixed-schema-correction-v2
+  cancel-in-progress: false
+jobs:
+  normalize-2024-old-gw22-xg-and-recheck-original-m1:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Verify seven original mixed extra CSV columns and no xG lookahead
+        run: |
+          python -m compileall -q scripts/step14_fpl74_2024_mixed_schema_xg_corrected_v2.py
+          python -m unittest discover -s tests -p 'test_step14_fpl74_2024_mixed_schema_v2.py' -v
+          python -m unittest discover -s tests -p 'test_step14_fpl74_independent_proof_xg.py' -v
+          python -m unittest discover -s tests -p 'test_step14_final_gate14_recheck.py' -v
+      - name: Install same original PitchAPI SDK
+        run: python -m pip install --disable-pip-version-check 'pitchapi==0.1.6'
+      - name: Reconstruct all 74 FPL old snapshots with strict 42 or 49 column normalization
+        env:
+          PITCHAPI_API_KEY: ${{ secrets.PITCHAPI_API_KEY }}
+        run: |
+          python -m scripts.step14_fpl74_2024_mixed_schema_xg_corrected_v2 \
+            --summary data/audits/STEP14_FPL74_2024_MIXED_XG_CORRECTED_V2_RESEARCH_SUMMARY_2026-10-29.json \
+            --matrix data/audits/STEP14_FPL74_2024_MIXED_XG_CORRECTED_V2_1140x159_2026-10-29.jsonl.gz
+      - name: Recheck separate original M1 GATE14 after all corrected old player xG
+        run: |
+          python -m scripts.step14_fpl74_final_original_M1_gate \
+            --source data/audits/STEP14_FPL74_2024_MIXED_XG_CORRECTED_V2_RESEARCH_SUMMARY_2026-10-29.json \
+            --matrix data/audits/STEP14_FPL74_2024_MIXED_XG_CORRECTED_V2_1140x159_2026-10-29.jsonl.gz \
+            --out data/audits/STEP14_FPL74_2024_MIXED_XG_CORRECTED_V2_ORIGINAL_M1_GATE_2026-10-29.json
+      - name: Verify 31 old FPL xG5 not regressed and original provider M1 still blocked
+        run: |
+          python - <<'PY'
+          import json,gzip,hashlib
+          from pathlib import Path
+          d=Path('data/audits')
+          p=json.loads((d/'STEP14_FPL74_2024_MIXED_XG_CORRECTED_V2_RESEARCH_SUMMARY_2026-10-29.json').read_text())
+          g=json.loads((d/'STEP14_FPL74_2024_MIXED_XG_CORRECTED_V2_ORIGINAL_M1_GATE_2026-10-29.json').read_text())
+          matrix=d/'STEP14_FPL74_2024_MIXED_XG_CORRECTED_V2_1140x159_2026-10-29.jsonl.gz'
+          with gzip.open(matrix,'rt') as f:
+            count=sum(1 for x in f if x.strip())
+          assert count==1140
+          assert p['matrix_gzip_sha256']==hashlib.sha256(matrix.read_bytes()).hexdigest()
+          assert p['TRAIN_with_complete_historic_ALTERNATIVE_FPL_Opta_player_xG5']>=31
+          assert p['original_760_TRAIN_public_FORM5_total_after_74']==54
+          assert p['original_380_VALIDATION_FORM5_preserved']==109
+          assert g['real_historic_ALTERNATIVE_FPL_player_xG5_TRAIN']==p['TRAIN_with_complete_historic_ALTERNATIVE_FPL_Opta_player_xG5']
+          assert g['original_121_plus_38_native_PIT_TRAIN']==0
+          assert g['original_121_plus_38_native_PIT_VALIDATION']==0
+          assert not g['original_CatBoost_M1_fitted'] and g['original_GATE14']=='PENDING'
+          print('FPL_OLD_SCHEMA_EXTRA_COLS_CORRECTED',p['total_raw_old_FPL_rows_schema_corrected'],
+                'FPL_OLD_SNAPSHOTS_CORRECTED',p['corrected_old_2024_snapshots'],
+                'TRAIN_ALTERNATIVE_COMPLETE_XG5',p['TRAIN_with_complete_historic_ALTERNATIVE_FPL_Opta_player_xG5'],
+                'TRAIN_PUBLIC_FORM5',54,'GATE14',g['original_GATE14'])
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: KB3_STEP14_74_FPL_2024_MIXED_42_49_PLAYER_XG_CORRECTED_V2
+          path: |
+            data/audits/STEP14_FPL74_2024_MIXED_XG_CORRECTED_V2_RESEARCH_SUMMARY_2026-10-29.json
+            data/audits/STEP14_FPL74_2024_MIXED_XG_CORRECTED_V2_1140x159_2026-10-29.jsonl.gz
+            data/audits/STEP14_FPL74_2024_MIXED_XG_CORRECTED_V2_ORIGINAL_M1_GATE_2026-10-29.json
+          retention-days: 90
+          if-no-files-found: error
+      - name: Persist new corrected v2 artifacts without overwriting v1
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        run: |
+          git config user.name 'kb3-step14-audit-bot'
+          git config user.email 'kb3-step14-audit-bot@users.noreply.github.com'
+          git add -f data/audits/STEP14_FPL74_2024_MIXED_XG_CORRECTED_V2_RESEARCH_SUMMARY_2026-10-29.json
+          git add -f data/audits/STEP14_FPL74_2024_MIXED_XG_CORRECTED_V2_1140x159_2026-10-29.jsonl.gz
+          git add -f data/audits/STEP14_FPL74_2024_MIXED_XG_CORRECTED_V2_ORIGINAL_M1_GATE_2026-10-29.json
+          if git diff --cached --quiet; then
+            echo 'Already archived'
+          else
+            git commit -m 'step14: preserve corrected 2024 FPL mixed schema player xG v2'
+            git pull --rebase origin main
+            git push origin HEAD:main
+          fi
