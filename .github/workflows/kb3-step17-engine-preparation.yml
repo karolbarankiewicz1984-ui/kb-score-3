@@ -1,0 +1,74 @@
+name: KB3 Step17 preparatory five engine paired benchmark (NO TEST / NO API)
+on:
+  pull_request:
+    paths:
+      - src/kb3_step17_engine_comparison.py
+      - scripts/step17_preflight_engine_readiness.py
+      - tests/test_step17_engine_comparison.py
+      - .github/workflows/kb3-step17-engine-preparation.yml
+  push:
+    branches: [main]
+    paths:
+      - src/kb3_step17_engine_comparison.py
+      - scripts/step17_preflight_engine_readiness.py
+      - tests/test_step17_engine_comparison.py
+      - .github/workflows/kb3-step17-engine-preparation.yml
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: kb3-step17-preparation-report
+  cancel-in-progress: false
+jobs:
+  offline-fairness-and-historical-evidence:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Test matched fixture and league non-leakage, week bootstrap, missing-data costs
+        run: |
+          python -m compileall -q src/kb3_step17_engine_comparison.py scripts/step17_preflight_engine_readiness.py
+          python -m unittest discover -s tests -p 'test_step17_engine_comparison.py' -v
+      - name: Generate truthful summary from existing historical 374 and live 73/0 (no provider)
+        run: python -m scripts.step17_preflight_engine_readiness
+      - name: Strict preflight guards, model promotion and TEST must remain disabled
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          p=Path('data/audits/STEP17_PREP_ENGINE_COMPARISON_2026-10-29.json')
+          x=json.loads(p.read_text())
+          assert x['status']=='IN_PROGRESS_PREPARATION_ONLY'
+          assert x['predecessor_gate16']=='PENDING'
+          assert x['step17_gate']=='PENDING_DEPENDENCY_STEP16'
+          assert x['no_winner_auto_selected'] is True
+          assert x['production_approval'] is False
+          assert x['original_premier_league_2026_27_test_touched'] is False
+          assert x['historical_720train_374val_reference']['n_same_fixture_validation']==374
+          assert x['independent_8_league_forward_m0']['eligible_settled_predictions']==0
+          print('STEP17_PREP_PASSED_NO_PROMOTION')
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: KB3_STEP17_PREPARATORY_REAL_BASELINE_NO_NEW_LABELS
+          path: data/audits/STEP17_PREP_ENGINE_COMPARISON_2026-10-29.json
+          retention-days: 30
+      - name: Persist immutable preflight on main only
+        if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+        run: |
+          git config user.name kb3-step17-bot
+          git config user.email kb3-step17-bot@users.noreply.github.com
+          git add -f data/audits/STEP17_PREP_ENGINE_COMPARISON_2026-10-29.json
+          if git diff --cached --quiet; then
+            echo 'Original preflight already frozen'
+          else
+            git commit -m 'step17: freeze honest five-engine readiness and historical research comparator'
+            git pull --rebase origin main
+            git push origin HEAD:main
+          fi

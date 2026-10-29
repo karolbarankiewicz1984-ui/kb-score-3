@@ -232,7 +232,7 @@
 - **STATUS:** W REALIZACJI od 29.10.2026 | GATE16 PENDING | kalibracja: >=100 zamrożonych i rozliczonych prawdziwych prognoz tej samej wersji i >=50 późniejszych niezależnych próbek | TEST 2026/27 zamknięty; bez automatycznego wdrożenia | [Karta startu](STEP_16_KICKOFF_2026-10-29.md) | ODBIÓR: —
 - **RÓWNOLEGŁY STRUMIEŃ BADAWCZY 8 LIG, M0 720-TRAIN:** 29.10.2026 uruchomiony niezależny stały model `M0_ELO_POISSON_RESEARCH_720TRAIN_V1` (ELO + Poisson dopasowane tylko na 720 TRAIN). [Rzeczywisty GitHub Actions SUCCESS #40943149804](https://github.com/karolbarankiewicz1984-ui/kb-score-3/actions/runs/40943149804): 73 odrębne prognozy przedmeczowe na ośmiu ligach (ESP9 ITA10 GER9 FRA9 NED9 BEL9 TUR9 POL9), 17 prawdziwych API calls; SQLite źródło i archiwum rzeczywiście utrwalone. [Raport uruchomienia](STEP16_EIGHT_LEAGUE_M0_720_FORWARD_LAUNCH_2026-10-29.md). **Rozliczenia 0, obowiązują 100+50, brak niezależnego poświadczenia pierwszego czasu publikacji — GATE16 PENDING.** Nie mieszać historycznego 3-ligowego SHADOW z nowym dopasowanym M0. Parametry wyłącznie RESEARCH, nie CHAMPION.
 
-#### Krok 17 — Porównanie silników  [NIE ROZPOCZĘTO]
+#### Krok 17 — Porównanie silników  [W REALIZACJI — PRZYGOTOWANIE TECHNICZNE]
 
 - **CO ZROBIĘ:** Porównać ELO, Poisson, CatBoost bez xG, CatBoost z xG i ewentualny ensemble.
 - **CO ROBISZ TY:** Przejrzeć czy wnioski są zrozumiałe i uczciwe.
@@ -240,7 +240,8 @@
 - **BRAMKA ODBIORU / TEST PASS:** Wspólne spotkania/rynki, te same horyzonty czasowe, przedziały niepewności i koszt braków danych; brak wyboru zwycięzcy wyłącznie na podstawie jednej serii.
 - **DOWÓD ZALICZENIA:** Macierz wyników, liczebności, metryki i test uczciwego porównania.
 - **ZALEŻY OD:** Krok 16.
-- **STATUS:** NIE ROZPOCZĘTO | TEST: NIE URUCHOMIONO | LINK DOWODU: — | DATA ODBIORU: —
+- **STATUS:** W REALIZACJI — FAZA PRZYGOTOWAWCZA (29.10.2026) | TEST: wspólna architektura + parowany scorer i CI offline | GATE17: PENDING, wymaga GATE16 | LINK: [protokół rozpoczęcia](STEP17_PREPARATION_ENGINE_COMPARISON_2026-10-29.md) | DATA ODBIORU: —
+- **PRACA RÓWNOLEGŁA:** benchmark 1X2-90min EARLY na identycznych meczach; brakujące dane jawne; historyczne 374 i nadchodzące forward 8 lig osobno. Bez awansu Championa i bez ponownego fit na 374 VAL.
 
 #### Krok 18 — Wybór Champion — wersja bazowa  [NIE ROZPOCZĘTO]
 
