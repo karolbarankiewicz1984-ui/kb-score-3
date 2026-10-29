@@ -1,0 +1,61 @@
+{
+  "allow_M1_fit": false,
+  "completed_formal_steps": 13,
+  "exact_native_match_join_count": 1140,
+  "gate14": "PENDING",
+  "matrix_evidence_slots": 181260,
+  "matrix_gzip_sha256": "45a6a9cd9f20df91ca9c924f6fc6b84863f92f8c536136586015a5530cb4e1e1",
+  "matrix_rows": 1140,
+  "next_mandatory_dependency": "FIRST_PUBLICATION_AND_PER_FEATURE_MATCHED_NATIVE_PIT_RECEIPTS_FOR_TRAIN_AND_VALIDATION",
+  "non_xg_fields": 73,
+  "non_xg_flags": 14,
+  "old_research_synthetic_model_not_substituted": true,
+  "original_PitchAPI_historical_xg_first_available_at": null,
+  "original_PitchAPI_team_xg_semantics_equal_FPL_Opta_proven": false,
+  "original_field_evidence_slots_proven": 0,
+  "original_full_PIT_train_rows": 0,
+  "original_full_PIT_validation_rows": 0,
+  "original_heldout_TEST_labels_read": false,
+  "original_no_xg_train_rows_admitted": 0,
+  "original_real_manifest_sha256": "da387303645a9bb9476351044944e5465d178ddff689c96b579093c4fb4fce3a",
+  "original_safe_split_sha256": "3b8da84b334d897e327c883b769944bf36016cb44daf1da041bfb7d16a7b11e7",
+  "original_step11_missing_flags": 38,
+  "original_step11_numeric_fields": 121,
+  "prior_matched_seasons_2023_24_2024_25_2025_26": [
+    58,
+    48,
+    0
+  ],
+  "production_approved": false,
+  "public_FORM5_both_teams_partial_prior_evidence": 106,
+  "public_FORM5_is_original_full_native_73_field_proof": false,
+  "real_CatBoost_M1_TEST_metrics": null,
+  "real_CatBoost_M1_brier_sum3": null,
+  "real_CatBoost_M1_log_loss": null,
+  "real_CatBoost_M1_model_exported": false,
+  "schema": "kb3-step14-five-stage-final-real-evidence-159-matrix-and-training-gate-v1",
+  "source_2025_26_recheck": {
+    "candidate_sources": 5,
+    "native_PitchAPI_first_published_proof": false,
+    "public_FPL_does_not_equal_original_PitchAPI_features": true,
+    "public_verified_by_season": {},
+    "state": "REAL_ARCHIVE_RECHECK"
+  },
+  "source_lineage_1140_sha256": "dab94e2c35709c3ba7c0ccff9162c7101cdd8cd6f00374e6597de2e061267bb7",
+  "source_partitions": {
+    "TEST_not_inspected": 380,
+    "TRAIN": 760,
+    "VALIDATION": 380
+  },
+  "strict_final_gate_test": "PASS_BLOCKS_UNPROVEN_TRAINING",
+  "variant_NO_XG": {
+    "model_trained": false,
+    "reason": "MISSING_73_NATIVE_PREMATCH_FIELD_RECEIPTS"
+  },
+  "variant_WITH_XG": {
+    "model_trained": false,
+    "reason": "MISSING_73_NONXG_AND_48_XG_NATIVE_PREMATCH_FIELD_RECEIPTS"
+  },
+  "xg_fields": 48,
+  "xg_flags": 24
+}
