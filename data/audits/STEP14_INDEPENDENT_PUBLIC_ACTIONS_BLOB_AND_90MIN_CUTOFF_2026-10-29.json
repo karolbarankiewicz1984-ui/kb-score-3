@@ -1,0 +1,168 @@
+{
+  "schema": "kb3-step14-independent-public-github-witness-and-existing-crosswalk-cutoff-v1",
+  "audit_date_utc": "2026-10-29",
+  "audit_kind": "READ_ONLY_INDEPENDENT_SOURCE_RECHECK_NO_TRAINING",
+  "external_source_repo": "olbauday/FPL-Core-Insights",
+  "independent_direct_github_api_verification": true,
+  "public_main_actions_witnesses": [
+    {
+      "run_id": 17822709032,
+      "commit": "35932486961bb9a7eb8fbb710ad33ec21a28b1da",
+      "created_at_utc": "2025-09-18T08:24:28Z",
+      "event": "schedule",
+      "conclusion": "success",
+      "head_branch": "main"
+    },
+    {
+      "run_id": 19175468717,
+      "commit": "173bd03f01a9808dbbcf9c42e8ad1112b63429ac",
+      "created_at_utc": "2025-11-07T17:03:33Z",
+      "event": "schedule",
+      "conclusion": "success",
+      "head_branch": "main"
+    },
+    {
+      "run_id": 20642294092,
+      "commit": "59a4cd678579a38b5937bd07afe5635ed3be9e29",
+      "created_at_utc": "2026-01-01T17:04:13Z",
+      "event": "schedule",
+      "conclusion": "success",
+      "head_branch": "main"
+    },
+    {
+      "run_id": 22965280628,
+      "commit": "326b639b21979961dc2a6e1b06db388f8b7431e6",
+      "created_at_utc": "2026-03-11T17:18:18Z",
+      "event": "schedule",
+      "conclusion": "success",
+      "head_branch": "main"
+    }
+  ],
+  "direct_old_git_blob_metadata_verified": [
+    {
+      "commit": "173bd03f01a9808dbbcf9c42e8ad1112b63429ac",
+      "path": "data/2025-2026/By Gameweek/GW10/teams.csv",
+      "github_blob_sha": "def7cd7108e3f66ea6fb441e95bdef825688f6a9",
+      "header_contains": "code,id,name,fotmob_name"
+    },
+    {
+      "commit": "173bd03f01a9808dbbcf9c42e8ad1112b63429ac",
+      "path": "data/2025-2026/By Gameweek/GW9/matches.csv",
+      "github_blob_sha": "9f0959f31380a7b8393b6aabb58be356ebcdb0e1",
+      "header_contains": [
+        "kickoff_time",
+        "match_id",
+        "finished",
+        "home_expected_goals_xg",
+        "away_expected_goals_xg"
+      ]
+    },
+    {
+      "commit": "59a4cd678579a38b5937bd07afe5635ed3be9e29",
+      "path": "data/2025-2026/By Gameweek/GW19/matches.csv",
+      "github_blob_sha": "16adcea1bdb1d85ba116086311d0f48f0aef5410",
+      "header_contains": [
+        "kickoff_time",
+        "match_id",
+        "finished",
+        "home_expected_goals_xg",
+        "away_expected_goals_xg"
+      ]
+    },
+    {
+      "commit": "35932486961bb9a7eb8fbb710ad33ec21a28b1da",
+      "path": "data/2025-2026/By Gameweek/GW4/matches.csv",
+      "github_blob_sha": "690ad3b2cbe161ded7b9ef4b8ace3c75b047991e",
+      "header_contains": [
+        "kickoff_time",
+        "match_id",
+        "finished",
+        "home_expected_goals_xg",
+        "away_expected_goals_xg"
+      ]
+    },
+    {
+      "commit": "326b639b21979961dc2a6e1b06db388f8b7431e6",
+      "path": "data/2025-2026/By Gameweek/GW28/matches.csv",
+      "github_blob_sha": "528763717ebf9b1ec5008f4c5570ac30d02bcfd8",
+      "header_contains": [
+        "kickoff_time",
+        "match_id",
+        "finished",
+        "home_expected_goals_xg",
+        "away_expected_goals_xg"
+      ]
+    }
+  ],
+  "witness_proof_scope": "GITHUB_SERVER_CREATED_ACTIONS_MAIN_RUN_PROVES_PUBLIC_COMMIT_EXISTS_BY_TIMESTAMP_NOT_FIRST_UPSTREAM_XG_PUBLICATION",
+  "source_content_scope": "GITHUB_BLOB_METADATA_AND_HEADERS_VERIFIED; NOT_COMPLETE_RECALCULATION_OF_ALL_CSV_ROWS",
+  "existing_native_crosswalk_recheck": {
+    "source": "data/audits/STEP14_2025_FPLCORE_NATIVE_18_XG_SEMANTICS_2026-10-29.json",
+    "independent_of_original_provider_api": false,
+    "rows_examined": 18,
+    "distinct_native_match_ids": 18,
+    "distinct_kickoff_team_keys": 18,
+    "source_witness_strictly_before_kickoff": 18,
+    "source_witness_at_least_90_minutes_before_kickoff": 16,
+    "source_witness_later_than_90_minutes_before_kickoff": [
+      {
+        "native_match_id": "m_3SHlpj",
+        "public_home": "crystal palace",
+        "public_away": "fulham",
+        "kickoff_utc": "2026-01-01T17:30:00Z",
+        "source_witness_utc": "2026-01-01T17:04:13Z",
+        "lead_minutes": 25.783333333333335
+      },
+      {
+        "native_match_id": "m_0GvKgn",
+        "public_home": "liverpool",
+        "public_away": "leeds united",
+        "kickoff_utc": "2026-01-01T17:30:00Z",
+        "source_witness_utc": "2026-01-01T17:04:13Z",
+        "lead_minutes": 25.783333333333335
+      }
+    ],
+    "note": "Both examples are before kickoff but NOT available by a stricter T-90min prediction freeze. This does not alter the original kickoff-based historical contract."
+  },
+  "prior_original_gate_recheck": {
+    "sources": [
+      "data/audits/STEP14_FINAL_1140x159_PIT_GATE_2026-10-29.json",
+      "data/audits/STEP14_760_TRAIN_FPL_WHOLE_DECIMAL_CORRECTED_M1_FINAL_GATE_2026-10-29.json",
+      "data/audits/STEP14_FPL74_2024_MIXED_XG_CORRECTED_V2_ORIGINAL_M1_GATE_2026-10-29.json",
+      "data/audits/STEP14_GATE_B_INDEPENDENT_FINAL_ACCEPTANCE_2026-10-29.json"
+    ],
+    "required_original_numeric_fields": 121,
+    "required_original_missing_flags": 38,
+    "required_original_train": 760,
+    "required_original_validation": 380,
+    "certified_original_native_PIT_train": 0,
+    "certified_original_native_PIT_validation": 0,
+    "original_PitchAPI_team_xg_first_published_at_proven": false,
+    "alternative_FPL_player_xg_is_original_PitchAPI_xg": false,
+    "research_variant_B_PASS_is_original_gate_PASS": false,
+    "original_M1_training_permitted": false,
+    "gate14": "PENDING",
+    "original_TEST_read": false
+  },
+  "observed_related_ci": {
+    "run_id": 40930541277,
+    "workflow": "KB3 3 league daily PitchAPI true pre-match source capture",
+    "created_at_utc": "2026-10-29T18:24:41Z",
+    "conclusion": "failure",
+    "failing_job_id": 123647521909,
+    "failing_step": "Verify original raw SHA, TRUE UTC, exactly 3 league names and withheld TEST",
+    "observed_log_exception": "KeyError: 'frozen_M0_feature_snapshots'",
+    "preceding_real_source_capture_step": "success",
+    "archive_to_main_step": "skipped",
+    "relevance": "Forward collection workflow verification failure; NOT proof of original historic native PIT."
+  },
+  "conclusion": "NEW_PUBLIC_GITHUB_WITNESSES_INDEPENDENTLY_RECHECKED_ORIGINAL_STRICT_GATE14_STILL_PENDING",
+  "safeguards": [
+    "NO_PROVIDER_API_KEY_REQUESTED",
+    "NO_PAID_SPORTS_API_CALLS",
+    "NO_ORIGINAL_M1_TRAINING",
+    "NO_TEST",
+    "NO_PRODUCTION_MODEL_CHANGE",
+    "NO_INVENTED_PUBLISHED_AT"
+  ]
+}
