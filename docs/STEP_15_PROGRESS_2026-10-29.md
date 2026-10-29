@@ -27,3 +27,20 @@ Modele goli: Over/Under 1,5, 2,5 i 3,5; BTTS TAK/NIE; gole gospodarzy/gości; po
 ## Kontrakt bezpieczeństwa
 
 Wyłącznie matematyczny adapter badawczy; niepublikowany i nieskalibrowany, nie jest ofertą do obstawiania. Step13 M0, M1-R CatBoost oraz ich archiwa nie są zmienione. Nie wolno odblokować TEST ani awansować nowych modeli. Przyszła zasada kalibracji 100+50 pozostaje bez zmian. Bez nowych kosztów i zakupów API.
+
+## Wykonana rzeczywista walidacja — 374 VALIDATION, 29.10.2026
+
+**PASS dla technicznego przeliczenia 22 rynków z rzeczywistych wyników, ale GATE15 wciąż PENDING.** Rzeczywisty [GitHub Actions #40920143414](https://github.com/karolbarankiewicz1984-ui/kb-score-3/actions/runs/40920143414) zakończył się SUCCESS: 720 TRAIN, 374 VALIDATION, niezmienny bazowy benchmark M0 1X2, wszystkie 22 kontrakty na tych samych 374 meczach (każdy N=374), brak użycia 2026/27 TEST, brak walidacyjnych etykiet w fit, brak zmiany produkcyjnej. Kod: [skrypt ewaluacji](../scripts/step15_real_validation_374_goal_markets.py) + [testy](../tests/test_step15_real_validation_374_goal_markets.py).
+
+Wyniki bez kalibracji (mniej = lepiej):
+
+| Rynek | N | Brier binary | Log loss binary | ECE 5-bin |
+|---|---:|---:|---:|---:|
+| Over 2,5 | 374 | 0.25038978 | 0.69415417 | 0.05267028 |
+| BTTS TAK | 374 | 0.24706266 | 0.68736515 | 0.04242771 |
+
+Pozostałe 20 rynków ma wyniki w **pełnym 22-rynkowym raporcie** (artifact ID 12918051653, nazwa KB3_STEP15_REAL_374_GOAL_MARKET_METRICS_RESEARCH; 90-dniowa retencja GitHub Actions). Trwale zapisany [dowód metryk wybranych i identyfikator artefaktu](../data/audits/STEP15_REAL_374_VERIFIED_SELECTED_GOAL_METRICS_2026-10-29.json). Źródła i algorytm są wersjonowane, a pełne obliczenia odtwarzalne.
+
+**Interpretacja:** Brier około 0,25 dla O2,5 jest bliski wartości z prognozy 50/50; nie jest to dowód dobrej przewagi nad innymi metodami. M0 nie został tu porównany z niezależnym ML goli ani skalibrowany (krok 16). To retrospektywny RESEARCH z umownym 48h po meczach, **nie** certyfikat prawdziwego historycznego PIT danych providerów i nie prognozy do obstawiania.
+
+**Koszty i re-run:** wykorzystano istniejące połączenie PitchAPI, bez nowego zakupu. Po pierwszym pozytywnym przebiegu workflow ponownej realnej ewaluacji ograniczono do ręcznego uruchomienia, żeby nie zużywać powtarzalnych zapytań API na każde zapisanie dokumentu. Status formalny: **14/29; krok 15 W REALIZACJI** do porównania z ewentualnym ML i niezależnego audytu kompletnego GATE15.
