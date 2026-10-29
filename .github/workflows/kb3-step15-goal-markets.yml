@@ -1,0 +1,25 @@
+name: KB3 Step15 coherent 90-minute goal markets (research)
+on:
+  pull_request:
+    paths:
+      - 'src/kb3_step15_goal_markets.py'
+      - 'tests/test_step15_goal_markets.py'
+      - '.github/workflows/kb3-step15-goal-markets.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  step15-poisson-math:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Compile unchanged M0 and goal-market adapter
+        run: python -m compileall -q src/kb3_step13_baseline.py src/kb3_step15_goal_markets.py
+      - name: Analytic and negative market tests
+        run: python -m unittest discover -s tests -p 'test_step15_goal_markets.py' -v
+      - name: Protect original M0 math
+        run: python -m unittest discover -s tests -p 'test_step13_baseline.py' -v

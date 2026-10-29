@@ -1,0 +1,57 @@
+name: KB3 Step15 independent CatBoost goals ML vs Poisson (one-shot research)
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  fit-and-compare:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Pinned CatBoost and existing PitchAPI client
+        run: python -m pip install --disable-pip-version-check 'catboost==1.2.8' 'pitchapi==0.1.6'
+      - name: Independent ML math, strict same-market and previous M0 guards
+        run: |
+          python -m compileall -q scripts/step15_goal_ml_catboost_720_374.py
+          python -m unittest discover -s tests -p 'test_step15_goal_ml_catboost_720_374.py' -v
+          python -m unittest discover -s tests -p 'test_step15_real_validation_374_goal_markets.py' -v
+          python -m unittest discover -s tests -p 'test_step15_goal_markets.py' -v
+      - name: One-shot historical research fit on 720 and paired 374 market validation
+        env:
+          PITCHAPI_API_KEY: ${{ secrets.PITCHAPI_API_KEY }}
+        run: |
+          python -m scripts.step15_goal_ml_catboost_720_374 \
+          --out-dir reports/step15/independent_catboost_goals_2026-10-29
+      - name: Fail closed if any validation or historical TEST gate changes
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          base=Path("reports/step15/independent_catboost_goals_2026-10-29")
+          x=json.load(open(base/"STEP15_ML_VS_M0_374_FULL_REPORT.json"))
+          assert x["partition_train"]==720 and x["partition_validation"]==374
+          assert x["all_binary_markets"]==22
+          assert x["features_train_only"]==85
+          assert x["unique_markets_for_primary_aggregate"]==18
+          assert x["historical_native_PIT_proven"] is False
+          assert x["sealed_2026_27_test_accessed"] is False
+          assert x["val_labels_used_for_training_early_stopping_or_model_selection"] is False
+          assert x["model_promoted"] is False and x["formal_gate15_pass"] is False
+          assert x["baseline_m0_reference_matches_step15_prior"]
+          assert x["all_374_matched_without_skips"]
+          assert len(x["markets"])==22
+          assert all(v["n"]==374 for v in x["markets"].values())
+          assert set(x["saved_model_sha256"])=={"CATBOOST_GOALS_HOME_720.cbm","CATBOOST_GOALS_AWAY_720.cbm"}
+          assert (base/"STEP15_374_PAIR_GOAL_PROBABILITIES_NO_LABELS.jsonl.gz").is_file()
+          print("ONE_SHOT_ML_VS_M0_RESEARCH_GATE_SUCCESS__GATE15_PENDING")
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: KB3_STEP15_INDEPENDENT_CATBOOST_GOALS_374_COMPARISON_FULL
+          path: reports/step15/independent_catboost_goals_2026-10-29/
+          if-no-files-found: error
+          retention-days: 90

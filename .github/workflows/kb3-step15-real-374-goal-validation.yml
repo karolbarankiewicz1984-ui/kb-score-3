@@ -1,0 +1,48 @@
+name: KB3 Step15 real 374 goal-market validation research
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  validate-374:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Existing verified PitchAPI client
+        run: python -m pip install --disable-pip-version-check 'pitchapi==0.1.6'
+      - name: Offline numeric and 90-minute label tests
+        run: |
+          python -m compileall -q scripts/step15_real_validation_374_goal_markets.py
+          python -m unittest discover -s tests -p 'test_step15_real_validation_374_goal_markets.py' -v
+          python -m unittest discover -s tests -p 'test_step15_goal_markets.py' -v
+      - name: Existing original 1140 native identities, 720 TRAIN and 374 VALIDATION
+        env:
+          PITCHAPI_API_KEY: ${{ secrets.PITCHAPI_API_KEY }}
+        run: |
+          python -m scripts.step15_real_validation_374_goal_markets \
+          --out reports/step15/ST15_374_GOAL_MARKETS_RESEARCH_2026-10-29.json
+      - name: Seal historical-only evaluation and guard protected TEST
+        run: |
+          python - <<'PY'
+          import json
+          x=json.load(open('reports/step15/ST15_374_GOAL_MARKETS_RESEARCH_2026-10-29.json'))
+          assert x['validation']==374 and x['train']==720
+          assert x['market_count']==22
+          assert x['frozen_1x2_ref_matched']
+          assert x['protected_test_2026_27_accessed'] is False
+          assert x['val_labels_used_in_fit_or_selection'] is False
+          assert x['model_promoted_or_calibrated'] is False
+          assert x['gate15_formal_pass'] is False
+          assert all(v['n']==374 for v in x['market_metrics'].values())
+          print('RESEARCH_GOAL_VALIDATION_PASS__GATE15_STILL_PENDING')
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: KB3_STEP15_REAL_374_GOAL_MARKET_METRICS_RESEARCH
+          path: reports/step15/ST15_374_GOAL_MARKETS_RESEARCH_2026-10-29.json
+          if-no-files-found: error
+          retention-days: 90
