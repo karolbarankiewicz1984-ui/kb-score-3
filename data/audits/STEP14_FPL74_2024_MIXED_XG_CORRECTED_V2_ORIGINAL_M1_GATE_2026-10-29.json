@@ -1,0 +1,19 @@
+{
+  "TEST_2026_27_examined": false,
+  "all_74_revisions_considered": true,
+  "model_or_split_changed": false,
+  "next_evidence_needed": "native PitchAPI first-published-at snapshots and original xG semantics or formally separate alternative research contract",
+  "original_121_plus_38_native_PIT_TRAIN": 0,
+  "original_121_plus_38_native_PIT_VALIDATION": 0,
+  "original_380_VALIDATION": 380,
+  "original_760_TRAIN": 760,
+  "original_CatBoost_M1_fitted": false,
+  "original_CatBoost_M1_training_allowed": false,
+  "original_GATE14": "PENDING",
+  "real_historic_ALTERNATIVE_FPLCore_xG5_VALIDATION": 107,
+  "real_historic_ALTERNATIVE_FPL_player_xG5_TRAIN": 40,
+  "real_historic_external_public_FORM5_TRAIN": 54,
+  "real_historic_external_public_FORM5_VALIDATION": 109,
+  "schema": "kb3-step14-74-FPL-old-player-xg-independent-research-only-gate-v1",
+  "source_alternative_FPL_xG_not_original_PitchAPI": true
+}
