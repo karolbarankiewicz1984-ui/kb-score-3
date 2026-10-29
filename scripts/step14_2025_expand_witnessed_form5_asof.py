@@ -36,7 +36,7 @@ assert len(ALL)==14 and len({s[0] for s in ALL})==14
 
 class ExtendedEvidenceError(ValueError): pass
 
-def source_at_version(item,reference,*,fetcher=_fetch_raw,gh_json=_get_json):
+def source_at_version(item,reference,*,fetcher=_fetch_raw,gh_json=_get_json,include_predecessors=False):
     commit,run,top,clock=item
     witness=actions_witness(commit,run,clock,gh_json)
     raw,hash_teams=fetcher(commit,"data/2025-2026/By Gameweek/GW10/teams.csv")
@@ -80,7 +80,7 @@ def source_at_version(item,reference,*,fetcher=_fetch_raw,gh_json=_get_json):
             "alternative_xG5_complete_future_targets":sum(
                 all(not t["prematch_public_FORM5"][k]["alternative_xg_missing"]
                     for k in ("home","away")) for t in valid)}
-    return report,valid
+    return (report,valid,prior) if include_predecessors else (report,valid)
 
 def audit(root=ROOT,*,fetcher=_fetch_raw,gh_json=_get_json):
     original,_=load_public(root)
