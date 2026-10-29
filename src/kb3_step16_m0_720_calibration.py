@@ -82,6 +82,16 @@ CREATE TRIGGER IF NOT EXISTS m0720_holdout_no_delete BEFORE DELETE ON m0720_hold
 """
 
 def ensure_schema(db):
+    # Older deployed 29 October schema allowed only PushEvent. GitHub's own
+    # bot push is absent from /events; Actions artifact is valid host evidence.
+    # Only re-create this strictly EMPTY audit table (never touch predictions,
+    # settlements or nonempty evidence). A populated legacy schema fails closed.
+    old=db.execute("""SELECT sql FROM sqlite_master WHERE type='table'
+                      AND name='m0720_github_push_proofs'""").fetchone()
+    if old is not None and "GITHUB_SERVER_ACTIONS_ARTIFACT_PLUS_EXACT_DB_BYTES" not in old[0]:
+        count=db.execute("SELECT COUNT(*) FROM m0720_github_push_proofs").fetchone()[0]
+        require(count==0,"NONEMPTY_LEGACY_PROOF_SCHEMA_NEEDS_REVIEW")
+        db.execute("DROP TABLE m0720_github_push_proofs")
     db.executescript(PROOF_SQL)
     require(db.execute("PRAGMA foreign_key_check").fetchall()==[],
             "CALIBRATION_FOREIGN_KEY_FAILURE")
