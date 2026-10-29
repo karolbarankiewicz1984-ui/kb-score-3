@@ -4,6 +4,9 @@ on:
     branches: [main, step14/pitchapi-three-league-audit-collector-20261029]
     paths:
       - scripts/step14_three_league_pitchapi_daily_asof.py
+      - src/kb3_three_league_sqlite_forward_features.py
+      - migrations/002_forward_m0_observed_freeze.sql
+      - tests/test_step14_three_league_sqlite_forward_features.py
       - tests/test_step14_three_league_pitchapi_daily.py
       - .github/workflows/kb3-pitchapi-three-league-daily.yml
   pull_request:
@@ -37,6 +40,7 @@ jobs:
           python -m compileall -q scripts/step14_three_league_pitchapi_daily_asof.py
           python -m unittest discover -s tests -p 'test_step14_three_league_pitchapi_audit.py' -v
           python -m unittest discover -s tests -p 'test_step14_three_league_pitchapi_daily.py' -v
+          python -m unittest discover -s tests -p 'test_step14_three_league_sqlite_forward_features.py' -v
       - name: Real 3-league fixtures plus unique earlier matches shots and team-xG
         env:
           PITCHAPI_API_KEY: ${{ secrets.PITCHAPI_API_KEY }}
@@ -57,6 +61,21 @@ jobs:
           assert {x['league'] for x in a['leagues']}=={'LaLiga','Serie A','Bundesliga'}
           assert a['original_Premier_League_2026_27_TEST_not_accessed']
           assert not a['three_league_M0_predictions_started'] and not a['model_fit_or_calibration_performed']
+          if "frozen_M0_feature_snapshots" in a:
+              import sqlite3
+              db=Path("data/forward_m0/kb3_forward_m0.sqlite")
+              assert db.is_file()
+              assert hashlib.sha256(db.read_bytes()).hexdigest()==a["feature_sqlite_ledger_sha256"]
+              with sqlite3.connect(db) as conn:
+                  assert conn.execute("PRAGMA integrity_check").fetchone()[0]=='ok'
+                  assert conn.execute("SELECT COUNT(*) FROM m0_forward_feature_records WHERE snapshot_day_utc=?",
+                        (p.name,)).fetchone()[0]==12
+                  assert conn.execute("SELECT COUNT(*) FROM predictions").fetchone()[0]==0
+              print("OBSERVED_M0_121X38_SQLITE_12_PREMATCH_FROZEN",p.name)
+          else:
+              # Legacy already-saved archive from before this forward implementation:
+              # do not mislabel the old daily source as a new M0 snapshot.
+              print("EXISTING_OLD_ARCHIVE_ONLY_NO_FORWARD_SQLITE_FREEZE_TODAY")
           assert not a['gate14_pass']
           assert all(x['provider_original_published_at'] is None for x in a['leagues'])
           print('THREE_LEAGUE_DAILY_REAL_SEALED',a['newly_verified_match_shot_stat_pairs'],a['provider_calls'])
@@ -76,6 +95,9 @@ jobs:
           git add -f data/pit_sidecar/pitchapi_three_league_daily/*/THREE_LEAGUE_DAILY_SOURCE.enc
           git add -f data/pit_sidecar/pitchapi_three_league_daily/*/THREE_LEAGUE_DAILY_SOURCE.manifest.json
           git add -f data/pit_sidecar/pitchapi_three_league_daily/*/THREE_LEAGUE_DAILY_RECEIPT.json
+          if test -f data/forward_m0/kb3_forward_m0.sqlite; then
+            git add -f data/forward_m0/kb3_forward_m0.sqlite
+          fi
           if git diff --cached --quiet; then
             echo 'No new incremental source observations.'
           else
