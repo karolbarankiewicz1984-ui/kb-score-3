@@ -5,6 +5,7 @@ Uses existing PitchAPI key; zero Premier League/TEST requests. No auto promotion
 from __future__ import annotations
 import argparse,json,os,sys
 from pathlib import Path
+from datetime import datetime,timezone
 from src.kb3_step16_m0_720_eight_forward import run,DB,FORECASTS,SOURCES
 from src.kb3_pit_ledger import utc_now
 def main():
@@ -13,7 +14,7 @@ def main():
     args=p.parse_args()
     key=os.environ.get("PITCHAPI_API_KEY","")
     if not key:raise SystemExit("PITCHAPI_SECRET_NOT_CONFIGURED")
-    now=utc_now()
+    now=datetime.now(timezone.utc)
     if args.mode=="forecast":
         existing=FORECASTS/now.date().isoformat()/"FROZEN_M0_720_EIGHT.json"
         if existing.is_file():
