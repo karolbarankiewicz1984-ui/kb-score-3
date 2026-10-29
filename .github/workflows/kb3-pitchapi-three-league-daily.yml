@@ -1,0 +1,85 @@
+name: KB3 3 league daily PitchAPI true pre-match source capture
+on:
+  push:
+    branches: [main, step14/pitchapi-three-league-audit-collector-20261029]
+    paths:
+      - scripts/step14_three_league_pitchapi_daily_asof.py
+      - tests/test_step14_three_league_pitchapi_daily.py
+      - .github/workflows/kb3-pitchapi-three-league-daily.yml
+  pull_request:
+    paths:
+      - scripts/step14_three_league_pitchapi_daily_asof.py
+      - tests/test_step14_three_league_pitchapi_daily.py
+      - .github/workflows/kb3-pitchapi-three-league-daily.yml
+  schedule:
+    - cron: '17 6 * * *'
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: kb3-three-league-daily-pit-capture
+  cancel-in-progress: false
+jobs:
+  actual-three-league-source-capture:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install existing SDK and public-only RSA encryption
+        run: python -m pip install --disable-pip-version-check 'pitchapi==0.1.6' 'cryptography>=42,<47'
+      - name: Chronological no-leakage and no-double-count tests
+        run: |
+          python -m compileall -q scripts/step14_three_league_pitchapi_daily_asof.py
+          python -m unittest discover -s tests -p 'test_step14_three_league_pitchapi_audit.py' -v
+          python -m unittest discover -s tests -p 'test_step14_three_league_pitchapi_daily.py' -v
+      - name: Real 3-league fixtures plus unique earlier matches shots and team-xG
+        env:
+          PITCHAPI_API_KEY: ${{ secrets.PITCHAPI_API_KEY }}
+        run: |
+          python -m scripts.step14_three_league_pitchapi_daily_asof \
+            --base data/pit_sidecar/pitchapi_three_league_daily \
+            --public-key config/step11_archive_recipient_public.pem
+      - name: Verify original raw SHA, TRUE UTC, exactly 3 league names and withheld TEST
+        run: |
+          python - <<'PY'
+          import json,datetime,hashlib
+          from pathlib import Path
+          p=Path('data/pit_sidecar/pitchapi_three_league_daily')/datetime.datetime.now(datetime.timezone.utc).date().isoformat()
+          a=json.loads((p/'THREE_LEAGUE_DAILY_RECEIPT.json').read_text())
+          m=json.loads((p/'THREE_LEAGUE_DAILY_SOURCE.manifest.json').read_text())
+          assert hashlib.sha256((p/'THREE_LEAGUE_DAILY_SOURCE.enc').read_bytes()).hexdigest()==m['ciphertext_sha256']==a['source_ciphertext_sha256']
+          assert a['provider_calls']<=43 and a['newly_verified_match_shot_stat_pairs']>0
+          assert {x['league'] for x in a['leagues']}=={'LaLiga','Serie A','Bundesliga'}
+          assert a['original_Premier_League_2026_27_TEST_not_accessed']
+          assert not a['three_league_M0_predictions_started'] and not a['model_fit_or_calibration_performed']
+          assert not a['gate14_pass']
+          assert all(x['provider_original_published_at'] is None for x in a['leagues'])
+          print('THREE_LEAGUE_DAILY_REAL_SEALED',a['newly_verified_match_shot_stat_pairs'],a['provider_calls'])
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: KB3_3_LEAGUE_DAILY_REAL_PIT_ENCRYPTED_OBSERVATION
+          path: data/pit_sidecar/pitchapi_three_league_daily/
+          retention-days: 30
+          if-no-files-found: warn
+      - name: Append actual verified encrypted observations to private main
+        if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+        run: |
+          git config user.name "kb3-pit-bot"
+          git config user.email "kb3-pit-bot@users.noreply.github.com"
+          git add -f data/pit_sidecar/pitchapi_three_league_daily/*/THREE_LEAGUE_DAILY_SOURCE.enc
+          git add -f data/pit_sidecar/pitchapi_three_league_daily/*/THREE_LEAGUE_DAILY_SOURCE.manifest.json
+          git add -f data/pit_sidecar/pitchapi_three_league_daily/*/THREE_LEAGUE_DAILY_RECEIPT.json
+          if git diff --cached --quiet; then
+            echo 'No new incremental source observations.'
+          else
+            git commit -m 'pit: RSA-seal true daily as-observed three-league pre-match source history'
+            git pull --rebase origin main
+            git push origin HEAD:main
+          fi

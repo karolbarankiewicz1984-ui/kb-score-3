@@ -1,0 +1,78 @@
+name: KB3 PitchAPI audit - three separate 2026-27 leagues
+on:
+  push:
+    branches: [step14/pitchapi-three-league-audit-collector-20261029, main]
+    paths:
+      - scripts/step14_three_league_pitchapi_actual_audit.py
+      - tests/test_step14_three_league_pitchapi_audit.py
+      - .github/workflows/kb3-pitchapi-three-league-audit.yml
+  pull_request:
+    paths:
+      - scripts/step14_three_league_pitchapi_actual_audit.py
+      - tests/test_step14_three_league_pitchapi_audit.py
+      - .github/workflows/kb3-pitchapi-three-league-audit.yml
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: kb3-3-league-actual-audit
+  cancel-in-progress: false
+jobs:
+  real-three-league-pitchapi-audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install existing SDK and public-key archiver
+        run: python -m pip install --disable-pip-version-check 'pitchapi==0.1.6' 'cryptography>=42,<47'
+      - name: Check contracts offline
+        run: |
+          python -m compileall -q scripts/step14_three_league_pitchapi_actual_audit.py
+          python -m unittest discover -s tests -p 'test_step14_three_league_pitchapi_audit.py' -v
+      - name: Read current and previous seasons for ESP ITA GER and verify real 3 match stats
+        env:
+          PITCHAPI_API_KEY: ${{ secrets.PITCHAPI_API_KEY }}
+        run: python -m scripts.step14_three_league_pitchapi_actual_audit --base data/pit_sidecar/pitchapi_three_league_audit --public-key config/step11_archive_recipient_public.pem
+      - name: Verify actual encrypted data and exact 3 leagues without Premier League
+        run: |
+          python - <<'PY'
+          import json,hashlib,datetime
+          from pathlib import Path
+          p=Path("data/pit_sidecar/pitchapi_three_league_audit")/datetime.datetime.now(datetime.timezone.utc).date().isoformat()
+          a=json.loads((p/"THREE_LEAGUE_AUDIT.json").read_text())
+          m=json.loads((p/"THREE_LEAGUE_ORIGINAL_PITCHAPI.manifest.json").read_text())
+          assert hashlib.sha256((p/"THREE_LEAGUE_ORIGINAL_PITCHAPI.enc").read_bytes()).hexdigest()==m["ciphertext_sha256"]==a["encrypted_source_sha256"]
+          assert a["provider_calls"]==13 and not a["official_Premier_League_TEST_touched"]
+          assert len(a["leagues"])==3 and {x["league"] for x in a["leagues"]}=={"LaLiga","Serie A","Bundesliga"}
+          assert all(x["target_team_sides_considered"]==8 for x in a["leagues"])
+          assert all(x["real_completed_prior_fullmatch_stats_xg_status"]=="VALID_NATIVE_MATCH_TEAM_XG" for x in a["leagues"])
+          assert not a["prematch_feature_M0_ready"] and not a["model_fit_or_calibration_performed"]
+          print("ACTUAL_THREE_LEAGUES_VERIFIED",[(x["league"],x["future_fixtures_remaining"],x["target_team_sides_with_prior_15_of_15"]) for x in a["leagues"]])
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: KB3_PITCHAPI_REAL_3_LEAGUE_AUDIT_ENCRYPTED
+          path: data/pit_sidecar/pitchapi_three_league_audit/
+          retention-days: 30
+          if-no-files-found: warn
+      - name: Commit immutable real 3-league audit to private main after PR merge
+        if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+        run: |
+          git config user.name "kb3-pit-bot"
+          git config user.email "kb3-pit-bot@users.noreply.github.com"
+          git add -f data/pit_sidecar/pitchapi_three_league_audit/*/THREE_LEAGUE_ORIGINAL_PITCHAPI.enc
+          git add -f data/pit_sidecar/pitchapi_three_league_audit/*/THREE_LEAGUE_ORIGINAL_PITCHAPI.manifest.json
+          git add -f data/pit_sidecar/pitchapi_three_league_audit/*/THREE_LEAGUE_AUDIT.json
+          if git diff --cached --quiet; then
+            echo 'No new audit evidence to commit.'
+          else
+            git commit -m 'audit: append immutable real PitchAPI three-league source evidence'
+            git pull --rebase origin main
+            git push origin HEAD:main
+          fi

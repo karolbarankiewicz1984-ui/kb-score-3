@@ -99,3 +99,7 @@ Każdy następny wątek o KB Score 3.0 zaczyna się od odczytu **tego ADR + oryg
 - [Step 08 — schema, synthetic backup, przyszła replikacja](STEP_08_ACCEPTANCE.md)
 - [Step 14 C — istniejący wąski PitchAPI daily](STEP14_C_DAILY_REAL_PITCHAPI_ASOF_ARCHIVE_2026-10-28.md)
 - [Stała zasada ograniczenia ręcznej autoryzacji i PIT](WORKFLOW_NO_REPEATED_OWNER_AUTH_AND_MODEL_INTEGRITY.md)
+
+## Aneks 29.10.2026 — wykonany audyt przygotowania trzech lig
+
+**Zmiana statusu D10/D11 tylko w zakresie źródeł:** Hiszpania LaLiga, Włochy Serie A, Niemcy Bundesliga zostały rzeczywiście zweryfikowane przez istniejący klucz PitchAPI i osobne testowe działanie inkrementalnego kolektora: [szczegółowy raport](STEP14_PITCHAPI_THREE_LEAGUE_LIVE_AUDIT_AND_CAPTURE_2026-10-29.md). Audyt: 13 rzeczywistych wywołań SDK, 3/3 lig dostępne dla sezonów 2026/27 i 2025/26, trzy rzeczywiste shot+xG i team stats; następnie kolektor 43 wywołania i 18/18 wcześniejszych spotkań z xG. Konfiguracja cykliczna `06:17 UTC`, maks. 6 wcześniej niesprawdzonych spotkań na ligę i dobę, zaszyfrowany zapis surowych danych i dzienny bezpieczny raport. **Prawdziwy cykliczny produkcyjny zapis w main należy oznaczyć za wdrożony dopiero po udanym przebiegu na main i odczycie dowodu.** Nie oznacza to uruchomienia M0, pełnej macierzy cech, SQLite ani kalibracji; `GATE14=PENDING`, TEST Premier League 2026/27 nietknięty.
