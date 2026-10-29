@@ -416,21 +416,31 @@ def run(*,mode,client,now=None,db_path=DB,root=SOURCES,public_key=None):
             # Missing repo event => no proof, no calibration; settlement still
             # persists independently and can be audited on a later run.
             from src.kb3_step16_m0_720_calibration import (
-                github_events,inspect_event_proofs,append_proofs,calibrate_if_eligible)
-            events,provider_state=github_events(os.environ.get("GH_TOKEN",""))
+                github_events,inspect_event_proofs,append_proofs,calibrate_if_eligible,
+                github_actions_artifact_proofs)
+            token=os.environ.get("GH_TOKEN","")
+            events,provider_state=github_events(token)
             proposed,proof_audit=inspect_event_proofs(
                 staging,events,now=cutoff,repo_root=ROOT)
-            verified_count=append_proofs(staging,proposed,now=cutoff)
+            push_verified=append_proofs(staging,proposed,now=cutoff)
+            # GitHub bot pushes often do NOT surface through /events.
+            # Use GitHub-owned immutable Actions artifact created_at combined
+            # with the actual original ZIP-ed SQLite bytes as second proof.
+            artifact_proofs,artifact_audit=github_actions_artifact_proofs(
+                staging,token=token,now=cutoff)
+            verified_count=append_proofs(staging,artifact_proofs,now=cutoff)
             ready=calibrate_if_eligible(staging,now=cutoff)
             extra.update({
                 "publication_proof_audit":{
-                   "provider_state":provider_state,
-                   "audited_event_count":proof_audit["events_considered"],
-                   "source_revisions_verified":proof_audit["historic_versions_verified"],
-                   "verified_rows_added_this_run":len(proposed),
+                   "push_event_provider_state":provider_state,
+                   "audited_push_event_count":proof_audit["events_considered"],
+                   "push_source_revisions_verified":proof_audit["historic_versions_verified"],
+                   "push_verified_rows_added":len(proposed),
+                   "actions_artifact_audit":artifact_audit,
+                   "actions_artifact_verified_rows_added":len(artifact_proofs),
                    "verified_forecast_rows_total":verified_count,
                    "github_commit_author_date_used_as_proof":False,
-                   "missing_push_events_are_not_assumed_pre_match":True},
+                   "missing_host_evidence_never_assumed_pre_match":True},
                 "calibration_readiness":ready})
         report={"schema":"kb3-step16-8league-M0-720-TRAIN-forward-v1",
             "mode":mode,"model_version":MODEL,"params_sha256":param_sha,
