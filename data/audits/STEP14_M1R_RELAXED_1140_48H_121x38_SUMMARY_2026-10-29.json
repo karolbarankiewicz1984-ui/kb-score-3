@@ -1,0 +1,57 @@
+{
+  "M1_R_research_data_readiness_only": true,
+  "all_predecessors_only_before_target_by_at_least_48h": true,
+  "current_historical_sources_not_claimed_as_historic_PIT": true,
+  "historic_121_features_and_38_missing_flags_per_match": true,
+  "historical_predecessor_score_lag_hours": 48,
+  "m1r_BASE_cold_start_by_partition": {
+    "TRAIN": 40,
+    "VALIDATION": 6
+  },
+  "m1r_BASE_eligible_by_partition": {
+    "TRAIN": 720,
+    "VALIDATION": 374
+  },
+  "m1r_BASE_eligible_by_season": {
+    "2023-24": 349,
+    "2024-25": 371,
+    "2025-26": 374
+  },
+  "m1r_BASE_is_Elo_FORM_without_xG": true,
+  "matrix_gzip_sha256": "aced6cd1855c2dd344b42734861ab2b2e72d80fd44409bd384d69b4fefc98560",
+  "matrix_rows": 1140,
+  "minimum_predecessor_matches_per_team": 3,
+  "no_target_scores_in_research_matrix": true,
+  "no_training_or_validation_fit": true,
+  "original_2026_27_TEST_examined": false,
+  "original_760_TRAIN_380_VALIDATION_counts": {
+    "TRAIN": 760,
+    "VALIDATION": 380
+  },
+  "original_CatBoost_M1_trained": false,
+  "original_M1_Gate14": "PENDING",
+  "original_model_split_weights_predictions_modified": false,
+  "partial_FORM5_10_15_and_missingness_preserved": true,
+  "real_PitchAPI_API_calls": 4,
+  "recomputed_original_fixture_rows": 1140,
+  "schema": "kb3-m1r-1140-three-seasons-relaxed-48h-121x38-research-only-v1",
+  "season_counts": {
+    "2023-24": 380,
+    "2024-25": 380,
+    "2025-26": 380
+  },
+  "stable_native_ids_crossseasons": {
+    "2023_to_2024": 17,
+    "2024_to_2025": 17
+  },
+  "status": "RESEARCH_FEATURE_RECONSTRUCTION_ONLY",
+  "xg_from_previous_old_FPL74_v2_separate_overlay": {
+    "targets_with_at_least_one_optional_xg3_TRAIN": 40,
+    "targets_with_at_least_one_optional_xg3_VALIDATION": 109,
+    "targets_with_both_full_xg5_TRAIN": 40,
+    "targets_with_both_full_xg5_VALIDATION": 107,
+    "targets_with_both_optional_xg3_TRAIN": 40,
+    "targets_with_both_optional_xg3_VALIDATION": 107
+  },
+  "xg_same_provider_and_48h_coherence_not_automatically_certified": true
+}
