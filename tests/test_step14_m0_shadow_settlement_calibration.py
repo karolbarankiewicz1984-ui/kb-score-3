@@ -97,6 +97,10 @@ class M0SettlementCalibrationTests(unittest.TestCase):
          (forecast_id TEXT,settlement_id TEXT,observed_at_utc TEXT,result_1x2 TEXT)""")
         db.executescript((Path(__file__).resolve().parents[1]/
            "migrations/004_m0_shadow_settlement_and_future_calibration.sql").read_text())
+        # Synthetic calibration threshold test bypasses real-result INSERT guard;
+        # production never drops the trigger. The separate live-shaped test
+        # verifies actual immutable settlement/fixture schema remains intact.
+        db.execute("DROP TRIGGER m0_settlement_before_insert")
         base=datetime(2026,1,1,tzinfo=timezone.utc)
         # 99 fake settled outcomes: insufficient for candidate.
         for i in range(99):
