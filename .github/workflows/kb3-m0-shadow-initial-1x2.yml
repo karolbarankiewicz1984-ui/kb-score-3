@@ -1,0 +1,103 @@
+name: KB3 M0 actual pre-match 1X2 SHADOW freeze - first run
+on:
+  pull_request:
+    paths:
+      - src/kb3_m0_shadow_1x2_live_freeze.py
+      - migrations/003_m0_1x2_shadow_freeze.sql
+      - tests/test_step14_m0_shadow_1x2_live_freeze.py
+      - .github/workflows/kb3-m0-shadow-initial-1x2.yml
+  push:
+    branches: [main]
+    paths:
+      - .github/workflows/kb3-m0-shadow-initial-1x2.yml
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: kb3-three-league-feature-db-write
+  cancel-in-progress: false
+jobs:
+  test-forecast-integrity:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install public RSA archive dependency required by existing shared feature module
+        run: python -m pip install --disable-pip-version-check 'cryptography>=42,<47'
+      - name: Unit tests 121+38 real-schema and original Step13 Poisson, immutable 1X2 freeze
+        run: |
+          python -m compileall -q src/kb3_m0_shadow_1x2_live_freeze.py
+          python -m unittest discover -s tests -p 'test_step14_m0_shadow_1x2_live_freeze.py' -v
+  actual-first-frozen-1x2:
+    if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+    needs: test-forecast-integrity
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Calculate and freeze genuine next-12 1X2 without calling new source or looking up outcomes
+        run: |
+          python -m src.kb3_m0_shadow_1x2_live_freeze \
+            --db data/forward_m0/kb3_forward_m0.sqlite \
+            --out-root data/forecasts/m0_shadow_1x2 \
+            --strict-initial
+      - name: Verify every real 1 X 2 and external GitHub CI clock before kickoff
+        run: |
+          python - <<'PY'
+          import datetime,hashlib,json,math,sqlite3
+          from pathlib import Path
+          day=datetime.datetime.now(datetime.timezone.utc).date().isoformat()
+          path=Path('data/forecasts/m0_shadow_1x2')/day/'FROZEN_M0_SHADOW_1X2.json'
+          doc=json.loads(path.read_text())
+          assert doc['actual_derived_forecasts']==12
+          assert doc['mode']=='M0_SHADOW_PROVISIONAL_UNFITTED'
+          assert not doc['original_2026_27_Premier_League_TEST_touched']
+          assert not doc['original_M1_training_or_calibration']
+          assert doc['calibration_status']=='NOT_STARTED'
+          now=datetime.datetime.now(datetime.timezone.utc)
+          for f in doc['individual_forecasts']:
+              p=f['p_1x2']
+              assert set(p)=={'1','X','2'}
+              assert all(0.0<v<1.0 for v in p.values()) and math.isclose(sum(p.values()),1.0,abs_tol=1e-12)
+              kickoff=datetime.datetime.fromisoformat(f['kickoff_utc'].replace('Z','+00:00'))
+              freeze=datetime.datetime.fromisoformat(f['generated_at_utc'].replace('Z','+00:00'))
+              assert freeze<now<kickoff-datetime.timedelta(minutes=90)
+              assert f['parameter_status']=='ILLUSTRATIVE_UNFITTED_NOT_FOR_BETTING'
+              assert f['feature_sha256'] and len(f['feature_sha256'])==64
+          with sqlite3.connect('data/forward_m0/kb3_forward_m0.sqlite') as db:
+              assert db.execute('PRAGMA integrity_check').fetchone()[0]=='ok'
+              assert db.execute('PRAGMA foreign_key_check').fetchall()==[]
+              assert db.execute('SELECT COUNT(*) FROM m0_shadow_1x2_forecasts').fetchone()[0]==12
+              assert db.execute('SELECT COUNT(*) FROM predictions').fetchone()[0]==0
+          print('TRUE_12_UNFITTED_M0_SHADOW_1X2_GENERATED_AND_FROZEN_BEFORE_KICKOFF',doc['report_sha256'])
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: KB3_TRUE_M0_PREMATCH_1X2_SHADOW_REPORT_AND_SQLITE
+          path: |
+            data/forward_m0/kb3_forward_m0.sqlite
+            data/forecasts/m0_shadow_1x2/
+          retention-days: 30
+          if-no-files-found: warn
+      - name: Freeze to independently timestamped private GitHub main commit
+        run: |
+          git config user.name "kb3-m0-shadow-bot"
+          git config user.email "kb3-m0-shadow-bot@users.noreply.github.com"
+          git add -f data/forward_m0/kb3_forward_m0.sqlite
+          git add -f data/forecasts/m0_shadow_1x2/*/FROZEN_M0_SHADOW_1X2.json
+          if git diff --cached --quiet; then
+            echo 'No changed pre-match frozen forecast.'
+          else
+            git commit -m 'm0: truly before-kickoff frozen 1X2 real shadow predictions for 3 leagues'
+            git pull --rebase origin main
+            git push origin HEAD:main
+          fi
