@@ -17,8 +17,8 @@ from scripts.step14_fpl_core_2025_independent_asof import _name,_utc
 from scripts.step14_2025_expand_witnessed_form5_asof import source_at_version
 from scripts.step14_2025_dense_25_historical_witnesses import SOURCE_LIST
 from scripts.step14_fplcore_2025_extended_field_recovery import _candidate
-from scripts.step14_elo_2023_2026_native_replay_and_extended_crosswalk import (
-    _valid_safe,native_three_seasons)
+from scripts.step14_elo_2023_2026_native_replay_and_extended_crosswalk import _valid_safe
+from scripts.step14_full_1140_native_public_pit_lineage import native_three_seasons
 from src.kb3_step14_native_team_crosswalk import canonical_team_name
 
 ROOT=Path(__file__).resolve().parents[1]
