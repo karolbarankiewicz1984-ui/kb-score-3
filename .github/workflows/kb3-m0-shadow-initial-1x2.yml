@@ -43,6 +43,8 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
+      - name: Install existing shared RSA archive dependency
+        run: python -m pip install --disable-pip-version-check 'cryptography>=42,<47'
       - name: Calculate and freeze genuine next-12 1X2 without calling new source or looking up outcomes
         run: |
           python -m src.kb3_m0_shadow_1x2_live_freeze \
