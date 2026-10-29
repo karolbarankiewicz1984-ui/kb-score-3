@@ -1,0 +1,27 @@
+{
+  "schema": "kb3-step16-initial-real-forward-readiness-receipt-v1",
+  "date": "2026-10-29",
+  "source_first": "data/audits/m0_shadow_settlements/2026-10-29/M0_SETTLEMENT_LOGLOSS_BRIER_AND_CALIBRATION.json",
+  "source_second": "data/pit_sidecar/m0_postmatch/2026-10-29/run-082743157159/M0_POSTMATCH_AND_CALIBRATION_REVIEW.json",
+  "initial_competitions": [
+    "ESP",
+    "ITA",
+    "GER"
+  ],
+  "forecasts_in_existing_shadow_preflight": 12,
+  "server_first_publication_independently_proven": false,
+  "real_settled_independent_games": 0,
+  "minimum_fit": 100,
+  "needed_before_first_fit": 100,
+  "minimum_post_fit_holdout": 50,
+  "temperature_fitted": false,
+  "calibrator_production_activated": false,
+  "original_test_2026_27_used": false,
+  "source_report_only_not_PIT_certificate": true,
+  "test_results": "24/24 PASS",
+  "ci_url": "https://github.com/karolbarankiewicz1984-ui/kb-score-3/actions/runs/40925527646",
+  "full_artifact_id": 12920900579,
+  "formal_step16_gate": "PENDING",
+  "project_accepted_steps": 15,
+  "next_reaudit": "after new real freeze and settlement records, no time-based automatic model change"
+}

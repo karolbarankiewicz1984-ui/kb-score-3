@@ -1,0 +1,50 @@
+name: KB3 Step16 real forward readiness evidence and 1X2 class reliability
+on:
+  pull_request:
+    paths:
+      - 'src/kb3_step16_calibration_readiness.py'
+      - 'tests/test_step16_calibration_readiness.py'
+      - '.github/workflows/kb3-step16-calibration-readiness.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  check-readiness:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Verify class-wise reliability and reject false ready status
+        run: |
+          python -m compileall -q src/kb3_step16_calibration_readiness.py
+          python -m unittest discover -s tests -p 'test_step16_calibration_readiness.py' -v
+          python -m unittest discover -s tests -p 'test_step14_m1_math_calibration.py' -v
+      - name: Analyze two real unchanged receipts, no provider network access
+        run: |
+          python -m src.kb3_step16_calibration_readiness \
+            --shadow data/audits/m0_shadow_settlements/2026-10-29/M0_SETTLEMENT_LOGLOSS_BRIER_AND_CALIBRATION.json \
+            --native data/pit_sidecar/m0_postmatch/2026-10-29/run-082743157159/M0_POSTMATCH_AND_CALIBRATION_REVIEW.json \
+            --out reports/step16/STEP16_INITIAL_REAL_FORWARD_0_OF_100_20261029.json
+      - name: No fictitious calibration from zero outcomes
+        run: |
+          python - <<'PY'
+          import json
+          r=json.load(open("reports/step16/STEP16_INITIAL_REAL_FORWARD_0_OF_100_20261029.json"))
+          assert r["status"]=="COLLECTING_NOT_READY_FOR_TEMPERATURE"
+          assert r["independently_settled_unique_games"]==0
+          assert r["fit_remaining"]==100
+          assert r["prospective_holdout_minimum"]==50
+          assert r["candidate_fitted"] is False
+          assert r["formal_gate16_pass"] is False
+          assert r["protected_test_2026_27_read"] is False
+          print("STEP16_INITIAL_REAL_GATE_AUDITED__NO_FIT_NO_TEST")
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: STEP16_GATED_CALIBRATION_INITIAL_REAL_0_OF_100
+          path: reports/step16/STEP16_INITIAL_REAL_FORWARD_0_OF_100_20261029.json
+          if-no-files-found: error
+          retention-days: 90
