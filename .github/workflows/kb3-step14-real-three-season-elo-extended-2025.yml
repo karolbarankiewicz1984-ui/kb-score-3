@@ -4,6 +4,7 @@ on:
     paths:
       - 'scripts/step14_2025_expand_witnessed_form5_asof.py'
       - 'scripts/step14_elo_2023_2026_native_replay_and_extended_crosswalk.py'
+      - 'scripts/step14_2025_57_expanded_partial_fields_with_separate_elo.py'
       - 'tests/test_step14_2025_2023_elo_extended_sources.py'
       - '.github/workflows/kb3-step14-real-three-season-elo-extended-2025.yml'
   push:
@@ -47,6 +48,10 @@ jobs:
         run: |
           python -m scripts.step14_elo_2023_2026_native_replay_and_extended_crosswalk \
             --out data/audits/STEP14_2023_TO_2026_NATIVE_1140_RETRO_ELO_PLUS_2025_WITNESSED_2026-10-29.json
+      - name: Join all newly witnessed 2025 candidates to real native PitchAPI IDs, original source features and separate replay-only Elo
+        run: |
+          python -m scripts.step14_2025_57_expanded_partial_fields_with_separate_elo \
+            --out data/audits/STEP14_2025_57_NATIVE_PREMATCH_PUBLIC_FIELDS_AND_SEPARATE_ELO_2026-10-29.json
       - name: Enforce no promotional original M1 or TEST leakage
         run: |
           python - <<'PY'
@@ -71,6 +76,12 @@ jobs:
           assert elo['no_test_2026_27_examined'] and not src['TEST_2026_27_examined']
           assert elo['original_159_full_feature_PIT_validation_rows_certified']==0
           assert elo['original_159_full_feature_PIT_train_rows_certified']==0
+          joined=json.loads((folder/'STEP14_2025_57_NATIVE_PREMATCH_PUBLIC_FIELDS_AND_SEPARATE_ELO_2026-10-29.json').read_text())
+          assert joined['public_witnessed_2025_native_fixture_rows']==src['total_distinct_prematch_public_FORM5_targets']
+          assert joined['new_native_rows_over_original_18']==src['new_unique_targets_beyond_original_18']
+          assert joined['2026_retrospective_Elo_field_names_per_native_match']==19
+          assert joined['original_121_plus_38_PIT_eligible']==0 and not joined['training_allowed']
+          assert joined['GATE14']=='PENDING' and not joined['TEST_2026_27_examined']
           print('ELO_CHAIN_ALL_1140_RETROSPECTIVE',elo['original_native_1140_full_chronological_Elo_replay_rows'],
                 'WITNESSED_PUBLIC_2025_FORM5',src['total_distinct_prematch_public_FORM5_targets'],
                 'NEW_Beyond_18',src['new_unique_targets_beyond_original_18'],
@@ -83,6 +94,7 @@ jobs:
           path: |
             data/audits/STEP14_2025_FPLCORE_EXPANDED_14_WITNESSED_VERSIONS_2026-10-29.json
             data/audits/STEP14_2023_TO_2026_NATIVE_1140_RETRO_ELO_PLUS_2025_WITNESSED_2026-10-29.json
+            data/audits/STEP14_2025_57_NATIVE_PREMATCH_PUBLIC_FIELDS_AND_SEPARATE_ELO_2026-10-29.json
           retention-days: 90
           if-no-files-found: error
       - name: Persist these two verified audit reports to private main
@@ -90,7 +102,7 @@ jobs:
         run: |
           git config user.name 'kb3-step14-audit-bot'
           git config user.email 'kb3-step14-audit-bot@users.noreply.github.com'
-          git add -f data/audits/STEP14_2025_FPLCORE_EXPANDED_14_WITNESSED_VERSIONS_2026-10-29.json data/audits/STEP14_2023_TO_2026_NATIVE_1140_RETRO_ELO_PLUS_2025_WITNESSED_2026-10-29.json
+          git add -f data/audits/STEP14_2025_FPLCORE_EXPANDED_14_WITNESSED_VERSIONS_2026-10-29.json data/audits/STEP14_2023_TO_2026_NATIVE_1140_RETRO_ELO_PLUS_2025_WITNESSED_2026-10-29.json data/audits/STEP14_2025_57_NATIVE_PREMATCH_PUBLIC_FIELDS_AND_SEPARATE_ELO_2026-10-29.json
           if git diff --cached --quiet; then
             echo 'Verified audits already present'
           else
