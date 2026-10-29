@@ -1,0 +1,116 @@
+name: KB3 Step14 74 historic FPL revisions REAL xG 760 TRAIN and final PIT gate
+on:
+  pull_request:
+    paths:
+      - 'scripts/step14_fpl74_independent_historic_ancestry.py'
+      - 'scripts/step14_fpl74_asof_train_xg_recovery.py'
+      - 'scripts/step14_fpl74_final_original_M1_gate.py'
+      - 'tests/test_step14_fpl74_independent_proof_xg.py'
+      - '.github/workflows/kb3-step14-fpl74-historic-xg-train-gate.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/step14_fpl74_independent_historic_ancestry.py'
+      - 'scripts/step14_fpl74_asof_train_xg_recovery.py'
+      - 'scripts/step14_fpl74_final_original_M1_gate.py'
+      - '.github/workflows/kb3-step14-fpl74-historic-xg-train-gate.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: kb3-step14-74-FPL-historic-GHArchive-xG-2026-10-29
+  cancel-in-progress: false
+jobs:
+  prove-74-old-GitHub-revisions-reconstruct-TRAIN-FPL-xG-and-original-M1-gate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Prove no fake git timestamps and source cannot predate true published anchor
+        run: |
+          python -m compileall -q scripts/step14_fpl74_independent_historic_ancestry.py scripts/step14_fpl74_asof_train_xg_recovery.py scripts/step14_fpl74_final_original_M1_gate.py
+          python -m unittest discover -s tests -p 'test_step14_fpl74_independent_proof_xg.py' -v
+          python -m unittest discover -s tests -p 'test_step14_final_gate14_recheck.py' -v
+          python -m unittest discover -s tests -p 'test_step14_760_decimal_FPL_FT_corrected_v2.py' -v
+      - name: Actual 74 historical old FPL GitHub revisions and independently clocked SHA ancestry
+        env:
+          GH_PUBLIC_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          python -m scripts.step14_fpl74_independent_historic_ancestry \
+            --out data/audits/STEP14_ALL_74_FPL_REVISIONS_ANCHORED_GHARCHIVE_2026-10-29.json
+      - name: Install existing PitchAPI SDK
+        run: python -m pip install --disable-pip-version-check 'pitchapi==0.1.6'
+      - name: Actual exact original 760 TRAIN source old xG and 1140x159 isolated research matrix
+        env:
+          PITCHAPI_API_KEY: ${{ secrets.PITCHAPI_API_KEY }}
+        run: |
+          python -m scripts.step14_fpl74_asof_train_xg_recovery \
+            --summary data/audits/STEP14_FPL74_TRAIN_ASOF_xG_RESEARCH_SUMMARY_2026-10-29.json \
+            --matrix data/audits/STEP14_FPL74_TRAIN_1140x159_RESEARCH_2026-10-29.jsonl.gz
+      - name: Real final original M1 admission audit with source xG semantics and 121 plus 38
+        run: |
+          python -m scripts.step14_fpl74_final_original_M1_gate \
+            --source data/audits/STEP14_FPL74_TRAIN_ASOF_xG_RESEARCH_SUMMARY_2026-10-29.json \
+            --matrix data/audits/STEP14_FPL74_TRAIN_1140x159_RESEARCH_2026-10-29.jsonl.gz \
+            --out data/audits/STEP14_FPL74_ORIGINAL_M1_GATE_2026-10-29.json
+      - name: Protect original frozen split and report exact real counts
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import hashlib,gzip,json
+          d=Path('data/audits')
+          p=json.loads((d/'STEP14_ALL_74_FPL_REVISIONS_ANCHORED_GHARCHIVE_2026-10-29.json').read_text())
+          s=json.loads((d/'STEP14_FPL74_TRAIN_ASOF_xG_RESEARCH_SUMMARY_2026-10-29.json').read_text())
+          g=json.loads((d/'STEP14_FPL74_ORIGINAL_M1_GATE_2026-10-29.json').read_text())
+          matrix=d/'STEP14_FPL74_TRAIN_1140x159_RESEARCH_2026-10-29.jsonl.gz'
+          with gzip.open(matrix,'rt') as f:
+              lines=[json.loads(x) for x in f if x.strip()]
+          assert len(lines)==1140 and p['all_74_source_revisions_inventoried']
+          assert p['hist_publication_qualified_ancestor_revisions']+p['not_externally_witnessed_revisions']==74
+          assert s['original_74_fpl_revisions_examined']==74
+          assert s['original_760_TRAIN_public_FORM5_total_after_74']>=54
+          assert s['original_380_VALIDATION_FORM5_preserved']==109
+          assert s['original_380_VALIDATION_ALTERNATIVE_xG5_preserved']==107
+          assert matrix.exists() and s['matrix_gzip_sha256']==hashlib.sha256(matrix.read_bytes()).hexdigest()
+          assert g['original_121_plus_38_native_PIT_TRAIN']==0
+          assert g['original_121_plus_38_native_PIT_VALIDATION']==0
+          assert g['original_GATE14']=='PENDING' and not g['original_CatBoost_M1_fitted']
+          assert not g['TEST_2026_27_examined']
+          print('OLD_FPL_REVISIONS',74,
+                'INDEPENDENTLY_PUBLISHED_ANCESTORS',p['hist_publication_qualified_ancestor_revisions'],
+                'RESEARCH_TRAIN_FORM5',g['real_historic_external_public_FORM5_TRAIN'],
+                'RESEARCH_TRAIN_FPL_PLAYER_xG5',g['real_historic_ALTERNATIVE_FPL_player_xG5_TRAIN'],
+                'VALIDATION_FORM5',109,'VALIDATION_ALTERNATIVE_xG5',107,
+                'ORIGINAL_GATE14',g['original_GATE14'])
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: KB3_STEP14_ALL_74_FPL_OLD_PUSHES_RESEARCH_XG_FINAL_GATE
+          path: |
+            data/audits/STEP14_ALL_74_FPL_REVISIONS_ANCHORED_GHARCHIVE_2026-10-29.json
+            data/audits/STEP14_FPL74_TRAIN_ASOF_xG_RESEARCH_SUMMARY_2026-10-29.json
+            data/audits/STEP14_FPL74_TRAIN_1140x159_RESEARCH_2026-10-29.jsonl.gz
+            data/audits/STEP14_FPL74_ORIGINAL_M1_GATE_2026-10-29.json
+          retention-days: 90
+          if-no-files-found: error
+      - name: Persist actual old xG results to private main without overwriting existing frozen data
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        run: |
+          git config user.name 'kb3-step14-audit-bot'
+          git config user.email 'kb3-step14-audit-bot@users.noreply.github.com'
+          git add -f data/audits/STEP14_ALL_74_FPL_REVISIONS_ANCHORED_GHARCHIVE_2026-10-29.json
+          git add -f data/audits/STEP14_FPL74_TRAIN_ASOF_xG_RESEARCH_SUMMARY_2026-10-29.json
+          git add -f data/audits/STEP14_FPL74_TRAIN_1140x159_RESEARCH_2026-10-29.jsonl.gz
+          git add -f data/audits/STEP14_FPL74_ORIGINAL_M1_GATE_2026-10-29.json
+          if git diff --cached --quiet; then
+            echo 'Already archived'
+          else
+            git commit -m 'step14: archive real 74 old FPL provenance xG 1140x159 and original M1 gate'
+            git pull --rebase origin main
+            git push origin HEAD:main
+          fi
