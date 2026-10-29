@@ -47,3 +47,8 @@ Sprawdzono po wykonaniu fizyczną obecność na `main`:
 - `data/forward_m0/kb3_forward_m0.sqlite` (2 985 984 B), z utworzonymi tabelami 004, bez modyfikacji 12 uprzednio zamrożonych prognoz. Test SQLite `integrity_check=ok`, `foreign_key_check=[]`, oryginalna tabela `predictions=0`, żadna kalibracja nie została aktywowana.
 
 Harmonogram jest zapisany na `main` jako cron **07:47 UTC i 22:47 UTC codziennie**; kolejne wykonania potrzebują własnego wyniku/raportu, a nie deklaracji sukcesu z wyprzedzeniem. 29-etapowy plan: formalnie nadal 13/29; `GATE14=PENDING`.
+
+
+### Aktualizacja metodologiczna 29.10.2026 — poprawiona ochrona przyszłej kalibracji
+
+[PR #87](https://github.com/karolbarankiewicz1984-ui/kb-score-3/pull/87) zaakceptowany do main, [10 testów log loss/settlement/kalibracji + 6 testów prognozy M0](https://github.com/karolbarankiewicz1984-ui/kb-score-3/actions/runs/40842920872) **PASS**. W przyszłości nie wolno mieszać zamrożonych prognoz o odmiennym `parameter_sha256` w jednej kalibracji tylko dlatego, że mają identyczny `model_version`; w takim przypadku przerywamy fit i wymagamy odrębnej wersji modelu. Niezależny HOLDOUT 50 obejmuje wyłącznie mecze z **prognozą faktycznie wygenerowaną PO cutoff zamrożonego kandydata** oraz kickoff po tym cutoff i etykietą poznaną przed review. Sam późniejszy kickoff bez późniejszej daty generowania prognozy nie wystarcza. Autoaktywacja wciąż 0. Żadnego przeliczenia starych prognoz lub wyników, tylko zabezpieczenie przyszłego fitu.
