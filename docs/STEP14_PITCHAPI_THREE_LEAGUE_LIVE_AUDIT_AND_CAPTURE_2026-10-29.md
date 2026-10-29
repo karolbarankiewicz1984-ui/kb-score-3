@@ -18,6 +18,17 @@
 
 **Każda z trzech lig ma autentyczne odczytane xG strzałowe i meczowe**; walidator `src/kb3_step14_pitchapi_xg_semantics.py` odrzuca niezgodne `match_id/home_team.id/away_team.id`, duplikaty i inne rodzaje xG (xGOT/npxG). Nie wolno stawiać `provider_first_published_at` na podstawie dzisiejszego czasu odczytu.
 
+## Potwierdzony trwały zapis i działający harmonogram na main
+
+**Tak, uruchomiono rzeczywiste zbieranie na gałęzi głównej.** [GitHub Actions AUDYT #40831753337](https://github.com/karolbarankiewicz1984-ui/kb-score-3/actions/runs/40831753337) **SUCCESS**, a [GitHub Actions KOLEKTOR #40831753344](https://github.com/karolbarankiewicz1984-ui/kb-score-3/actions/runs/40831753344) **SUCCESS**, 43 API requests i **18/18** zakończonych wcześniejszych meczów z poprawnymi shot-xG i fullmatch team-xG. Nie są to prognozy M0.
+
+**Sprawdziłem następnie faktyczne pliki prywatnego main:**
+- [Audyt 13 oryginalnych źródeł — report](../data/pit_sidecar/pitchapi_three_league_audit/2026-10-29/THREE_LEAGUE_AUDIT.json) oraz analogiczny plik `THREE_LEAGUE_ORIGINAL_PITCHAPI.enc`, manifest RSA.
+- [Kolektor 43 źródeł — raport dzienny](../data/pit_sidecar/pitchapi_three_league_daily/2026-10-29/THREE_LEAGUE_DAILY_RECEIPT.json), `THREE_LEAGUE_DAILY_SOURCE.manifest.json` i faktyczny zaszyfrowany `THREE_LEAGUE_DAILY_SOURCE.enc` (**wszystkie trzy istnieją**). Plik manifestu wykazuje **43 prawdziwe source receipts**, oryginalny payload 1 602 069 bajtów w szyfrogramie oraz SHA256.
+- Workflow `.github/workflows/kb3-pitchapi-three-league-daily.yml` jest scalony na `main` i zawiera `cron: 17 6 * * *`. Przyszłe wykonania są harmonogramem, nie wolno przyjmować ich jako sukcesu z wyprzedzeniem.
+
+**Status teraz:** wybór lig, audyt i pierwsze rzeczywiste magazynowanie wykonane. Nadal nie ma procesu produkcyjnego M0, materializacji 121+38, codziennej kopii SQLite/Drive ani kalibracji. `GATE14=PENDING`, chroniony Premier League TEST poza zakresem.
+
 ## Zbieranie przyrostowe — koncepcja i implementacja
 
 - Kod audytu: `scripts/step14_three_league_pitchapi_actual_audit.py` i [workflow](../.github/workflows/kb3-pitchapi-three-league-audit.yml). Łącznie **13 żądań** (katalog + aktualne/poprz. mecze 3 lig + po 1 shots/stat pair każdej). Oryginalne 13 źródeł szyfrowane istniejącym **publicznym** kluczem RSA/AES-GCM, obsługiwane bez prywatnego PEM na GitHub.
