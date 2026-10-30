@@ -10,10 +10,14 @@ Testy: `tests/test_step16_m0_offline_readonly_audit.py`, izolowany PR/manual wor
 
 ## 2. Usprawnienie zużycia Actions (projekt do sprawdzenia)
 
-Nie wyłączać istniejących dziewięciu wymienionych dziennych uruchomień przed audytem równoważności archiwum. W działającym ośmioligowym workflow testy i pobór instalują CatBoost oraz kryptografię osobno; przygotowywana zmiana to tylko lokalna pamięć podręczna pip i centralizacja **dokładnie dotychczasowych zależności** w plikach requirements. Bez scalania do czasu sprawdzenia workflow po odnowieniu minut.
+Nie wyłączać istniejących dziewięciu wymienionych dziennych uruchomień przed audytem równoważności archiwum. W działającym ośmioligowym workflow testy i pobór instalują CatBoost oraz kryptografię osobno; na gałęzi roboczej wdrożono konfigurację pamięci podręcznej pip w obu jobach oraz rozdzielenie **dokładnie dotychczasowych zależności** na dwa pliki requirements. Nie usuwa to żadnego joba ani harmonogramu. Nie należy zakładać oszczędności minut przed pomiarem; bez scalania do czasu pozytywnego sprawdzenia workflow po odnowieniu minut.
 
 ## 3. Porównanie silników i xG
 
 Istniejące `src/kb3_step17_engine_comparison.py` już sprawdza wspólne fixture ID, cutoff, horyzont, sparowane wyniki i CI tygodniowe. `src/kb3_step17_xg_capture.py` i `future_xg_coverage` mają blokadę imputacji braków xG i wymóg pięciu rzeczywiście ostatnich spotkań. Nie należy powielać tych funkcji ani podawać fałszywych metryk. Do czasu rzeczywistych nowych prognoz xG/ensemble oraz wyników 100+50 nie wyznaczać Championa.
 
 **Stan:** kod w odizolowanej gałęzi, wykonanie runnera nieudowodnione przy limitach 3000/3000. Wszystkie 73 wcześniejsze prognozy M0, SHA, 8 lig, kryterium 100+50, GATE15 PASS i GATE16/GATE17 PENDING pozostają bez zmian.
+
+## 4. Kontrola statyczna harmonogramu i zależności
+
+`tests/test_step16_workflow_cache_static.py` porównuje oryginalne dwa harmonogramy live, zależność joba prawdziwego od bramki bezpieczeństwa, brak harmonogramu lub sekretów w odczycie offline oraz dokładne wersje bibliotek. Dopisano go do osobnego PR/manual workflow. Do formalnego PASS konieczne jest rzeczywiste wykonanie CI.
