@@ -1,0 +1,117 @@
+name: KB3 Step16 fitted 720TRAIN eight-league parallel RESEARCH forward
+on:
+  pull_request:
+    paths:
+      - scripts/step16_m0_720train_eight_league_live.py
+      - tests/test_step16_m0_720train_eight_league_live.py
+      - models/research/M0_720_TRAIN_8LEAGUE_SHADOW_LIVE_V1.json
+      - .github/workflows/kb3-step16-m0-720train-eight-league-live.yml
+  push:
+    branches: [main]
+    paths:
+      - scripts/step16_m0_720train_eight_league_live.py
+      - tests/test_step16_m0_720train_eight_league_live.py
+      - models/research/M0_720_TRAIN_8LEAGUE_SHADOW_LIVE_V1.json
+      - .github/workflows/kb3-step16-m0-720train-eight-league-live.yml
+  schedule:
+    - cron: '43 6 * * *'
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: kb3-step16-m0-720train-8league-research
+  cancel-in-progress: false
+jobs:
+  offline-model-safety:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Existing cryptographic dependency
+        run: python -m pip install --disable-pip-version-check 'cryptography>=42,<47'
+      - name: Compile and validate frozen fitted model, TEST and forward separation
+        run: |
+          python -m compileall -q scripts/step16_m0_720train_eight_league_live.py
+          python -m unittest discover -s tests -p 'test_step16_m0_720train_eight_league_live.py' -v
+  real-forward-eight-league-research:
+    needs: offline-model-safety
+    if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install already used PitchAPI SDK and public RSA encryption
+        run: python -m pip install --disable-pip-version-check 'pitchapi==0.1.6' 'cryptography>=42,<47'
+      - name: Real native fixture source, strict cutoff, independent fitted M0 research 1X2, settlement
+        env:
+          PITCHAPI_API_KEY: ${{ secrets.PITCHAPI_API_KEY }}
+        run: |
+          python -m scripts.step16_m0_720train_eight_league_live \
+            --base data/forecasts/m0_720train_8league \
+            --public-key config/step11_archive_recipient_public.pem
+      - name: Verify raw-source ciphertext, immutable report, eight leagues and no production promotion
+        run: |
+          python - <<'PY'
+          import datetime,hashlib,json
+          from pathlib import Path
+          from src.kb3_pit_ledger import canonical,as_utc
+          from scripts.step16_m0_720train_eight_league_live import LEAGUES,load_release,read_history,MODEL
+          d=datetime.datetime.now(datetime.timezone.utc).date().isoformat()
+          root=Path('data/forecasts/m0_720train_8league')
+          path=root/d
+          a=json.loads((path/'FROZEN_RESEARCH_M0.json').read_text())
+          original=a.pop('report_sha256')
+          assert hashlib.sha256(canonical(a)).hexdigest()==original
+          a['report_sha256']=original
+          m=json.loads((path/'SOURCE.manifest.json').read_text())
+          assert hashlib.sha256((path/'SOURCE.enc').read_bytes()).hexdigest()==m['ciphertext_sha256']==a['encrypted_source_sha256']
+          assert m['proof']['final_chain_sha256']==a['source_chain_sha256']
+          assert a['provider_calls']==17 and a['max_provider_calls']==17
+          assert len(a['leagues_checked'])==8 and {x['country'] for x in a['leagues_checked']}=={x[0] for x in LEAGUES}
+          assert a['model_id']==MODEL and a['gate16']=='PENDING'
+          assert a['original_model_unchanged'] is True
+          assert a['original_PL_2026_27_TEST_touched'] is False
+          assert a['calibration_not_auto_fit'] is True and a['not_a_full_121_plus_38_xg_feature_snapshot'] is True
+          ps, ph, rh=load_release()
+          assert a['params_sha256']==ph and a['release_sha256']==rh
+          old,settled=read_history(root,params_sha=ph,release_sha=rh)
+          assert len(old)==a['total_forecasts'] and len(settled)==a['total_settled']
+          for x in a['forecasts']:
+              assert x['model_id']==MODEL and x['parameter_status']=='FITTED_720TRAIN_RESEARCH_UNVALIDATED_TRANSFER'
+              assert as_utc(x['frozen_at_utc']) < as_utc(x['kickoff_utc'])-datetime.timedelta(minutes=90)
+              assert as_utc(x['observed_at_utc']) <= as_utc(x['frozen_at_utc'])
+              assert abs(sum(x['p_1x2'].values())-1)<1e-12
+          assert a['new_forecast_count']==len(a['forecasts'])
+          assert a['new_settlement_count']==len(a['settlements'])
+          print('STEP16_EIGHT_LEAGUE_REAL_RESEARCH_VERIFIED',d,
+                'forecasts',len(old),'settled',len(settled),'new',a['new_forecast_count'])
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: KB3_M0_720TRAIN_EIGHT_LEAGUE_RESEARCH_IMMUTABLE_ARCHIVE
+          path: data/forecasts/m0_720train_8league/
+          retention-days: 30
+          if-no-files-found: warn
+      - name: First external GitHub commit of genuinely pre-match fixed fitted model evidence
+        run: |
+          git config user.name 'kb3-m0-720train-research-bot'
+          git config user.email 'kb3-m0-720train-research-bot@users.noreply.github.com'
+          git add -f data/forecasts/m0_720train_8league/*/SOURCE.enc
+          git add -f data/forecasts/m0_720train_8league/*/SOURCE.manifest.json
+          git add -f data/forecasts/m0_720train_8league/*/FROZEN_RESEARCH_M0.json
+          if git diff --cached --quiet; then
+            echo 'All observations already saved; no overwrite'
+          else
+            git commit -m 'step16: immutable observed fitted-M0 research forward 8 leagues and postmatch results'
+            git pull --rebase origin main
+            git push origin HEAD:main
+          fi
