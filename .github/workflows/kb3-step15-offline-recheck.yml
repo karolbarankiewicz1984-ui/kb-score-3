@@ -1,5 +1,12 @@
 name: KB3 Step15 offline frozen scorecard integrity re-audit (read-only)
 on:
+  pull_request:
+    paths:
+      - scripts/step15_independent_market_audit.py
+      - scripts/step15_offline_reaudit.py
+      - tests/test_step15_independent_market_audit.py
+      - tests/test_step15_offline_reaudit.py
+      - .github/workflows/kb3-step15-offline-recheck.yml
   workflow_dispatch:
 permissions:
   contents: read
