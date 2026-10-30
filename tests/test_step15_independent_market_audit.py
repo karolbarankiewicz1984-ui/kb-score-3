@@ -79,6 +79,15 @@ class IndependentStep15AuditMath(unittest.TestCase):
         with self.assertRaisesRegex(IndependentAuditError,"JOINT_POISSON_MISMATCH"):
             _check_market(p)
 
+
+    def test_reject_compensated_team_total_without_local_contradiction(self):
+        p=markets_from_lambdas(1.45,1.15)
+        p["team_goals"]["home"]["exact"]["1"]+=0.002
+        p["team_goals"]["home"]["at_least"]["2+"]-=0.002
+        p["team_goals"]["home"]["at_least"]["3+"]-=0.002
+        with self.assertRaisesRegex(IndependentAuditError,"JOINT_POISSON_MISMATCH"):
+            _check_market(p)
+
     def test_stress_independent_joint_at_limits(self):
         for h,a in ((1e-6,1e-6),(8.,8.),(8.,1e-6),(1.45,1.15)):
             with self.subTest(h=h,a=a):
