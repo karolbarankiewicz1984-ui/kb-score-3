@@ -4,6 +4,10 @@ on:
     paths:
       - scripts/step16_m0_offline_readonly_audit.py
       - tests/test_step16_m0_offline_readonly_audit.py
+      - tests/test_step16_workflow_cache_static.py
+      - config/step16_ci_requirements.txt
+      - config/step16_live_requirements.txt
+      - .github/workflows/kb3-step16-m0-720-eight-forward.yml
       - .github/workflows/kb3-step16-offline-readonly-audit.yml
   workflow_dispatch:
 permissions:
@@ -23,5 +27,6 @@ jobs:
         run: |
           python -m compileall -q scripts/step16_m0_offline_readonly_audit.py
           python -m unittest discover -s tests -p 'test_step16_m0_offline_readonly_audit.py' -v
+          python -m unittest discover -s tests -p 'test_step16_workflow_cache_static.py' -v
       - name: Read current recorded M0 proof and score summary
         run: python -m scripts.step16_m0_offline_readonly_audit
