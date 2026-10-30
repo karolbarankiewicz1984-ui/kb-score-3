@@ -38,7 +38,9 @@ class WorkflowBudgetSafetyTests(unittest.TestCase):
         self.assertNotIn("  schedule:",contents)
         self.assertIn("contents: read",contents)
         self.assertNotIn("secrets.",contents)
-        self.assertNotIn("pip install",contents)
+        self.assertNotIn("pitchapi==",contents)
+        self.assertNotIn("catboost==",contents)
+        self.assertIn("cryptography>=42,<47",contents)
 
 
 if __name__=="__main__":
