@@ -27,3 +27,10 @@ Właściciel zlecił uruchomienie równoległego, **odrębnego badawczego** M0 d
 **Kontynuować już uruchomiony strumień** zamiast tworzyć duplikat M0. Żadnej zmiany parametrów 720-TRAIN, kluczy, budżetów, podstawowego M0 SHADOW, chronionego Premier League TEST 2026/27, progów 100+50 ani modeli KROKU 17. Wpis do rejestru jest nową kontrolą stanu i ryzyka działania GitHub Actions, a nie nową próbką forecast ani wdrożeniem produkcyjnym.
 
 **Następny warunek:** przywrócić realne wykonywanie GitHub-hosted Actions, sprawdzić limit i billing; odnotować nowy SUCCESS `forecast` lub `settle`, odczytać liczniki SQLite, hash i potwierdzenie czasu publikacji i dopiero wtedy zadeklarować nowy postęp. Przy braku działania runnera nie można wiarygodnie uzupełnić pominiętych przedmeczowych prognoz wstecznie. Formalnie `GATE16 PENDING`, `GATE17 PENDING` i **15/29**.
+
+
+## Uzupełnienie: źródłowy dowód limitu GitHub Actions
+
+Odczytana wiadomość GitHub z **29.10.2026, 22:13:41 UTC**, temat `[GitHub] You have used 100% of the Actions minutes included for the karolbarankiewicz1984-ui account`, potwierdza **3 000 / 3 000** minut w bieżącym okresie rozliczeniowym oraz wskazuje **reset na 1 listopada 2026 r.** Wiadomość wyjaśnia, że po darmowej puli rozliczenie zależy od ustawionego budżetu, a budżet Actions `$0` blokuje dalsze płatne użycie do resetu. Stan konkretnego budżetu `$0` nie był na potrzeby tego wpisu ponownie odczytany; nie należy go podawać jako zweryfikowany.
+
+**Wniosek operacyjny:** jednoczesny brak startu jobów z 30.10 oraz zużycie 100% minut wskazują na brak dostępnego limitu Actions, a nie potwierdzoną usterkę matematyki modelu. Nie kupowano dodatkowych minut i nie odblokowywano płatnego usage. Pierwszy zaplanowany przebieg po resecie 1.11.2026 wymaga sprawdzenia realnego `SUCCESS` i nowego receipt; **bez dopisywania wyników wstecz**. Dotychczasowy M0 720-TRAIN nadal jest skonfigurowany, lecz po nieudanym wykonaniu 30.10 nie jest aktualnie potwierdzony jako pracujący codziennie.
