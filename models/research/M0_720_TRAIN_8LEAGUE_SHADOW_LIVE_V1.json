@@ -1,0 +1,32 @@
+{
+  "schema": "kb3-step16-m0-720train-8-league-forward-research-release-v1",
+  "model_id": "M0_720TRAIN_8LEAGUE_RESEARCH_V1",
+  "parent_candidate": "models/research/M0_720_TRAIN_STABLE_CANDIDATE_20261029.json",
+  "candidate_id": "M0_ELO_POISSON_RESEARCH_720TRAIN_V1",
+  "train_matches": 720,
+  "validation_matches": 374,
+  "elo_history_scope": "ONLY_PITCHAPI_2025_26_PLUS_2026_27_FINISHED_BEFORE_CAPTURE_MINUS_3H; NOT_ORIGINAL_2023_25_ELO_STATES",
+  "fitted_parameters": {
+    "base_away_goals": 1.4381853609496382,
+    "base_home_goals": 1.6447363878515198,
+    "elo_goal_elasticity": 0.6,
+    "elo_home_advantage": 65,
+    "elo_k": 20,
+    "elo_scale": 400,
+    "initial_elo": 1500,
+    "poisson_max_goals": 64,
+    "poisson_tail_tolerance": 1e-12
+  },
+  "leagues": ["ESP", "ITA", "GER", "FRA", "NED", "BEL", "TUR", "POL"],
+  "season_current": "2026/2027",
+  "season_previous": "2025/2026",
+  "research_only": true,
+  "promotion_automatic": false,
+  "separate_from_illustrative_m0": true,
+  "genuine_prematch_capture_required": true,
+  "model_input_xg_required": false,
+  "calibration_status": "NOT_STARTED",
+  "calibration_gate": "100_SETTLED_UNIQUE_THEN_50_LATER_INDEPENDENT",
+  "original_gate16": "PENDING",
+  "original_PL_2026_27_TEST": "FORBIDDEN"
+}
