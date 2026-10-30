@@ -314,7 +314,7 @@ def collect(*, base, api_key, public_pem, now=None, client_factory=None):
             # Independent receipts for each country contain all previous and current
             # season results; source is sealed, only hashes are exposed in public metadata.
             observed = receipts[-1]["completed_at_utc"]
-            new, stat = new_forecasts(country, title, current, previous, now, params,
+            new, stat = new_forecasts(country, title, current, previous, as_utc(observed), params,
                                       params_sha, release_sha, receipts[-1]["chain_sha256"],
                                       observed, set(old_forecasts))
             all_new.extend(new)
