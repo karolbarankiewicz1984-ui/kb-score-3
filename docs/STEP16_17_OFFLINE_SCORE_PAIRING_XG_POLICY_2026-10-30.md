@@ -30,7 +30,7 @@ Niezależne testy wyboru liczności w izolacji: 99 < 100 = brak fitu; 100 = pró
 ## 2. Dodany niezależny kontrakt offline
 
 - `src/kb3_step16_17_offline_controls.py`: funkcje read-only `score`, `outcome_from_90min`, `verify_settlements`, `calibration_100_50`, `compare_three_by_league`, `native_xg_last5`. Nie importują runnera ani nie zapisują baz/forecastów, nie pobierają API i nie wywołują `fit()`.
-- `tests/test_step16_17_offline_controls.py`: nowe kontrolne przypadki dla Brier/log loss/wyniku 1X2, fałszywego hasha/poświadczenia danych przekazanego przez eksportera, poprawności liczb 99/100 i 49/50, rozdziału cutoff, wspólnej trójki M0/Elo/CatBoost oraz braków xG. Testy nie są podpięte do aktualnych harmonogramów.
+- `tests/test_step16_17_offline_controls.py`: nowe kontrolne przypadki dla Brier/log loss/wyniku 1X2 oraz braku poświadczenia danych przekazanego przez eksportera, poprawności liczb 99/100 i 49/50, rozdziału cutoff, wspólnej trójki M0/Elo/CatBoost oraz braków xG. Testy nie są podpięte do aktualnych harmonogramów.
 - Jawny warunek integracji: w przyszłości read-only eksporter **musi sam zweryfikować** z oryginalnego historycznego artefaktu GitHub SHA prognozy i serwerowy czas przed kickoff. Samo ustawienie pola `host_attested=True` **nie stanowi dowodu**. Nie włączać automatycznie kalibracji ani nie używać tej biblioteki do zatwierdzenia produkcji.
 
 ## 3. Protokół porównania kroku 17
