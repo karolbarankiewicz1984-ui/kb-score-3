@@ -38,6 +38,61 @@ def _fraction(v):
         raise IndependentAuditError("UNSAFE_PROBABILITY")
     return v
 
+
+def _check_independent_poisson_joint(pred):
+    """Second implementation: verify each claimed market against lambdas.
+
+    Analytical O/U and BTTS + independent marginal recurrences for 1X2,
+    team goal distributions and top 5. Does NOT import the model generator,
+    ML fitting code, provider results or the historical TEST.
+    """
+    from heapq import nsmallest
+    rates=pred.get("expected_goals")
+    if not isinstance(rates,dict) or set(rates)!={"home","away"}:
+        raise IndependentAuditError("MISSING_POISSON_INTENSITIES")
+    h,a=rates["home"],rates["away"]
+    if any(type(v) not in (int,float) or not math.isfinite(v) or
+           not 1e-6<=v<=8.0 for v in (h,a)):
+        raise IndependentAuditError("UNSAFE_POISSON_INTENSITIES")
+    def marginal(lam):
+        p=[math.exp(-lam)]
+        for n in range(1,65):
+            p.append(p[-1]*lam/n)
+        if abs(math.fsum(p)-1)>1e-12:
+            raise IndependentAuditError("UNRESOLVED_POISSON_TAIL")
+        return p
+    ph,pa=marginal(h),marginal(a)
+    def close(given,expected,tag):
+        if not _almost(given,expected,3e-10):
+            raise IndependentAuditError("JOINT_POISSON_MISMATCH_"+tag)
+    for n,line in ((1,"1.5"),(2,"2.5"),(3,"3.5")):
+        total=h+a
+        over=1-math.exp(-total)*math.fsum(
+            total**k/math.factorial(k) for k in range(n+1))
+        close(pred["p_over"][line],over,"OVER_"+line)
+        close(pred["p_under"][line],1-over,"UNDER_"+line)
+    yes=(1-math.exp(-h))*(1-math.exp(-a))
+    close(pred["p_btts"]["yes"],yes,"BTTS_YES")
+    close(pred["p_btts"]["no"],1-yes,"BTTS_NO")
+    for side,pmf in (("home",ph),("away",pa)):
+        for k in range(4):
+            close(pred["team_goals"][side]["exact"][str(k)],
+                  pmf[k],side+"_EXACT_"+str(k))
+        for k in (1,2,3):
+            close(pred["team_goals"][side]["at_least"][str(k)+"+"],
+                  1-math.fsum(pmf[:k]),side+"_AT_LEAST_"+str(k))
+    home=math.fsum(ph[i]*math.fsum(pa[:i]) for i in range(65))
+    draw=math.fsum(ph[i]*pa[i] for i in range(65))
+    for outcome,p in (("1",home),("X",draw),("2",1-home-draw)):
+        close(pred["p_1x2"][outcome],p,"1X2_"+outcome)
+    best=nsmallest(5,((i,j,ph[i]*pa[j]) for i in range(65)
+                     for j in range(65)),key=lambda t:(-t[2],t[0],t[1]))
+    for actual,(i,j,p) in zip(pred["top_5_scorelines"],best):
+        if actual["home"]!=i or actual["away"]!=j:
+            raise IndependentAuditError("JOINT_POISSON_TOP5_RANKING")
+        close(actual["probability"],p,"TOP5_PROBABILITY")
+    return True
+
 def _check_market(pred):
     if not isinstance(pred,dict) or pred.get("match_duration")!="REGULAR_90_MINUTES":
         raise IndependentAuditError("INVALID_DURATION")
@@ -78,6 +133,7 @@ def _check_market(pred):
     if [x["probability"] for x in top] != sorted(
             (x["probability"] for x in top),reverse=True):
         raise IndependentAuditError("SCORELINE_ORDER")
+    _check_independent_poisson_joint(pred)
     return True
 
 
