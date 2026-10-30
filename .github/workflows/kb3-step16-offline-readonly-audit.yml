@@ -1,0 +1,27 @@
+name: KB3 Step16 offline read-only M0 eligibility diagnostic (no API)
+on:
+  pull_request:
+    paths:
+      - scripts/step16_m0_offline_readonly_audit.py
+      - tests/test_step16_m0_offline_readonly_audit.py
+      - .github/workflows/kb3-step16-offline-readonly-audit.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  verify-stored-immutable-m0:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Offline arithmetic tests
+        run: |
+          python -m compileall -q scripts/step16_m0_offline_readonly_audit.py
+          python -m unittest discover -s tests -p 'test_step16_m0_offline_readonly_audit.py' -v
+      - name: Read current recorded M0 proof and score summary
+        run: python -m scripts.step16_m0_offline_readonly_audit
