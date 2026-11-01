@@ -1,0 +1,12 @@
+diff --git a/src/kb3_pitch_native_ledger.py b/src/kb3_pitch_native_ledger.py
+--- a/src/kb3_pitch_native_ledger.py
++++ b/src/kb3_pitch_native_ledger.py
+@@ -302,7 +302,7 @@
+         if source["status"]!="finished":
+             return None
+         if resource.endswith(':v2'):
+-            independent_stats=_validated_stats_pair(db,capture_id,match_id,started,t,cutoff=cutoff)
++            independent_stats=_validated_stats_pair(db,capture_id,match_id,started,t,cutoff=cutoff_utc)
+             x=verify_native_shots(source,json.loads(raw),observed_at_utc=t,
+                                   stats_payload=independent_stats)
+         else:
