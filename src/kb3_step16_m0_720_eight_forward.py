@@ -119,6 +119,34 @@ def validate_season(games,*,current):
     return {"all":len(games),"finished":past,"not_started":future,
             "teams":len(teams),"id_sha256":hashobj(sorted(ids))}
 
+def historical_phase_id_inventory(receipts):
+    """Exact provider IDs for NED/BEL preliminary phase adjudication.
+
+    Stage labels are source-observed only; unknown labels remain NULL, never
+    inferred from chronological order or duplicate matchups. No new API.
+    """
+    out={}
+    for country in ("NED","BEL"):
+        key="pitchapi:m0720:fixtures:"+country+":"+PREVIOUS
+        selected=[r for r in receipts if r.get("resource")==key]
+        require(len(selected)==1,"HISTORIC_PHASE_FIXTURES_NOT_UNIQUE_"+country)
+        games=selected[0]["payload"]["matches"]
+        require(len({m["id"] for m in games})==len(games),"HISTORIC_PHASE_DUPLICATE_ID")
+        items=[]
+        for m in games:
+            labels={f:m.get(f) if isinstance(m.get(f),(str,int)) else None
+                    for f in ("round","stage","phase","competition_phase")}
+            items.append({"fixture_id":m["id"],"kickoff_utc":m["time_utc"],
+                          "home_team_id":m["home_team"]["id"],
+                          "away_team_id":m["away_team"]["id"],
+                          "provider_stage_hints":labels,
+                          "formal_phase_reviewed":False})
+        out[country]={"native_fixture_rows":len(items),
+             "phase_labels_are_only_source_hints":True,
+             "any_phase_pass_or_training_approval":False,
+             "fixture_rows":items}
+    return out
+
 def make_forecasts(receipts,*,cutoff,params,param_sha,manifest_sha,challenger_engine=None,challenger_sink=None):
     require((challenger_engine is None)==(challenger_sink is None),"CHALLENGER_SINK_PAIR_REQUIRED")
     grouped={}
@@ -145,7 +173,9 @@ def make_forecasts(receipts,*,cutoff,params,param_sha,manifest_sha,challenger_en
             if m["status"] in ("scheduled","not_started","upcoming")
             and m.get("score_home") is None and m.get("score_away") is None
             and cutoff+LEAD<as_utc(m["time_utc"])<=cutoff+HORIZON),
-            key=lambda m:(m["time_utc"],m["id"]))[:FORECAST_LIMIT]
+            key=lambda m:(m["time_utc"],m["id"]))
+        # Apply quota AFTER minimum historical completeness, so unavailable teams
+        # do not starve subsequent valid upcoming fixtures in the 96h window.
         history=[]
         for season,seq,source in ((PREVIOUS,old,src_old),(CURRENT,current,src_now)):
             for m in seq:
@@ -164,6 +194,8 @@ def make_forecasts(receipts,*,cutoff,params,param_sha,manifest_sha,challenger_en
                   "xgh":None,"xga":None,"xgh_source":None,"xga_source":None})
         source_latest=max(as_utc(src_old["completed_at_utc"]),as_utc(src_now["completed_at_utc"]))
         for m in future:
+            if by_league[country]>=FORECAST_LIMIT:
+                break
             target={"fixture_id":m["id"],"home_team_id":m["home_team"]["id"],
                     "away_team_id":m["away_team"]["id"],"season_start_year":2026}
             features=_compose_features(target,list(history),cutoff=cutoff,
@@ -414,6 +446,7 @@ def run(*,mode,client,now=None,db_path=DB,root=SOURCES,public_key=None):
                     "NOT_ALL_NEW_M0_MATCHES_HAVE_TWO_CHALLENGERS")
             extra={"new_forecasts":new,"total_forecasts":total,"coverage":coverage,
                    "season_shapes":season_shapes,
+                   "ned_bel_historical_phase_native_id_review":historical_phase_id_inventory(receipts),
                    "step17_challenger_research":challenger_state,
                    "step17_challengers_are_independent_unfitted_research":True,
                    "step17_challenger_host_artifact_proof_pending":True,

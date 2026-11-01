@@ -186,6 +186,45 @@ def future_xg_coverage(db_path,groups,at):
             "missing_by_country":dict(missing_by_country),
             "research_only_no_fitted_xg_model":True},result
 
+def missing_last5_predecessor_ids(db_path,groups,at):
+    """Identify actual previous-five fixture IDs per team from observed source.
+
+    Read-only diagnostics; not an alternative to true xG, not historical PIT.
+    Excludes future/unfinished/too-fresh predecessors and preserves missing IDs.
+    """
+    with connect(db_path) as db:
+        known={(c,mid):as_utc(observed) for c,mid,observed in db.execute(
+            "SELECT country,provider_match_id,observed_utc FROM observed_native_xg")}
+    output=[]
+    for country in sorted(groups):
+        part=groups[country]
+        for target in part["future"]:
+            if (target.get("status") not in ("scheduled","not_started","upcoming")
+                or target.get("score_home") is not None or target.get("score_away") is not None
+                or not at+LEAD<as_utc(target["time_utc"])<=at+timedelta(hours=CANDIDATE_HOURS)):
+                continue
+            item={"country":country,"target_provider_match_id":target["id"],
+                  "kickoff_utc":target["time_utc"],"teams":{}}
+            for side in ("home_team","away_team"):
+                team=target[side]["id"]
+                actual=sorted((m for m in part["history"] if
+                     m["id"]!=target["id"] and
+                     as_utc(m["time_utc"])+timedelta(hours=3)<=at and
+                     as_utc(m["time_utc"])<as_utc(target["time_utc"]) and
+                     team in (m["home_team"]["id"],m["away_team"]["id"])),
+                     key=lambda m:(m["time_utc"],m["id"]),reverse=True)[:5]
+                missing=[m["id"] for m in actual if
+                    (country,m["id"]) not in known or known[(country,m["id"])]>at]
+                item["teams"][side]={"native_team_id":team,
+                   "actual_last5_provider_ids":[m["id"] for m in actual],
+                   "missing_native_xg_provider_ids":missing,
+                   "fewer_than_five_finished_predecessors":len(actual)<5,
+                   "exact_last5_verified":len(actual)==5 and not missing}
+            item["both_teams_last5_verified"]=all(
+                item["teams"][side]["exact_last5_verified"] for side in ("home_team","away_team"))
+            output.append(item)
+    return output
+
 def run(*,client,db_path=DB,archive=ARCHIVE,now=None,public_key=None):
     now=now or datetime.now(timezone.utc)
     require(now.utcoffset()==timedelta(0),"XG_RUN_UTC_REQUIRED")
@@ -245,6 +284,11 @@ def run(*,client,db_path=DB,archive=ARCHIVE,now=None,public_key=None):
         count=store_samples(staged,candidates)
         cutoff=datetime.now(timezone.utc)
         coverage,_=future_xg_coverage(staged,groups,cutoff)
+        missing_ids=missing_last5_predecessor_ids(staged,groups,cutoff)
+        require(len(missing_ids)==coverage["future_targets_scanned"] and
+                sum(int(x["both_teams_last5_verified"]) for x in missing_ids)==
+                  coverage["complete_last5_both_team_xg"],
+                "XG_MISSING_IDS_AND_STRICT_COVERAGE_DISAGREE")
         report={"schema":"kb3-step17-native-xg-eight-asof-shadow-v1",
          "observed_at_utc":stamp(cutoff),
          "network_calls":calls,"hard_limit_calls":MAX_CALLS,
@@ -255,6 +299,8 @@ def run(*,client,db_path=DB,archive=ARCHIVE,now=None,public_key=None):
          "xg_semantic_errors":dict(semantic_errors),
          "provider_error_types":dict(errors),
          "future_form5_coverage":coverage,
+         "real_missing_last5_predecessor_ids":missing_ids,
+         "missing_id_inventory_source":"SAME_AUTHENTIC_FIXTURE_GROUPS_NO_EXTRA_API",
          "encrypted_source_sha256":sealed["ciphertext_sha256"],
          "source_chain_sha256":sealed["proof"]["final_chain_sha256"],
          "original_provider_published_at_not_known":True,
