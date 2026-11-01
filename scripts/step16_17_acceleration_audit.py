@@ -62,6 +62,10 @@ def audit_m0(db, *, now):
             counts["host_attested_settled"]+=1
         elif k<=now:
             counts["host_attested_kickoff_passed_not_settled"]+=1
+            if k+timedelta(hours=3)<=now:
+                counts["older_than_3h_after_kickoff_not_settled"]+=1
+            else:
+                counts["within_3h_after_kickoff_not_settled"]+=1
         else:
             counts["host_attested_future_awaiting_match"]+=1
     counts["all_forecasts"]=len(rows)
