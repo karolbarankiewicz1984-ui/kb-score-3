@@ -7,6 +7,12 @@ on:
       - tests/test_step15_independent_market_audit.py
       - tests/test_step15_offline_reaudit.py
       - .github/workflows/kb3-step15-offline-recheck.yml
+  push:
+    branches: [repair/step15-independent-poisson-offline-20261030]
+    paths:
+      - .github/workflows/kb3-step15-offline-recheck.yml
+      - scripts/**
+      - tests/**
   workflow_dispatch:
 permissions:
   contents: read
