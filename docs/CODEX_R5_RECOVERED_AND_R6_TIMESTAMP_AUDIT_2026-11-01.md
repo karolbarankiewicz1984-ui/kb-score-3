@@ -21,6 +21,10 @@ Biblioteka plików właściciela zawiera **oba rzeczywiste archiwa, nie tylko ic
 - **Rzetelne ograniczenie testów:** ze względu na **brak niezmienionych zależności w ZIP** użyto izolowanego testowego adaptera `src/kb3_pit_ledger.py` z dokładną semantyką czterech funkcji (`canonical/hexdigest/as_utc/GENESIS`) z aktualnego `main`; w strict stage2 użyto tylko odtworzonych oryginalnych fikstur `shots/stats` z `test_step14_pitchapi_xg_semantics.py`. Te adaptery/fixture nie są wysyłane do produkcji ani nie oznaczają pełnego checkoutu. Na początku niezależny test ujawnił błąd, którego wcześniejsza bardziej liberalna zaślepka nie wykryła. **Nie wykonano pełnych 197/108 regresji na kompletnym repo.**
 - Nie badano realnego provider API. Nie wykonano migracji **kopii rzeczywistej** 3-ligowej bazy SQLite ani porównania wszystkich 73 prognoz po przeniesieniu 57 plików. **Nie można jeszcze scalić**.
 
+## Kontrola rozjazdu od bazy Codex do obecnego main
+
+Pobranie faktycznego GitHub `compare_commits` **`6813af619dbe620d321f233e73d2d107d34f8004` → `727dd78b555cad407ae2ed6a477710501de2e1b3`**: `ahead_by=25` commitów, **19** zmienionych ścieżek (w tym nowe archiwa oraz zmiany w dwóch binarnych SQLite). Zestaw 19 ścieżek porównano z autentycznym wykazem **57** ścieżek `evidence/changed-paths.txt` pierwszej paczki — **0 konfliktów na poziomie identycznej ścieżki**. To dobra przesłanka do trójstronnego importu, ale nie dowodzi zgodności interfejsów ani braku zmian semantyki danych; aktualne binarne SQLite nie mogą być nadpisane starszymi danymi. Wcześniejszy znaleziony FIND-03 potwierdza, że sama zgodność ścieżek nie wystarcza. Cały audit zostaje NO-GO.
+
 ## Odbiór wdrożeniowy po odzyskaniu paczek
 
 1. Odtworzyć pełny aktualny checkout repo na odizolowanym runnerze i bezpiecznie zaimportować **spójne 57 plików R1–R4** oraz R5 + powyższy R6, po kontroli diffów i konfliktów z bieżącym `main`; brak naruszania `data/`, `models/`, sekretów lub chronionego TEST. Samo odzyskanie archiwum w Library nie publikuje jego zawartości do GitHub.
