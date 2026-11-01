@@ -32,7 +32,7 @@ def score_missing_last5(groups,known,at):
         futures=[m for m in part.get("future",())
                  if m.get("status") in ("scheduled","not_started","upcoming")
                  and m.get("score_home") is None and m.get("score_away") is None
-                 and _utc(m["time_utc"])>at+timedelta(minutes=90)]
+                 and at+timedelta(minutes=90)<_utc(m["time_utc"])<=at+timedelta(hours=96)]
         for target in futures:
             kickoff=_utc(target["time_utc"])
             hours=max(0.0,(kickoff-at).total_seconds()/3600.)
@@ -61,6 +61,11 @@ def ranked_eight(groups,known,at,*,budget=8,per_league=1):
     if type(per_league) is not int or not 1<=per_league<=8:
         raise ValueError("XG_PER_LEAGUE_BUDGET_INVALID")
     scores,uses,rows=score_missing_last5(groups,known,at)
+    if budget==0:
+        return [],{"candidates":len(rows),"selected_pairs":0,
+                   "max_provider_calls":17,"score_missing_last5":0,
+                   "no_network":True,"training_allowed":False,
+                   "activated_in_live":False}
     counts=defaultdict(int)
     selected=[]
     for key in sorted(rows,key=lambda k:(-scores[k],-uses[k],
@@ -89,7 +94,10 @@ def projected_last5_coverage(groups,known,at):
                  and _utc(m["time_utc"])+timedelta(hours=3)<=at]
         for target in part.get("future",()):
             kickoff=_utc(target["time_utc"])
-            if kickoff<=at+timedelta(minutes=90):
+            if (target.get("status") not in ("scheduled","not_started","upcoming")
+                or target.get("score_home") is not None
+                or target.get("score_away") is not None
+                or not at+timedelta(minutes=90)<kickoff<=at+timedelta(hours=96)):
                 continue
             scanned+=1
             sides=[]

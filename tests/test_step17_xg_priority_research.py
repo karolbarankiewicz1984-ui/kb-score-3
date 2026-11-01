@@ -61,6 +61,21 @@ class XGPriorityResearchTests(unittest.TestCase):
         self.assertTrue(report["only_a_theoretical_ceiling_not_observed_gain"])
         self.assertEqual(report["additional_provider_calls"],0)
 
+    def test_zero_budget_and_future_horizon_guard(self):
+        hist=[match("past",AT-timedelta(days=2),"A","B")]
+        far=[match("too_far",AT+timedelta(days=9),"A","B","scheduled")]
+        done=[match("finished_target",AT+timedelta(days=2),"A","B","finished")]
+        near=[match("future",AT+timedelta(days=2),"A","B","scheduled")]
+        groups={"ESP":{"history":hist,"future":[far,done,near]}}
+        p,meta=ranked_eight(groups,set(),AT,budget=0)
+        self.assertEqual(p,[])
+        self.assertEqual(meta["max_provider_calls"],17)
+        p,meta=ranked_eight(groups,set(),AT)
+        self.assertEqual(len(p),1)
+        from src.kb3_step17_xg_priority_research import projected_last5_coverage
+        self.assertEqual(projected_last5_coverage(groups,set(),AT)["targets"],1)
+        self.assertTrue(meta["no_network"])
+
     def test_budget_reject_and_no_fake_xg(self):
         with self.assertRaises(ValueError):ranked_eight({},set(),AT,budget=9)
         with self.assertRaises(ValueError):ranked_eight({},set(),AT,per_league=0)
