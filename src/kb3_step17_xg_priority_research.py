@@ -74,3 +74,50 @@ def ranked_eight(groups,known,at,*,budget=8,per_league=1):
        "max_provider_calls":17+2*budget,
        "score_missing_last5":sum(scores[(c,m["id"])] for c,m in selected),
        "no_network":True,"training_allowed":False,"activated_in_live":False}
+
+def projected_last5_coverage(groups,known,at):
+    """Strict counterfactual coverage if listed prior xG pairs were already observed.
+
+    No call, no provider-success claim, no backdating, no skipping missing games.
+    """
+    at=_utc(at)
+    scanned=complete=0
+    for country in COUNTRIES:
+        part=groups.get(country,{})
+        history=[m for m in part.get("history",())
+                 if m.get("status")=="finished"
+                 and _utc(m["time_utc"])+timedelta(hours=3)<=at]
+        for target in part.get("future",()):
+            kickoff=_utc(target["time_utc"])
+            if kickoff<=at+timedelta(minutes=90):
+                continue
+            scanned+=1
+            sides=[]
+            for side in ("home_team","away_team"):
+                tid=target[side]["id"]
+                prior=sorted((m for m in history
+                   if _utc(m["time_utc"])<kickoff
+                   and tid in (m["home_team"]["id"],m["away_team"]["id"])),
+                   key=lambda m:(m["time_utc"],m["id"]),reverse=True)[:5]
+                sides.append(len(prior)==5 and
+                             all((country,m["id"]) in known for m in prior))
+            complete+=int(all(sides))
+    return {"targets":scanned,"strict_complete_last5":complete}
+
+def compare_counterfactual_selection(groups,known,at,baseline,experimental):
+    """Ceiling-only comparison: assumes EVERY selected shots/stats pair validates."""
+    original=projected_last5_coverage(groups,known,at)
+    old=projected_last5_coverage(groups,
+        known|{(country,m["id"]) for country,m in baseline},at)
+    new=projected_last5_coverage(groups,
+        known|{(country,m["id"]) for country,m in experimental},at)
+    if original["targets"]!=old["targets"] or old["targets"]!=new["targets"]:
+        raise ValueError("PROJECTED_TARGET_SCOPE_CHANGED")
+    return {"current_verified_last5":original["strict_complete_last5"],
+            "baseline_if_all_selected_xg_pairs_validate":old["strict_complete_last5"],
+            "experimental_if_all_selected_xg_pairs_validate":new["strict_complete_last5"],
+            "counterfactual_gain_if_all_valid":new["strict_complete_last5"]-old["strict_complete_last5"],
+            "targets":original["targets"],
+            "only_a_theoretical_ceiling_not_observed_gain":True,
+            "additional_provider_calls":0,
+            "model_fit_or_promotion":False}
