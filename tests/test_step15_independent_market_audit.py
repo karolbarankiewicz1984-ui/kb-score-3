@@ -51,5 +51,47 @@ class IndependentStep15AuditMath(unittest.TestCase):
             _labels(2.0,1)
 
 
+    def test_reject_renormalized_but_wrong_over_25(self):
+        # Previously complement and monotonicity would not detect this.
+        p=markets_from_lambdas(1.45,1.15)
+        p["p_over"]["2.5"]+=0.01
+        p["p_under"]["2.5"]-=0.01
+        with self.assertRaisesRegex(IndependentAuditError,"JOINT_POISSON_MISMATCH"):
+            _check_market(p)
+
+    def test_reject_btts_pair_even_when_complemented(self):
+        p=markets_from_lambdas(1.45,1.15)
+        p["p_btts"]["yes"]+=0.001
+        p["p_btts"]["no"]-=0.001
+        with self.assertRaisesRegex(IndependentAuditError,"JOINT_POISSON_MISMATCH"):
+            _check_market(p)
+
+    def test_reject_1x2_pair_even_when_normalized(self):
+        p=markets_from_lambdas(1.45,1.15)
+        p["p_1x2"]["1"]+=0.001
+        p["p_1x2"]["2"]-=0.001
+        with self.assertRaisesRegex(IndependentAuditError,"JOINT_POISSON_MISMATCH"):
+            _check_market(p)
+
+    def test_reject_wrong_top5_probability_with_correct_ranking(self):
+        p=markets_from_lambdas(1.45,1.15)
+        p["top_5_scorelines"][0]["probability"]+=0.00001
+        with self.assertRaisesRegex(IndependentAuditError,"JOINT_POISSON_MISMATCH"):
+            _check_market(p)
+
+
+    def test_reject_compensated_team_total_without_local_contradiction(self):
+        p=markets_from_lambdas(1.45,1.15)
+        p["team_goals"]["home"]["exact"]["1"]+=0.002
+        p["team_goals"]["home"]["at_least"]["2+"]-=0.002
+        p["team_goals"]["home"]["at_least"]["3+"]-=0.002
+        with self.assertRaisesRegex(IndependentAuditError,"JOINT_POISSON_MISMATCH"):
+            _check_market(p)
+
+    def test_stress_independent_joint_at_limits(self):
+        for h,a in ((1e-6,1e-6),(8.,8.),(8.,1e-6),(1.45,1.15)):
+            with self.subTest(h=h,a=a):
+                self.assertTrue(_check_market(markets_from_lambdas(h,a)))
+
 if __name__=="__main__":
     unittest.main()
