@@ -1,0 +1,66 @@
+name: KB3 Step16-19 four parallel research streams (offline only)
+on:
+  push:
+    branches: [research/step16-19-four-workstreams-20261101]
+    paths:
+      - src/kb3_step17_xg_capture.py
+      - src/kb3_step17_xg_priority_research.py
+      - src/kb3_step16_phase_validation_research.py
+      - src/kb3_step19_odds_research.py
+      - scripts/step16_next_cycle_gate.py
+      - tests/test_step17_xg_capture.py
+      - tests/test_step17_xg_priority_research.py
+      - tests/test_step16_phase_validation_research.py
+      - tests/test_step19_odds_research.py
+      - tests/test_step16_next_cycle_gate.py
+      - .github/workflows/kb3-step16-19-parallel-prep.yml
+  pull_request:
+    paths:
+      - src/kb3_step17_xg_capture.py
+      - src/kb3_step17_xg_priority_research.py
+      - src/kb3_step16_phase_validation_research.py
+      - src/kb3_step19_odds_research.py
+      - scripts/step16_next_cycle_gate.py
+      - tests/test_step17_xg_capture.py
+      - tests/test_step17_xg_priority_research.py
+      - tests/test_step16_phase_validation_research.py
+      - tests/test_step19_odds_research.py
+      - tests/test_step16_next_cycle_gate.py
+      - .github/workflows/kb3-step16-19-parallel-prep.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  real-db-and-research-qa-without-paid-api:
+    runs-on: ubuntu-latest
+    timeout-minutes: 18
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install existing crypto for native receipt test (no key and no provider API)
+        run: python -m pip install --disable-pip-version-check 'cryptography>=42,<47'
+      - name: Compile and execute all offline regression and rejection tests
+        run: |
+          python -m compileall -q scripts/step16_next_cycle_gate.py src/kb3_step16_phase_validation_research.py src/kb3_step17_xg_priority_research.py src/kb3_step19_odds_research.py
+          python -m unittest discover -s tests -p 'test_step16_next_cycle_gate.py' -v
+          python -m unittest discover -s tests -p 'test_step16_phase_validation_research.py' -v
+          python -m unittest discover -s tests -p 'test_step17_xg_priority_research.py' -v
+          python -m unittest discover -s tests -p 'test_step19_odds_research.py' -v
+          python -m unittest discover -s tests -p 'test_step17_xg_capture.py' -v
+      - name: Verify current immutable actual SQLite, no false after-merge claims
+        run: |
+          python -m scripts.step16_next_cycle_gate --out /tmp/KB3_NEXT_CYCLE_GATE.json
+          python -m src.kb3_step16_phase_validation_research --source data/pit_sidecar/m0_720_eight/2026-11-01/forecast/RECEIPT.json --out /tmp/KB3_HISTORIC_NED_BEL_GATE.json
+          git diff --exit-code -- data/ models/ config/
+      - uses: actions/upload-artifact@v4
+        with:
+          name: KB3_STEP16_19_FOUR_WORKSTREAMS_READONLY_GATES
+          path: |
+            /tmp/KB3_NEXT_CYCLE_GATE.json
+            /tmp/KB3_HISTORIC_NED_BEL_GATE.json
+          retention-days: 30
+          if-no-files-found: error
