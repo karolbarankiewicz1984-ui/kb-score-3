@@ -261,6 +261,19 @@ def run(*,client,db_path=DB,archive=ARCHIVE,now=None,public_key=None):
     cutoff=datetime.now(timezone.utc)
     grouped=fixture_groups(receipts)
     picks,groups=rank_sources(grouped,known,cutoff)
+    # Actual paid API selection remains the unmodified baseline selector.
+    # Side-by-side hypothetical shadow is computed from SAME authentic fixtures;
+    # it does not obtain extra data or claim observed experimental results.
+    from src.kb3_step17_xg_priority_research import (
+        ranked_eight,compare_counterfactual_selection)
+    priority_picks,priority_meta=ranked_eight(
+        groups,known,cutoff,budget=8,per_league=MAX_PAIRS_PER_LEAGUE)
+    theoretical=compare_counterfactual_selection(
+        groups,known,cutoff,picks,priority_picks)
+    require(priority_meta["max_provider_calls"]<=MAX_CALLS
+        and len(priority_picks)<=8,"RESEARCH_XG_SHADOW_BUDGET_EXCEEDED")
+    baseline_ids={(c,m["id"]) for c,m in picks}
+    alternative_ids={(c,m["id"]) for c,m in priority_picks}
     candidates=[];semantic_errors=Counter()
     for c,m in picks:
         mid=m["id"]
@@ -299,6 +312,20 @@ def run(*,client,db_path=DB,archive=ARCHIVE,now=None,public_key=None):
          "xg_semantic_errors":dict(semantic_errors),
          "provider_error_types":dict(errors),
          "future_form5_coverage":coverage,
+         "last5_priority_shadow_comparison":{
+             "source":"IDENTICAL_REAL_FIXTURES_SAME_OBSERVATION_CUTOFF",
+             "baseline_selected_count":len(picks),
+             "priority_selected_count":len(priority_picks),
+             "overlap_exact_native_pairs":len(baseline_ids & alternative_ids),
+             "priority_different_native_pairs":len(alternative_ids-baseline_ids),
+             "theoretical_if_all_success":theoretical,
+             "priority_meta":priority_meta,
+             "observed_baseline_complete_last5_after_real_capture":
+                  coverage["complete_last5_both_team_xg"],
+             "priority_real_outcome_verified":False,
+             "priority_live_activated":False,
+             "additional_api_calls":0,
+             "research_not_training":True},
          "real_missing_last5_predecessor_ids":missing_ids,
          "missing_id_inventory_source":"SAME_AUTHENTIC_FIXTURE_GROUPS_NO_EXTRA_API",
          "encrypted_source_sha256":sealed["ciphertext_sha256"],
