@@ -6,6 +6,8 @@ from scripts.step14_m1r_train_real_catboost_720_evaluate_374 import SOURCE_MATRI
 from scripts.step14_elo_2023_2026_native_replay_and_extended_crosswalk import _valid_safe
 from scripts.step14_full_1140_native_public_pit_lineage import norm,check_season,to_plain
 from src.kb3_step14_bridge import EXPECTED_FEATURES,EXPECTED_MISSING
+from src.kb3_step13_baseline import forecast
+from src.kb3_step13_retrospective import _train_poisson
 
 SEASONS=("2023/2024","2024/2025")
 VARIANTS={"BASE_FIXED":dict(PARAMS),
@@ -67,7 +69,8 @@ def obtain_train_labels(key,root,client_factory=None):
             require(m["status"]=="finished" and mid in allowed and
                 m["time_utc"]==allowed[mid] and mid not in labels and
                 m["home_team"]["id"]!=m["away_team"]["id"],"TRAIN_MATCH_OR_TIME_CHANGED")
-            labels[mid]=_as_label(m["score_home"],m["score_away"])
+            labels[mid]={"outcome":_as_label(m["score_home"],m["score_away"]),
+                         "home_goals":m["score_home"],"away_goals":m["score_away"]}
     require(set(labels)==set(allowed),"LABEL_SET_NOT_TRAIN_ONLY")
     return labels,calls
 def folds(rows):
@@ -115,10 +118,10 @@ def run(root=ROOT,labels_override=None,client_factory=None):
     else:labels,calls=labels_override,0
     require(set(r["fixture_id"] for r in rows)<=set(labels),"MISSING_TRAIN_LABELS")
     from catboost import CatBoostClassifier,Pool
-    output=[];pooled={x:[] for x in VARIANTS}
+    output=[];pooled={x:[] for x in (*VARIANTS,"M0_INNER_FOLD_TRAIN_ONLY")}
     for i,(train,test) in enumerate(folds(rows),1):
-        ytrain=[labels[r["fixture_id"]] for r in train]
-        ytest=[labels[r["fixture_id"]] for r in test]
+        ytrain=[labels[r["fixture_id"]]["outcome"] for r in train]
+        ytest=[labels[r["fixture_id"]]["outcome"] for r in test]
         require(set(ytrain)=={"1","X","2"},"FOLD_NOT_THREE_CLASSES")
         variants={}
         for name,config in VARIANTS.items():
@@ -135,12 +138,26 @@ def run(root=ROOT,labels_override=None,client_factory=None):
             variants[name]={"metrics":scores(pairs),"feature_count":len(names),
                            "feature_names_sha256":hashlib.sha256(
                               json.dumps(names).encode()).hexdigest()}
+        # Fair M0: refit only on preceding TRAIN records and goals for this fold.
+        poisson_training=[(
+          r["m1r_BASE_121_numeric_features"]["elo_home_minus_away"]/400.0,
+          labels[r["fixture_id"]]["home_goals"],labels[r["fixture_id"]]["away_goals"])
+          for r in train]
+        m0_params=_train_poisson(poisson_training)
+        m0_pairs=[(
+          forecast(r["m1r_BASE_121_numeric_features"]["home_elo"],
+                   r["m1r_BASE_121_numeric_features"]["away_elo"],
+                   m0_params)["p_1x2"],labels[r["fixture_id"]]["outcome"])
+          for r in test]
+        pooled["M0_INNER_FOLD_TRAIN_ONLY"].extend(m0_pairs)
+        variants["M0_INNER_FOLD_TRAIN_ONLY"]={
+          "metrics":scores(m0_pairs),"poisson_fit_only_prior_inner_train":True}
         output.append({"fold":i,"train_n":len(train),"inner_eval_n":len(test),
                        "train_last_utc":train[-1]["kickoff_utc"],
                        "eval_first_utc":test[0]["kickoff_utc"],
                        "eval_last_utc":test[-1]["kickoff_utc"],
                        "variants":variants})
-    agg={name:scores(pooled[name]) for name in VARIANTS}
+    agg={name:scores(pooled[name]) for name in (*VARIANTS,"M0_INNER_FOLD_TRAIN_ONLY")}
     result={"schema":"kb3-m1r-train-only-chronological-three-fold-research-v1",
             "status":"TRAIN_ONLY_RESEARCH_NO_CHAMPION",
             "training_population":720,"native_training_only_api_requests":calls,
@@ -148,6 +165,7 @@ def run(root=ROOT,labels_override=None,client_factory=None):
             "original_M0_or_M1_modified":False,
             "source_class":"B_RECONSTRUCTED_PREDECESSORS_NOT_HISTORIC_PROVIDER_PIT",
             "fixed_variants":list(VARIANTS),"source_sha256":source_sha,
+            "m0_comparator_fit_only_each_earlier_inner_training_fold":True,
             "folds":output,"aggregate":agg,
             "research_order_only":sorted(VARIANTS,key=lambda n:agg[n]["log_loss"])}
     result["receipt_sha256"]=hashlib.sha256(
