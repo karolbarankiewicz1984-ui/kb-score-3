@@ -34,6 +34,27 @@ def file_sha256(p):
             h.update(chunk)
     return h.hexdigest()
 
+def three_way_count(db,tables):
+    """SQL intersection, not a minimum/union of marginal pair counts."""
+    required={"forecasts","settlements","m0720_github_push_proofs",
+              "step17_frozen_challengers","step17_challenger_host_proofs"}
+    if not required <= set(tables):
+        return 0
+    return db.execute("""
+        SELECT COUNT(DISTINCT f.id)
+        FROM forecasts f
+        JOIN settlements s ON s.forecast_id=f.id
+        JOIN m0720_github_push_proofs p ON p.forecast_id=f.id
+        JOIN step17_frozen_challengers elo
+          ON elo.source_m0_forecast_sha256=f.id AND elo.engine='ELO_ONLY'
+        JOIN step17_challenger_host_proofs ep
+          ON ep.challenger_sha256=elo.challenger_sha256
+        JOIN step17_frozen_challengers cat
+          ON cat.source_m0_forecast_sha256=f.id AND cat.engine='CATBOOST_NO_XG'
+        JOIN step17_challenger_host_proofs cp
+          ON cp.challenger_sha256=cat.challenger_sha256
+    """).fetchone()[0]
+
 def assess(db_path=DB):
     source=Path(db_path).resolve()
     if not source.is_file():
@@ -56,24 +77,7 @@ def assess(db_path=DB):
             if "step17_frozen_challengers" in tables else 0
         host_children=db.execute("SELECT COUNT(*) FROM step17_challenger_host_proofs").fetchone()[0] \
             if "step17_challenger_host_proofs" in tables else 0
-        required={"step17_frozen_challengers","step17_challenger_host_proofs"}
-        if required <= tables:
-            all_three=db.execute("""
-                SELECT COUNT(DISTINCT f.id)
-                FROM forecasts f
-                JOIN settlements s ON s.forecast_id=f.id
-                JOIN m0720_github_push_proofs p ON p.forecast_id=f.id
-                JOIN step17_frozen_challengers elo
-                  ON elo.source_m0_forecast_sha256=f.id AND elo.engine='ELO_ONLY'
-                JOIN step17_challenger_host_proofs ep
-                  ON ep.challenger_sha256=elo.challenger_sha256
-                JOIN step17_frozen_challengers cat
-                  ON cat.source_m0_forecast_sha256=f.id AND cat.engine='CATBOOST_NO_XG'
-                JOIN step17_challenger_host_proofs cp
-                  ON cp.challenger_sha256=cat.challenger_sha256
-            """).fetchone()[0]
-        else:
-            all_three=0
+        all_three=three_way_count(db,tables)
     # The existing comparator's schema ensure() writes only into an isolated copy,
     # never to the frozen original or forecasts collected by GitHub Actions.
     with tempfile.TemporaryDirectory(prefix="kb3-step17-readonly-") as folder:
