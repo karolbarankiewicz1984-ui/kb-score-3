@@ -18,7 +18,7 @@
 - `tests/test_step17_xg_priority_research.py` zawiera cztery izolowane testy: ograniczenie 8 lig/33 call, preferencja brakującej niemal kompletnej serii, odmowa zbyt świeżych i nieukończonych źródeł, twarde strażniki budżetu. Prototypowa równoważna wersja tych testów lokalnie 4/4 PASS (Python 3.13).
 - Harmonogram `06:41 UTC`, limit 33, nazwy ośmiu lig, oryginalne archiwum, blokady przedmeczowe, trigger `main`, wykluczanie ENG, nienaruszalność `data/`/`models/` bez zmian.
 - Pierwsza zdalna [próba GitHub Actions #41284536791](https://github.com/karolbarankiewicz1984-ui/kb-score-3/actions/runs/41284536791) — `offline-xg-semantic-and-time-audit=SUCCESS`, `real-eight-native-xg-source=SKIPPED`, zatem **0 nowego API przez PR**. Obejmuje stare testy `test_step17_xg_capture.py` na zmienionej logice `run()`, lecz nie osobny czterotestowy nowy plik.
-- Aby sprawdzić też nowy test na runnerze, dopisano go do istniejącego offline CI i do ścieżek triggerów workflow, commit `1a4d61ead0bdf81818aa8db6dcf318e989651af8`. Wynik nowego SHA należy potwierdzić oddzielnie.
+- Nowy [GitHub Actions #41284624705](https://github.com/karolbarankiewicz1984-ui/kb-score-3/actions/runs/41284624705), commit `1a4d61ead0bdf81818aa8db6dcf318e989651af8`: **offline-xg-semantic-and-time-audit SUCCESS**, w logach potwierdzone **4/4** nowych `test_step17_xg_priority_research.py`, **4/4** integracyjnych `test_step17_xg_capture.py`, **2/2** bramki xG oraz dalsze testy semantyki; `real-eight-native-xg-source SKIPPED`. Brak aktywności dostawcy i żadnych kosztów API w tym przebiegu. Komentarz nie upoważnia automatycznie do merge.
 
 ## Bramka przed ewentualnym połączeniem z produkcją
 
