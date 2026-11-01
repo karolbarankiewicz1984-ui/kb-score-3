@@ -15,6 +15,7 @@ def main():
     key=os.environ.get("PITCHAPI_API_KEY","")
     if not key:raise SystemExit("PITCHAPI_SECRET_NOT_CONFIGURED")
     now=datetime.now(timezone.utc)
+    print("M0_720_RESEARCH_EXECUTION_INTENT",json.dumps({"mode":args.mode,"utc_day":now.date().isoformat(),"research_only":True,"protected_english_test_access":False},sort_keys=True))
     if args.mode=="forecast":
         existing=FORECASTS/now.date().isoformat()/"FROZEN_M0_720_EIGHT.json"
         if existing.is_file():

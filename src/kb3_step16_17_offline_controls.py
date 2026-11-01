@@ -11,6 +11,7 @@ import math
 
 CLASSES = ("1", "X", "2")
 ENGINES = ("M0_ELO_POISSON_720TRAIN", "ELO_ONLY", "CATBOOST_NO_XG")
+ALLOWED_LEAGUES = frozenset(("ESP", "ITA", "GER", "FRA", "NED", "BEL", "TUR", "POL"))
 
 class OfflineGateError(ValueError):
     pass
@@ -104,7 +105,11 @@ def compare_three_by_league(games):
     totals = Counter()
     missing = defaultdict(Counter)
     matched = defaultdict(list)
+    model_versions = {}
     for g in games:
+        require(g["league"] in ALLOWED_LEAGUES and
+                g.get("protected_test_opened", False) is False,
+                "LEAGUE_OR_PROTECTED_TEST_FORBIDDEN")
         key = (g["league"], g["fixture_id"])
         require(key not in seen, "DUPLICATE_FIXTURE")
         seen.add(key)
@@ -118,6 +123,12 @@ def compare_three_by_league(games):
         for e in ENGINES:
             if e not in preds:
                 missing[g["league"]][e] += 1
+            else:
+                version = preds[e]["model_version"]
+                require(bool(version), "UNVERSIONED_ENGINE")
+                if e in model_versions:
+                    require(model_versions[e] == version, "MIXED_ENGINE_VERSIONS")
+                model_versions[e] = version
         if not all(e in preds for e in ENGINES):
             continue
         versions, snapshots, cutoffs, parents = [], set(), set(), set()
@@ -168,6 +179,7 @@ def compare_three_by_league(games):
                                    else "READY_FOR_CLUSTER_BOOTSTRAP"),
         }
     return {"per_league": by_league,
+            "candidate_versions": dict(sorted(model_versions.items())),
             "matched_three_n": sum(len(x) for x in matched.values()),
             "excluded_missing_n": len(games)-sum(len(x) for x in matched.values()),
             "winner_auto_selected": False, "gate17": "PENDING"}

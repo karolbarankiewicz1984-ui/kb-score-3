@@ -1,0 +1,167 @@
+{
+  "calibrator_auto_fitted": false,
+  "countries": [
+    "ESP",
+    "ITA",
+    "GER",
+    "FRA",
+    "NED",
+    "BEL",
+    "TUR",
+    "POL"
+  ],
+  "coverage": {
+    "BEL": 5,
+    "ESP": 5,
+    "FRA": 5,
+    "GER": 2,
+    "ITA": 7,
+    "NED": 4,
+    "POL": 3,
+    "TUR": 5
+  },
+  "existing_three_league_shadow_database_modified": false,
+  "gate16": "PENDING",
+  "historic_native_PIT_proven": false,
+  "independent_first_repo_publication_before_kickoff_proven": false,
+  "league_count": 8,
+  "manifest_sha256": "add298d85ec2957f657bf6a6765cc093b284119bb2f45e001278bfd0c90da8bb",
+  "mode": "forecast",
+  "model_version": "M0_ELO_POISSON_RESEARCH_720TRAIN_V1",
+  "network_calls": 17,
+  "new_forecasts": 2,
+  "original_2026_27_Premier_League_TEST_accessed": false,
+  "params_sha256": "55310f0e1dd3842e6d876069ef21b1380901b3a6cc6884cf6ec6ea351a5812d1",
+  "production_approved": false,
+  "report_sha256": "ad2ae2552b1656314de250e27fd7314bef779cd2147a6e8c719b06702e58793e",
+  "run_utc": "2026-11-01T07:39:49.720164Z",
+  "schema": "kb3-step16-8league-M0-720-TRAIN-forward-v1",
+  "season_shapes": {
+    "BEL/2025/2026": {
+      "all": 313,
+      "finished": 313,
+      "id_sha256": "790c4a6a6927c04f7ef6305343acffbec57a11696cb0d9da2da6adc6e8bca233",
+      "not_started": 0,
+      "teams": 16
+    },
+    "BEL/2026/2027": {
+      "all": 306,
+      "finished": 85,
+      "id_sha256": "2413d8a96708966d4c63ba1235c16891381ad6b112e4deeb1ac9c18b576f52b2",
+      "not_started": 221,
+      "teams": 18
+    },
+    "ESP/2025/2026": {
+      "all": 380,
+      "finished": 380,
+      "id_sha256": "e918e622287ff6c23879bf25fc764b3caebb436f5ced9a39e99a6286b3a5ce26",
+      "not_started": 0,
+      "teams": 20
+    },
+    "ESP/2026/2027": {
+      "all": 380,
+      "finished": 104,
+      "id_sha256": "685d7fc13dc9630e59e35c3bfffb15b91faa3ca79e2f4b4d9e19aba63091228d",
+      "not_started": 276,
+      "teams": 20
+    },
+    "FRA/2025/2026": {
+      "all": 306,
+      "finished": 306,
+      "id_sha256": "fdc6f8aa7cd9d8877381b5b081c852a9f365f4e1a01677fefe560ceb9a1e09ca",
+      "not_started": 0,
+      "teams": 18
+    },
+    "FRA/2026/2027": {
+      "all": 306,
+      "finished": 76,
+      "id_sha256": "e71286d789ee8cc498f65440c3fd375ad35ebc29cdb394ef037ed43e8e092e4d",
+      "not_started": 230,
+      "teams": 18
+    },
+    "GER/2025/2026": {
+      "all": 306,
+      "finished": 306,
+      "id_sha256": "5e616cd18b64efca6d4c4757f4ec73ce1375a3ae7573ba40cf33fa90c41ca923",
+      "not_started": 0,
+      "teams": 18
+    },
+    "GER/2026/2027": {
+      "all": 306,
+      "finished": 70,
+      "id_sha256": "ef788009f79db1fcacdd0eb0e20d4ad30a26005fc38cf87cb8a49f9628374170",
+      "not_started": 236,
+      "teams": 18
+    },
+    "ITA/2025/2026": {
+      "all": 380,
+      "finished": 380,
+      "id_sha256": "5a8d27b0f0b94e2452a05554d8c1d06ff0b547b06ed4db953e81332aa92ca75e",
+      "not_started": 0,
+      "teams": 20
+    },
+    "ITA/2026/2027": {
+      "all": 380,
+      "finished": 93,
+      "id_sha256": "c8db2f527e201ff76021fc7d1cedf9234a0a080115e22bab927fefc4abfc5a5b",
+      "not_started": 287,
+      "teams": 20
+    },
+    "NED/2025/2026": {
+      "all": 309,
+      "finished": 309,
+      "id_sha256": "004d68e5267f1ef68f520b95506bbffb6ab3f96aff8e9374b4d6b449c6c06c31",
+      "not_started": 0,
+      "teams": 18
+    },
+    "NED/2026/2027": {
+      "all": 306,
+      "finished": 94,
+      "id_sha256": "955f2a9441b3dd7c604edcd8a7128cf5d984d1ade874c184823b28dce95018bd",
+      "not_started": 212,
+      "teams": 18
+    },
+    "POL/2025/2026": {
+      "all": 306,
+      "finished": 306,
+      "id_sha256": "9f3d02dfbfdb4037a9019789003ed2ecaab0489505cb46f4260f37c70c6506f5",
+      "not_started": 0,
+      "teams": 18
+    },
+    "POL/2026/2027": {
+      "all": 306,
+      "finished": 112,
+      "id_sha256": "e68e2753d5b8bff86b66da3c95e2af7ea1c1bd4197f8d0d698476409865b3e34",
+      "not_started": 194,
+      "teams": 18
+    },
+    "TUR/2025/2026": {
+      "all": 306,
+      "finished": 306,
+      "id_sha256": "e79147c5a77a213de25b6606c3b184feb6201d4520a5c676f95ef69a142e79b5",
+      "not_started": 0,
+      "teams": 18
+    },
+    "TUR/2026/2027": {
+      "all": 306,
+      "finished": 85,
+      "id_sha256": "7725ce7e47f1b3d3300e57e5bbcce5c6e9ff1d9f0d3052f20b46b5aaff3c91d6",
+      "not_started": 221,
+      "teams": 18
+    }
+  },
+  "source_chain_sha256": "ea792cb0526afb322a4b47332caddff2d115d79944d40aff24b777955649d495",
+  "source_cipher_sha256": "a5faac6b5d95c12a7b2df2f9002784bc7df72648975dd635c97bf512b7ea4d43",
+  "source_first_published_by_provider_proven": false,
+  "step17_challenger_host_artifact_proof_pending": true,
+  "step17_challenger_research": {
+    "new_challengers": 4,
+    "new_common_fixture_pairs": 2,
+    "old_m0_not_backfilled": 68,
+    "total_challengers": 4,
+    "trained_720_model_sha256": "07af285ff9dd45fa13dd54fd5e805270aff469434955cce998b601875f8fdab8"
+  },
+  "step17_challengers_are_independent_unfitted_research": true,
+  "step17_gate": "PENDING_STEP16_AND_FULL_FAIR_BENCHMARK",
+  "total_forecasts": 75
+}

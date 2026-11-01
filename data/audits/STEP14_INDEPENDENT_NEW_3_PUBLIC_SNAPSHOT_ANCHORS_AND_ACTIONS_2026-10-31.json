@@ -1,0 +1,147 @@
+{
+  "schema": "kb3-step14-independent-new-public-historic-snapshots-and-actions-recheck-2026-10-31-v1",
+  "audit_date_utc": "2026-10-31",
+  "mode": "APPEND_ONLY_VERIFIED_PUBLIC_HISTORIC_EVIDENCE_NO_ORIGINAL_MODEL_FIT",
+  "repository_head_examined": "5c095957eabd0a6dbdb3e7b75991a58be8626008",
+  "external_public_source_repository": "olbauday/FPL-Core-Insights",
+  "method": "Independent GitHub REST actions/runs/{id} server metadata plus fetch_file exact historic commit/path; CSV column/row, unique ID, league and kickoff before witness checks. Source date proves commit existed by server run time, not original upstream PitchAPI xG publication.",
+  "new_external_historic_publication_witnesses": [
+    {
+      "run_id": 18809064761,
+      "run_created_at_utc": "2025-10-25T22:04:56Z",
+      "run_event": "schedule",
+      "run_conclusion": "success",
+      "run_branch": "main",
+      "head_sha": "fcbb0e3a6090cff4b839cf405c04afacc338e34f",
+      "source_path": "data/2025-2026/By Gameweek/GW8/matches.csv",
+      "source_blob_sha": "0407363d0b15d8c5cce37d80af4e8acc9e3c58df",
+      "csv_rows": 10,
+      "premier_league_rows": 10,
+      "other_competition_rows": 0,
+      "distinct_premier_league_match_ids": 10,
+      "premier_league_rows_with_both_finished_goals": 10,
+      "premier_league_rows_with_both_numeric_xg": 10,
+      "latest_source_kickoff_utc": "2025-10-20T19:00:00Z",
+      "all_source_kickoffs_before_witness": true
+    },
+    {
+      "run_id": 20400663316,
+      "run_created_at_utc": "2025-12-20T22:05:36Z",
+      "run_event": "schedule",
+      "run_conclusion": "success",
+      "run_branch": "main",
+      "head_sha": "c4022fb14352c3745be072c05df0f15af4021aab",
+      "source_path": "data/2025-2026/By Gameweek/GW16/matches.csv",
+      "source_blob_sha": "8a83c32249acae136acf400179cf394dd05af3b3",
+      "csv_rows": 19,
+      "premier_league_rows": 10,
+      "other_competition_rows": 9,
+      "distinct_premier_league_match_ids": 10,
+      "premier_league_rows_with_both_finished_goals": 10,
+      "premier_league_rows_with_both_numeric_xg": 10,
+      "latest_source_kickoff_utc": "2025-12-15T20:00:00Z",
+      "all_source_kickoffs_before_witness": true,
+      "warning": "Nine UEFA club-competition rows in the same GW file MUST NOT be joined as EPL. Strict fixture/competition filters required."
+    },
+    {
+      "run_id": 22243070581,
+      "run_created_at_utc": "2026-02-20T22:07:25Z",
+      "run_event": "schedule",
+      "run_conclusion": "success",
+      "run_branch": "main",
+      "head_sha": "f6cfdb3d07d731f28be7712252220a0cb4582cdb",
+      "source_path": "data/2025-2026/By Gameweek/GW26/matches.csv",
+      "source_blob_sha": "2f7e4bdb479e3081ea62e85c0522208cfa18f579",
+      "csv_rows": 11,
+      "premier_league_rows": 11,
+      "other_competition_rows": 0,
+      "distinct_premier_league_match_ids": 11,
+      "premier_league_rows_with_both_finished_goals": 11,
+      "premier_league_rows_with_both_numeric_xg": 11,
+      "latest_source_kickoff_utc": "2026-02-18T20:00:00Z",
+      "all_source_kickoffs_before_witness": true
+    }
+  ],
+  "new_public_source_rows_with_prior_result_and_alternative_xg": 31,
+  "note_on_31": "31 source match rows, NOT 31 original target-match native-PIT certifications; target matching, predecessor lineage, per-feature cutoff and provider semantic equality have not been established for these rows.",
+  "previous_external_witnesses_independently_rechecked_again": [
+    {
+      "run_id": 17822709032,
+      "head_sha": "35932486961bb9a7eb8fbb710ad33ec21a28b1da",
+      "source_blob_sha": "690ad3b2cbe161ded7b9ef4b8ace3c75b047991e",
+      "result": "run head success and exact historic blob SHA match"
+    },
+    {
+      "run_id": 19175468717,
+      "head_sha": "173bd03f01a9808dbbcf9c42e8ad1112b63429ac",
+      "source_blob_sha": "9f0959f31380a7b8393b6aabb58be356ebcdb0e1",
+      "result": "run head success and exact historic blob SHA match"
+    },
+    {
+      "run_id": 20642294092,
+      "head_sha": "59a4cd678579a38b5937bd07afe5635ed3be9e29",
+      "source_blob_sha": "16adcea1bdb1d85ba116086311d0f48f0aef5410",
+      "result": "run head success and exact historic blob SHA match"
+    },
+    {
+      "run_id": 22965280628,
+      "head_sha": "326b639b21979961dc2a6e1b06db388f8b7431e6",
+      "source_blob_sha": "528763717ebf9b1ec5008f4c5570ac30d02bcfd8",
+      "result": "run head success and exact historic blob SHA match"
+    }
+  ],
+  "current_private_actions_observed": [
+    {
+      "run_id": 41210811237,
+      "created_at_utc": "2026-10-31T14:35:05Z",
+      "workflow": "Step16 M0 720-TRAIN eight-league research",
+      "conclusion": "failure",
+      "failed_job": "anti-leakage-and-data-safety",
+      "downstream_job": "skipped"
+    },
+    {
+      "run_id": 41207696186,
+      "created_at_utc": "2026-10-31T13:54:50Z",
+      "workflow": "M0 shadow postmatch settlement",
+      "conclusion": "failure",
+      "failed_job": "validate",
+      "downstream_job": "skipped"
+    },
+    {
+      "run_id": 41195585159,
+      "created_at_utc": "2026-10-31T11:08:08Z",
+      "workflow": "Step14 public schedule PIT sidecar",
+      "conclusion": "failure",
+      "failed_job": "future-fixtures-only"
+    },
+    {
+      "run_id": 41193422112,
+      "created_at_utc": "2026-10-31T10:36:05Z",
+      "workflow": "Step14 real PitchAPI native observed-at xG",
+      "conclusion": "failure"
+    }
+  ],
+  "current_actions_failure_diagnosis": "Only workflow/job conclusion verified; failed-job log downloads returned 404 BlobNotFound, so billing/rate limit/cause not independently established.",
+  "strict_original_gate_rechecked_from": "data/audits/STEP14_760_TRAIN_FPL_WHOLE_DECIMAL_CORRECTED_M1_FINAL_GATE_2026-10-29.json",
+  "original_contract": {
+    "numeric_fields": 121,
+    "missing_flags": 38,
+    "train_required": 760,
+    "validation_required": 380,
+    "certified_original_full_native_PIT_train": 0,
+    "certified_original_full_native_PIT_validation": 0,
+    "original_PitchAPI_team_xg_first_published_at_receipts_verified": 0,
+    "GATE14": "PENDING",
+    "original_M1_fitted": false,
+    "original_TEST_used": false
+  },
+  "safeguards": [
+    "No keys requested or read",
+    "No original M1 fit",
+    "No original TEST read",
+    "No source substitution of FPL/FotMob xG for native PitchAPI",
+    "No fabricated publication timestamp",
+    "No original model/split change"
+  ],
+  "conclusion": "NEW_HISTORIC_PUBLIC_EXTERNAL_BLOB_WITNESSES_VERIFIED_BUT_ORIGINAL_FULL_PIT_RECONSTRUCTION_NOT_COMPLETE"
+}

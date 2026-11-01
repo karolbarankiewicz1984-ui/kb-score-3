@@ -1,0 +1,86 @@
+{
+  "schema": "kb3-step16-17-offline-control-review-v1",
+  "date": "2026-10-30",
+  "audit_scope": "SOURCE_CODE_STATIC_REVIEW_AND_INDEPENDENT_OFFLINE_CONTROL_VECTORS",
+  "network_calls": 0,
+  "github_actions_runs_triggered_by_audit": 0,
+  "actual_live_settlement_recalculated": false,
+  "repo_unittest_executed": false,
+  "control_vectors_math_executed": true,
+  "control_vectors_results": {
+    "1": {
+      "brier_sum3": 0.26,
+      "log_loss": 0.5108256238
+    },
+    "2": {
+      "brier_sum3": 1.26,
+      "log_loss": 2.302585093
+    },
+    "X": {
+      "brier_sum3": 0.86,
+      "log_loss": 1.2039728043
+    }
+  },
+  "control_vectors_calibration_counting_executed": true,
+  "calibration_threshold_vectors": {
+    "fit_99": "BELOW_THRESHOLD",
+    "fit_100": "THRESHOLD_MET",
+    "holdout_49": "BELOW_THRESHOLD",
+    "holdout_50": "THRESHOLD_MET"
+  },
+  "score_equations_implementation_read": true,
+  "settlement_real_outcomes_sample_count_last_host_confirmed": 0,
+  "m0_frozen_host_confirmed_at_last_audit": 73,
+  "model_parameters_sha256": "55310f0e1dd3842e6d876069ef21b1380901b3a6cc6884cf6ec6ea351a5812d1",
+  "step17_candidate_engines": [
+    "M0_ELO_POISSON_720TRAIN",
+    "ELO_ONLY",
+    "CATBOOST_NO_XG"
+  ],
+  "fair_pairing_required_fields": [
+    "league",
+    "fixture_id",
+    "kickoff_utc",
+    "same_feature_sha256",
+    "same_frozen_at_utc",
+    "same_source_m0_forecast_sha256",
+    "model_version",
+    "original_host_proof"
+  ],
+  "per_league_report_required": true,
+  "league_codes": [
+    "ESP",
+    "ITA",
+    "GER",
+    "FRA",
+    "NED",
+    "BEL",
+    "TUR",
+    "POL"
+  ],
+  "first_live_xg_capture_source": "data/pit_sidecar/step17_native_xg_eight/2026-10-29/XG_READINESS_RECEIPT.json",
+  "verified_native_xg_match_pairs": 7,
+  "checked_native_xg_match_pairs": 8,
+  "native_xg_semantic_rejected_pairs": 1,
+  "xg_future_last5_complete": 0,
+  "xg_future_target_count": 74,
+  "xg_catboost_status": "NOT_TRAINED",
+  "latest_reference_date": "2026-10-29",
+  "source_code_added": [
+    "src/kb3_step16_17_offline_controls.py",
+    "tests/test_step16_17_offline_controls.py"
+  ],
+  "methodology": "docs/STEP16_17_OFFLINE_SCORE_PAIRING_XG_POLICY_2026-10-30.md",
+  "no_production_code_modified": true,
+  "no_frozen_forecast_modified": true,
+  "no_xg_imputation": true,
+  "no_premier_league_2026_27_test_read": true,
+  "no_auto_promotion": true,
+  "gate16": "PENDING",
+  "gate17": "PENDING",
+  "stages_completed": 15,
+  "stages_total": 29,
+  "real_data_independent_replay": "PENDING_AVAILABLE_HOST_VERIFIED_SETTLEMENTS",
+  "CI_execution_new_tests": "PENDING_ACTIONS_MINUTES_RESET_AND_REVIEW",
+  "limitation": "Host attestation flags must be verified upstream against server GitHub evidence; synthetic tests alone do not certify live settlement correctness."
+}

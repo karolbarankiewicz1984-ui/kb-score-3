@@ -1,0 +1,456 @@
+{
+  "schema": "kb3-step14-independent-external-raw-recheck-2026-10-30-v1",
+  "audit_date_utc": "2026-10-30",
+  "mode": "READ_ONLY_EXTERNAL_RECHECK_PLUS_APPEND_ONLY_EVIDENCE_RECORD",
+  "sources": {
+    "safe_split": {
+      "path": "data/splits/STEP12_SAFE_MODEL_VIEW_2026-10-26.json",
+      "blob_sha": "936475c6c26cc7f59d8d32c3ab277e66b77d1b3a"
+    },
+    "prior_native_crosswalk": {
+      "path": "data/audits/STEP14_2025_FPLCORE_NATIVE_18_XG_SEMANTICS_2026-10-29.json",
+      "blob_sha": "65d3917c5e04a45cc137bee5557e0c3ca4d9ce3b"
+    },
+    "strict_gate": {
+      "path": "data/audits/STEP14_760_TRAIN_FPL_WHOLE_DECIMAL_CORRECTED_M1_FINAL_GATE_2026-10-29.json",
+      "blob_sha": "5e749984983bf7402722ba08e4156575c1c768e8"
+    },
+    "public_external_repo": "olbauday/FPL-Core-Insights"
+  },
+  "independently_requeried_public_GitHub_Actions_and_old_blob_SHA": [
+    {
+      "run_id": 17822709032,
+      "run_created_at_utc": "2025-09-18T08:24:28Z",
+      "run_head_sha": "35932486961bb9a7eb8fbb710ad33ec21a28b1da",
+      "run_conclusion": "success",
+      "run_event": "schedule",
+      "run_branch": "main",
+      "source_file": "data/2025-2026/By Gameweek/GW4/matches.csv",
+      "source_blob_sha": "690ad3b2cbe161ded7b9ef4b8ace3c75b047991e",
+      "expected_prior_blob_sha": "690ad3b2cbe161ded7b9ef4b8ace3c75b047991e",
+      "run_sha_and_blob_verified": true,
+      "source_header_has_xg_columns": true
+    },
+    {
+      "run_id": 19175468717,
+      "run_created_at_utc": "2025-11-07T17:03:33Z",
+      "run_head_sha": "173bd03f01a9808dbbcf9c42e8ad1112b63429ac",
+      "run_conclusion": "success",
+      "run_event": "schedule",
+      "run_branch": "main",
+      "source_file": "data/2025-2026/By Gameweek/GW9/matches.csv",
+      "source_blob_sha": "9f0959f31380a7b8393b6aabb58be356ebcdb0e1",
+      "expected_prior_blob_sha": "9f0959f31380a7b8393b6aabb58be356ebcdb0e1",
+      "run_sha_and_blob_verified": true,
+      "source_header_has_xg_columns": true
+    },
+    {
+      "run_id": 20642294092,
+      "run_created_at_utc": "2026-01-01T17:04:13Z",
+      "run_head_sha": "59a4cd678579a38b5937bd07afe5635ed3be9e29",
+      "run_conclusion": "success",
+      "run_event": "schedule",
+      "run_branch": "main",
+      "source_file": "data/2025-2026/By Gameweek/GW19/matches.csv",
+      "source_blob_sha": "16adcea1bdb1d85ba116086311d0f48f0aef5410",
+      "expected_prior_blob_sha": "16adcea1bdb1d85ba116086311d0f48f0aef5410",
+      "run_sha_and_blob_verified": true,
+      "source_header_has_xg_columns": true
+    },
+    {
+      "run_id": 22965280628,
+      "run_created_at_utc": "2026-03-11T17:18:18Z",
+      "run_head_sha": "326b639b21979961dc2a6e1b06db388f8b7431e6",
+      "run_conclusion": "success",
+      "run_event": "schedule",
+      "run_branch": "main",
+      "source_file": "data/2025-2026/By Gameweek/GW28/matches.csv",
+      "source_blob_sha": "528763717ebf9b1ec5008f4c5570ac30d02bcfd8",
+      "expected_prior_blob_sha": "528763717ebf9b1ec5008f4c5570ac30d02bcfd8",
+      "run_sha_and_blob_verified": true,
+      "source_header_has_xg_columns": true
+    }
+  ],
+  "rechecked_native_crosswalk_against_original_safe_split": {
+    "rows": [
+      {
+        "native_fixture_id": "m_2J6XZy",
+        "original_partition": "VALIDATION",
+        "original_safe_kickoff_exact": true,
+        "source_commit": "173bd03f01a9808dbbcf9c42e8ad1112b63429ac",
+        "source_witness_utc": "2025-11-07T17:03:33Z",
+        "original_kickoff_utc": "2025-11-08T12:30:00Z",
+        "lead_minutes": 1166.45,
+        "source_witness_pre_kickoff": true,
+        "source_witness_pre_T90": true,
+        "home_native_team_id_in_prior_crosswalk": "t_4A7FfD",
+        "away_native_team_id_in_prior_crosswalk": "t_2I313i",
+        "public_home_away_in_prior_crosswalk": [
+          "tottenham hotspur",
+          "manchester united"
+        ],
+        "native_home_away_independently_requeried_now": false
+      },
+      {
+        "native_fixture_id": "m_0sWYsF",
+        "original_partition": "VALIDATION",
+        "original_safe_kickoff_exact": true,
+        "source_commit": "173bd03f01a9808dbbcf9c42e8ad1112b63429ac",
+        "source_witness_utc": "2025-11-07T17:03:33Z",
+        "original_kickoff_utc": "2025-11-08T15:00:00Z",
+        "lead_minutes": 1316.45,
+        "source_witness_pre_kickoff": true,
+        "source_witness_pre_T90": true,
+        "home_native_team_id_in_prior_crosswalk": "t_21IR9d",
+        "away_native_team_id_in_prior_crosswalk": "t_1c1ZPD",
+        "public_home_away_in_prior_crosswalk": [
+          "everton",
+          "fulham"
+        ],
+        "native_home_away_independently_requeried_now": false
+      },
+      {
+        "native_fixture_id": "m_109Kgf",
+        "original_partition": "VALIDATION",
+        "original_safe_kickoff_exact": true,
+        "source_commit": "173bd03f01a9808dbbcf9c42e8ad1112b63429ac",
+        "source_witness_utc": "2025-11-07T17:03:33Z",
+        "original_kickoff_utc": "2025-11-08T15:00:00Z",
+        "lead_minutes": 1316.45,
+        "source_witness_pre_kickoff": true,
+        "source_witness_pre_T90": true,
+        "home_native_team_id_in_prior_crosswalk": "t_4LT5Yy",
+        "away_native_team_id_in_prior_crosswalk": "t_0VMURm",
+        "public_home_away_in_prior_crosswalk": [
+          "west ham united",
+          "burnley"
+        ],
+        "native_home_away_independently_requeried_now": false
+      },
+      {
+        "native_fixture_id": "m_2KM5ri",
+        "original_partition": "VALIDATION",
+        "original_safe_kickoff_exact": true,
+        "source_commit": "173bd03f01a9808dbbcf9c42e8ad1112b63429ac",
+        "source_witness_utc": "2025-11-07T17:03:33Z",
+        "original_kickoff_utc": "2025-11-08T17:30:00Z",
+        "lead_minutes": 1466.45,
+        "source_witness_pre_kickoff": true,
+        "source_witness_pre_T90": true,
+        "home_native_team_id_in_prior_crosswalk": "t_2xPV6y",
+        "away_native_team_id_in_prior_crosswalk": "t_1gkhxH",
+        "public_home_away_in_prior_crosswalk": [
+          "sunderland",
+          "arsenal"
+        ],
+        "native_home_away_independently_requeried_now": false
+      },
+      {
+        "native_fixture_id": "m_0bp90o",
+        "original_partition": "VALIDATION",
+        "original_safe_kickoff_exact": true,
+        "source_commit": "173bd03f01a9808dbbcf9c42e8ad1112b63429ac",
+        "source_witness_utc": "2025-11-07T17:03:33Z",
+        "original_kickoff_utc": "2025-11-08T20:00:00Z",
+        "lead_minutes": 1616.45,
+        "source_witness_pre_kickoff": true,
+        "source_witness_pre_T90": true,
+        "home_native_team_id_in_prior_crosswalk": "t_4R934X",
+        "away_native_team_id_in_prior_crosswalk": "t_18kSmS",
+        "public_home_away_in_prior_crosswalk": [
+          "chelsea",
+          "wolverhampton wanderers"
+        ],
+        "native_home_away_independently_requeried_now": false
+      },
+      {
+        "native_fixture_id": "m_4TV8pl",
+        "original_partition": "VALIDATION",
+        "original_safe_kickoff_exact": true,
+        "source_commit": "173bd03f01a9808dbbcf9c42e8ad1112b63429ac",
+        "source_witness_utc": "2025-11-07T17:03:33Z",
+        "original_kickoff_utc": "2025-11-09T14:00:00Z",
+        "lead_minutes": 2696.45,
+        "source_witness_pre_kickoff": true,
+        "source_witness_pre_T90": true,
+        "home_native_team_id_in_prior_crosswalk": "t_4RqKpo",
+        "away_native_team_id_in_prior_crosswalk": "t_1iaglr",
+        "public_home_away_in_prior_crosswalk": [
+          "aston villa",
+          "afc bournemouth"
+        ],
+        "native_home_away_independently_requeried_now": false
+      },
+      {
+        "native_fixture_id": "m_1NM9yC",
+        "original_partition": "VALIDATION",
+        "original_safe_kickoff_exact": true,
+        "source_commit": "173bd03f01a9808dbbcf9c42e8ad1112b63429ac",
+        "source_witness_utc": "2025-11-07T17:03:33Z",
+        "original_kickoff_utc": "2025-11-09T14:00:00Z",
+        "lead_minutes": 2696.45,
+        "source_witness_pre_kickoff": true,
+        "source_witness_pre_T90": true,
+        "home_native_team_id_in_prior_crosswalk": "t_2ihyjC",
+        "away_native_team_id_in_prior_crosswalk": "t_2eQl9k",
+        "public_home_away_in_prior_crosswalk": [
+          "brentford",
+          "newcastle united"
+        ],
+        "native_home_away_independently_requeried_now": false
+      },
+      {
+        "native_fixture_id": "m_18alle",
+        "original_partition": "VALIDATION",
+        "original_safe_kickoff_exact": true,
+        "source_commit": "173bd03f01a9808dbbcf9c42e8ad1112b63429ac",
+        "source_witness_utc": "2025-11-07T17:03:33Z",
+        "original_kickoff_utc": "2025-11-09T14:00:00Z",
+        "lead_minutes": 2696.45,
+        "source_witness_pre_kickoff": true,
+        "source_witness_pre_T90": true,
+        "home_native_team_id_in_prior_crosswalk": "t_4bz4EP",
+        "away_native_team_id_in_prior_crosswalk": "t_3eV7Ev",
+        "public_home_away_in_prior_crosswalk": [
+          "crystal palace",
+          "brighton and hove albion"
+        ],
+        "native_home_away_independently_requeried_now": false
+      },
+      {
+        "native_fixture_id": "m_4HzbpQ",
+        "original_partition": "VALIDATION",
+        "original_safe_kickoff_exact": true,
+        "source_commit": "173bd03f01a9808dbbcf9c42e8ad1112b63429ac",
+        "source_witness_utc": "2025-11-07T17:03:33Z",
+        "original_kickoff_utc": "2025-11-09T14:00:00Z",
+        "lead_minutes": 2696.45,
+        "source_witness_pre_kickoff": true,
+        "source_witness_pre_T90": true,
+        "home_native_team_id_in_prior_crosswalk": "t_0msSwp",
+        "away_native_team_id_in_prior_crosswalk": "t_19Nr9K",
+        "public_home_away_in_prior_crosswalk": [
+          "nottingham forest",
+          "leeds united"
+        ],
+        "native_home_away_independently_requeried_now": false
+      },
+      {
+        "native_fixture_id": "m_4GyCKd",
+        "original_partition": "VALIDATION",
+        "original_safe_kickoff_exact": true,
+        "source_commit": "173bd03f01a9808dbbcf9c42e8ad1112b63429ac",
+        "source_witness_utc": "2025-11-07T17:03:33Z",
+        "original_kickoff_utc": "2025-11-09T16:30:00Z",
+        "lead_minutes": 2846.45,
+        "source_witness_pre_kickoff": true,
+        "source_witness_pre_T90": true,
+        "home_native_team_id_in_prior_crosswalk": "t_0UCNPX",
+        "away_native_team_id_in_prior_crosswalk": "t_0BrMnM",
+        "public_home_away_in_prior_crosswalk": [
+          "manchester city",
+          "liverpool"
+        ],
+        "native_home_away_independently_requeried_now": false
+      },
+      {
+        "native_fixture_id": "m_3SHlpj",
+        "original_partition": "VALIDATION",
+        "original_safe_kickoff_exact": true,
+        "source_commit": "59a4cd678579a38b5937bd07afe5635ed3be9e29",
+        "source_witness_utc": "2026-01-01T17:04:13Z",
+        "original_kickoff_utc": "2026-01-01T17:30:00Z",
+        "lead_minutes": 25.783,
+        "source_witness_pre_kickoff": true,
+        "source_witness_pre_T90": false,
+        "home_native_team_id_in_prior_crosswalk": "t_4bz4EP",
+        "away_native_team_id_in_prior_crosswalk": "t_1c1ZPD",
+        "public_home_away_in_prior_crosswalk": [
+          "crystal palace",
+          "fulham"
+        ],
+        "native_home_away_independently_requeried_now": false
+      },
+      {
+        "native_fixture_id": "m_0GvKgn",
+        "original_partition": "VALIDATION",
+        "original_safe_kickoff_exact": true,
+        "source_commit": "59a4cd678579a38b5937bd07afe5635ed3be9e29",
+        "source_witness_utc": "2026-01-01T17:04:13Z",
+        "original_kickoff_utc": "2026-01-01T17:30:00Z",
+        "lead_minutes": 25.783,
+        "source_witness_pre_kickoff": true,
+        "source_witness_pre_T90": false,
+        "home_native_team_id_in_prior_crosswalk": "t_0BrMnM",
+        "away_native_team_id_in_prior_crosswalk": "t_19Nr9K",
+        "public_home_away_in_prior_crosswalk": [
+          "liverpool",
+          "leeds united"
+        ],
+        "native_home_away_independently_requeried_now": false
+      },
+      {
+        "native_fixture_id": "m_17ob2P",
+        "original_partition": "VALIDATION",
+        "original_safe_kickoff_exact": true,
+        "source_commit": "59a4cd678579a38b5937bd07afe5635ed3be9e29",
+        "source_witness_utc": "2026-01-01T17:04:13Z",
+        "original_kickoff_utc": "2026-01-01T20:00:00Z",
+        "lead_minutes": 175.783,
+        "source_witness_pre_kickoff": true,
+        "source_witness_pre_T90": true,
+        "home_native_team_id_in_prior_crosswalk": "t_2ihyjC",
+        "away_native_team_id_in_prior_crosswalk": "t_4A7FfD",
+        "public_home_away_in_prior_crosswalk": [
+          "brentford",
+          "tottenham hotspur"
+        ],
+        "native_home_away_independently_requeried_now": false
+      },
+      {
+        "native_fixture_id": "m_2Pc02P",
+        "original_partition": "VALIDATION",
+        "original_safe_kickoff_exact": true,
+        "source_commit": "59a4cd678579a38b5937bd07afe5635ed3be9e29",
+        "source_witness_utc": "2026-01-01T17:04:13Z",
+        "original_kickoff_utc": "2026-01-01T20:00:00Z",
+        "lead_minutes": 175.783,
+        "source_witness_pre_kickoff": true,
+        "source_witness_pre_T90": true,
+        "home_native_team_id_in_prior_crosswalk": "t_2xPV6y",
+        "away_native_team_id_in_prior_crosswalk": "t_0UCNPX",
+        "public_home_away_in_prior_crosswalk": [
+          "sunderland",
+          "manchester city"
+        ],
+        "native_home_away_independently_requeried_now": false
+      },
+      {
+        "native_fixture_id": "m_2Jf8Sg",
+        "original_partition": "VALIDATION",
+        "original_safe_kickoff_exact": true,
+        "source_commit": "59a4cd678579a38b5937bd07afe5635ed3be9e29",
+        "source_witness_utc": "2026-01-01T17:04:13Z",
+        "original_kickoff_utc": "2026-01-03T12:30:00Z",
+        "lead_minutes": 2605.783,
+        "source_witness_pre_kickoff": true,
+        "source_witness_pre_T90": true,
+        "home_native_team_id_in_prior_crosswalk": "t_4RqKpo",
+        "away_native_team_id_in_prior_crosswalk": "t_0msSwp",
+        "public_home_away_in_prior_crosswalk": [
+          "aston villa",
+          "nottingham forest"
+        ],
+        "native_home_away_independently_requeried_now": false
+      },
+      {
+        "native_fixture_id": "m_0kkP8o",
+        "original_partition": "VALIDATION",
+        "original_safe_kickoff_exact": true,
+        "source_commit": "59a4cd678579a38b5937bd07afe5635ed3be9e29",
+        "source_witness_utc": "2026-01-01T17:04:13Z",
+        "original_kickoff_utc": "2026-01-03T15:00:00Z",
+        "lead_minutes": 2755.783,
+        "source_witness_pre_kickoff": true,
+        "source_witness_pre_T90": true,
+        "home_native_team_id_in_prior_crosswalk": "t_3eV7Ev",
+        "away_native_team_id_in_prior_crosswalk": "t_0VMURm",
+        "public_home_away_in_prior_crosswalk": [
+          "brighton and hove albion",
+          "burnley"
+        ],
+        "native_home_away_independently_requeried_now": false
+      },
+      {
+        "native_fixture_id": "m_3SZVN4",
+        "original_partition": "VALIDATION",
+        "original_safe_kickoff_exact": true,
+        "source_commit": "59a4cd678579a38b5937bd07afe5635ed3be9e29",
+        "source_witness_utc": "2026-01-01T17:04:13Z",
+        "original_kickoff_utc": "2026-01-03T15:00:00Z",
+        "lead_minutes": 2755.783,
+        "source_witness_pre_kickoff": true,
+        "source_witness_pre_T90": true,
+        "home_native_team_id_in_prior_crosswalk": "t_18kSmS",
+        "away_native_team_id_in_prior_crosswalk": "t_4LT5Yy",
+        "public_home_away_in_prior_crosswalk": [
+          "wolverhampton wanderers",
+          "west ham united"
+        ],
+        "native_home_away_independently_requeried_now": false
+      },
+      {
+        "native_fixture_id": "m_2qrEtZ",
+        "original_partition": "VALIDATION",
+        "original_safe_kickoff_exact": true,
+        "source_commit": "59a4cd678579a38b5937bd07afe5635ed3be9e29",
+        "source_witness_utc": "2026-01-01T17:04:13Z",
+        "original_kickoff_utc": "2026-01-03T17:30:00Z",
+        "lead_minutes": 2905.783,
+        "source_witness_pre_kickoff": true,
+        "source_witness_pre_T90": true,
+        "home_native_team_id_in_prior_crosswalk": "t_1iaglr",
+        "away_native_team_id_in_prior_crosswalk": "t_1gkhxH",
+        "public_home_away_in_prior_crosswalk": [
+          "afc bournemouth",
+          "arsenal"
+        ],
+        "native_home_away_independently_requeried_now": false
+      }
+    ],
+    "unique_native_fixture_ids": 18,
+    "all_18_original_validation_and_kickoff_exact": true,
+    "all_18_source_witness_before_kickoff": true,
+    "strict_T90_pass_count": 16,
+    "strict_T90_fail_ids": [
+      "m_3SHlpj",
+      "m_0GvKgn"
+    ]
+  },
+  "direct_old_csv_Jan1_two_target_not_yet_finished": {
+    "source_sha": "59a4cd678579a38b5937bd07afe5635ed3be9e29",
+    "source_blob_sha": "16adcea1bdb1d85ba116086311d0f48f0aef5410",
+    "source_run_id": 20642294092,
+    "source_run_created_at_utc": "2026-01-01T17:04:13Z",
+    "rows": [
+      {
+        "public_match_id": "25-26-prem-crystal-palace-vs-fulham",
+        "raw_row_count": 1,
+        "raw_finished": "False",
+        "raw_home_score": "",
+        "raw_away_score": "",
+        "raw_kickoff_field": "",
+        "raw_future_unfinished_and_scores_absent": true
+      },
+      {
+        "public_match_id": "25-26-prem-liverpool-vs-leeds-united",
+        "raw_row_count": 1,
+        "raw_finished": "False",
+        "raw_home_score": "",
+        "raw_away_score": "",
+        "raw_kickoff_field": "",
+        "raw_future_unfinished_and_scores_absent": true
+      }
+    ],
+    "interpretation": "At the GitHub source-run witness time these two targets were represented as unfinished; no target score was taken. The historical CSV lacks kickoff_time for these rows; kickoff derives from the frozen original SAFE crosswalk."
+  },
+  "strict_original_gate_independent_read": {
+    "original_numeric_fields_required": 121,
+    "original_missing_flags_required": 38,
+    "original_TRAIN_required": 760,
+    "original_VALIDATION_required": 380,
+    "original_full_native_PIT_TRAIN": 0,
+    "original_full_native_PIT_VALIDATION": 0,
+    "original_PitchAPI_team_xG_first_publication_receipts_verified": 0,
+    "original_GATE14": "PENDING",
+    "original_M1_fitted": false
+  },
+  "evidence_scope_limitations": [
+    "Public GitHub Actions created_at confirms that an external commit existed by this time; it does not establish first upstream PitchAPI publication of any xG.",
+    "GitHub blob SHA and header were independently re-fetched; 18 source-to-native team IDs were inherited from prior PitchAPI crosswalk, not re-queried from the provider in this run.",
+    "SAFE fixture ID, VALIDATION partition and kickoff were independently compared for all 18 records; full native home/away identity requires provider-origin proof.",
+    "Alternative FPL/FotMob xG is not original PitchAPI team xG. No 121+38 original PIT rows certified.",
+    "No original M1 training, no TEST labels or TEST target data, no new API keys, no model/split/forecast edits."
+  ],
+  "conclusion": "NEW_INDEPENDENT_EXTERNAL_GITHUB_BLOB_AND_SAFE_CROSSWALK_RECHECK_PASS_ORIGINAL_STRICT_GATE14_PENDING"
+}
