@@ -63,9 +63,9 @@ class XGPriorityResearchTests(unittest.TestCase):
 
     def test_zero_budget_and_future_horizon_guard(self):
         hist=[match("past",AT-timedelta(days=2),"A","B")]
-        far=[match("too_far",AT+timedelta(days=9),"A","B","scheduled")]
-        done=[match("finished_target",AT+timedelta(days=2),"A","B","finished")]
-        near=[match("future",AT+timedelta(days=2),"A","B","scheduled")]
+        far=match("too_far",AT+timedelta(days=9),"A","B","scheduled")
+        done=match("finished_target",AT+timedelta(days=2),"A","B","finished")
+        near=match("future",AT+timedelta(days=2),"A","B","scheduled")
         groups={"ESP":{"history":hist,"future":[far,done,near]}}
         p,meta=ranked_eight(groups,set(),AT,budget=0)
         self.assertEqual(p,[])
