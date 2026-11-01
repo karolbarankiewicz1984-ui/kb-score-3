@@ -56,6 +56,24 @@ def assess(db_path=DB):
             if "step17_frozen_challengers" in tables else 0
         host_children=db.execute("SELECT COUNT(*) FROM step17_challenger_host_proofs").fetchone()[0] \
             if "step17_challenger_host_proofs" in tables else 0
+        required={"step17_frozen_challengers","step17_challenger_host_proofs"}
+        if required <= tables:
+            all_three=db.execute("""
+                SELECT COUNT(DISTINCT f.id)
+                FROM forecasts f
+                JOIN settlements s ON s.forecast_id=f.id
+                JOIN m0720_github_push_proofs p ON p.forecast_id=f.id
+                JOIN step17_frozen_challengers elo
+                  ON elo.source_m0_forecast_sha256=f.id AND elo.engine='ELO_ONLY'
+                JOIN step17_challenger_host_proofs ep
+                  ON ep.challenger_sha256=elo.challenger_sha256
+                JOIN step17_frozen_challengers cat
+                  ON cat.source_m0_forecast_sha256=f.id AND cat.engine='CATBOOST_NO_XG'
+                JOIN step17_challenger_host_proofs cp
+                  ON cp.challenger_sha256=cat.challenger_sha256
+            """).fetchone()[0]
+        else:
+            all_three=0
     # The existing comparator's schema ensure() writes only into an isolated copy,
     # never to the frozen original or forecasts collected by GitHub Actions.
     with tempfile.TemporaryDirectory(prefix="kb3-step17-readonly-") as folder:
@@ -68,12 +86,10 @@ def assess(db_path=DB):
     if not all(key in pairs for key in PAIR_KEYS):
         raise PairedReadOnlyError("PAIRED_THREE_MODEL_KEYS_MISSING")
     paired_n={key:pairs[key]["common_n"] for key in PAIR_KEYS}
-    if len(set(paired_n.values()))!=1:
-        # A partial pair may be useful as diagnostic, but never masquerade as
-        # a full three-engine side-by-side result.
-        all_three=min(paired_n.values())
-    else:
-        all_three=next(iter(paired_n.values()))
+    # Identical pairwise COUNTS do NOT imply the same three fixtures.
+    # Count the exact full three-way intersection in immutable source SQLite.
+    if any(all_three>v for v in paired_n.values()):
+        raise PairedReadOnlyError("THREE_WAY_INTERSECTION_EXCEEDS_PAIR")
     return {
         "schema":"kb3-step17-offline-three-engine-readonly-v1",
         "source_m0_sha256":before,
