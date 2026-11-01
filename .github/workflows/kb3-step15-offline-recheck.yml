@@ -26,6 +26,8 @@ jobs:
           python -m compileall -q scripts/step15_independent_market_audit.py scripts/step15_offline_reaudit.py
       - name: Fail closed on scoreline, BTTS, O/U, 1X2 or model integrity drift
         run: |
+          python -m unittest discover -s tests -p 'test_step15_goal_markets.py' -v
           python -m unittest discover -s tests -p 'test_step15_independent_market_audit.py' -v
           python -m unittest discover -s tests -p 'test_step15_offline_reaudit.py' -v
           python -m scripts.step15_offline_reaudit
+          git diff --exit-code -- data/ models/
