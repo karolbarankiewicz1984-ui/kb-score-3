@@ -19,7 +19,7 @@ from src.kb3_step17_challenger_provenance import paired_settled_report
 
 ENGINES = ("ELO_ONLY", "CATBOOST_NO_XG")
 PAIR_KEYS = (
-    "M0_ELO_POISSON_720TRAIN__vs__ELO_ONLY",
+    "ELO_ONLY__vs__M0_ELO_POISSON_720TRAIN",
     "M0_ELO_POISSON_720TRAIN__vs__CATBOOST_NO_XG",
     "ELO_ONLY__vs__CATBOOST_NO_XG",
 )
