@@ -116,6 +116,35 @@ class EightForwardTests(unittest.TestCase):
     rows[250]["score_home"]=0
     with self.assertRaisesRegex(Research720Error,"FUTURE_TARGET_CONTAINS_RESULT"):
         validate_season(rows,current=True)
+
+ def test_quota_after_history_filter_does_not_starve_later_valid_fixtures(self):
+    # Early 10 targets cannot pass real last-5 history, 11th/12th can.
+    # A pre-slice to ten would silently yield zero for ESP.
+    data=fake_receipts()
+    current=next(r["payload"]["matches"] for r in data
+      if r["resource"]=="pitchapi:m0720:fixtures:ESP:2026/2027")
+    for i in range(250,262):
+        current[i]["time_utc"]=stamp(NOW+timedelta(hours=5+i-250))
+        if i<260:
+            current[i]["home_team"]["id"]="t_novice_"+str(i)
+            current[i]["away_team"]["id"]="t_unknown_"+str(i)
+    p,sha,manifest=trained_params()
+    items,per,_=make_forecasts(data,cutoff=NOW,params=p,param_sha=sha,manifest_sha=manifest)
+    ids={item["provider_match_id"] for item in items if item["league_country"]=="ESP"}
+    self.assertEqual(per.get("ESP"),2)
+    self.assertIn(current[260]["id"],ids)
+    self.assertIn(current[261]["id"],ids)
+    self.assertFalse(any(current[i]["id"] in ids for i in range(250,260)))
+ def test_quota_still_caps_ten_after_history_filter(self):
+    data=fake_receipts()
+    current=next(r["payload"]["matches"] for r in data
+      if r["resource"]=="pitchapi:m0720:fixtures:ESP:2026/2027")
+    for i in range(250,275):
+        current[i]["time_utc"]=stamp(NOW+timedelta(hours=5+i-250))
+    p,sha,manifest=trained_params()
+    items,per,_=make_forecasts(data,cutoff=NOW,params=p,param_sha=sha,manifest_sha=manifest)
+    self.assertEqual(per["ESP"],10)
+    self.assertEqual(len({f["provider_match_id"] for f in items if f["league_country"]=="ESP"}),10)
  def test_model_manifest_cannot_be_autopromoted(self):
     p,sha,manifest=trained_params()
     with tempfile.TemporaryDirectory() as tmp:
