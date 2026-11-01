@@ -1,4 +1,4 @@
-"""Static guard: Step16 pip cache edit must not change schedules or model policy."""
+"""Static guard: Step16 backup schedules and strict cost/mode policy."""
 from pathlib import Path
 import unittest
 
@@ -8,14 +8,16 @@ OFFLINE=ROOT/".github/workflows/kb3-step16-offline-readonly-audit.yml"
 
 
 class WorkflowBudgetSafetyTests(unittest.TestCase):
-    def test_live_schedules_unchanged(self):
+    def test_backup_crons_and_idempotent_mode_guard(self):
         contents=LIVE.read_text()
-        self.assertIn("cron: '21 6 * * *'",contents)
-        self.assertIn("cron: '17 8,22 * * *'",contents)
+        self.assertIn("cron: '21 6,9,12 * * *'",contents)
+        self.assertIn("cron: '17 8,14,22 * * *'",contents)
         self.assertEqual(contents.count("cron:"),2)
         self.assertIn("cancel-in-progress: false",contents)
         self.assertIn("needs: anti-leakage-and-data-safety",contents)
         self.assertIn("PITCHAPI_API_KEY:",contents)
+        self.assertIn("run: python -m scripts.step16_m0_mode_guard",contents)
+        self.assertIn("if: steps.mode.outputs.mode != 'skip'",contents)
 
     def test_pip_cache_only_and_existing_versions(self):
         contents=LIVE.read_text()
