@@ -1,0 +1,13 @@
+# KB Score 3.0 — wykonanie punktów 1–7, przyspieszenie danych (2026-11-01)
+
+**Status: kontrolowany audyt, bez zmiany M0 i bez automatycznej promocji**. Źródła: oryginalne SQLite i receipty z `main`, tylko odczyt, niezależny raport JSON z Actions.
+
+1. **Próbki M0:** kontrola integralności SQLite, SHA manifestu modelu, 90-minutowego przedmeczowego dowodu GitHub, niezależnego wyniku i rozdziału: rozliczone / po rozpoczęciu bez wyniku / przyszłe / niepoświadczone. Licznik formalnych 100 FIT nie jest równy liczbie przyszłych prognoz; osobny audyt kalibracji zachowuje status wiążący.
+2. **M0 pokrycie:** odczyt 8 krajów, limity bieżące 10 meczów na ligę i 96h; sprawdzenie bieżącego realnego pokrycia zapisanych prognoz. Receipt obejmuje tylko wyniki filtrowania, dlatego nie dowodzi, czy surowy limit 10 obcina dalsze mecze. **Nie zwiększamy limitu na produkcji bez realnego odtworzenia terminów i audytu cech na identycznym cutoff**.
+3. **xG:** zweryfikowany z SQLite stan zaobserwowanych meczów, kompletność dokładnie 5 poprzedników obu zespołów wg istniejącego kolektora. Repo przechowuje surowe odpowiedzi w archiwach zaszyfrowanych, więc sam publicznie czytelny receipt **nie zawiera kompletnej listy brakujących natywnych fixture ID**; nie odtwarzamy jej przez domysł.
+4. **Priorytetyzacja xG:** istniejący DRAFT PR #125 zawiera alternatywny `ranked_eight`, testy 33 calls i obliczanie *hipotetycznego* zysku. Dalsza bramka: wspólne aktualne grupy fixture z oryginalnego źródła, porównanie faktycznych pokryć po poborze i zero zwiększenia 33. Bez realnego dowodu — **NO-GO do live**.
+5. **Koszt API:** obecne 17 rozmów o terminarzach + 2 na xG jednego meczu: 8 par to 33, 16 par 49. **49 nie jest potwierdzonym limitem planu ani upoważnieniem do jego uruchomienia**. Realna weryfikacja abonamentu poza tym audytem — wymagana.
+6. **Historia ośmiu lig:** historyczne 2025/26 podliczamy z oryginalnych hashy zbioru fixture. NED 309 wobec 306, BEL 313 wobec 240; to różnice rozmiaru, **nie dowody na status fazy każdego native ID**. Wstrzymane łączenie tych danych z treningiem do faktycznego mapowania.
+7. **Testy i rejestr:** osobna gałąź i PR, unit tests oraz read-only CI bez kluczy, poboru, patchowania danych lub modeli. Po realnym CI PASS wyniki dopisać append-only do `docs/ZMIANY.md`.
+
+**Niezmienniki:** brak odtwarzania prognoz po fakcie; M0 SHA `55310f0e1dd3842e6d876069ef21b1380901b3a6cc6884cf6ec6ea351a5812d1`; GATE16 i GATE17 PENDING, wyłączony TEST 2026/27, 100 FIT + dopiero potem nowych 50 HOLDOUT. Badawczy Codex #124 oraz selektor xG #125 pozostają odseparowane. Testy nie stanowią dowodu lepszego modelu.

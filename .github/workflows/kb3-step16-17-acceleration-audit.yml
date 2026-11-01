@@ -1,0 +1,41 @@
+name: KB3 Step16-17 seven-point acceleration evidence — offline zero API
+on:
+  push:
+    branches: [audit/step16-17-acceleration-7points-20261101]
+    paths:
+      - scripts/step16_17_acceleration_audit.py
+      - tests/test_step16_17_acceleration_audit.py
+      - .github/workflows/kb3-step16-17-acceleration-audit.yml
+  pull_request:
+    paths:
+      - scripts/step16_17_acceleration_audit.py
+      - tests/test_step16_17_acceleration_audit.py
+      - .github/workflows/kb3-step16-17-acceleration-audit.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  audit-tracked-main-evidence:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Compile and test no-secret read-only evidence
+        run: |
+          python -m compileall -q scripts/step16_17_acceleration_audit.py
+          python -m unittest discover -s tests -p 'test_step16_17_acceleration_audit.py' -v
+      - name: Audit real checked-in M0 and xG SQLite and native receipts
+        run: python -m scripts.step16_17_acceleration_audit --output /tmp/KB3_STEP16_17_ACCELERATION_REAL_AUDIT.json
+      - name: Assert live data and models unchanged
+        run: git diff --exit-code -- data/ models/ src/ config/
+      - uses: actions/upload-artifact@v4
+        with:
+          name: KB3_STEP16_17_ACCELERATION_REAL_READONLY
+          path: /tmp/KB3_STEP16_17_ACCELERATION_REAL_AUDIT.json
+          retention-days: 30
+          if-no-files-found: error
