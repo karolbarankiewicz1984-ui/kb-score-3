@@ -69,6 +69,12 @@ class EightXgTests(unittest.TestCase):
                 db.execute("UPDATE observed_native_xg SET stats_xg_home=0")
         self.assertGreater(summary["future_form5_coverage"]["future_targets_scanned"],0)
         self.assertEqual(summary["future_form5_coverage"]["complete_last5_both_team_xg"],0)
+        self.assertEqual(len(summary["real_missing_last5_predecessor_ids"]),
+                         summary["future_form5_coverage"]["future_targets_scanned"])
+        self.assertTrue(all(not x["both_teams_last5_verified"]
+                            for x in summary["real_missing_last5_predecessor_ids"]))
+        self.assertTrue(any(v["missing_native_xg_provider_ids"] for x in
+              summary["real_missing_last5_predecessor_ids"] for v in x["teams"].values()))
         with self.assertRaisesRegex(Research720Error,"ALREADY_SAVED"):
             run(client=fake,db_path=root/"xg.sqlite",archive=root/"evidence",now=NOW)
  def test_native_semantic_mismatch_blocks_as_predecessor(self):
