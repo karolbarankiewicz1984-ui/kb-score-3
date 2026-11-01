@@ -69,6 +69,12 @@ class EightXgTests(unittest.TestCase):
                 db.execute("UPDATE observed_native_xg SET stats_xg_home=0")
         self.assertGreater(summary["future_form5_coverage"]["future_targets_scanned"],0)
         self.assertEqual(summary["future_form5_coverage"]["complete_last5_both_team_xg"],0)
+        shadow=summary["last5_priority_shadow_comparison"]
+        self.assertEqual(shadow["source"],"IDENTICAL_REAL_FIXTURES_SAME_OBSERVATION_CUTOFF")
+        self.assertEqual(shadow["additional_api_calls"],0)
+        self.assertFalse(shadow["priority_live_activated"])
+        self.assertFalse(shadow["priority_real_outcome_verified"])
+        self.assertTrue(shadow["theoretical_if_all_success"]["only_a_theoretical_ceiling_not_observed_gain"])
         self.assertEqual(len(summary["real_missing_last5_predecessor_ids"]),
                          summary["future_form5_coverage"]["future_targets_scanned"])
         self.assertTrue(all(not x["both_teams_last5_verified"]
