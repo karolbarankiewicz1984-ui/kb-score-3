@@ -63,7 +63,7 @@ def run(root=ROOT,*,now=None,merge=BASELINE_MERGE_UTC):
      "xg_postfix_new_real_capture_receipt":bool(captures),
      "m0_native_phase_id_evidence_live":full_m0,
      "xg_native_missing_ids_and_priority_shadow_live":full_xg,
-     "m0_after_merge_proof":"PASS" if full_m0 else "PENDING_NEXT_REAL_FORECAST",
+     "m0_after_merge_proof":"NEW_RECEIPT_PRESENT_BUT_NEW_FORECAST_HOST_ATTESTATION_STILL_REQUIRED" if full_m0 else "PENDING_NEXT_REAL_FORECAST",
      "xg_after_merge_proof":"PASS" if full_xg else "PENDING_NEXT_REAL_CAPTURE",
      "no_ex_post_forecasts_created":True,
      "original_m0_or_model_changed":False,
