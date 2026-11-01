@@ -145,7 +145,9 @@ def make_forecasts(receipts,*,cutoff,params,param_sha,manifest_sha,challenger_en
             if m["status"] in ("scheduled","not_started","upcoming")
             and m.get("score_home") is None and m.get("score_away") is None
             and cutoff+LEAD<as_utc(m["time_utc"])<=cutoff+HORIZON),
-            key=lambda m:(m["time_utc"],m["id"]))[:FORECAST_LIMIT]
+            key=lambda m:(m["time_utc"],m["id"]))
+        # Apply quota AFTER minimum historical completeness, so unavailable teams
+        # do not starve subsequent valid upcoming fixtures in the 96h window.
         history=[]
         for season,seq,source in ((PREVIOUS,old,src_old),(CURRENT,current,src_now)):
             for m in seq:
@@ -164,6 +166,8 @@ def make_forecasts(receipts,*,cutoff,params,param_sha,manifest_sha,challenger_en
                   "xgh":None,"xga":None,"xgh_source":None,"xga_source":None})
         source_latest=max(as_utc(src_old["completed_at_utc"]),as_utc(src_now["completed_at_utc"]))
         for m in future:
+            if by_league[country]>=FORECAST_LIMIT:
+                break
             target={"fixture_id":m["id"],"home_team_id":m["home_team"]["id"],
                     "away_team_id":m["away_team"]["id"],"season_start_year":2026}
             features=_compose_features(target,list(history),cutoff=cutoff,
