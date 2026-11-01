@@ -54,8 +54,6 @@ jobs:
         with:
           python-version: '3.11'
           cache: 'pip'
-          cache-dependency-path: config/step16_live_requirements.txt
-          cache: 'pip'
           cache-dependency-path: config/step16_ci_requirements.txt
       - name: Install existing public encryption support
         run: python -m pip install --disable-pip-version-check -r config/step16_ci_requirements.txt
@@ -79,6 +77,8 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
+          cache: 'pip'
+          cache-dependency-path: config/step16_live_requirements.txt
       - name: Install already used PitchAPI SDK and source evidence encryption
         run: python -m pip install --disable-pip-version-check -r config/step16_live_requirements.txt
       - name: Choose mode; never run provider from pull request

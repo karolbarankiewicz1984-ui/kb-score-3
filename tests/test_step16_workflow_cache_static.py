@@ -20,6 +20,13 @@ class WorkflowBudgetSafetyTests(unittest.TestCase):
     def test_pip_cache_only_and_existing_versions(self):
         contents=LIVE.read_text()
         self.assertEqual(contents.count("cache: 'pip'"),2)
+        safety, live_job = contents.split("  real-eighth-league-fitted-M0-shadow:", 1)
+        self.assertEqual(safety.count("cache: 'pip'"), 1)
+        self.assertEqual(live_job.count("cache: 'pip'"), 1)
+        self.assertIn("cache-dependency-path: config/step16_ci_requirements.txt", safety)
+        self.assertNotIn("cache-dependency-path: config/step16_live_requirements.txt", safety)
+        self.assertIn("cache-dependency-path: config/step16_live_requirements.txt", live_job)
+        self.assertNotIn("cache-dependency-path: config/step16_ci_requirements.txt", live_job)
         for key in ("step16_ci","step16_live"):
             p=ROOT/"config"/f"{key}_requirements.txt"
             self.assertTrue(p.is_file())
