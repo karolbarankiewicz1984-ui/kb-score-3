@@ -101,6 +101,9 @@ def no_vig_complete(db_path,sid):
              WHERE snapshot_sha256=?""",(sid,)).fetchall()
     if not rows:return None
     market=rows[0][0]
+    # AH HOME(-x) and AWAY(+x) require reciprocal-line and settlement verification.
+    # Never no-vig two selections sharing a signed AH line as if complementary.
+    if market=="AH":return None
     require(all(r[0]==market for r in rows),"ODDS_MARKET_DRIFT")
     if len(rows)!=len(MARKETS[market]) or {r[1] for r in rows}!=MARKETS[market]:
         return None
