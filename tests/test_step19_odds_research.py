@@ -45,6 +45,14 @@ class OddsTests(unittest.TestCase):
     bad=quote("1");bad["provider_published_at_utc"]="2026-11-01T11:00:00Z"
     with self.assertRaisesRegex(ValueError,"PUBLICATION"):
       validate(bad,observed_cutoff=CUTOFF)
+ def test_asian_handicap_no_vig_requires_reciprocal_line_audit(self):
+    with tempfile.TemporaryDirectory() as td:
+      db=Path(td)/"research.sqlite"
+      freeze(db,[quote("HOME",market="AH",line=-1),
+                 quote("AWAY",market="AH",line=-1)],observed_cutoff=CUTOFF)
+      with sqlite3.connect(db) as c:
+        sid=c.execute("SELECT snapshot_sha256 FROM step19_research_quotes").fetchone()[0]
+      self.assertIsNone(no_vig_complete(db,sid))
  def test_conflicting_quote_for_same_source_side_fails(self):
     with tempfile.TemporaryDirectory() as td:
       with self.assertRaises(sqlite3.IntegrityError):
