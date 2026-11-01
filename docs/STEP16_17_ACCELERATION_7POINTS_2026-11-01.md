@@ -11,3 +11,15 @@
 7. **Testy i rejestr:** osobna gałąź i PR, unit tests oraz read-only CI bez kluczy, poboru, patchowania danych lub modeli. Po realnym CI PASS wyniki dopisać append-only do `docs/ZMIANY.md`.
 
 **Niezmienniki:** brak odtwarzania prognoz po fakcie; M0 SHA `55310f0e1dd3842e6d876069ef21b1380901b3a6cc6884cf6ec6ea351a5812d1`; GATE16 i GATE17 PENDING, wyłączony TEST 2026/27, 100 FIT + dopiero potem nowych 50 HOLDOUT. Badawczy Codex #124 oraz selektor xG #125 pozostają odseparowane. Testy nie stanowią dowodu lepszego modelu.
+
+## Rzeczywiście wdrożony w PR #128 zakres techniczny i pomiary
+
+**Odczyt prawdziwych SQLite i receiptu** wykonano w [Actions #41346047635](https://github.com/karolbarankiewicz1984-ui/kb-score-3/actions/runs/41346047635): 4/4 testy i zadanie bez sieci SUCCESS, artefakt `KB3_STEP16_17_ACCELERATION_REAL_READONLY`. Odtwarzalny raport wykazał: M0 75 zamrożonych i 75 poświadczonych, 39 rozliczonych, 9 przyszłych, 6 nie starszych niż 3 h od kickoff i **21 nierozliczonych ponad 3 h od kickoff** (ich przyczyna oraz ewentualna dostępność zweryfikowanego wyniku nadal wymagają sprawdzenia w późniejszym prawdziwym settlement). Cztery poświadczone prognozy challengerów, zero rozliczonych wspólnych porównań. Brak kalibratora i holdoutu.
+
+**Korekta selekcji M0**: pierwotna implementacja ciąła listę `future[:10]` **przed** weryfikacją 5 zakończonych poprzedników obydwu drużyn. Nowa iteruje chronologiczne przyszłe mecze i ucina **po** powstaniu 10 rzeczywiście kwalifikowanych prognoz. Oryginalne 90 min lead, 96 h, maks. 10 na ligę, 8 krajów, wersja i matematyka M0, limit 17 zapytań oraz immutable starsze prognozy pozostają identyczne. Dwa dodatkowe testy dowodzą, że późniejsza kompletna 11./12. pozycja może przejść, gdy 10 pierwszych odpada, oraz że nadal obowiązuje limit dziesięciu.
+
+**Nowa przyszła telemetria xG**: ten sam zbiór prawdziwych meczów, już pobrany w 33 wywołaniach, będzie dawał `real_missing_last5_predecessor_ids`: konkretne pięć poprzedników każdej drużyny i ID z brakującymi xG, z krzyżowym testem kompletności względem dotychczasowego licznika. To nie oznacza, że kompletne xG pojawiły się już dziś, ani nie zastępuje zabronionego backfill; źródła i dzienny odbiór zostają niezmienione.
+
+**Nowa przyszła telemetria NED/BEL**: kolejne autentyczne uruchomienie M0, korzystające z obecnych 17 wywołań API, zapisze `ned_bel_historical_phase_native_id_review`: wszystkie historyczne native fixture ID, ID drużyn i etykiety faz wyłącznie jeśli istnieją w odpowiedzi dostawcy. Nie dokonuje automatycznej ani pozornej klasyfikacji faz; historyczne NED/BEL w szkoleniu nadal NO-GO. Do obecnych historycznych receiptów nie dopisywano danych wstecznie.
+
+**Niezakończone bramki merytoryczne:** (a) realna przyczyna 21 opóźnionych rozliczeń, (b) walidacja lepszego kompletowania last5 przez badawczy PR #125 na rzeczywistych danych, (c) jawne potwierdzenie entitlement dla wariantu 49 API calls, (d) phase-by-fixture-ID NED/BEL, (e) prospektywne 100 FIT + 50 nowych HOLDOUT. Prac tych **nie ogłaszać zaliczonymi** na podstawie samych testów narzędzi. Bez automatycznej zmiany champion.
