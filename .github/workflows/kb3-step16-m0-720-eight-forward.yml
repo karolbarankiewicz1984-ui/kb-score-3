@@ -8,6 +8,8 @@ on:
       - src/kb3_step17_challenger_provenance.py
       - tests/test_step17_challenger_provenance.py
       - scripts/step16_m0_720_eight_run.py
+      - scripts/step16_m0_mode_guard.py
+      - tests/test_step16_m0_mode_guard.py
       - tests/test_step16_m0_720_eight_forward.py
       - tests/test_step16_m0_720_calibration.py
       - src/kb3_step16_m0_720_calibration.py
@@ -28,8 +30,8 @@ on:
       - config/step16_live_requirements.txt
       - .github/workflows/kb3-step16-m0-720-eight-forward.yml
   schedule:
-    - cron: '21 6 * * *'
-    - cron: '17 8,22 * * *'
+    - cron: '21 6,9,12 * * *'
+    - cron: '17 8,14,22 * * *'
   workflow_dispatch:
     inputs:
       mode:
@@ -64,6 +66,7 @@ jobs:
           python -m unittest discover -s tests -p 'test_step16_m0_720_calibration.py' -v
           python -m unittest discover -s tests -p 'test_step17_forward_challengers.py' -v
           python -m unittest discover -s tests -p 'test_step17_challenger_provenance.py' -v
+          python -m unittest discover -s tests -p 'test_step16_m0_mode_guard.py' -v
   real-eighth-league-fitted-M0-shadow:
     if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
     needs: anti-leakage-and-data-safety
@@ -79,35 +82,25 @@ jobs:
           python-version: '3.11'
           cache: 'pip'
           cache-dependency-path: config/step16_live_requirements.txt
-      - name: Install already used PitchAPI SDK and source evidence encryption
-        run: python -m pip install --disable-pip-version-check -r config/step16_live_requirements.txt
-      - name: Choose mode; never run provider from pull request
+      - name: Choose mode; redundant scheduled attempts skip API if already recorded
         id: mode
         env:
           EVENT_KIND: ${{ github.event_name }}
           CRON: ${{ github.event.schedule }}
           USER_MODE: ${{ inputs.mode }}
-        run: |
-          if [ "$EVENT_KIND" = workflow_dispatch ] && [ "$USER_MODE" = settle ]; then
-            MODE=settle
-          elif [ "$EVENT_KIND" = schedule ] && [ "$CRON" != "21 6 * * *" ]; then
-            MODE=settle
-          else
-            if test -f "data/forecasts/m0_720_eight/$(date -u +%F)/FROZEN_M0_720_EIGHT.json"; then
-              MODE=settle
-            else
-              MODE=forecast
-            fi
-          fi
-          echo "mode=$MODE" >> "$GITHUB_OUTPUT"
-          echo "Chosen research mode: $MODE"
+        run: python -m scripts.step16_m0_mode_guard
+      - name: Install already used PitchAPI SDK and source evidence encryption
+        if: steps.mode.outputs.mode != 'skip'
+        run: python -m pip install --disable-pip-version-check -r config/step16_live_requirements.txt
       - name: Real encrypted before-kickoff research forecast or verified postmatch
+        if: steps.mode.outputs.mode != 'skip'
         env:
           PITCHAPI_API_KEY: ${{ secrets.PITCHAPI_API_KEY }}
           GH_TOKEN: ${{ github.token }}
           RUN_MODE: ${{ steps.mode.outputs.mode }}
         run: python -m scripts.step16_m0_720_eight_run --mode "$RUN_MODE"
       - name: Verify full immutable independent database and no legacy DB modification
+        if: steps.mode.outputs.mode != 'skip'
         run: |
           python - <<'PY'
           import sqlite3,json
@@ -152,7 +145,7 @@ jobs:
               assert cn.execute('SELECT COUNT(*) FROM m0720_holdout_reviews WHERE production_approved != 0').fetchone()[0]==0
           PY
       - uses: actions/upload-artifact@v4
-        if: always()
+        if: always() && steps.mode.outputs.mode != 'skip'
         with:
           name: KB3_STEP16_M0_720_EIGHT_LEAGUE_FREEZE_SETTLEMENT_SOURCE_EVIDENCE
           path: |
@@ -162,6 +155,7 @@ jobs:
           retention-days: 30
           if-no-files-found: warn
       - name: Persist completely separate immutable research samples in private main
+        if: steps.mode.outputs.mode != 'skip'
         run: |
           git config user.name 'kb3-step16-forward-bot'
           git config user.email 'kb3-step16-forward-bot@users.noreply.github.com'
