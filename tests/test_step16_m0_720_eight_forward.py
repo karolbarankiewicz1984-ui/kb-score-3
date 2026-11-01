@@ -6,7 +6,7 @@ from unittest.mock import patch
 from src.kb3_step16_m0_720_eight_forward import (
     MODEL,EIGHT,EIGHT_COUNTRIES,select_eight,trained_params,validate_season,
     make_forecasts,freeze_sqlite,settle_sqlite,Research720Error,hashobj,stamp,
-    CALL_CAP_CAPTURE,CALL_CAP_SETTLE)
+    CALL_CAP_CAPTURE,CALL_CAP_SETTLE,historical_phase_id_inventory)
 NOW=datetime.now(timezone.utc)
 def season(country,year):
     idx=list(EIGHT_COUNTRIES).index(country)+1
@@ -117,6 +117,14 @@ class EightForwardTests(unittest.TestCase):
     with self.assertRaisesRegex(Research720Error,"FUTURE_TARGET_CONTAINS_RESULT"):
         validate_season(rows,current=True)
 
+ def test_historic_ned_bel_native_ids_do_not_auto_classify_playoffs(self):
+    proof=historical_phase_id_inventory(fake_receipts())
+    self.assertEqual(proof["NED"]["native_fixture_rows"],309)
+    self.assertEqual(proof["BEL"]["native_fixture_rows"],313)
+    self.assertEqual(len({row["fixture_id"] for row in proof["BEL"]["fixture_rows"]}),313)
+    self.assertFalse(proof["BEL"]["any_phase_pass_or_training_approval"])
+    self.assertTrue(all(x["formal_phase_reviewed"] is False
+                        for x in proof["NED"]["fixture_rows"]))
  def test_quota_after_history_filter_does_not_starve_later_valid_fixtures(self):
     # Early 10 targets cannot pass real last-5 history, 11th/12th can.
     # A pre-slice to ten would silently yield zero for ESP.
