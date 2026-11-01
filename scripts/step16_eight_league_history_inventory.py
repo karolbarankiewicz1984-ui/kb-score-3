@@ -6,7 +6,7 @@ before history is promoted to any multi-league training matrix.
 """
 import argparse,hashlib,json
 from pathlib import Path
-from src.kb3_step16_m0_720_eight_forward import ROOT
+ROOT=Path(__file__).resolve().parents[1]
 SEASONS="data/pit_sidecar/m0_720_eight/2026-11-01/forecast/RECEIPT.json"
 COUNTRIES=("ESP","ITA","GER","FRA","NED","BEL","TUR","POL")
 class HistoryInventoryError(ValueError):pass
