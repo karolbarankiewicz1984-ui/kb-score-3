@@ -22,6 +22,9 @@ from src.kb3_step14_pitchapi_xg_semantics import (
 DB=ROOT/"data/forward_step17_xg_eight/observed_xg.sqlite"
 ARCHIVE=ROOT/"data/pit_sidecar/step17_native_xg_eight"
 CATBOOST_XG_STATUS="NO_TRAINED_XG_CATBOOST_NOT_PRODUCTION"
+# 2026-11-01 source-quality note: retain strict exact-last5, original
+# provider receipts, immutable database and unchanged 33-call cap;
+# experimental priority selection is isolated in draft PR #125.
 MAX_PAIRS_PER_LEAGUE=1
 MAX_CALLS=1+8*2+8*2  # 33; 17 fixture/catalog + 16 shots/stats
 MAX_SEMANTIC_ABS_DELTA=0.15  # max mismatch shots sum vs All-team expected_goals
