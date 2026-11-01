@@ -18,6 +18,7 @@ from src.kb3_pit_ledger import utc_now,as_utc
 from src.kb3_pitch_uefa_evidence import add_observation,seal
 from src.kb3_step14_pitchapi_xg_semantics import (
     parse_native_shots,parse_native_team_stats,SemanticAuditError)
+from src.kb3_step17_xg_priority_research import ranked_eight
 
 DB=ROOT/"data/forward_step17_xg_eight/observed_xg.sqlite"
 ARCHIVE=ROOT/"data/pit_sidecar/step17_native_xg_eight"
@@ -218,7 +219,13 @@ def run(*,client,db_path=DB,archive=ARCHIVE,now=None,public_key=None):
             require(got is not None,"XG_FIXTURE_SEASON_UNAVAILABLE_"+c)
     cutoff=datetime.now(timezone.utc)
     grouped=fixture_groups(receipts)
-    picks,groups=rank_sources(grouped,known,cutoff)
+    baseline_picks,groups=rank_sources(grouped,known,cutoff)
+    # Candidate research branch ONLY: compare exact missing-last5 selection with
+    # existing most-recent-per-league. No extra provider request or new league.
+    picks,priority_state=ranked_eight(groups,known,cutoff,
+                                     budget=8,per_league=MAX_PAIRS_PER_LEAGUE)
+    require(len(picks)<=len(EIGHT) and len({c for c,m in picks})==len(picks),
+            "XG_PRIORITY_LEAGUE_BUDGET_BROKEN")
     candidates=[];semantic_errors=Counter()
     for c,m in picks:
         mid=m["id"]
@@ -247,6 +254,9 @@ def run(*,client,db_path=DB,archive=ARCHIVE,now=None,public_key=None):
          "network_calls":calls,"hard_limit_calls":MAX_CALLS,
          "leagues":list(c for c,_,_ in EIGHT),
          "prior_matches_selected":len(picks),
+         "selection_policy":"RESEARCH_LAST5_MISSING_WITHIN_EXISTING_33_CALLS",
+         "previous_selector_pairs":len(baseline_picks),
+         "prioritization_audit":priority_state,
          "new_shots_stats_xg_verified":len(candidates),
          "cumulative_verified_xg_matches":count,
          "xg_semantic_errors":dict(semantic_errors),
