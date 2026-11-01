@@ -1,0 +1,27 @@
+name: KB3 Codex R1-R6 original SQLite migration offline audit COPY ONLY
+on:
+  push:
+    branches: [review/codex-r5-staging-20261031]
+    paths:
+      - migrations/005_m0_publication_proofs.sql
+      - tests/test_codex_migration_offline.py
+      - .github/workflows/kb3-codex-migration-offline.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  real-db-copy-only:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Assert authentic SQLite copy, old table hashes, 2 new tables, 4 immutable triggers, rollback
+        run: |
+          python -m compileall -q tests/test_codex_migration_offline.py
+          python -m unittest discover -s tests -p 'test_codex_migration_offline.py' -v
+          git diff --exit-code -- data/ models/
