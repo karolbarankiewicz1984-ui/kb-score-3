@@ -106,7 +106,8 @@ def assess(db_path=DB):
         "pairwise_evaluation":{key:pairs[key] for key in PAIR_KEYS},
         "full_five_common_fixtures":benchmark["full_five_common_fixtures"],
         "comparison_input_sha256":benchmark["input_sha256"],
-        "performance_claim_allowed":all_three>0,
+        "diagnostic_metrics_available":all_three>0,
+        "performance_claim_allowed":False,  # no formal inference before 100+ weeks+gate16
         "winner_auto_selected":False,
         "gate17":"PENDING",
         "no_provider_calls":True,
