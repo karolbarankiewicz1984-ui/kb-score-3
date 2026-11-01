@@ -3,6 +3,8 @@ on:
   pull_request:
     paths:
       - src/kb3_step17_xg_capture.py
+      - src/kb3_step17_xg_priority_research.py
+      - tests/test_step17_xg_priority_research.py
       - scripts/step17_native_xg_eight_run.py
       - tests/test_step17_xg_capture.py
       - src/kb3_step17_xg_model_gate.py
@@ -13,6 +15,8 @@ on:
     branches: [main]
     paths:
       - src/kb3_step17_xg_capture.py
+      - src/kb3_step17_xg_priority_research.py
+      - tests/test_step17_xg_priority_research.py
       - scripts/step17_native_xg_eight_run.py
       - tests/test_step17_xg_capture.py
       - src/kb3_step17_xg_model_gate.py
@@ -42,6 +46,7 @@ jobs:
         run: |
           python -m compileall -q src/kb3_step17_xg_capture.py scripts/step17_native_xg_eight_run.py
           python -m unittest discover -s tests -p 'test_step17_xg_capture.py' -v
+          python -m unittest discover -s tests -p 'test_step17_xg_priority_research.py' -v
           python -m unittest discover -s tests -p 'test_step17_xg_model_gate.py' -v
           python -m scripts.step17_xg_model_gate_report
           python -m unittest discover -s tests -p 'test_step14_pitchapi_xg_semantics.py' -v
