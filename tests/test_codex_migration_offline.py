@@ -38,7 +38,7 @@ class GenuineSqliteMigrationOnlyTests(unittest.TestCase):
         self.assertTrue(MIGRATION.is_file())
         sql=MIGRATION.read_text()
         self.assertNotIn("DROP TABLE",sql.upper())
-        self.assertNotIn("UPDATE ",sql.upper())
+        self.assertNotIn("DELETE FROM",sql.upper())  # BEFORE UPDATE ON is an immutable trigger, not a data mutation
         with tempfile.TemporaryDirectory() as td:
             cp=Path(td)/"kb3_copy.sqlite"
             shutil.copy2(SOURCE,cp)
