@@ -11,6 +11,12 @@ on:
       - config/step16_live_requirements.txt
       - .github/workflows/kb3-step16-m0-720-eight-forward.yml
       - .github/workflows/kb3-step16-offline-readonly-audit.yml
+  push:
+    branches: [repair/step16-m0-readonly-metrics-20261030]
+    paths:
+      - .github/workflows/kb3-step16-offline-readonly-audit.yml
+      - scripts/**
+      - tests/**
   workflow_dispatch:
 permissions:
   contents: read
