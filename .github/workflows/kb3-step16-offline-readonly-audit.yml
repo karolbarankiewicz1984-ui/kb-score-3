@@ -1,0 +1,48 @@
+name: KB3 Step16 offline read-only M0 eligibility diagnostic (no API)
+on:
+  pull_request:
+    paths:
+      - scripts/step16_m0_offline_readonly_audit.py
+      - tests/test_step16_m0_offline_readonly_audit.py
+      - tests/test_step16_workflow_cache_static.py
+      - scripts/step17_offline_three_engine_audit.py
+      - tests/test_step17_offline_three_engine_audit.py
+      - config/step16_ci_requirements.txt
+      - config/step16_live_requirements.txt
+      - .github/workflows/kb3-step16-m0-720-eight-forward.yml
+      - .github/workflows/kb3-step16-offline-readonly-audit.yml
+  push:
+    branches: [repair/step16-m0-readonly-metrics-20261030]
+    paths:
+      - .github/workflows/kb3-step16-offline-readonly-audit.yml
+      - scripts/**
+      - tests/**
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  verify-stored-immutable-m0:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Existing crypto import dependency for original M0 validation helpers (no API)
+        run: python -m pip install --disable-pip-version-check 'cryptography>=42,<47'
+      - name: Offline arithmetic tests
+        run: |
+          python -m compileall -q scripts/step16_m0_offline_readonly_audit.py
+          python -m unittest discover -s tests -p 'test_step16_m0_offline_readonly_audit.py' -v
+          python -m unittest discover -s tests -p 'test_step16_workflow_cache_static.py' -v
+      - name: Read current recorded M0 proof and score summary
+        run: python -m scripts.step16_m0_offline_readonly_audit
+      - name: Read-only same-game Step17 three-model proof and settlement comparison
+        run: |
+          python -m compileall -q scripts/step17_offline_three_engine_audit.py
+          python -m unittest discover -s tests -p 'test_step17_offline_three_engine_audit.py' -v
+          python -m scripts.step17_offline_three_engine_audit
+          git diff --exit-code -- data/ models/

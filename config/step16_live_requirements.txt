@@ -1,0 +1,4 @@
+# Same versions/ranges as original 2026-10-30 Step16 live job
+pitchapi==0.1.6
+cryptography>=42,<47
+catboost==1.2.8
