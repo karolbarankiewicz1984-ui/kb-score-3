@@ -1,0 +1,24 @@
+name: KB3 Step19 exact 90-minute 1X2 offline QA
+on:
+  pull_request:
+    paths:
+      - src/kb3_step19_market_math.py
+      - tests/test_step19_market_math.py
+      - .github/workflows/kb3-step19-exactmarket-offline.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  verify-exactmarket:
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Source-free no-vig and market identity regression
+        run: |
+          python -m unittest discover -s tests -p 'test_step19_market_math.py' -v
+          python -m compileall -q src/kb3_step19_market_math.py
+          git diff --exit-code -- data/ models/
