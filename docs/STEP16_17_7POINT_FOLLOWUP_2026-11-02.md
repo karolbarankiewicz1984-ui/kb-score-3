@@ -18,3 +18,8 @@
 - **Następny naturalny cykl:** porównać realne `new_forecasts` i `host_attested`, następny xG capture z `real_missing_last5_predecessor_ids` oraz shadow same-as-of, sprawdzić realne 5 poprzedników obu drużyn, a historyczne fazy potwierdzić niezależnym identyfikatorem sezonu/rundy.
 - **Następny bezsieciowy ratunek 3-league artifact:** oddzielnie zweryfikować SHA zip i wszystkich receiptów, oryginalne `observed_at_utc` / hash chain i niesprzeczność z SQLite. Jeżeli dowody przejdą, zaimportować bez nowego poboru i bez tworzenia starych prognoz. Nie oznaczać jako zrobione przed faktycznym importem i niezależnym odczytem. Artefakt ma ograniczony okres przechowywania.
 - **Status formalny:** nadal 15/29, GATE16 i GATE17 = PENDING; 100 FIT / 50 nowych HOLDOUT, angielski TEST 2026/27 i manifest M0 o SHA parametrów `55310f0e1dd3842e6d876069ef21b1380901b3a6cc6884cf6ec6ea351a5812d1` niezmienione.
+
+
+### Zabezpieczenie kosztów przy scalaniu naprawy
+
+Kolektor trzech lig poprzednio uruchamiał **płatne pobranie także na zdarzenie `push` do `main`** przy modyfikacji skryptu lub workflow. Samo scalenie naprawy mogłoby więc zdublować 31 wywołań w tej samej dobie. Zmieniono warunki **czterech zależnych etapów live** w `.github/workflows/kb3-pitchapi-three-league-daily.yml`: realny capture, walidacja realnego receipt, freeze i zapis do `main` działają wyłącznie na `schedule` lub `workflow_dispatch` na `main`. Na zwykłym `push` pozostają testy bez sieci dostawcy; pull_request również testuje wyłącznie offline. Dodany test pilnuje czterech warunków. **Nie zwiększa to budżetu ani częstotliwości rzeczywistego poboru; nie uruchamia ponownie nieudanego 2 listopada capture.**
