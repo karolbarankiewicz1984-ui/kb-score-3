@@ -1028,3 +1028,8 @@ W tym samym wdrożeniu [Actions #41346411117](https://github.com/karolbarankiewi
 
 
 **Finalny post-merge audyt kosztów — 2026-11-02, PASS:** [GitHub Actions #41481041537](https://github.com/karolbarankiewicz1984-ui/kb-score-3/actions/runs/41481041537) = **SUCCESS** na automatycznym `push` po merge #130. Testy offline przeszły; **wszystkie cztery kroki** rzeczywistego 3-league capture, walidacji płatnego źródła, freeze i zapisu do `main` mają `SKIPPED`. **Zero dodatkowych requestów PitchAPI wskutek merge.** Zmiana bezpieczeństwa operacyjnego = PASS. Historyczny wynik z nieudanego 2 XI nadal wymaga oddzielnego, zweryfikowanego bez-API odzyskania z artefaktu. Nie zmienia to stanu 60/100 i 0/29, formalne GATE16/17 PENDING.
+
+
+### 2026-11-02 — audyt przyrostu M0 / M0-720: punkty 1–5
+
+Zarejestrowano audyt i narzędzie wyłącznie do odczytu w `docs/STEP16_M0720_FIVE_POINT_BACKLOG_AUDIT_2026-11-02.md` oraz `scripts/audit_m0720_backlog.py` (gałąź audytowa). Udokumentowane: 3-league 18 settled (+6), 3 pending; 8-league 75 forecasts, 60 ostatnio potwierdzonych settlements i zero nowych forecasts w przebiegu 2026-11-02 16:15 UTC. Wykryto, że codzienny guard blokuje kolejne sloty forecast. Punkty 1 i 2: diagnostyka częściowa, pełny audyt odrzuceń i wyników oczekuje realnej bazy/uruchomienia; 3: harmonogram przeanalizowany, dodatkowe płatne uruchomienia NIE włączone bez naprawy multi-run/day; 4: 8 lig utrzymane bez nieuzasadnionego rozszerzenia; 5: bez zmian matematyki, parametrów, FIT/HOLDOUT i TEST. Status: **PENDING LIVE VALIDATION; GATE16/GATE17 PENDING**, nie oznaczać 1–5 jako w całości wdrożone.
