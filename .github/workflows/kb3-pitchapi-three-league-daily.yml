@@ -49,7 +49,7 @@ jobs:
           python -m unittest discover -s tests -p 'test_step14_m0_shadow_1x2_live_freeze.py' -v
       - name: Real 3-league fixtures plus unique earlier matches shots and team-xG
         id: true_source_capture
-        if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+        if: github.ref == 'refs/heads/main' && (github.event_name == 'schedule' || github.event_name == 'workflow_dispatch')
         env:
           PITCHAPI_API_KEY: ${{ secrets.PITCHAPI_API_KEY }}
         run: |
@@ -62,7 +62,7 @@ jobs:
             --base data/pit_sidecar/pitchapi_three_league_daily \
             --public-key config/step11_archive_recipient_public.pem
       - name: Verify original raw SHA, TRUE UTC, exactly 3 league names and withheld TEST
-        if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+        if: github.ref == 'refs/heads/main' && (github.event_name == 'schedule' || github.event_name == 'workflow_dispatch')
         env:
           FRESH_CAPTURE: ${{ steps.true_source_capture.outputs.fresh_capture }}
         run: |
@@ -111,7 +111,7 @@ jobs:
           print('THREE_LEAGUE_DAILY_REAL_SEALED',a['newly_verified_match_shot_stat_pairs'],a['provider_calls'])
           PY
       - name: Freeze brand-new M0 1X2 90 minutes before kick-off from recorded 121+38 only
-        if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+        if: github.ref == 'refs/heads/main' && (github.event_name == 'schedule' || github.event_name == 'workflow_dispatch')
         run: |
           python -m src.kb3_m0_shadow_1x2_live_freeze \
             --db data/forward_m0/kb3_forward_m0.sqlite \
@@ -151,7 +151,7 @@ jobs:
           retention-days: 30
           if-no-files-found: warn
       - name: Append actual verified encrypted observations to private main
-        if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+        if: github.ref == 'refs/heads/main' && (github.event_name == 'schedule' || github.event_name == 'workflow_dispatch')
         run: |
           git config user.name "kb3-pit-bot"
           git config user.email "kb3-pit-bot@users.noreply.github.com"
