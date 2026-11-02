@@ -42,6 +42,27 @@ class GenuineM0OneXTwo(unittest.TestCase):
                 connection.execute("UPDATE m0_shadow_1x2_forecasts SET p_1=.7")
             with self.assertRaises(sqlite3.IntegrityError):
                 connection.execute("DELETE FROM m0_shadow_1x2_forecasts")
+ def test_cli_zero_eligible_is_successful_noop(self):
+    # Reproduces the exact 2026-11-02 GitHub Action failure (KeyError in CLI).
+    from io import StringIO
+    from contextlib import redirect_stdout
+    from unittest.mock import patch
+    from src.kb3_m0_shadow_1x2_live_freeze import main
+    with tempfile.TemporaryDirectory() as tmp:
+        output_root=Path(tmp)/"shadow-reports"
+        args=["kb3-m0-freeze","--db",str(Path(tmp)/"source.sqlite"),
+              "--out-root",str(output_root)]
+        no_op={"schema":"kb3-real-forward-M0-Elo-Poisson-shadow-1x2-v1",
+               "state":"NO_NEW_ELIGIBLE_PREMATCH_TARGETS",
+               "fresh_forecasts":0,"total_frozen":12,"not_eligible":7}
+        capture=StringIO()
+        with patch("sys.argv",args),patch(
+            "src.kb3_m0_shadow_1x2_live_freeze.freeze",
+            return_value=no_op) as frozen,redirect_stdout(capture):
+            main()
+        frozen.assert_called_once()
+        self.assertIn("M0_SHADOW_NO_NEW_ELIGIBLE",capture.getvalue())
+        self.assertFalse(list(output_root.rglob("FROZEN_M0_SHADOW_1X2.json")))
  def test_same_fixtures_are_never_refitted(self):
     with tempfile.TemporaryDirectory() as t:
         db=self.make_db(t)
