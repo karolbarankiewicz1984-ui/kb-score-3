@@ -80,6 +80,8 @@ class ProgressiveShadowTests(unittest.TestCase):
                           (fid,MODEL,"ESP","m_demo",ko.isoformat(),cap.isoformat(),json.dumps(body)))
                 c.execute("INSERT INTO settlements VALUES(?,?,?)",
                           (fid,"1",(ko+timedelta(hours=4)).isoformat()))
+                # Commit the fixture before the independent read-only connection.
+                c.commit()
                 # Missing authenticated proof: no eligible rows.
                 self.assertEqual(verified_rows(db_path),[])
                 c.execute("INSERT INTO m0720_github_push_proofs VALUES(?,?,?)",
