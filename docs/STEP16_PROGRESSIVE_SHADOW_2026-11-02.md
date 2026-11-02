@@ -22,4 +22,4 @@ Użytkownik polecił kontynuować budowę bez czekania na 100+50 meczów; model 
 - Brak zmiany dotychczasowych 75 prognoz, 66 settlementów wg receipt z 02.11 18:24 UTC, żadnych zmian parametrów SHA, brak auto-awansu, koszt nowych subskrypcji = 0 zł.
 
 ## Rejestr operacyjny
-2026-11-02, Europe/Warsaw: rozpoczęto niezależny badawczy mechanizm SHADOW. Po utworzeniu PR należy dopisać URL, commit SHA, wynik CI oraz stan na真实ych danych. Do czasu wtedy jest to **IMPLEMENTED_ON_RESEARCH_BRANCH / CI_PENDING / UNMERGED**.
+2026-11-02, Europe/Warsaw: rozpoczęto niezależny badawczy mechanizm SHADOW. Po utworzeniu PR należy dopisać URL, commit SHA, wynik CI oraz stan na rzeczywistych danych. Do czasu wtedy jest to **IMPLEMENTED_ON_RESEARCH_BRANCH / CI_PENDING / UNMERGED**.
