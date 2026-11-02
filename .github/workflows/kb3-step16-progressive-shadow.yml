@@ -1,0 +1,38 @@
+name: KB3 Step16 progressive shadow diagnostics (offline)
+on:
+  pull_request:
+    paths:
+      - src/kb3_step16_progressive_shadow.py
+      - tests/test_step16_progressive_shadow.py
+      - .github/workflows/kb3-step16-progressive-shadow.yml
+  workflow_dispatch:
+  schedule:
+    - cron: '49 23 * * 0'
+permissions:
+  contents: read
+jobs:
+  safe-progressive-shadow:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Offline strict no-lookahead tests, no API and no secrets
+        run: |
+          python -m unittest discover -s tests -p 'test_step16_progressive_shadow.py' -v
+          python -m compileall -q src/kb3_step16_progressive_shadow.py
+      - name: Read-only shadow audit on PR and weekly main against existing M0 ledger
+        run: |
+          mkdir -p data/audits/progressive_shadow
+          python -m src.kb3_step16_progressive_shadow \
+            --db data/forward_m0_720_eight/kb3_forward_eight.sqlite \
+            --out "data/audits/progressive_shadow/SHADOW_${GITHUB_RUN_ID}.json"
+          git diff --exit-code -- data/forward_m0_720_eight/ models/
+      - uses: actions/upload-artifact@v4
+        with:
+          name: KB3_STEP16_PROGRESSIVE_SHADOW_OFFLINE_REPORT
+          path: data/audits/progressive_shadow/
+          if-no-files-found: error
+          retention-days: 90
