@@ -213,7 +213,9 @@ def main():
         return
     result=freeze(a.db,report_path=out,now=now,
                   strict_initial_count=a.strict_initial)
-    if result["fresh_forecasts"] if "fresh_forecasts" in result else False:
+    # Zero new targets is a valid, immutable no-op: do not turn the entire
+    # already-paid source capture into a failed workflow or invent a forecast.
+    if result.get("state")=="NO_NEW_ELIGIBLE_PREMATCH_TARGETS":
         print("M0_SHADOW_NO_NEW_ELIGIBLE",result)
     else:
         print(json.dumps({"status":"M0_GENUINE_1X2_PREMATCH_SHADOW_FROZEN",
