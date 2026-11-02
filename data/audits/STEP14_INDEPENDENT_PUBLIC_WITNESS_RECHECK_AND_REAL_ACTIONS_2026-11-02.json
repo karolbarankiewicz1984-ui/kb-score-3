@@ -1,0 +1,126 @@
+{
+  "schema": "kb3-step14-independent-public-source-and-actions-recheck-2026-11-02-v1",
+  "audit_day_utc": "2026-11-02",
+  "mode": "READ_ONLY_EXTERNAL_VERIFICATION_APPEND_ONLY_REPORT_NO_ORIGINAL_M1_NO_TEST",
+  "scope": "Original 2023/24-2025/26 historical native PIT 121 numeric + 38 missing flags; 760 TRAIN + 380 VALIDATION",
+  "external_source": "olbauday/FPL-Core-Insights",
+  "method": "Direct independent GitHub REST workflow-run metadata, exact SHA-pinned fetch_file blob SHA, and private GitHub Actions run/job/decoded-log checks; no API keys requested or used.",
+  "verified_external_source_witnesses": [
+    {
+      "run_id": 18809064761,
+      "created_at_utc": "2025-10-25T22:04:56Z",
+      "event": "schedule",
+      "conclusion": "success",
+      "run_head_sha": "fcbb0e3a6090cff4b839cf405c04afacc338e34f",
+      "path": "data/2025-2026/By Gameweek/GW8/matches.csv",
+      "blob_sha": "0407363d0b15d8c5cce37d80af4e8acc9e3c58df",
+      "head_and_blob_exact_match": true,
+      "source_header_has_kickoff_finished_match_id_and_home_away_xg": true
+    },
+    {
+      "run_id": 20400663316,
+      "created_at_utc": "2025-12-20T22:05:36Z",
+      "event": "schedule",
+      "conclusion": "success",
+      "run_head_sha": "c4022fb14352c3745be072c05df0f15af4021aab",
+      "path": "data/2025-2026/By Gameweek/GW16/matches.csv",
+      "blob_sha": "8a83c32249acae136acf400179cf394dd05af3b3",
+      "head_and_blob_exact_match": true,
+      "source_header_has_kickoff_finished_match_id_and_home_away_xg": true,
+      "warning": "Source contains non-EPL rows according to prior independent audit; must enforce league and fixture ID filters."
+    },
+    {
+      "run_id": 22243070581,
+      "created_at_utc": "2026-02-20T22:07:25Z",
+      "event": "schedule",
+      "conclusion": "success",
+      "run_head_sha": "f6cfdb3d07d731f28be7712252220a0cb4582cdb",
+      "path": "data/2025-2026/By Gameweek/GW26/matches.csv",
+      "blob_sha": "2f7e4bdb479e3081ea62e85c0522208cfa18f579",
+      "head_and_blob_exact_match": true,
+      "source_header_has_kickoff_finished_match_id_and_home_away_xg": true
+    }
+  ],
+  "external_witness_interpretation": "These are independently verified 2025/26 PUBLIC alternative source snapshots with exact server run times and blob identities. They are not 2023-25 original PitchAPI team-xG first-publication evidence, do not establish per-target native fixture/team identity or full 159-feature PIT, and do not certify any original TRAIN/VALIDATION row.",
+  "private_actions_rechecked": [
+    {
+      "run_id": 40738870670,
+      "job_id": 122994718765,
+      "conclusion": "success",
+      "decoded_log": "rows=1140 numeric=73 flags=14 field_slots=99180 original_PIT_qualified_rows=0",
+      "meaning": "6/6 tests of negative admission and 1140-row metadata matrix, NOT original native PIT acceptance"
+    },
+    {
+      "run_id": 40745602928,
+      "job_id": 123018430263,
+      "conclusion": "success",
+      "decoded_log": "native_fixture_joins=1140 all_previous_source_ft=106 provider_original_full_pit=false gate14_pass=false",
+      "meaning": "Fixture identity and partial public predecessor evidence; no original full PIT"
+    },
+    {
+      "run_id": 40916193143,
+      "job_id": 123596940030,
+      "conclusion": "success",
+      "decoded_log": "PASS_REVISED_GATE14_B; TRAIN=720 VALIDATION=374 original_GATE14=PENDING_NOT_CERTIFIED",
+      "meaning": "Alternative variant B is separate from original strict native PIT"
+    },
+    {
+      "run_id": 41448219533,
+      "job_id": 125286573254,
+      "conclusion": "success",
+      "decoded_log": "2026-11-02 future_targets=4 prior_shot_stats=2 actual_api_calls=6 provider_original_first_publication_known=false gate14_pass=false",
+      "meaning": "Modern observed-at capture is not historical first-publication evidence"
+    },
+    {
+      "run_id": 41455974963,
+      "job_id": 125312617627,
+      "conclusion": "success",
+      "meaning": "Future public schedule PIT sidecar; no original historical PIT certification"
+    },
+    {
+      "run_id": 41475378195,
+      "job_id": 125379439032,
+      "conclusion": "failure",
+      "decoded_log": "KeyError: 'actual_derived_forecasts' during post-capture assertion; source archive log reported gate14_pass=false",
+      "meaning": "Workflow failure is a software assertion issue, not historical PIT success"
+    },
+    {
+      "run_id": 41491316338,
+      "job_ids": [
+        125434737580,
+        125434932420
+      ],
+      "conclusion": "success",
+      "meaning": "M0 forward shadow settlement; separate from original historical M1 gate"
+    },
+    {
+      "run_id": 41500112326,
+      "conclusion_at_observation": "in_progress",
+      "meaning": "Step16 eight-league research, not original historical gate"
+    }
+  ],
+  "strict_gate_from_checked_repository_file": "data/audits/STEP14_FINAL_1140x159_PIT_GATE_2026-10-29.json",
+  "strict_gate": {
+    "numeric_fields": 121,
+    "flags": 38,
+    "train_required": 760,
+    "validation_required": 380,
+    "certified_original_native_PIT_train": 0,
+    "certified_original_native_PIT_validation": 0,
+    "native_PitchAPI_team_xg_original_first_published_at": null,
+    "native_PitchAPI_vs_FPL_Opta_semantic_equivalence_proven": false,
+    "original_M1_fit_allowed": false,
+    "original_M1_fit_performed": false,
+    "original_TEST_examined": false,
+    "GATE14_ORIGINAL_STRICT_NATIVE_PIT": "PENDING"
+  },
+  "safeguards": [
+    "No original model fit or split mutation",
+    "No original TEST access",
+    "No new keys",
+    "No false native team-xG substitution",
+    "No fabricated publication timestamp",
+    "Only independent verified external source metadata and repository gate evidence recorded"
+  ],
+  "conclusion": "NEW_INDEPENDENT_PUBLIC_SOURCE_WITNESS_RECHECK_PASS_BUT_ORIGINAL_FULL_NATIVE_PIT_NOT_CERTIFIED"
+}
