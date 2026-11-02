@@ -1,4 +1,4 @@
-name: KB3 Step16 progressive shadow diagnostics (offline)
+name: KB3 Step16-17 daily progressive learning and paired evaluation (offline)
 on:
   pull_request:
     paths:
@@ -7,32 +7,36 @@ on:
       - .github/workflows/kb3-step16-progressive-shadow.yml
   workflow_dispatch:
   schedule:
-    - cron: '49 23 * * 0'
+    - cron: '49 23 * * *'
 permissions:
   contents: read
 jobs:
   safe-progressive-shadow:
     runs-on: ubuntu-latest
-    timeout-minutes: 8
+    timeout-minutes: 12
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-      - name: Offline strict no-lookahead tests, no API and no secrets
+      - name: Install local cryptography dependency for existing paired audit (no API)
+        run: python -m pip install --disable-pip-version-check 'cryptography>=42,<47'
+      - name: Offline strict no-lookahead and paired fairness tests, no API and no secrets
         run: |
           python -m unittest discover -s tests -p 'test_step16_progressive_shadow.py' -v
+          python -m unittest discover -s tests -p 'test_step17_offline_three_engine_audit.py' -v
           python -m compileall -q src/kb3_step16_progressive_shadow.py
-      - name: Read-only shadow audit on PR and weekly main against existing M0 ledger
+      - name: Read-only daily Step16 temperature and Step17 same-fixture models
         run: |
           mkdir -p data/audits/progressive_shadow
           python -m src.kb3_step16_progressive_shadow \
             --db data/forward_m0_720_eight/kb3_forward_eight.sqlite \
             --out "data/audits/progressive_shadow/SHADOW_${GITHUB_RUN_ID}.json"
+          python -m scripts.step17_offline_three_engine_audit > "data/audits/progressive_shadow/STEP17_PAIRED_${GITHUB_RUN_ID}.json"
           git diff --exit-code -- data/forward_m0_720_eight/ models/
       - uses: actions/upload-artifact@v4
         with:
-          name: KB3_STEP16_PROGRESSIVE_SHADOW_OFFLINE_REPORT
+          name: KB3_STEP16_17_DAILY_SHADOW_AND_PAIRED_READONLY
           path: data/audits/progressive_shadow/
           if-no-files-found: error
           retention-days: 90
