@@ -63,6 +63,15 @@ class GenuineM0OneXTwo(unittest.TestCase):
         frozen.assert_called_once()
         self.assertIn("M0_SHADOW_NO_NEW_ELIGIBLE",capture.getvalue())
         self.assertFalse(list(output_root.rglob("FROZEN_M0_SHADOW_1X2.json")))
+ def test_paid_capture_never_runs_on_main_code_push(self):
+    # A bugfix merge must not replay 31 paid PitchAPI requests for the same day.
+    workflow=(Path(__file__).resolve().parents[1]/
+              ".github/workflows/kb3-pitchapi-three-league-daily.yml").read_text()
+    guarded=("if: github.ref == 'refs/heads/main' && "
+             "(github.event_name == 'schedule' || "
+             "github.event_name == 'workflow_dispatch')")
+    self.assertEqual(workflow.count(guarded),4)
+    self.assertNotIn("github.event_name != 'pull_request'",workflow)
  def test_same_fixtures_are_never_refitted(self):
     with tempfile.TemporaryDirectory() as t:
         db=self.make_db(t)
