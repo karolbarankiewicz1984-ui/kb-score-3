@@ -1,9 +1,11 @@
-name: KB3 Step16-17 daily progressive learning and paired evaluation (offline)
+name: KB3 Step16-18 daily learning, comparison and Champion safety gate
 on:
   pull_request:
     paths:
       - src/kb3_step16_progressive_shadow.py
       - tests/test_step16_progressive_shadow.py
+      - src/kb3_step18_decision_readiness.py
+      - tests/test_step18_decision_readiness.py
       - .github/workflows/kb3-step16-progressive-shadow.yml
   workflow_dispatch:
   schedule:
@@ -25,6 +27,7 @@ jobs:
         run: |
           python -m unittest discover -s tests -p 'test_step16_progressive_shadow.py' -v
           python -m unittest discover -s tests -p 'test_step17_offline_three_engine_audit.py' -v
+          python -m unittest discover -s tests -p 'test_step18_decision_readiness.py' -v
           python -m compileall -q src/kb3_step16_progressive_shadow.py
       - name: Read-only daily Step16 temperature and Step17 same-fixture models
         run: |
@@ -33,10 +36,11 @@ jobs:
             --db data/forward_m0_720_eight/kb3_forward_eight.sqlite \
             --out "data/audits/progressive_shadow/SHADOW_${GITHUB_RUN_ID}.json"
           python -m scripts.step17_offline_three_engine_audit > "data/audits/progressive_shadow/STEP17_PAIRED_${GITHUB_RUN_ID}.json"
+          python -m src.kb3_step18_decision_readiness --input "data/audits/progressive_shadow/STEP17_PAIRED_${GITHUB_RUN_ID}.json" --out "data/audits/progressive_shadow/STEP18_GATE_${GITHUB_RUN_ID}.json"
           git diff --exit-code -- data/forward_m0_720_eight/ models/
       - uses: actions/upload-artifact@v4
         with:
-          name: KB3_STEP16_17_DAILY_SHADOW_AND_PAIRED_READONLY
+          name: KB3_STEP16_18_DAILY_RESEARCH_READONLY
           path: data/audits/progressive_shadow/
           if-no-files-found: error
           retention-days: 90
