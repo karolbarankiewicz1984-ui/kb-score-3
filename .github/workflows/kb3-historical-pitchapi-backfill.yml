@@ -4,12 +4,16 @@ on:
     paths:
       - scripts/kb3_historical_pitchapi_backfill.py
       - tests/test_kb3_historical_pitchapi_backfill.py
+      - src/kb3_historical_feature_quality.py
+      - tests/test_kb3_historical_feature_quality.py
       - .github/workflows/kb3-historical-pitchapi-backfill.yml
   push:
     branches: [main]
     paths:
       - scripts/kb3_historical_pitchapi_backfill.py
       - tests/test_kb3_historical_pitchapi_backfill.py
+      - src/kb3_historical_feature_quality.py
+      - tests/test_kb3_historical_feature_quality.py
       - .github/workflows/kb3-historical-pitchapi-backfill.yml
   schedule:
     - cron: '15 2,10,18 * * *'
@@ -32,8 +36,9 @@ jobs:
         run: python -m pip install --disable-pip-version-check 'cryptography>=42,<47'
       - name: Strict source identity, PIT/TEST exclusion, xG and SQLite regression
         run: |
-          python -m compileall -q scripts/kb3_historical_pitchapi_backfill.py tests/test_kb3_historical_pitchapi_backfill.py
+          python -m compileall -q scripts/kb3_historical_pitchapi_backfill.py src/kb3_historical_feature_quality.py tests/test_kb3_historical_pitchapi_backfill.py tests/test_kb3_historical_feature_quality.py
           python -m unittest discover -s tests -p 'test_kb3_historical_pitchapi_backfill.py' -v
+          python -m unittest discover -s tests -p 'test_kb3_historical_feature_quality.py' -v
           python -m unittest discover -s tests -p 'test_step14_pitchapi_xg_semantics.py' -v
   live-observed-backfill:
     needs: offline-history-safety
@@ -76,13 +81,27 @@ jobs:
           assert report["protected_premier_league_test_accessed"] is False
           assert report["research_training_performed"] is False
           assert report["gate16_gate17"]=="PENDING"
+          quality=json.loads((folder/"ROLLING_FEATURE_QUALITY.json").read_text())
+          assert quality["gate16_gate17"]=="PENDING"
+          assert quality["never_use_target_result_as_its_own_feature"] is True
+          assert quality["no_missing_as_zero"] is True
+          assert quality["full_feature_training_approved"] is False
+          assert report["historical_feature_target_rows"] == quality["totals"]["targets_checked"]
+          assert report["cumulative_finished_fixture_index_rows"] == quality["totals"]["indexed_finished_fixtures"]
+          assert report["true_last5_both_xg_complete"] == quality["totals"].get("pair_xg_5_complete",0)
           with sqlite3.connect(DB) as db:
               assert db.execute("PRAGMA integrity_check").fetchone()[0]=="ok"
               n=db.execute("SELECT COUNT(*) FROM observations").fetchone()[0]
               assert n==report["cumulative_match_stats"]
               assert db.execute("SELECT COUNT(*) FROM observations WHERE provider_first_published_at_utc IS NOT NULL").fetchone()[0]==0
               assert db.execute("SELECT COUNT(*) FROM observations WHERE scope='ENG'").fetchone()[0]==0
-          print("KB3_HISTORY_REAL_SOURCE_PASS",n,report["new_match_stats"],report["new_native_xg_verified"])
+              assert db.execute("SELECT COUNT(*) FROM finished_fixture_index WHERE scope='ENG'").fetchone()[0]==0
+              assert db.execute("SELECT COUNT(*) FROM finished_fixture_index").fetchone()[0]==quality["totals"]["indexed_finished_fixtures"]
+              assert db.execute("SELECT COUNT(*) FROM rolling_feature_cache").fetchone()[0]==quality["totals"]["targets_checked"]
+              assert db.execute("SELECT COUNT(*) FROM finished_fixture_index WHERE original_provider_first_published_utc IS NOT NULL").fetchone()[0]==0
+          print("KB3_HISTORY_REAL_SOURCE_AND_ROLLING_QUALITY_PASS",n,report["new_match_stats"],
+                report["new_native_xg_verified"],quality["totals"]["indexed_finished_fixtures"],
+                quality["totals"].get("pair_xg_5_complete",0))
           PY
       - uses: actions/upload-artifact@v4
         if: always()
