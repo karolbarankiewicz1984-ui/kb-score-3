@@ -202,11 +202,11 @@ def _load_records(db):
                     "away_team_id","goals_home_90","goals_away_90"),r))
         fixt[f["scope"]].append(f)
     obs={}
-    for r in db.execute("""SELECT scope,match_id,kickoff_utc,home_team_id,away_team_id,
+    for r in db.execute("""SELECT scope,season,match_id,kickoff_utc,home_team_id,away_team_id,
                      stat_items_json,xg_status,xg_home,xg_away
                      FROM observations"""):
-        scope,mid,ko,home,away,items,status,xgh,xga=r
-        obs[(scope,mid)]={"kickoff_utc":ko,"home_team_id":home,
+        scope,season,mid,ko,home,away,items,status,xgh,xga=r
+        obs[(scope,mid)]={"season":season,"kickoff_utc":ko,"home_team_id":home,
             "away_team_id":away,"items":json.loads(items),"xg_status":status,
             "xg_home":xgh,"xg_away":xga}
     return fixt,obs
@@ -222,12 +222,31 @@ def assess_and_cache(db_path,report_path):
     source_hash=hashlib.sha256(path.read_bytes()).hexdigest()
     totals=Counter()
     by_scope=defaultdict(Counter)
+    by_scope_season=defaultdict(Counter)
+    metric_coverage=Counter()
+    missing_xg_status=Counter()
     with sqlite3.connect(path) as db:
         ensure_tables(db)
         fixt,obs=_load_records(db)
         if any(scope=="ENG" for scope in fixt):
             raise ValueError("PROTECTED_PREMIER_LEAGUE_TEST_IN_HISTORY")
         index={(f["scope"],f["match_id"]):f for arr in fixt.values() for f in arr}
+        for arr in fixt.values():
+            for item in arr:
+                by_scope_season[(item["scope"],item["season"])]["finished_fixtures_indexed"]+=1
+        for (scope,mid),data in obs.items():
+            by_scope_season[(scope,data["season"])]["stat_matches_observed"]+=1
+            by_scope[scope]["stat_matches_observed"]+=1
+            if data["xg_status"]=="VERIFIED":
+                by_scope_season[(scope,data["season"])]["xg_verified_matches"]+=1
+                by_scope[scope]["xg_verified_matches"]+=1
+            else:
+                missing_xg_status[data["xg_status"]]+=1
+                by_scope_season[(scope,data["season"])]["xg_unverified_matches"]+=1
+                by_scope[scope]["xg_unverified_matches"]+=1
+            for key in METRICS:
+                if raw_stat(data,key,"home") is not None and raw_stat(data,key,"away") is not None:
+                    metric_coverage[key]+=1
         # Incomplete legacy data can be inspected but must never be assumed complete.
         db.execute("DELETE FROM rolling_feature_cache")
         for (scope,mid),data in sorted(obs.items()):
@@ -293,6 +312,10 @@ def assess_and_cache(db_path,report_path):
             "source_db_sha256_before_feature_cache":source_hash,
             "totals":dict(sorted(totals.items())),
             "by_scope":{k:dict(sorted(v.items())) for k,v in sorted(by_scope.items())},
+            "by_scope_season":{a+"/"+b:dict(sorted(v.items()))
+                               for (a,b),v in sorted(by_scope_season.items())},
+            "stat_both_sides_numeric_matches_by_key":dict(sorted(metric_coverage.items())),
+            "xg_unverified_reason_counts":dict(sorted(missing_xg_status.items())),
             "missing_season_notice":"POL_2023_24_AND_2024_25_UNAVAILABLE_IN_PITCHAPI_CATALOG_AS_OF_2026_11_03",
             "history_n_definition":"ACTUAL_LAST_N_FINISHED_FIXTURES_NOT_LAST_N_WITH_STATS",
             "rolling_windows":list(WINDOWS),
