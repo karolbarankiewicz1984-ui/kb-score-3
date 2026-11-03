@@ -133,6 +133,18 @@ def raw_stat(row,metric,side):
     return values[0]
 
 
+def effective_stat(row,metric,side):
+    """Use validated later event-source value only when original value is missing.
+
+    Do not append a second duplicate yellow_cards key to the immutable original
+    stats: an invalid '-' or blank duplicate would keep raw_stat invalid.
+    """
+    replacement=row.get("research_overrides",{}).get(metric,{})
+    if side in replacement:
+        return replacement[side]
+    return raw_stat(row,metric,side)
+
+
 def _signed_side(fixture,team_id):
     if team_id==fixture["home_team_id"]:
         return "home"
@@ -150,7 +162,7 @@ def _feature_for_match(f,obs,team):
             "points":float(3 if gf>ga else 1 if gf==ga else 0)}
     if obs:
         for key in METRICS:
-            values[key]=raw_stat(obs,key,side)
+            values[key]=effective_stat(obs,key,side)
         if obs["xg_status"]=="VERIFIED":
             values["xg_for"]=obs["xg_home"] if home else obs["xg_away"]
             values["xg_against"]=obs["xg_away"] if home else obs["xg_home"]
@@ -243,11 +255,14 @@ def _load_records(db,recheck_db_path=None):
                     old_h=raw_stat(item,"yellow_cards","home")
                     old_a=raw_stat(item,"yellow_cards","away")
                     if old_h is None or old_a is None:
-                        item["items"].append({"key":"yellow_cards",
-                            "home":str(yh),"away":str(ya),
-                            "origin":"LATER_EVENTS_RECHECK_RESEARCH_ONLY"})
-                        if (raw_stat(item,"yellow_cards","home") is not None and
-                            raw_stat(item,"yellow_cards","away") is not None):
+                        overrides=item.setdefault("research_overrides",{})
+                        card=overrides.setdefault("yellow_cards",{})
+                        if old_h is None:
+                            card["home"]=float(yh)
+                        if old_a is None:
+                            card["away"]=float(ya)
+                        if (effective_stat(item,"yellow_cards","home") is not None and
+                            effective_stat(item,"yellow_cards","away") is not None):
                             recheck_counts["recovered_yellow_cards"]+=1
     return fixt,obs,recheck_counts
 
@@ -290,7 +305,8 @@ def assess_and_cache(db_path,report_path,recheck_db_path=None):
                 by_scope_season[(scope,data["season"])]["xg_unverified_matches"]+=1
                 by_scope[scope]["xg_unverified_matches"]+=1
             for key in METRICS:
-                if raw_stat(data,key,"home") is not None and raw_stat(data,key,"away") is not None:
+                if (effective_stat(data,key,"home") is not None and
+                    effective_stat(data,key,"away") is not None):
                     metric_coverage[key]+=1
         # Incomplete legacy data can be inspected but must never be assumed complete.
         db.execute("DELETE FROM rolling_feature_cache")
@@ -366,6 +382,7 @@ def assess_and_cache(db_path,report_path,recheck_db_path=None):
                 if recheck_db_path is not None and Path(recheck_db_path).is_file()
                 else None),
             "overlays_are_later_research_not_original_pit":True,
+            "original_source_stat_items_preserved":True,
             "xg_unverified_reason_counts":dict(sorted(missing_xg_status.items())),
             "missing_season_notice":"POL_2023_24_AND_2024_25_UNAVAILABLE_IN_PITCHAPI_CATALOG_AS_OF_2026_11_03",
             "history_n_definition":"ACTUAL_LAST_N_FINISHED_FIXTURES_NOT_LAST_N_WITH_STATS",
