@@ -7,7 +7,8 @@ from pathlib import Path
 
 from scripts.kb3_historical_pitchapi_backfill import (
     SEASONS, EIGHT, select_scopes, validate_match_rows, select_batch,
-    all_period_stat_items, native_xg_verified, put_rows, existing_ids, BackfillError,
+    underserved_national_scope, all_period_stat_items, native_xg_verified,
+    put_rows, existing_ids, BackfillError,
 )
 
 
@@ -111,6 +112,37 @@ class HistoricalBackfillTests(unittest.TestCase):
         self.assertTrue(all(x[2]["id"] in {f["id"] for f in fixtures[2:7]}
                             for x in out))
         self.assertNotIn(fixtures[-1]["id"],{x[2]["id"] for x in out})
+
+    def test_undercaptured_eight_league_first_gets_whole_48_batch(self):
+        countries=["BEL","ESP","FRA","GER","ITA","NED","POL","TUR"]
+        groups={}
+        known=set()
+        seeded={"BEL":110,"ESP":90,"FRA":10,"GER":3,
+                "ITA":4,"NED":5,"POL":6,"TUR":7}
+        for scope in countries:
+            rows=[game("m_"+scope+"_"+str(i).zfill(4),
+                       dt="2025-09-"+str(i//24+1).zfill(2)
+                          +"T"+str(i%24).zfill(2)+":00:00Z")
+                  for i in range(140)]
+            groups[(scope,"2025/2026")]=rows
+            known.update((scope,m["id"]) for m in rows[:seeded[scope]])
+        self.assertEqual(underserved_national_scope(groups,known,48),"GER")
+        batch=select_batch(groups,known,max_matches=48)
+        self.assertEqual(len(batch),48)
+        self.assertTrue(all(scope=="GER" and season=="2025/2026"
+                            for scope,season,_ in batch))
+        self.assertEqual(len(set(x[2]["id"] for x in batch)),48)
+        following=known|{(scope,m["id"]) for scope,_,m in batch}
+        self.assertEqual(underserved_national_scope(groups,following,48),"ITA")
+
+    def test_balance_ignores_ucl_and_short_test_batches(self):
+        arr=[game("m_"+str(i).zfill(5)) for i in range(140)]
+        groups={("BEL","2025/2026"):arr,("ESP","2025/2026"):arr,
+                ("GER","2025/2026"):arr,("UCL","2025/2026"):arr}
+        known={("BEL",m["id"]) for m in arr[:120]}
+        self.assertEqual(underserved_national_scope(groups,known,48),"ESP")
+        self.assertIsNone(underserved_national_scope(groups,known,8))
+        self.assertNotEqual(underserved_national_scope(groups,known,48),"UCL")
 
     def test_stats_all_period_provider_key_preserved(self):
         raw=stats()
