@@ -133,6 +133,18 @@ def raw_stat(row,metric,side):
     return values[0]
 
 
+def effective_stat(row,metric,side):
+    """Use validated later event-source value only when original value is missing.
+
+    Do not append a second duplicate yellow_cards key to the immutable original
+    stats: an invalid '-' or blank duplicate would keep raw_stat invalid.
+    """
+    replacement=row.get("research_overrides",{}).get(metric,{})
+    if side in replacement:
+        return replacement[side]
+    return raw_stat(row,metric,side)
+
+
 def _signed_side(fixture,team_id):
     if team_id==fixture["home_team_id"]:
         return "home"
@@ -150,7 +162,7 @@ def _feature_for_match(f,obs,team):
             "points":float(3 if gf>ga else 1 if gf==ga else 0)}
     if obs:
         for key in METRICS:
-            values[key]=raw_stat(obs,key,side)
+            values[key]=effective_stat(obs,key,side)
         if obs["xg_status"]=="VERIFIED":
             values["xg_for"]=obs["xg_home"] if home else obs["xg_away"]
             values["xg_against"]=obs["xg_away"] if home else obs["xg_home"]
@@ -210,6 +222,7 @@ def _load_records(db,recheck_db_path=None):
             "away_team_id":away,"items":json.loads(items),"xg_status":status,
             "xg_home":xgh,"xg_away":xga}
     recheck_counts=Counter()
+    xg_delta_buckets=Counter()
     # Append-only second observations: overlay only independently reverified
     # xG or validated card-event values. Never overwrite immutable raw source.
     if recheck_db_path is not None and Path(recheck_db_path).is_file():
@@ -217,14 +230,32 @@ def _load_records(db,recheck_db_path=None):
             for r in issue_db.execute("""SELECT scope,match_id,issue_type,status,
                     native_home_team_id,native_away_team_id,
                     xg_verified_home,xg_verified_away,
-                    yellow_events_home,yellow_events_away
+                    yellow_events_home,yellow_events_away,
+                    xg_abs_delta_home,xg_abs_delta_away
                     FROM issue_rechecks"""):
-                scope,mid,kind,status,home,away,xgh,xga,yh,ya=r
+                scope,mid,kind,status,home,away,xgh,xga,yh,ya,dh,da=r
                 item=obs.get((scope,mid))
                 if item is None:
                     raise ValueError("UNMATCHED_RECHECK_ORIGINAL")
                 if item["home_team_id"]!=home or item["away_team_id"]!=away:
                     raise ValueError("RECHECK_TEAM_ID_MISMATCH")
+                if kind=="XG" and status=="XG_DISAGREEMENT_PERSISTS":
+                    recheck_counts["xg_disagreement_persisted"]+=1
+                    for delta in (dh,da):
+                        if delta is None:
+                            xg_delta_buckets["UNKNOWN"]+=1
+                        elif delta<=0.15:
+                            xg_delta_buckets["LTE_0_15"]+=1
+                        elif delta<=0.30:
+                            xg_delta_buckets["GT_0_15_TO_0_30"]+=1
+                        elif delta<=0.50:
+                            xg_delta_buckets["GT_0_30_TO_0_50"]+=1
+                        elif delta<=1.0:
+                            xg_delta_buckets["GT_0_50_TO_1"]+=1
+                        else:
+                            xg_delta_buckets["GT_1"]+=1
+                if kind=="YELLOW_CARDS" and status=="EVENTS_TEAM_STATS_CONFLICT":
+                    recheck_counts["card_source_conflicts"]+=1
                 if kind=="XG" and status=="XG_REVERIFIED":
                     if item["xg_status"]!="VERIFIED":
                         if xgh is None or xga is None or not (
@@ -243,13 +274,16 @@ def _load_records(db,recheck_db_path=None):
                     old_h=raw_stat(item,"yellow_cards","home")
                     old_a=raw_stat(item,"yellow_cards","away")
                     if old_h is None or old_a is None:
-                        item["items"].append({"key":"yellow_cards",
-                            "home":str(yh),"away":str(ya),
-                            "origin":"LATER_EVENTS_RECHECK_RESEARCH_ONLY"})
-                        if (raw_stat(item,"yellow_cards","home") is not None and
-                            raw_stat(item,"yellow_cards","away") is not None):
+                        overrides=item.setdefault("research_overrides",{})
+                        card=overrides.setdefault("yellow_cards",{})
+                        if old_h is None:
+                            card["home"]=float(yh)
+                        if old_a is None:
+                            card["away"]=float(ya)
+                        if (effective_stat(item,"yellow_cards","home") is not None and
+                            effective_stat(item,"yellow_cards","away") is not None):
                             recheck_counts["recovered_yellow_cards"]+=1
-    return fixt,obs,recheck_counts
+    return fixt,obs,recheck_counts,xg_delta_buckets
 
 
 def assess_and_cache(db_path,report_path,recheck_db_path=None):
@@ -272,7 +306,7 @@ def assess_and_cache(db_path,report_path,recheck_db_path=None):
     missing_xg_status=Counter()
     with sqlite3.connect(path) as db:
         ensure_tables(db)
-        fixt,obs,recheck_counts=_load_records(db,recheck_db_path=recheck_db_path)
+        fixt,obs,recheck_counts,xg_delta_buckets=_load_records(db,recheck_db_path=recheck_db_path)
         if any(scope=="ENG" for scope in fixt):
             raise ValueError("PROTECTED_PREMIER_LEAGUE_TEST_IN_HISTORY")
         index={(f["scope"],f["match_id"]):f for arr in fixt.values() for f in arr}
@@ -290,7 +324,8 @@ def assess_and_cache(db_path,report_path,recheck_db_path=None):
                 by_scope_season[(scope,data["season"])]["xg_unverified_matches"]+=1
                 by_scope[scope]["xg_unverified_matches"]+=1
             for key in METRICS:
-                if raw_stat(data,key,"home") is not None and raw_stat(data,key,"away") is not None:
+                if (effective_stat(data,key,"home") is not None and
+                    effective_stat(data,key,"away") is not None):
                     metric_coverage[key]+=1
         # Incomplete legacy data can be inspected but must never be assumed complete.
         db.execute("DELETE FROM rolling_feature_cache")
@@ -361,11 +396,13 @@ def assess_and_cache(db_path,report_path,recheck_db_path=None):
                                for (a,b),v in sorted(by_scope_season.items())},
             "stat_both_sides_numeric_matches_by_key":dict(sorted(metric_coverage.items())),
             "append_only_recheck_overlays":dict(sorted(recheck_counts.items())),
+            "xg_shots_vs_stats_absolute_difference_bins":dict(sorted(xg_delta_buckets.items())),
             "issue_recheck_source_sha256":(
                 hashlib.sha256(Path(recheck_db_path).read_bytes()).hexdigest()
                 if recheck_db_path is not None and Path(recheck_db_path).is_file()
                 else None),
             "overlays_are_later_research_not_original_pit":True,
+            "original_source_stat_items_preserved":True,
             "xg_unverified_reason_counts":dict(sorted(missing_xg_status.items())),
             "missing_season_notice":"POL_2023_24_AND_2024_25_UNAVAILABLE_IN_PITCHAPI_CATALOG_AS_OF_2026_11_03",
             "history_n_definition":"ACTUAL_LAST_N_FINISHED_FIXTURES_NOT_LAST_N_WITH_STATS",

@@ -13,7 +13,7 @@ from scripts.kb3_historical_pitchapi_backfill import (
     put_rows, all_period_stat_items,
 )
 from src.kb3_historical_feature_quality import (
-    add_fixture_rows, assess_and_cache,
+    add_fixture_rows, assess_and_cache, effective_stat,
 )
 
 MID="m_Aa1234"
@@ -117,7 +117,8 @@ class RecheckTests(unittest.TestCase):
             original=Path(d)/"original.sqlite"
             rechecks=Path(d)/"rechecks.sqlite"
             f=fixture()
-            f["items"]=[{"key":"fouls","home":"9","away":"13"}]
+            f["items"]=[{"key":"fouls","home":"9","away":"13"},
+                        {"key":"yellow_cards","home":"-","away":"0"}]
             add_fixture_rows(original,[("ESP","2024/2025",f,SOURCE,SHA)])
             put_rows(original,[row(f)])
             x=issue("XG","XG_REVERIFIED",xg_verified_home=.5,
@@ -140,9 +141,21 @@ class RecheckTests(unittest.TestCase):
             with sqlite3.connect(original) as db:
                 self.assertEqual(db.execute("SELECT xg_status FROM observations").fetchone()[0],
                                  "XG_SHOTS_STATS_DISAGREE")
+                original_items=json.loads(db.execute(
+                    "SELECT stat_items_json FROM observations").fetchone()[0])
+                self.assertEqual(next(z for z in original_items
+                                      if z["key"]=="yellow_cards")["home"],"-")
                 obj=json.loads(db.execute(
                     "SELECT feature_json FROM rolling_feature_cache").fetchone()[0])
                 self.assertFalse(obj["original_pit_certified"])
+
+    def test_placeholder_does_not_cancel_validated_event_override(self):
+        original={"items":[{"key":"yellow_cards","home":"-","away":"0"}],
+                  "research_overrides":{"yellow_cards":{"home":2.0}}}
+        self.assertEqual(effective_stat(original,"yellow_cards","home"),2.)
+        self.assertEqual(effective_stat(original,"yellow_cards","away"),0.)
+        self.assertIsNone(effective_stat(
+            {"items":original["items"]},"yellow_cards","home"))
 
     def test_candidates_no_second_attempt_for_same_issue(self):
         with tempfile.TemporaryDirectory() as d:
