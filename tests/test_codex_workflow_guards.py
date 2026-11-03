@@ -10,12 +10,23 @@ def workflow(name):
 
 class WorkflowSafetyTests(unittest.TestCase):
     def test_all_three_league_writers_share_lock_and_refuse_binary_rebase(self):
-        names=("kb3-pitchapi-three-league-daily.yml","kb3-m0-one-time-initial-freeze.yml",
-               "kb3-m0-real-postmatch-calibration.yml","kb3-m0-shadow-initial-1x2.yml")
+        names={"kb3-pitchapi-three-league-daily.yml":"actual-three-league-source-capture",
+               "kb3-m0-one-time-initial-freeze.yml":"real-initial-forward-m0-feature-freeze",
+               "kb3-m0-real-postmatch-calibration.yml":"real-postmatch-scoring",
+               "kb3-m0-shadow-initial-1x2.yml":"actual-first-frozen-1x2"}
         groups=set()
-        for name in names:
-            w=workflow(name);groups.add(w["concurrency"]["group"])
-            self.assertEqual(w["concurrency"]["cancel-in-progress"],"false")
+        for name,job in names.items():
+            w=workflow(name)
+            self.assertNotIn("concurrency",w)  # PR validation must never share the writer queue.
+            lock=w["jobs"][job]["concurrency"]
+            group=lock["group"]
+            if name=="kb3-pitchapi-three-league-daily.yml":
+                self.assertIn("github.event_name == 'pull_request'",group)
+                self.assertIn("kb3-three-league-pr-",group)
+                self.assertTrue(group.endswith("|| 'kb3-three-league-feature-db-write' }}"))
+                group="kb3-three-league-feature-db-write"
+            groups.add(group)
+            self.assertEqual(lock["cancel-in-progress"],"false")
             text=(ROOT/".github/workflows"/name).read_text()
             self.assertNotIn("--rebase",text)
             self.assertNotIn("--force",text)

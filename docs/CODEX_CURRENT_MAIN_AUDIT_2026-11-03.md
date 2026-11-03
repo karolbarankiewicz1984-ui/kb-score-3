@@ -37,7 +37,7 @@ a nie rzekomo odzyskaną paczką Codex.
 | P1-05 / kompletność | Potwierdzone: sam niepusty feed lub pojedyncza połowa wystarczały w starszej ścieżce | Nowe pobrania wymagają pełnego okresu, unikalnych niepustych ID strzałów, natywnych stron, niezależnych xG i liczników |
 | P1-01 / TRAIN vs forward | **Nadal potwierdzony i otwarty** | TRAIN używa kickoff i 48h; forward cutoff i 3h. Nie zmieniono zamrożonego M0 ani wejść starego CatBoost w ciemno |
 | P1-02 / starsza kalibracja | **Nadal potwierdzony i otwarty** | 100 niepoświadczonych syntetycznych rekordów dociera do granicy fit. Fit przechwycono przed wykonaniem; zero zapisanych kandydatów. Sama migracja 005 nie integruje walidatora publikacji |
-| P1-03 / SQLite writers | Częściowo wcześniej naprawiony: trzy workflow miały wspólną blokadę; daily nadal inną; rebase pozostał | Cztery writer workflow mają wspólną blokadę; usunięto rebase binarnej SQLite. Odrzucony push wymaga ręcznego odzyskania z artefaktu i ponowienia na najnowszej bazie |
+| P1-03 / SQLite writers | Częściowo wcześniej naprawiony: trzy workflow miały wspólną blokadę; daily nadal inną; rebase pozostał | Wspólna blokada jobów zapisujących bazę, bez blokowania niezależnych walidacji PR; usunięto rebase binarnej SQLite. Odrzucony push wymaga ręcznego odzyskania z artefaktu i ponowienia na najnowszej bazie |
 | P1-04 / automatyczny trening | Potwierdzony: PR/push wykonywał fit z nazwami historycznych wyników | Osobny offline job; fit tylko workflow_dispatch + jawny input; unikalny RUN_ID/RUN_ATTEMPT w RUNNER_TEMP, artefakt zamiast zapisu do main |
 | P2-01 / CLI no-op | **Już naprawiony** w main, historia commitu `20e1c62` | Istniejące testy CLI no-op i idempotencji PASS; nie wprowadzono ponownie starej poprawki |
 | P2-02 / luki CI | Potwierdzone w wąskich filtrach starszych workflow | Pełny offline PR/main CI obejmuje src/scripts/tests/migrations/workflows, z blokadą sieci/fit/zapisu dowodów |
@@ -152,3 +152,18 @@ M0 param SHA256:
 
 **Decyzja:** można przeglądać ograniczony diff, ale **nie kierować całego
 wdrożenia R1–R5 do zatwierdzenia/merge**. Draft PR i raport nie są wdrożeniem.
+
+## Kontrola PR i korekta blokady jobów
+
+Utworzono [draft PR #143](https://github.com/karolbarankiewicz1984-ui/kb-score-3/pull/143),
+pierwszy kodowy commit `332b06334a69b068e00ced33494f56312d995568`.
+Automatyczne CI tego PR ujawniło, że wspólna blokada na poziomie całych workflow
+anuluje oczekujące walidacje: [run 41719647942](https://github.com/karolbarankiewicz1984-ui/kb-score-3/actions/runs/41719647942)
+ma CANCELLED. To rzeczywisty niezaliczony przebieg, nie błąd modelu ani ukryty PASS.
+Przeniesiono blokadę na joby zapisujące SQLite; dla daily w trybie PR jest
+oddzielna kolejka testowa. Cztery odpowiednie testy workflow po korekcie PASS.
+Oczekujące joby writerów podlegają ograniczeniu pojedynczego pending job w
+GitHub concurrency; zmiana nie tworzy trwałej kolejki zadań.
+
+Ostateczne wyniki CI dokładnego HEAD i linki do runów są aktualizowane w opisie
+PR po ich faktycznym zakończeniu. Nie dispatchowano live ani eksperymentu fit.

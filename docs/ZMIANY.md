@@ -1280,3 +1280,13 @@ Przeanalizowano PLAN, ZMIANY, issue #120/#121 z historią R1–R6 i draft PR #12
 **Status: PARTIAL / MERGE_NO_GO dla całości R1–R5.** Draft diff nadaje się do
 przeglądu, ale nie do zatwierdzenia pełnego wdrożenia. Formalnie nadal 15/29,
 GATE16/GATE17 PENDING; nie wykonano automatycznego merge ani produkcyjnego rollout.
+
+**Kontynuacja CODEX-01, PR #143:** utworzono [draft PR](https://github.com/karolbarankiewicz1984-ui/kb-score-3/pull/143)
+z pierwszym commitem `332b06334a69b068e00ced33494f56312d995568`. Rzeczywisty
+[CI 41719647942](https://github.com/karolbarankiewicz1984-ui/kb-score-3/actions/runs/41719647942)
+został CANCELLED przez wspólną kolejkę workflow. Poprawiono położenie blokady:
+wspólna kolejka tylko dla jobów writerów, osobna dla testowego daily PR,
+niezależne walidacje pozostałych workflow. Po korekcie **4/4 testów workflow PASS**.
+GitHub nadal ma limit pojedynczego pending job dla wspólnej concurrency; nie
+deklarujemy wdrożenia trwałej kolejki writerów. Finalne CI konkretnego HEAD jest
+odnotowywane w opisie PR po zakończeniu. Wszystkie blokery i MERGE_NO_GO utrzymane.

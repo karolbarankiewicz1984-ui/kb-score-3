@@ -24,11 +24,11 @@ on:
   workflow_dispatch:
 permissions:
   contents: write
-concurrency:
-  group: kb3-three-league-feature-db-write
-  cancel-in-progress: false
 jobs:
   actual-three-league-source-capture:
+    concurrency:
+      group: ${{ github.event_name == 'pull_request' && format('kb3-three-league-pr-{0}', github.ref) || 'kb3-three-league-feature-db-write' }}
+      cancel-in-progress: false
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:

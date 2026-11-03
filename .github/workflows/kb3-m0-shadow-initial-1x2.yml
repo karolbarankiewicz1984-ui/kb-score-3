@@ -13,9 +13,6 @@ on:
   workflow_dispatch:
 permissions:
   contents: write
-concurrency:
-  group: kb3-three-league-feature-db-write
-  cancel-in-progress: false
 jobs:
   test-forecast-integrity:
     runs-on: ubuntu-latest
@@ -32,6 +29,9 @@ jobs:
           python -m compileall -q src/kb3_m0_shadow_1x2_live_freeze.py
           python -m unittest discover -s tests -p 'test_step14_m0_shadow_1x2_live_freeze.py' -v
   actual-first-frozen-1x2:
+    concurrency:
+      group: kb3-three-league-feature-db-write
+      cancel-in-progress: false
     if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
     needs: test-forecast-integrity
     runs-on: ubuntu-latest
