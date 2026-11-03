@@ -28,6 +28,7 @@ from src.kb3_step14_pitchapi_xg_semantics import (
     SemanticAuditError, parse_native_shots, parse_native_team_stats,
 )
 from src.kb3_step16_m0_720_eight_forward import ROOT, EIGHT, select_eight
+from src.kb3_historical_feature_quality import add_fixture_rows, assess_and_cache
 
 SEASONS = ("2023/2024", "2024/2025", "2025/2026", "2026/2027")
 MAIN_SEASONS = ("2024/2025", "2025/2026", "2026/2027")
@@ -111,31 +112,36 @@ def validate_match_rows(payload, scope, season, observed):
 
 
 def select_batch(groups, known, max_matches=MAX_MATCHES):
-    """Interleave competitions/seasons so recent form and 2024/25 both progress."""
+    """Concentrate requests in consecutive matches, not one per 34 scopes.
+
+    Approximately 180 latest fixtures in a season are needed to make true 15-match
+    windows feasible. Once a scope reaches that density, move to the next scope.
+    Current league season may have fewer than 15 played games per team, so
+    recent completed 2025/26 and 2024/25 have higher research priority.
+    """
     require(1 <= max_matches <= MAX_MATCHES, "MATCH_BATCH_LIMIT")
-    # Alternate current, recent history, historical training and form warmup.
-    priority = {"2026/2027": 0, "2025/2026": 1,
-                "2024/2025": 2, "2023/2024": 3}
-    queues = []
-    for (scope, season), rows in sorted(groups.items(),
-                                      key=lambda x: (priority[x[0][1]], x[0][0])):
-        remaining = [m for m in rows if (scope, m["id"]) not in known]
-        remaining.sort(key=lambda m: (m["time_utc"], m["id"]), reverse=True)
-        if remaining:
-            queues.append((scope, season, remaining))
-    chosen = []
-    # A whole round traverses all available scope-season queues before the next.
-    for index in range(max_matches):
-        if not queues:
-            break
-        scope, season, pending = queues.pop(0)
-        m = pending.pop(0)
-        chosen.append((scope, season, m))
-        if pending:
-            queues.append((scope, season, pending))
-    require(len({(scope, m["id"]) for scope, _, m in chosen}) == len(chosen),
+    priority = {"2025/2026": 0, "2024/2025": 1,
+                "2026/2027": 2, "2023/2024": 3}
+    queue=[]
+    for (scope, season), rows in groups.items():
+        remaining=[m for m in rows if (scope,m["id"]) not in known]
+        if not remaining:
+            continue
+        completed=len(rows)-len(remaining)
+        desired=min(len(rows),180)
+        if completed>=desired:
+            continue
+        remaining.sort(key=lambda m:(m["time_utc"],m["id"]),reverse=True)
+        queue.append((priority[season],-completed,scope,season,
+                      remaining[:desired-completed]))
+    if not queue:
+        # All scope-season targets have their recent windows sampled.
+        return []
+    _,_,scope,season,selection=min(queue,key=lambda a:a[:4])
+    selected=[(scope,season,m) for m in selection[:max_matches]]
+    require(len({(c,m["id"]) for c,_,m in selected})==len(selected),
             "DUPLICATE_BACKFILL_MATCH")
-    return chosen
+    return selected
 
 
 def all_period_stat_items(payload, match):
@@ -276,6 +282,7 @@ def capture(*, client, root=ARCHIVE, db_path=DB, public_key=PUBLIC_KEY,
     scopes, ucl_status = select_scopes(catalog)
     groups = {}
     source_counts = {}
+    indexed = []
     for scope, lid, season in scopes:
         listing, r = call("pitchapi:history:fixtures:" + scope + ":" + season,
                           client.leagues.matches, lid, season=season, status="all")
@@ -285,6 +292,8 @@ def capture(*, client, root=ARCHIVE, db_path=DB, public_key=PUBLIC_KEY,
         rows = validate_match_rows(listing, scope, season, r["completed_at_utc"])
         groups[(scope, season)] = rows
         source_counts[scope + "/" + season] = len(rows)
+        indexed.extend((scope, season, m, r["completed_at_utc"], r["payload_sha256"])
+                       for m in rows)
     require(bool(groups), "NO_VALID_HISTORICAL_MATCHES")
     selected = select_batch(groups, known, max_matches=max_matches)
     samples = []
@@ -324,7 +333,9 @@ def capture(*, client, root=ARCHIVE, db_path=DB, public_key=PUBLIC_KEY,
     try:
         if Path(db_path).exists():
             shutil.copy2(db_path, staged)
+        newly_indexed, indexed_total = add_fixture_rows(staged, indexed)
         total, verified = put_rows(staged, samples)
+        quality = assess_and_cache(staged, dest / "ROLLING_FEATURE_QUALITY.json")
         sealed = seal(receipts, public_key, dest / "HISTORICAL_SOURCE.enc",
                       dest / "HISTORICAL_SOURCE.manifest.json")
         report = {"schema": SCHEMA, "source": "PitchAPI",
@@ -343,6 +354,13 @@ def capture(*, client, root=ARCHIVE, db_path=DB, public_key=PUBLIC_KEY,
             "stat_key_names": sorted(stat_keys),
             "cumulative_match_stats": total,
             "cumulative_xg_verified": verified,
+            "new_finished_fixture_index_rows": newly_indexed,
+            "cumulative_finished_fixture_index_rows": indexed_total,
+            "true_last5_both_xg_complete": quality["totals"].get("pair_xg_5_complete",0),
+            "true_last10_both_xg_complete": quality["totals"].get("pair_xg_10_complete",0),
+            "true_last15_both_xg_complete": quality["totals"].get("pair_xg_15_complete",0),
+            "historical_feature_target_rows": quality["totals"]["targets_checked"],
+            "feature_report_is_reconstructed_not_provider_pit": True,
             "source_ciphertext_sha256": sealed["ciphertext_sha256"],
             "source_chain_sha256": sealed["proof"]["final_chain_sha256"],
             "source_payloads_encrypted": True,
