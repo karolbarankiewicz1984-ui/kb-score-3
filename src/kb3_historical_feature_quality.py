@@ -221,6 +221,11 @@ def assess_and_cache(db_path,report_path):
     path=Path(db_path)
     source_hash=hashlib.sha256(path.read_bytes()).hexdigest()
     totals=Counter()
+    # Explicit zeros make empty coverage a real observed result, not a missing key.
+    for n in WINDOWS:
+        for kind in ("history","stats","xg","core"):
+            totals[f"pair_{kind}_{n}_complete"]=0
+            totals[f"pair_{kind}_{n}_incomplete"]=0
     by_scope=defaultdict(Counter)
     by_scope_season=defaultdict(Counter)
     metric_coverage=Counter()
