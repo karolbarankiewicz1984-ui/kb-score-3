@@ -1,0 +1,102 @@
+name: KB3 UCL isolated PitchAPI source research (no M0 modification)
+on:
+  push:
+    branches: [main]
+    paths:
+      - scripts/kb3_ucl_pitchapi_collector.py
+      - tests/test_kb3_ucl_pitchapi_collector.py
+      - .github/workflows/kb3-ucl-pitchapi-research.yml
+  pull_request:
+    paths:
+      - scripts/kb3_ucl_pitchapi_collector.py
+      - tests/test_kb3_ucl_pitchapi_collector.py
+      - .github/workflows/kb3-ucl-pitchapi-research.yml
+  schedule:
+    # Tue/Wed UCL mornings, and late post-match observations, UTC.
+    - cron: '40 11 * * 2,3'
+    - cron: '20 23 * * 2,3'
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: kb3-ucl-research-source
+  cancel-in-progress: false
+jobs:
+  offline-ucl-safety:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install existing encryption runtime without provider credentials
+        run: python -m pip install --disable-pip-version-check 'cryptography>=42,<47'
+      - name: Verify syntax, source identity, immutable-scope and no-leakage gates
+        run: |
+          python -m compileall -q scripts/kb3_ucl_pitchapi_collector.py tests/test_kb3_ucl_pitchapi_collector.py
+          python -m unittest discover -s tests -p 'test_kb3_ucl_pitchapi_collector.py' -v
+
+  real-ucl-observed-source:
+    needs: offline-ucl-safety
+    if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install same bounded PitchAPI SDK and encryption as existing research
+        run: python -m pip install --disable-pip-version-check 'pitchapi==0.1.6' 'cryptography>=42,<47'
+      - name: Capture source with existing secret, no betting or training
+        env:
+          PITCHAPI_API_KEY: ${{ secrets.PITCHAPI_API_KEY }}
+        run: |
+          python -m scripts.kb3_ucl_pitchapi_collector \
+            --base data/pit_sidecar/ucl_research \
+            --recipient config/step11_archive_recipient_public.pem \
+            --run-token "$GITHUB_RUN_ID-$GITHUB_RUN_ATTEMPT"
+      - name: Verify genuine sealed source and enforce unchanged existing models
+        run: |
+          python - <<'PY'
+          import hashlib, json, os
+          from pathlib import Path
+          root = Path("data/pit_sidecar/ucl_research")
+          paths = list(root.glob("*/run-" + os.environ["GITHUB_RUN_ID"] + "-" + os.environ["GITHUB_RUN_ATTEMPT"]))
+          assert len(paths) == 1, "UCL_CAPTURE_NOT_FOUND"
+          p = paths[0]
+          report = json.loads((p/"UCL_CAPTURE_REPORT.json").read_text())
+          meta = json.loads((p/"UCL_SOURCE.manifest.json").read_text())
+          cipher = (p/"UCL_SOURCE.enc").read_bytes()
+          assert hashlib.sha256(cipher).hexdigest() == meta["ciphertext_sha256"] == report["source_ciphertext_sha256"]
+          assert 1 <= report["provider_calls"] <= 7
+          assert report["raw_source_encrypted"] and not report["training_allowed"]
+          assert report["forecasts_created"] == 0 and not report["production_approved"]
+          assert not report["original_2026_27_premier_league_test_accessed"]
+          assert not report["existing_m0_databases_modified"]
+          assert report["model_gate"] == "PENDING_UCL_QUALITY_AND_INDEPENDENT_DECISION"
+          assert meta["proof"]["sessions"] == report["provider_calls"]
+          print("KB3_UCL_SAFE_SOURCE_PASS", report["catalog_status"], report["provider_calls"])
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: KB3_UCL_RESEARCH_ENCRYPTED_PITCHAPI
+          path: data/pit_sidecar/ucl_research/
+          retention-days: 30
+          if-no-files-found: warn
+      - name: Persist only separate research source to private main
+        run: |
+          git config user.name "kb3-ucl-research-bot"
+          git config user.email "kb3-ucl-research-bot@users.noreply.github.com"
+          git add -f data/pit_sidecar/ucl_research/
+          if git diff --cached --quiet; then
+            echo "No new UCL source records"
+          else
+            git commit -m "research(ucl): real provider catalogue and encrypted prospective source, no M0 changes"
+            git pull --rebase origin main
+            git push origin HEAD:main
+          fi
