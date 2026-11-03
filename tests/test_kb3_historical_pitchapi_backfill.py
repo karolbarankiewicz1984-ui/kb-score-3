@@ -73,17 +73,20 @@ class HistoricalBackfillTests(unittest.TestCase):
             validate_match_rows({"matches":[item]},"ESP","2025/2026",
                                 "2026-05-01T00:00:00Z")
 
-    def test_batch_round_robin_deduplicates(self):
+    def test_batch_focuses_contiguous_history_not_sparse_one_per_scope(self):
         a=game("m_Aaaaaa")
         b=game("m_Bbbbbb")
         c=game("m_Cccccc")
         groups={("ESP","2025/2026"):[a,b],
                 ("POL","2024/2025"):[c]}
         picked=select_batch(groups,set(),max_matches=3)
-        self.assertEqual(len(picked),3)
-        no=select_batch(groups,{("ESP","m_Aaaaaa")},max_matches=3)
-        self.assertEqual(len(no),2)
-        self.assertNotIn("m_Aaaaaa", [x[2]["id"] for x in no])
+        self.assertEqual(len(picked),2)
+        self.assertTrue(all(scope=="ESP" for scope,_,_ in picked))
+        next_batch=select_batch(groups,{("ESP","m_Aaaaaa")},max_matches=3)
+        self.assertEqual(len(next_batch),1)
+        self.assertEqual(next_batch[0][2]["id"],"m_Bbbbbb")
+        done=select_batch(groups,{("ESP","m_Aaaaaa"),("ESP","m_Bbbbbb")},max_matches=3)
+        self.assertEqual([x[0] for x in done],["POL"])
 
     def test_stats_all_period_provider_key_preserved(self):
         raw=stats()
