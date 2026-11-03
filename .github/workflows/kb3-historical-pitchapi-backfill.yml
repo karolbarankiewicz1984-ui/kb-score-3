@@ -1,0 +1,107 @@
+name: KB3 historical PitchAPI multi-stat backfill (research, no model mutation)
+on:
+  pull_request:
+    paths:
+      - scripts/kb3_historical_pitchapi_backfill.py
+      - tests/test_kb3_historical_pitchapi_backfill.py
+      - .github/workflows/kb3-historical-pitchapi-backfill.yml
+  push:
+    branches: [main]
+    paths:
+      - scripts/kb3_historical_pitchapi_backfill.py
+      - tests/test_kb3_historical_pitchapi_backfill.py
+      - .github/workflows/kb3-historical-pitchapi-backfill.yml
+  schedule:
+    - cron: '15 2,10,18 * * *'
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: kb3-history-source-backfill-append-only
+  cancel-in-progress: false
+jobs:
+  offline-history-safety:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install crypto, no provider secret in PR job
+        run: python -m pip install --disable-pip-version-check 'cryptography>=42,<47'
+      - name: Strict source identity, PIT/TEST exclusion, xG and SQLite regression
+        run: |
+          python -m compileall -q scripts/kb3_historical_pitchapi_backfill.py tests/test_kb3_historical_pitchapi_backfill.py
+          python -m unittest discover -s tests -p 'test_kb3_historical_pitchapi_backfill.py' -v
+          python -m unittest discover -s tests -p 'test_step14_pitchapi_xg_semantics.py' -v
+  live-observed-backfill:
+    needs: offline-history-safety
+    if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install existing PitchAPI provider and encryption libraries
+        run: python -m pip install --disable-pip-version-check 'pitchapi==0.1.6' 'cryptography>=42,<47'
+      - name: Capture limited research batch with existing owner API secret
+        env:
+          PITCHAPI_API_KEY: ${{ secrets.PITCHAPI_API_KEY }}
+        run: |
+          python -m scripts.kb3_historical_pitchapi_backfill \
+            --run-token "$GITHUB_RUN_ID-$GITHUB_RUN_ATTEMPT" --max-matches 48
+      - name: Validate encrypted payload, safe report and isolated SQLite before commit
+        run: |
+          python - <<'PY'
+          import hashlib,json,os,sqlite3
+          from pathlib import Path
+          from scripts.kb3_historical_pitchapi_backfill import ARCHIVE,DB,MAX_CALLS
+          dirs=list(ARCHIVE.glob("*/run-"+os.environ["GITHUB_RUN_ID"]+"-"+os.environ["GITHUB_RUN_ATTEMPT"]))
+          assert len(dirs)==1,"BACKFILL_MISSING_ACTUAL_RUN"
+          folder=dirs[0]
+          report=json.loads((folder/"HISTORICAL_BACKFILL_REPORT.json").read_text())
+          meta=json.loads((folder/"HISTORICAL_SOURCE.manifest.json").read_text())
+          encrypted=(folder/"HISTORICAL_SOURCE.enc").read_bytes()
+          assert hashlib.sha256(encrypted).hexdigest()==report["source_ciphertext_sha256"]==meta["ciphertext_sha256"]
+          assert report["provider_requests"]<=MAX_CALLS
+          assert report["source_payloads_encrypted"] is True
+          assert report["historical_pit_certified"] is False
+          assert report["official_training_allowed"] is False
+          assert report["existing_m0_modified"] is False
+          assert report["protected_premier_league_test_accessed"] is False
+          assert report["research_training_performed"] is False
+          assert report["gate16_gate17"]=="PENDING"
+          with sqlite3.connect(DB) as db:
+              assert db.execute("PRAGMA integrity_check").fetchone()[0]=="ok"
+              n=db.execute("SELECT COUNT(*) FROM observations").fetchone()[0]
+              assert n==report["cumulative_match_stats"]
+              assert db.execute("SELECT COUNT(*) FROM observations WHERE provider_first_published_at_utc IS NOT NULL").fetchone()[0]==0
+              assert db.execute("SELECT COUNT(*) FROM observations WHERE scope='ENG'").fetchone()[0]==0
+          print("KB3_HISTORY_REAL_SOURCE_PASS",n,report["new_match_stats"],report["new_native_xg_verified"])
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: KB3_HISTORY_PITCHAPI_SEALED_RESEARCH
+          path: |
+            data/research/historical_multistat/
+            data/pit_sidecar/historical_multistat/
+          retention-days: 30
+          if-no-files-found: warn
+      - name: Commit immutable private research data only
+        run: |
+          git config user.name kb3-history-research-bot
+          git config user.email kb3-history-research-bot@users.noreply.github.com
+          git add -f data/research/historical_multistat/ data/pit_sidecar/historical_multistat/
+          if git diff --cached --quiet; then
+            echo 'No new independent PitchAPI source records'
+          else
+            git commit -m 'research(history): PitchAPI true observed multi-stat and xG source batch, no model changes'
+            git pull --rebase origin main
+            git push origin HEAD:main
+          fi
