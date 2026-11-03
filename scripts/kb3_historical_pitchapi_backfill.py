@@ -39,6 +39,8 @@ ARCHIVE = ROOT / "data/pit_sidecar/historical_multistat"
 DB = ROOT / "data/research/historical_multistat/observations.sqlite"
 PUBLIC_KEY = ROOT / "config/step11_archive_recipient_public.pem"
 SCHEMA = "kb3-historical-multistat-backfill-observed-20261103-v1"
+NATIONAL_SCOPES = frozenset(x[0] for x in EIGHT)
+BALANCE_MIN_EXISTING_SPREAD = 64
 
 
 class BackfillError(ValueError):
@@ -148,14 +150,43 @@ def priority_predecessor_matches(groups,known):
     return [(scope,season,indexed[(scope,mid)][1])
             for scope,season,mid in ranked]
 
+def underserved_national_scope(groups,known,max_matches):
+    """Select a research league lacking detailed stats, but only in large batches.
+
+    A full 48-match batch seeds a meaningful sequence of fixtures for a team.
+    This balances the eight national leagues; UCL is deliberately excluded
+    until independent cross-competition team identity can be established.
+    This selector does not infer actual past publication time.
+    """
+    if max_matches<32:
+        return None
+    league_rows={scope:rows for (scope,season),rows in groups.items()
+                 if scope in NATIONAL_SCOPES and season=="2025/2026"
+                 and len(rows)>=100 and
+                 any((scope,m["id"]) not in known for m in rows)}
+    if len(league_rows)<3:
+        return None
+    coverage=Counter(scope for scope,_ in known if scope in NATIONAL_SCOPES)
+    maximum=max(coverage.get(scope,0) for scope in league_rows)
+    minimum=min(coverage.get(scope,0) for scope in league_rows)
+    if maximum-minimum < BALANCE_MIN_EXISTING_SPREAD:
+        return None
+    return min(league_rows,key=lambda scope:(coverage.get(scope,0),scope))
+
+
 def select_batch(groups, known, max_matches=MAX_MATCHES):
     """Prioritize true missing 5/10/15 predecessors then dense history blocks."""
     require(1 <= max_matches <= MAX_MATCHES, "MATCH_BATCH_LIMIT")
     priority={"2025/2026":0,"2024/2025":1,"2026/2027":2,"2023/2024":3}
     chosen=[]
     planned=set(known)
+    balanced_scope=underserved_national_scope(groups,known,max_matches)
     urgent=priority_predecessor_matches(groups,known)
+    if balanced_scope is not None:
+        urgent=[x for x in urgent if x[0]==balanced_scope]
     # Most of the budget goes directly to currently incomplete 5/10/15 windows.
+    # In high-imbalance situations an entire batch serves one underserved league,
+    # rather than perpetually improving already dense BEL/ESP research samples.
     immediate=max(1,(max_matches*3)//4)
     for scope,season,m in urgent[:immediate]:
         if (scope,m["id"]) in planned:
@@ -166,6 +197,8 @@ def select_batch(groups, known, max_matches=MAX_MATCHES):
     if capacity:
         queues=[]
         for (scope,season),rows in groups.items():
+            if balanced_scope is not None and scope!=balanced_scope:
+                continue
             remaining=[m for m in rows if (scope,m["id"]) not in planned]
             if not remaining:
                 continue
@@ -178,6 +211,8 @@ def select_batch(groups, known, max_matches=MAX_MATCHES):
                            remaining[:desired-completed]))
         if not queues:
             for (scope,season),rows in groups.items():
+                if balanced_scope is not None and scope!=balanced_scope:
+                    continue
                 remaining=[m for m in rows if (scope,m["id"]) not in planned]
                 if remaining:
                     remaining.sort(key=lambda m:(m["time_utc"],m["id"]),reverse=True)
