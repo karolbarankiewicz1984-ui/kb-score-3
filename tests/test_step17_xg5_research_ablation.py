@@ -65,7 +65,7 @@ def seed_db(path,fixtures=3,scope="BEL",include_ENG=False):
             league="ENG" if include_ENG and i==fixtures else scope
             f=fixture(mid,i,league)
             feature=sample_feature(mid,i,league)
-            db.execute("INSERT INTO finished_fixture_index VALUES(?,?,?,?,?,?,?)",
+            db.execute("INSERT INTO finished_fixture_index VALUES(?,?,?,?,?,?)",
                        (league,f["season"],mid,f["kickoff_utc"],2,1))
             db.execute("INSERT INTO observations VALUES(?,?)",(league,mid))
             db.execute("INSERT INTO rolling_feature_cache VALUES(?,?,?,?,?,?,?)",
