@@ -97,6 +97,21 @@ class HistoricalBackfillTests(unittest.TestCase):
         self.assertEqual(select_batch({("ESP","2025/2026"):fixtures},
                         known|{("ESP","m_000181")}),[])
 
+    def test_priority_source_fetch_uses_actual_last5_predecessors(self):
+        fixtures=[]
+        for i in range(1,9):
+            f=game("m_"+str(i).zfill(6),
+                   dt="2025-08-"+str(i).zfill(2)+"T12:00:00Z")
+            fixtures.append(f)
+        known={("ESP",fixtures[-1]["id"])}
+        out=select_batch({("ESP","2025/2026"):fixtures},
+                         known,max_matches=4)
+        self.assertEqual(len(out),4)
+        self.assertEqual(len({x[2]["id"] for x in out}),4)
+        self.assertTrue(all(x[2]["id"] in {f["id"] for f in fixtures[2:7]}
+                            for x in out))
+        self.assertNotIn(fixtures[-1]["id"],{x[2]["id"] for x in out})
+
     def test_stats_all_period_provider_key_preserved(self):
         raw=stats()
         raw["periods"].append({"period":"First","groups":[
