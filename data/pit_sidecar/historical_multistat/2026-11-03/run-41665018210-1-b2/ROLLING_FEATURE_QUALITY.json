@@ -1,0 +1,462 @@
+{
+  "append_only_recheck_overlays": {},
+  "by_scope": {
+    "BEL": {
+      "pair_core_10_complete": 12,
+      "pair_core_10_incomplete": 307,
+      "pair_core_15_complete": 2,
+      "pair_core_15_incomplete": 317,
+      "pair_core_5_complete": 54,
+      "pair_core_5_incomplete": 265,
+      "pair_history_10_complete": 299,
+      "pair_history_10_incomplete": 20,
+      "pair_history_15_complete": 289,
+      "pair_history_15_incomplete": 30,
+      "pair_history_5_complete": 309,
+      "pair_history_5_incomplete": 10,
+      "pair_stats_10_complete": 233,
+      "pair_stats_10_incomplete": 86,
+      "pair_stats_15_complete": 195,
+      "pair_stats_15_incomplete": 124,
+      "pair_stats_5_complete": 273,
+      "pair_stats_5_incomplete": 46,
+      "pair_xg_10_complete": 25,
+      "pair_xg_10_incomplete": 294,
+      "pair_xg_15_complete": 4,
+      "pair_xg_15_incomplete": 315,
+      "pair_xg_5_complete": 85,
+      "pair_xg_5_incomplete": 234,
+      "stat_matches_observed": 319,
+      "targets_checked": 319,
+      "xg_unverified_matches": 31,
+      "xg_verified_matches": 288
+    },
+    "ESP": {
+      "pair_core_10_incomplete": 77,
+      "pair_core_15_incomplete": 77,
+      "pair_core_5_complete": 3,
+      "pair_core_5_incomplete": 74,
+      "pair_history_10_complete": 77,
+      "pair_history_15_complete": 76,
+      "pair_history_15_incomplete": 1,
+      "pair_history_5_complete": 77,
+      "pair_stats_10_incomplete": 77,
+      "pair_stats_15_incomplete": 77,
+      "pair_stats_5_complete": 21,
+      "pair_stats_5_incomplete": 56,
+      "pair_xg_10_incomplete": 77,
+      "pair_xg_15_incomplete": 77,
+      "pair_xg_5_complete": 19,
+      "pair_xg_5_incomplete": 58,
+      "stat_matches_observed": 77,
+      "targets_checked": 77,
+      "xg_unverified_matches": 3,
+      "xg_verified_matches": 74
+    },
+    "FRA": {
+      "pair_core_10_incomplete": 6,
+      "pair_core_15_incomplete": 6,
+      "pair_core_5_incomplete": 6,
+      "pair_history_10_complete": 6,
+      "pair_history_15_complete": 6,
+      "pair_history_5_complete": 6,
+      "pair_stats_10_incomplete": 6,
+      "pair_stats_15_incomplete": 6,
+      "pair_stats_5_incomplete": 6,
+      "pair_xg_10_incomplete": 6,
+      "pair_xg_15_incomplete": 6,
+      "pair_xg_5_incomplete": 6,
+      "stat_matches_observed": 6,
+      "targets_checked": 6,
+      "xg_verified_matches": 6
+    },
+    "GER": {
+      "pair_core_10_incomplete": 6,
+      "pair_core_15_incomplete": 6,
+      "pair_core_5_incomplete": 6,
+      "pair_history_10_complete": 6,
+      "pair_history_15_complete": 6,
+      "pair_history_5_complete": 6,
+      "pair_stats_10_incomplete": 6,
+      "pair_stats_15_incomplete": 6,
+      "pair_stats_5_incomplete": 6,
+      "pair_xg_10_incomplete": 6,
+      "pair_xg_15_incomplete": 6,
+      "pair_xg_5_incomplete": 6,
+      "stat_matches_observed": 6,
+      "targets_checked": 6,
+      "xg_verified_matches": 6
+    },
+    "ITA": {
+      "pair_core_10_incomplete": 6,
+      "pair_core_15_incomplete": 6,
+      "pair_core_5_incomplete": 6,
+      "pair_history_10_complete": 6,
+      "pair_history_15_complete": 6,
+      "pair_history_5_complete": 6,
+      "pair_stats_10_incomplete": 6,
+      "pair_stats_15_incomplete": 6,
+      "pair_stats_5_incomplete": 6,
+      "pair_xg_10_incomplete": 6,
+      "pair_xg_15_incomplete": 6,
+      "pair_xg_5_incomplete": 6,
+      "stat_matches_observed": 6,
+      "targets_checked": 6,
+      "xg_verified_matches": 6
+    },
+    "NED": {
+      "pair_core_10_incomplete": 5,
+      "pair_core_15_incomplete": 5,
+      "pair_core_5_incomplete": 5,
+      "pair_history_10_complete": 5,
+      "pair_history_15_complete": 5,
+      "pair_history_5_complete": 5,
+      "pair_stats_10_incomplete": 5,
+      "pair_stats_15_incomplete": 5,
+      "pair_stats_5_incomplete": 5,
+      "pair_xg_10_incomplete": 5,
+      "pair_xg_15_incomplete": 5,
+      "pair_xg_5_incomplete": 5,
+      "stat_matches_observed": 5,
+      "targets_checked": 5,
+      "xg_unverified_matches": 3,
+      "xg_verified_matches": 2
+    },
+    "POL": {
+      "pair_core_10_incomplete": 3,
+      "pair_core_15_incomplete": 3,
+      "pair_core_5_incomplete": 3,
+      "pair_history_10_complete": 3,
+      "pair_history_15_complete": 2,
+      "pair_history_15_incomplete": 1,
+      "pair_history_5_complete": 3,
+      "pair_stats_10_incomplete": 3,
+      "pair_stats_15_incomplete": 3,
+      "pair_stats_5_incomplete": 3,
+      "pair_xg_10_incomplete": 3,
+      "pair_xg_15_incomplete": 3,
+      "pair_xg_5_incomplete": 3,
+      "stat_matches_observed": 3,
+      "targets_checked": 3,
+      "xg_verified_matches": 3
+    },
+    "TUR": {
+      "pair_core_10_incomplete": 5,
+      "pair_core_15_incomplete": 5,
+      "pair_core_5_incomplete": 5,
+      "pair_history_10_complete": 5,
+      "pair_history_15_complete": 5,
+      "pair_history_5_complete": 5,
+      "pair_stats_10_incomplete": 5,
+      "pair_stats_15_incomplete": 5,
+      "pair_stats_5_incomplete": 5,
+      "pair_xg_10_incomplete": 5,
+      "pair_xg_15_incomplete": 5,
+      "pair_xg_5_incomplete": 5,
+      "stat_matches_observed": 5,
+      "targets_checked": 5,
+      "xg_verified_matches": 5
+    },
+    "UCL": {
+      "pair_core_10_incomplete": 5,
+      "pair_core_15_incomplete": 5,
+      "pair_core_5_incomplete": 5,
+      "pair_history_10_complete": 3,
+      "pair_history_10_incomplete": 2,
+      "pair_history_15_complete": 2,
+      "pair_history_15_incomplete": 3,
+      "pair_history_5_complete": 4,
+      "pair_history_5_incomplete": 1,
+      "pair_stats_10_incomplete": 5,
+      "pair_stats_15_incomplete": 5,
+      "pair_stats_5_incomplete": 5,
+      "pair_xg_10_incomplete": 5,
+      "pair_xg_15_incomplete": 5,
+      "pair_xg_5_incomplete": 5,
+      "stat_matches_observed": 5,
+      "targets_checked": 5,
+      "xg_unverified_matches": 1,
+      "xg_verified_matches": 4
+    }
+  },
+  "by_scope_season": {
+    "BEL/2023/2024": {
+      "finished_fixtures_indexed": 311,
+      "stat_matches_observed": 1,
+      "xg_verified_matches": 1
+    },
+    "BEL/2024/2025": {
+      "finished_fixtures_indexed": 312,
+      "stat_matches_observed": 3,
+      "xg_unverified_matches": 1,
+      "xg_verified_matches": 2
+    },
+    "BEL/2025/2026": {
+      "finished_fixtures_indexed": 313,
+      "stat_matches_observed": 313,
+      "xg_unverified_matches": 30,
+      "xg_verified_matches": 283
+    },
+    "BEL/2026/2027": {
+      "finished_fixtures_indexed": 89,
+      "stat_matches_observed": 2,
+      "xg_verified_matches": 2
+    },
+    "ESP/2023/2024": {
+      "finished_fixtures_indexed": 379,
+      "stat_matches_observed": 1,
+      "xg_verified_matches": 1
+    },
+    "ESP/2024/2025": {
+      "finished_fixtures_indexed": 380,
+      "stat_matches_observed": 1,
+      "xg_verified_matches": 1
+    },
+    "ESP/2025/2026": {
+      "finished_fixtures_indexed": 380,
+      "stat_matches_observed": 73,
+      "xg_unverified_matches": 2,
+      "xg_verified_matches": 71
+    },
+    "ESP/2026/2027": {
+      "finished_fixtures_indexed": 109,
+      "stat_matches_observed": 2,
+      "xg_unverified_matches": 1,
+      "xg_verified_matches": 1
+    },
+    "FRA/2023/2024": {
+      "finished_fixtures_indexed": 306,
+      "stat_matches_observed": 1,
+      "xg_verified_matches": 1
+    },
+    "FRA/2024/2025": {
+      "finished_fixtures_indexed": 306,
+      "stat_matches_observed": 1,
+      "xg_verified_matches": 1
+    },
+    "FRA/2025/2026": {
+      "finished_fixtures_indexed": 306,
+      "stat_matches_observed": 2,
+      "xg_verified_matches": 2
+    },
+    "FRA/2026/2027": {
+      "finished_fixtures_indexed": 81,
+      "stat_matches_observed": 2,
+      "xg_verified_matches": 2
+    },
+    "GER/2023/2024": {
+      "finished_fixtures_indexed": 306,
+      "stat_matches_observed": 1,
+      "xg_verified_matches": 1
+    },
+    "GER/2024/2025": {
+      "finished_fixtures_indexed": 305,
+      "stat_matches_observed": 1,
+      "xg_verified_matches": 1
+    },
+    "GER/2025/2026": {
+      "finished_fixtures_indexed": 306,
+      "stat_matches_observed": 2,
+      "xg_verified_matches": 2
+    },
+    "GER/2026/2027": {
+      "finished_fixtures_indexed": 72,
+      "stat_matches_observed": 2,
+      "xg_verified_matches": 2
+    },
+    "ITA/2023/2024": {
+      "finished_fixtures_indexed": 380,
+      "stat_matches_observed": 1,
+      "xg_verified_matches": 1
+    },
+    "ITA/2024/2025": {
+      "finished_fixtures_indexed": 380,
+      "stat_matches_observed": 1,
+      "xg_verified_matches": 1
+    },
+    "ITA/2025/2026": {
+      "finished_fixtures_indexed": 380,
+      "stat_matches_observed": 2,
+      "xg_verified_matches": 2
+    },
+    "ITA/2026/2027": {
+      "finished_fixtures_indexed": 100,
+      "stat_matches_observed": 2,
+      "xg_verified_matches": 2
+    },
+    "NED/2023/2024": {
+      "finished_fixtures_indexed": 309,
+      "stat_matches_observed": 1,
+      "xg_unverified_matches": 1
+    },
+    "NED/2024/2025": {
+      "finished_fixtures_indexed": 309,
+      "stat_matches_observed": 1,
+      "xg_unverified_matches": 1
+    },
+    "NED/2025/2026": {
+      "finished_fixtures_indexed": 309,
+      "stat_matches_observed": 1,
+      "xg_unverified_matches": 1
+    },
+    "NED/2026/2027": {
+      "finished_fixtures_indexed": 99,
+      "stat_matches_observed": 2,
+      "xg_verified_matches": 2
+    },
+    "POL/2025/2026": {
+      "finished_fixtures_indexed": 306,
+      "stat_matches_observed": 1,
+      "xg_verified_matches": 1
+    },
+    "POL/2026/2027": {
+      "finished_fixtures_indexed": 115,
+      "stat_matches_observed": 2,
+      "xg_verified_matches": 2
+    },
+    "TUR/2023/2024": {
+      "finished_fixtures_indexed": 379,
+      "stat_matches_observed": 1,
+      "xg_verified_matches": 1
+    },
+    "TUR/2024/2025": {
+      "finished_fixtures_indexed": 341,
+      "stat_matches_observed": 1,
+      "xg_verified_matches": 1
+    },
+    "TUR/2025/2026": {
+      "finished_fixtures_indexed": 306,
+      "stat_matches_observed": 1,
+      "xg_verified_matches": 1
+    },
+    "TUR/2026/2027": {
+      "finished_fixtures_indexed": 90,
+      "stat_matches_observed": 2,
+      "xg_verified_matches": 2
+    },
+    "UCL/2023/2024": {
+      "finished_fixtures_indexed": 125,
+      "stat_matches_observed": 1,
+      "xg_verified_matches": 1
+    },
+    "UCL/2024/2025": {
+      "finished_fixtures_indexed": 189,
+      "stat_matches_observed": 1,
+      "xg_verified_matches": 1
+    },
+    "UCL/2025/2026": {
+      "finished_fixtures_indexed": 189,
+      "stat_matches_observed": 1,
+      "xg_verified_matches": 1
+    },
+    "UCL/2026/2027": {
+      "finished_fixtures_indexed": 54,
+      "stat_matches_observed": 2,
+      "xg_unverified_matches": 1,
+      "xg_verified_matches": 1
+    }
+  },
+  "existing_m0_modified": false,
+  "full_feature_training_approved": false,
+  "gate16_gate17": "PENDING",
+  "history_n_definition": "ACTUAL_LAST_N_FINISHED_FIXTURES_NOT_LAST_N_WITH_STATS",
+  "issue_recheck_source_sha256": null,
+  "missing_season_notice": "POL_2023_24_AND_2024_25_UNAVAILABLE_IN_PITCHAPI_CATALOG_AS_OF_2026_11_03",
+  "never_use_target_result_as_its_own_feature": true,
+  "no_missing_as_zero": true,
+  "official_calibration_changed": false,
+  "original_source_stat_items_preserved": true,
+  "overlays_are_later_research_not_original_pit": true,
+  "protected_test_touched": false,
+  "quality": "REAL_SOURCE_COUNTS_RETROSPECTIVE_RESEARCH_ONLY",
+  "retrospective_provider_original_publication_proven": false,
+  "rolling_windows": [
+    5,
+    10,
+    15
+  ],
+  "schema": "kb3-historical-rolling-source-v1-research-not-pit",
+  "source_db_sha256_before_feature_cache": "8e4f974fad75895a59dbd87b77c50389997d69f5bd2ec2573f6c1f6adcfe7236",
+  "stat_both_sides_numeric_matches_by_key": {
+    "Offsides": 432,
+    "ShotsOffTarget": 432,
+    "ShotsOnTarget": 432,
+    "big_chance": 432,
+    "clearances": 432,
+    "corners": 432,
+    "expected_goals_non_penalty": 432,
+    "expected_goals_on_target": 432,
+    "expected_goals_open_play": 432,
+    "expected_goals_set_play": 432,
+    "fouls": 432,
+    "interceptions": 432,
+    "keeper_saves": 432,
+    "passes": 432,
+    "red_cards": 432,
+    "shots_inside_box": 432,
+    "shots_outside_box": 432,
+    "total_shots": 432,
+    "touches_opp_box": 432,
+    "yellow_cards": 323
+  },
+  "stat_keys": [
+    "total_shots",
+    "ShotsOnTarget",
+    "ShotsOffTarget",
+    "fouls",
+    "corners",
+    "yellow_cards",
+    "red_cards",
+    "Offsides",
+    "passes",
+    "accurate_passes",
+    "interceptions",
+    "clearances",
+    "keeper_saves",
+    "big_chance",
+    "shots_inside_box",
+    "shots_outside_box",
+    "touches_opp_box",
+    "expected_goals_non_penalty",
+    "expected_goals_open_play",
+    "expected_goals_set_play",
+    "expected_goals_on_target"
+  ],
+  "totals": {
+    "indexed_finished_fixtures": 8621,
+    "missing_stat_match_count": 8189,
+    "pair_core_10_complete": 12,
+    "pair_core_10_incomplete": 420,
+    "pair_core_15_complete": 2,
+    "pair_core_15_incomplete": 430,
+    "pair_core_5_complete": 57,
+    "pair_core_5_incomplete": 375,
+    "pair_history_10_complete": 410,
+    "pair_history_10_incomplete": 22,
+    "pair_history_15_complete": 397,
+    "pair_history_15_incomplete": 35,
+    "pair_history_5_complete": 421,
+    "pair_history_5_incomplete": 11,
+    "pair_stats_10_complete": 233,
+    "pair_stats_10_incomplete": 199,
+    "pair_stats_15_complete": 195,
+    "pair_stats_15_incomplete": 237,
+    "pair_stats_5_complete": 294,
+    "pair_stats_5_incomplete": 138,
+    "pair_xg_10_complete": 25,
+    "pair_xg_10_incomplete": 407,
+    "pair_xg_15_complete": 4,
+    "pair_xg_15_incomplete": 428,
+    "pair_xg_5_complete": 104,
+    "pair_xg_5_incomplete": 328,
+    "targets_checked": 432,
+    "total_observed_stats_matches": 432,
+    "xg_unverified_matches": 38,
+    "xg_verified_matches": 394
+  },
+  "venue_specific": true,
+  "xg_shots_vs_stats_absolute_difference_bins": {},
+  "xg_unverified_reason_counts": {
+    "XG_SHOTS_STATS_DISAGREE": 38
+  }
+}
