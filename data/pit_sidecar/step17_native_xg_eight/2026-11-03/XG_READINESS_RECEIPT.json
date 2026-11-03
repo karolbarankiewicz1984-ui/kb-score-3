@@ -1,0 +1,1027 @@
+{
+  "auto_promotion": false,
+  "cumulative_verified_xg_matches": 28,
+  "current_2026_capture_is_NOT_historic_2023_25_PIT": true,
+  "encrypted_source_sha256": "c70e2200412afdac16265f1ace492bd0167396cbe25427a37569e3b35845fbe0",
+  "future_form5_coverage": {
+    "complete_last5_both_team_xg": 0,
+    "future_targets_scanned": 21,
+    "missing_by_country": {
+      "BEL": 2,
+      "ESP": 2,
+      "FRA": 1,
+      "GER": 5,
+      "ITA": 3,
+      "NED": 1,
+      "POL": 4,
+      "TUR": 3
+    },
+    "research_only_no_fitted_xg_model": true
+  },
+  "gate17": "PENDING",
+  "hard_limit_calls": 33,
+  "last5_priority_shadow_comparison": {
+    "additional_api_calls": 0,
+    "baseline_selected_count": 8,
+    "observed_baseline_complete_last5_after_real_capture": 0,
+    "overlap_exact_native_pairs": 3,
+    "priority_different_native_pairs": 5,
+    "priority_live_activated": false,
+    "priority_meta": {
+      "activated_in_live": false,
+      "candidates": 171,
+      "max_provider_calls": 33,
+      "no_network": true,
+      "score_missing_last5": 0.2694867227518473,
+      "selected_pairs": 8,
+      "training_allowed": false
+    },
+    "priority_real_outcome_verified": false,
+    "priority_selected_count": 8,
+    "research_not_training": true,
+    "source": "IDENTICAL_REAL_FIXTURES_SAME_OBSERVATION_CUTOFF",
+    "theoretical_if_all_success": {
+      "additional_provider_calls": 0,
+      "baseline_if_all_selected_xg_pairs_validate": 0,
+      "counterfactual_gain_if_all_valid": 0,
+      "current_verified_last5": 0,
+      "experimental_if_all_selected_xg_pairs_validate": 0,
+      "model_fit_or_promotion": false,
+      "only_a_theoretical_ceiling_not_observed_gain": true,
+      "targets": 21
+    }
+  },
+  "leagues": [
+    "ESP",
+    "ITA",
+    "GER",
+    "FRA",
+    "NED",
+    "BEL",
+    "TUR",
+    "POL"
+  ],
+  "missing_id_inventory_source": "SAME_AUTHENTIC_FIXTURE_GROUPS_NO_EXTRA_API",
+  "network_calls": 33,
+  "new_shots_stats_xg_verified": 8,
+  "observed_at_utc": "2026-11-03T14:37:45.757128Z",
+  "original_catboost_noxg_modified": false,
+  "original_m0_modified": false,
+  "original_provider_published_at_not_known": true,
+  "prior_matches_selected": 8,
+  "protected_premier_league_TEST_2026_27_requested": false,
+  "provider_error_types": {},
+  "real_missing_last5_predecessor_ids": [
+    {
+      "both_teams_last5_verified": false,
+      "country": "BEL",
+      "kickoff_utc": "2026-11-04T19:30:00Z",
+      "target_provider_match_id": "m_4JyHOG",
+      "teams": {
+        "away_team": {
+          "actual_last5_provider_ids": [
+            "m_1X9Ter",
+            "m_4ejI3H",
+            "m_2T0b1M",
+            "m_3JUER5",
+            "m_4IUSWu"
+          ],
+          "exact_last5_verified": false,
+          "fewer_than_five_finished_predecessors": false,
+          "missing_native_xg_provider_ids": [
+            "m_4ejI3H",
+            "m_2T0b1M",
+            "m_3JUER5",
+            "m_4IUSWu"
+          ],
+          "native_team_id": "t_3HWU9N"
+        },
+        "home_team": {
+          "actual_last5_provider_ids": [
+            "m_16NpKG",
+            "m_0mmlz2",
+            "m_0QsJGC",
+            "m_1TYoQo",
+            "m_3z5L2j"
+          ],
+          "exact_last5_verified": false,
+          "fewer_than_five_finished_predecessors": false,
+          "missing_native_xg_provider_ids": [
+            "m_0mmlz2",
+            "m_0QsJGC",
+            "m_1TYoQo",
+            "m_3z5L2j"
+          ],
+          "native_team_id": "t_3F5Qx8"
+        }
+      }
+    },
+    {
+      "both_teams_last5_verified": false,
+      "country": "BEL",
+      "kickoff_utc": "2026-11-06T19:45:00Z",
+      "target_provider_match_id": "m_2AeM1n",
+      "teams": {
+        "away_team": {
+          "actual_last5_provider_ids": [
+            "m_3Uj2no",
+            "m_2YcZH0",
+            "m_0SvN1v",
+            "m_0QsJGC",
+            "m_4QjPnV"
+          ],
+          "exact_last5_verified": false,
+          "fewer_than_five_finished_predecessors": false,
+          "missing_native_xg_provider_ids": [
+            "m_2YcZH0",
+            "m_0SvN1v",
+            "m_0QsJGC",
+            "m_4QjPnV"
+          ],
+          "native_team_id": "t_0BmLrB"
+        },
+        "home_team": {
+          "actual_last5_provider_ids": [
+            "m_16NpKG",
+            "m_38393v",
+            "m_480fBH",
+            "m_4E0SKE",
+            "m_1Glzgr"
+          ],
+          "exact_last5_verified": false,
+          "fewer_than_five_finished_predecessors": false,
+          "missing_native_xg_provider_ids": [
+            "m_38393v",
+            "m_480fBH",
+            "m_4E0SKE",
+            "m_1Glzgr"
+          ],
+          "native_team_id": "t_0xsWjs"
+        }
+      }
+    },
+    {
+      "both_teams_last5_verified": false,
+      "country": "ESP",
+      "kickoff_utc": "2026-11-06T20:00:00Z",
+      "target_provider_match_id": "m_3apOTP",
+      "teams": {
+        "away_team": {
+          "actual_last5_provider_ids": [
+            "m_4b9xEU",
+            "m_23U7CS",
+            "m_2gB2TY",
+            "m_2HMhcZ",
+            "m_4B6vVD"
+          ],
+          "exact_last5_verified": false,
+          "fewer_than_five_finished_predecessors": false,
+          "missing_native_xg_provider_ids": [
+            "m_4b9xEU",
+            "m_23U7CS",
+            "m_2gB2TY",
+            "m_2HMhcZ",
+            "m_4B6vVD"
+          ],
+          "native_team_id": "t_1cpTpB"
+        },
+        "home_team": {
+          "actual_last5_provider_ids": [
+            "m_3CY7K4",
+            "m_1XOUXe",
+            "m_42Fvm8",
+            "m_2Nuzb0",
+            "m_3h30LC"
+          ],
+          "exact_last5_verified": false,
+          "fewer_than_five_finished_predecessors": false,
+          "missing_native_xg_provider_ids": [
+            "m_3CY7K4",
+            "m_42Fvm8",
+            "m_2Nuzb0",
+            "m_3h30LC"
+          ],
+          "native_team_id": "t_4XayA9"
+        }
+      }
+    },
+    {
+      "both_teams_last5_verified": false,
+      "country": "ESP",
+      "kickoff_utc": "2026-11-07T13:00:00Z",
+      "target_provider_match_id": "m_0cvasI",
+      "teams": {
+        "away_team": {
+          "actual_last5_provider_ids": [
+            "m_3Zye1t",
+            "m_3KxIGS",
+            "m_2px4Ra",
+            "m_4RL4QY",
+            "m_1v0Bty"
+          ],
+          "exact_last5_verified": false,
+          "fewer_than_five_finished_predecessors": false,
+          "missing_native_xg_provider_ids": [
+            "m_3KxIGS",
+            "m_2px4Ra",
+            "m_4RL4QY",
+            "m_1v0Bty"
+          ],
+          "native_team_id": "t_3kAVv6"
+        },
+        "home_team": {
+          "actual_last5_provider_ids": [
+            "m_0c2nEn",
+            "m_23U7CS",
+            "m_2ow96v",
+            "m_3kptBK",
+            "m_3Rgvpc"
+          ],
+          "exact_last5_verified": false,
+          "fewer_than_five_finished_predecessors": false,
+          "missing_native_xg_provider_ids": [
+            "m_0c2nEn",
+            "m_23U7CS",
+            "m_2ow96v",
+            "m_3kptBK",
+            "m_3Rgvpc"
+          ],
+          "native_team_id": "t_2DcXQn"
+        }
+      }
+    },
+    {
+      "both_teams_last5_verified": false,
+      "country": "FRA",
+      "kickoff_utc": "2026-11-06T19:45:00Z",
+      "target_provider_match_id": "m_2vsKSO",
+      "teams": {
+        "away_team": {
+          "actual_last5_provider_ids": [
+            "m_0h9fte",
+            "m_1l9Fv2",
+            "m_4RbsRB",
+            "m_480LDf",
+            "m_1BGUy4"
+          ],
+          "exact_last5_verified": false,
+          "fewer_than_five_finished_predecessors": false,
+          "missing_native_xg_provider_ids": [
+            "m_0h9fte",
+            "m_1l9Fv2",
+            "m_4RbsRB",
+            "m_480LDf",
+            "m_1BGUy4"
+          ],
+          "native_team_id": "t_1p1AQf"
+        },
+        "home_team": {
+          "actual_last5_provider_ids": [
+            "m_22n8XS",
+            "m_2Atdht",
+            "m_3pln58",
+            "m_4HKcRB",
+            "m_1bJohP"
+          ],
+          "exact_last5_verified": false,
+          "fewer_than_five_finished_predecessors": false,
+          "missing_native_xg_provider_ids": [
+            "m_2Atdht",
+            "m_3pln58",
+            "m_4HKcRB",
+            "m_1bJohP"
+          ],
+          "native_team_id": "t_3t6spd"
+        }
+      }
+    },
+    {
+      "both_teams_last5_verified": false,
+      "country": "GER",
+      "kickoff_utc": "2026-11-06T19:30:00Z",
+      "target_provider_match_id": "m_2DSeYr",
+      "teams": {
+        "away_team": {
+          "actual_last5_provider_ids": [
+            "m_1njTAO",
+            "m_00TkE1",
+            "m_3Zmu6u",
+            "m_0AXpZd",
+            "m_4cF2wg"
+          ],
+          "exact_last5_verified": false,
+          "fewer_than_five_finished_predecessors": false,
+          "missing_native_xg_provider_ids": [
+            "m_1njTAO",
+            "m_00TkE1",
+            "m_3Zmu6u",
+            "m_0AXpZd",
+            "m_4cF2wg"
+          ],
+          "native_team_id": "t_2g37DO"
+        },
+        "home_team": {
+          "actual_last5_provider_ids": [
+            "m_0ryKWG",
+            "m_1eP8FM",
+            "m_1Ez6NE",
+            "m_0BPcb9",
+            "m_30lsSe"
+          ],
+          "exact_last5_verified": false,
+          "fewer_than_five_finished_predecessors": false,
+          "missing_native_xg_provider_ids": [
+            "m_1eP8FM",
+            "m_1Ez6NE",
+            "m_0BPcb9",
+            "m_30lsSe"
+          ],
+          "native_team_id": "t_1pQZDX"
+        }
+      }
+    },
+    {
+      "both_teams_last5_verified": false,
+      "country": "GER",
+      "kickoff_utc": "2026-11-07T14:30:00Z",
+      "target_provider_match_id": "m_0j8R2e",
+      "teams": {
+        "away_team": {
+          "actual_last5_provider_ids": [
+            "m_0ryKWG",
+            "m_4e2kal",
+            "m_2dYlDX",
+            "m_3QSifP",
+            "m_3LRwFu"
+          ],
+          "exact_last5_verified": false,
+          "fewer_than_five_finished_predecessors": false,
+          "missing_native_xg_provider_ids": [
+            "m_2dYlDX",
+            "m_3QSifP",
+            "m_3LRwFu"
+          ],
+          "native_team_id": "t_0acTGj"
+        },
+        "home_team": {
+          "actual_last5_provider_ids": [
+            "m_1njTAO",
+            "m_1eP8FM",
+            "m_461GBc",
+            "m_0gxVoS",
+            "m_0eLU08"
+          ],
+          "exact_last5_verified": false,
+          "fewer_than_five_finished_predecessors": false,
+          "missing_native_xg_provider_ids": [
+            "m_1njTAO",
+            "m_1eP8FM",
+            "m_461GBc",
+            "m_0gxVoS",
+            "m_0eLU08"
+          ],
+          "native_team_id": "t_3j2hQL"
+        }
+      }
+    },
+    {
+      "both_teams_last5_verified": false,
+      "country": "GER",
+      "kickoff_utc": "2026-11-07T14:30:00Z",
+      "target_provider_match_id": "m_2X8YYk",
+      "teams": {
+        "away_team": {
+          "actual_last5_provider_ids": [
+            "m_4BXbtD",
+            "m_1dZPZA",
+            "m_1IbEtF",
+            "m_05k6yq",
+            "m_3bg2dv"
+          ],
+          "exact_last5_verified": false,
+          "fewer_than_five_finished_predecessors": false,
+          "missing_native_xg_provider_ids": [
+            "m_4BXbtD",
+            "m_1dZPZA",
+            "m_1IbEtF",
+            "m_05k6yq",
+            "m_3bg2dv"
+          ],
+          "native_team_id": "t_1cpjqO"
+        },
+        "home_team": {
+          "actual_last5_provider_ids": [
+            "m_09f2sq",
+            "m_3xgItg",
+            "m_23lRyI",
+            "m_2IApSB",
+            "m_4cF2wg"
+          ],
+          "exact_last5_verified": false,
+          "fewer_than_five_finished_predecessors": false,
+          "missing_native_xg_provider_ids": [
+            "m_09f2sq",
+            "m_3xgItg",
+            "m_23lRyI",
+            "m_2IApSB",
+            "m_4cF2wg"
+          ],
+          "native_team_id": "t_3pp390"
+        }
+      }
+    },
+    {
+      "both_teams_last5_verified": false,
+      "country": "GER",
+      "kickoff_utc": "2026-11-07T14:30:00Z",
+      "target_provider_match_id": "m_2zGfLM",
+      "teams": {
+        "away_team": {
+          "actual_last5_provider_ids": [
+            "m_09f2sq",
+            "m_2oYhX5",
+            "m_2C6T56",
+            "m_1vQuUb",
+            "m_3HYTFS"
+          ],
+          "exact_last5_verified": false,
+          "fewer_than_five_finished_predecessors": false,
+          "missing_native_xg_provider_ids": [
+            "m_09f2sq",
+            "m_2oYhX5",
+            "m_2C6T56",
+            "m_1vQuUb",
+            "m_3HYTFS"
+          ],
+          "native_team_id": "t_0qsY4J"
+        },
+        "home_team": {
+          "actual_last5_provider_ids": [
+            "m_4BXbtD",
+            "m_4e2kal",
+            "m_3BxJha",
+            "m_29oQt2",
+            "m_45nz4M"
+          ],
+          "exact_last5_verified": false,
+          "fewer_than_five_finished_predecessors": false,
+          "missing_native_xg_provider_ids": [
+            "m_4BXbtD",
+            "m_3BxJha",
+            "m_29oQt2",
+            "m_45nz4M"
+          ],
+          "native_team_id": "t_386iz1"
+        }
+      }
+    },
+    {
+      "both_teams_last5_verified": false,
+      "country": "GER",
+      "kickoff_utc": "2026-11-07T14:30:00Z",
+      "target_provider_match_id": "m_4RiOkV",
+      "teams": {
+        "away_team": {
+          "actual_last5_provider_ids": [
+            "m_2nNBty",
+            "m_08BW5e",
+            "m_2C6T56",
+            "m_05k6yq",
+            "m_1oMFj0"
+          ],
+          "exact_last5_verified": false,
+          "fewer_than_five_finished_predecessors": false,
+          "missing_native_xg_provider_ids": [
+            "m_2nNBty",
+            "m_08BW5e",
+            "m_2C6T56",
+            "m_05k6yq",
+            "m_1oMFj0"
+          ],
+          "native_team_id": "t_14USF9"
+        },
+        "home_team": {
+          "actual_last5_provider_ids": [
+            "m_2PFsh5",
+            "m_2oYhX5",
+            "m_1IbEtF",
+            "m_3QSifP",
+            "m_2D6SRN"
+          ],
+          "exact_last5_verified": false,
+          "fewer_than_five_finished_predecessors": false,
+          "missing_native_xg_provider_ids": [
+            "m_2PFsh5",
+            "m_2oYhX5",
+            "m_1IbEtF",
+            "m_3QSifP",
+            "m_2D6SRN"
+          ],
+          "native_team_id": "t_0oqUbb"
+        }
+      }
+    },
+    {
+      "both_teams_last5_verified": false,
+      "country": "ITA",
+      "kickoff_utc": "2026-11-06T19:45:00Z",
+      "target_provider_match_id": "m_3A4n8A",
+      "teams": {
+        "away_team": {
+          "actual_last5_provider_ids": [
+            "m_0zvm5Y",
+            "m_4Qr3lF",
+            "m_0oV4JG",
+            "m_0YD43d",
+            "m_0dRaIx"
+          ],
+          "exact_last5_verified": false,
+          "fewer_than_five_finished_predecessors": false,
+          "missing_native_xg_provider_ids": [
+            "m_0zvm5Y",
+            "m_0oV4JG",
+            "m_0YD43d",
+            "m_0dRaIx"
+          ],
+          "native_team_id": "t_2ur07g"
+        },
+        "home_team": {
+          "actual_last5_provider_ids": [
+            "m_3MjGnF",
+            "m_3fadot",
+            "m_1abIcT",
+            "m_3OWlJP",
+            "m_3WZAJ8"
+          ],
+          "exact_last5_verified": false,
+          "fewer_than_five_finished_predecessors": false,
+          "missing_native_xg_provider_ids": [
+            "m_3MjGnF",
+            "m_3fadot",
+            "m_1abIcT",
+            "m_3OWlJP",
+            "m_3WZAJ8"
+          ],
+          "native_team_id": "t_3TALFY"
+        }
+      }
+    },
+    {
+      "both_teams_last5_verified": false,
+      "country": "ITA",
+      "kickoff_utc": "2026-11-07T14:00:00Z",
+      "target_provider_match_id": "m_4L3dqh",
+      "teams": {
+        "away_team": {
+          "actual_last5_provider_ids": [
+            "m_1Z3qMe",
+            "m_002ZzY",
+            "m_1nwlES",
+            "m_0YD43d",
+            "m_0c0woG"
+          ],
+          "exact_last5_verified": false,
+          "fewer_than_five_finished_predecessors": false,
+          "missing_native_xg_provider_ids": [
+            "m_1nwlES",
+            "m_0YD43d",
+            "m_0c0woG"
+          ],
+          "native_team_id": "t_35suku"
+        },
+        "home_team": {
+          "actual_last5_provider_ids": [
+            "m_2mVrHa",
+            "m_0sBSLz",
+            "m_0pSK27",
+            "m_1exn1L",
+            "m_0dRaIx"
+          ],
+          "exact_last5_verified": false,
+          "fewer_than_five_finished_predecessors": false,
+          "missing_native_xg_provider_ids": [
+            "m_2mVrHa",
+            "m_0sBSLz",
+            "m_0pSK27",
+            "m_1exn1L",
+            "m_0dRaIx"
+          ],
+          "native_team_id": "t_1fXtzU"
+        }
+      }
+    },
+    {
+      "both_teams_last5_verified": false,
+      "country": "ITA",
+      "kickoff_utc": "2026-11-07T14:00:00Z",
+      "target_provider_match_id": "m_4Qe0mW",
+      "teams": {
+        "away_team": {
+          "actual_last5_provider_ids": [
+            "m_2mVrHa",
+            "m_002ZzY",
+            "m_1oY1KY",
+            "m_4OrzRL",
+            "m_3F9r91"
+          ],
+          "exact_last5_verified": false,
+          "fewer_than_five_finished_predecessors": false,
+          "missing_native_xg_provider_ids": [
+            "m_2mVrHa",
+            "m_1oY1KY",
+            "m_4OrzRL",
+            "m_3F9r91"
+          ],
+          "native_team_id": "t_1YXpHZ"
+        },
+        "home_team": {
+          "actual_last5_provider_ids": [
+            "m_1PHYqG",
+            "m_2L71CW",
+            "m_3zKOH3",
+            "m_1VpC1F",
+            "m_1xgLNq"
+          ],
+          "exact_last5_verified": false,
+          "fewer_than_five_finished_predecessors": false,
+          "missing_native_xg_provider_ids": [
+            "m_1PHYqG",
+            "m_2L71CW",
+            "m_3zKOH3",
+            "m_1VpC1F",
+            "m_1xgLNq"
+          ],
+          "native_team_id": "t_3V0mmv"
+        }
+      }
+    },
+    {
+      "both_teams_last5_verified": false,
+      "country": "NED",
+      "kickoff_utc": "2026-11-06T19:00:00Z",
+      "target_provider_match_id": "m_1qdH6l",
+      "teams": {
+        "away_team": {
+          "actual_last5_provider_ids": [
+            "m_3022Tt",
+            "m_0XPyrk",
+            "m_1FvXkB",
+            "m_0tiEtg",
+            "m_4c40AM"
+          ],
+          "exact_last5_verified": false,
+          "fewer_than_five_finished_predecessors": false,
+          "missing_native_xg_provider_ids": [
+            "m_0XPyrk",
+            "m_1FvXkB",
+            "m_0tiEtg",
+            "m_4c40AM"
+          ],
+          "native_team_id": "t_0IKBux"
+        },
+        "home_team": {
+          "actual_last5_provider_ids": [
+            "m_3ftnql",
+            "m_30MX3b",
+            "m_20fmJz",
+            "m_4J3Y5L",
+            "m_0aio4X"
+          ],
+          "exact_last5_verified": false,
+          "fewer_than_five_finished_predecessors": false,
+          "missing_native_xg_provider_ids": [
+            "m_3ftnql",
+            "m_30MX3b",
+            "m_20fmJz",
+            "m_4J3Y5L",
+            "m_0aio4X"
+          ],
+          "native_team_id": "t_0Y6Ely"
+        }
+      }
+    },
+    {
+      "both_teams_last5_verified": false,
+      "country": "POL",
+      "kickoff_utc": "2026-11-06T17:00:00Z",
+      "target_provider_match_id": "m_4euj53",
+      "teams": {
+        "away_team": {
+          "actual_last5_provider_ids": [
+            "m_4WVSrE",
+            "m_1YHVwJ",
+            "m_2vG9tR",
+            "m_1nRm7x",
+            "m_2jKlDl"
+          ],
+          "exact_last5_verified": false,
+          "fewer_than_five_finished_predecessors": false,
+          "missing_native_xg_provider_ids": [
+            "m_4WVSrE",
+            "m_1YHVwJ",
+            "m_2vG9tR",
+            "m_1nRm7x",
+            "m_2jKlDl"
+          ],
+          "native_team_id": "t_4B94wa"
+        },
+        "home_team": {
+          "actual_last5_provider_ids": [
+            "m_3wPhxn",
+            "m_0KfpPG",
+            "m_3zRssN",
+            "m_4Qyakr",
+            "m_1AmKrQ"
+          ],
+          "exact_last5_verified": false,
+          "fewer_than_five_finished_predecessors": false,
+          "missing_native_xg_provider_ids": [
+            "m_3wPhxn",
+            "m_0KfpPG",
+            "m_3zRssN",
+            "m_4Qyakr",
+            "m_1AmKrQ"
+          ],
+          "native_team_id": "t_3A21S1"
+        }
+      }
+    },
+    {
+      "both_teams_last5_verified": false,
+      "country": "POL",
+      "kickoff_utc": "2026-11-06T19:30:00Z",
+      "target_provider_match_id": "m_1VgAIj",
+      "teams": {
+        "away_team": {
+          "actual_last5_provider_ids": [
+            "m_3wPhxn",
+            "m_23y7hw",
+            "m_1tUWY3",
+            "m_2qqwo5",
+            "m_2O5dgM"
+          ],
+          "exact_last5_verified": false,
+          "fewer_than_five_finished_predecessors": false,
+          "missing_native_xg_provider_ids": [
+            "m_3wPhxn",
+            "m_23y7hw",
+            "m_1tUWY3",
+            "m_2qqwo5",
+            "m_2O5dgM"
+          ],
+          "native_team_id": "t_2KeS2M"
+        },
+        "home_team": {
+          "actual_last5_provider_ids": [
+            "m_0VQtF9",
+            "m_2pP9BJ",
+            "m_3yV7LA",
+            "m_3ljBCW",
+            "m_3XWxYR"
+          ],
+          "exact_last5_verified": false,
+          "fewer_than_five_finished_predecessors": false,
+          "missing_native_xg_provider_ids": [
+            "m_0VQtF9",
+            "m_3yV7LA",
+            "m_3ljBCW",
+            "m_3XWxYR"
+          ],
+          "native_team_id": "t_0zCjtC"
+        }
+      }
+    },
+    {
+      "both_teams_last5_verified": false,
+      "country": "POL",
+      "kickoff_utc": "2026-11-07T11:15:00Z",
+      "target_provider_match_id": "m_1qCH0w",
+      "teams": {
+        "away_team": {
+          "actual_last5_provider_ids": [
+            "m_48fN3e",
+            "m_3Nz1td",
+            "m_2vG9tR",
+            "m_4Qyakr",
+            "m_3tflDt"
+          ],
+          "exact_last5_verified": false,
+          "fewer_than_five_finished_predecessors": false,
+          "missing_native_xg_provider_ids": [
+            "m_3Nz1td",
+            "m_2vG9tR",
+            "m_4Qyakr",
+            "m_3tflDt"
+          ],
+          "native_team_id": "t_3XLIIP"
+        },
+        "home_team": {
+          "actual_last5_provider_ids": [
+            "m_2ro7O5",
+            "m_3snFQ4",
+            "m_2fDMcA",
+            "m_4dDi0b",
+            "m_1upCGD"
+          ],
+          "exact_last5_verified": false,
+          "fewer_than_five_finished_predecessors": false,
+          "missing_native_xg_provider_ids": [
+            "m_2ro7O5",
+            "m_3snFQ4",
+            "m_2fDMcA",
+            "m_4dDi0b",
+            "m_1upCGD"
+          ],
+          "native_team_id": "t_3dlqfL"
+        }
+      }
+    },
+    {
+      "both_teams_last5_verified": false,
+      "country": "POL",
+      "kickoff_utc": "2026-11-07T13:45:00Z",
+      "target_provider_match_id": "m_1Cd8Es",
+      "teams": {
+        "away_team": {
+          "actual_last5_provider_ids": [
+            "m_4WVSrE",
+            "m_23y7hw",
+            "m_3zJ1WO",
+            "m_1fyKBB",
+            "m_404NGz"
+          ],
+          "exact_last5_verified": false,
+          "fewer_than_five_finished_predecessors": false,
+          "missing_native_xg_provider_ids": [
+            "m_4WVSrE",
+            "m_23y7hw",
+            "m_3zJ1WO",
+            "m_1fyKBB",
+            "m_404NGz"
+          ],
+          "native_team_id": "t_184lFA"
+        },
+        "home_team": {
+          "actual_last5_provider_ids": [
+            "m_48fN3e",
+            "m_1Iurfk",
+            "m_3zRssN",
+            "m_0DwBkp",
+            "m_3XWxYR"
+          ],
+          "exact_last5_verified": false,
+          "fewer_than_five_finished_predecessors": false,
+          "missing_native_xg_provider_ids": [
+            "m_3zRssN",
+            "m_0DwBkp",
+            "m_3XWxYR"
+          ],
+          "native_team_id": "t_0488Mu"
+        }
+      }
+    },
+    {
+      "both_teams_last5_verified": false,
+      "country": "TUR",
+      "kickoff_utc": "2026-11-06T17:00:00Z",
+      "target_provider_match_id": "m_12G6QF",
+      "teams": {
+        "away_team": {
+          "actual_last5_provider_ids": [
+            "m_0obrfR",
+            "m_0BNqPO",
+            "m_23c9Wt",
+            "m_1dT46x",
+            "m_4Ay65n"
+          ],
+          "exact_last5_verified": false,
+          "fewer_than_five_finished_predecessors": false,
+          "missing_native_xg_provider_ids": [
+            "m_0BNqPO",
+            "m_23c9Wt",
+            "m_1dT46x",
+            "m_4Ay65n"
+          ],
+          "native_team_id": "t_0Re9DV"
+        },
+        "home_team": {
+          "actual_last5_provider_ids": [
+            "m_0BwVd8",
+            "m_2M5Ypw",
+            "m_0AXnFJ",
+            "m_0sAmks",
+            "m_0M4yyA"
+          ],
+          "exact_last5_verified": false,
+          "fewer_than_five_finished_predecessors": false,
+          "missing_native_xg_provider_ids": [
+            "m_0BwVd8",
+            "m_2M5Ypw",
+            "m_0AXnFJ",
+            "m_0sAmks",
+            "m_0M4yyA"
+          ],
+          "native_team_id": "t_13kqMs"
+        }
+      }
+    },
+    {
+      "both_teams_last5_verified": false,
+      "country": "TUR",
+      "kickoff_utc": "2026-11-07T10:30:00Z",
+      "target_provider_match_id": "m_1ZfVht",
+      "teams": {
+        "away_team": {
+          "actual_last5_provider_ids": [
+            "m_46MtQh",
+            "m_0YbCcI",
+            "m_0yauUM",
+            "m_1HPX5u",
+            "m_0M4yyA"
+          ],
+          "exact_last5_verified": false,
+          "fewer_than_five_finished_predecessors": false,
+          "missing_native_xg_provider_ids": [
+            "m_46MtQh",
+            "m_0YbCcI",
+            "m_0yauUM",
+            "m_1HPX5u",
+            "m_0M4yyA"
+          ],
+          "native_team_id": "t_1rIGha"
+        },
+        "home_team": {
+          "actual_last5_provider_ids": [
+            "m_1JeJOl",
+            "m_0BNqPO",
+            "m_3EHmG2",
+            "m_0v4NPK",
+            "m_1xtgsw"
+          ],
+          "exact_last5_verified": false,
+          "fewer_than_five_finished_predecessors": false,
+          "missing_native_xg_provider_ids": [
+            "m_1JeJOl",
+            "m_0BNqPO",
+            "m_3EHmG2",
+            "m_0v4NPK",
+            "m_1xtgsw"
+          ],
+          "native_team_id": "t_2KgWmI"
+        }
+      }
+    },
+    {
+      "both_teams_last5_verified": false,
+      "country": "TUR",
+      "kickoff_utc": "2026-11-07T13:00:00Z",
+      "target_provider_match_id": "m_3PC9J0",
+      "teams": {
+        "away_team": {
+          "actual_last5_provider_ids": [
+            "m_46IsSa",
+            "m_092k38",
+            "m_1H4QXY",
+            "m_3s55Uo",
+            "m_4Ay65n"
+          ],
+          "exact_last5_verified": false,
+          "fewer_than_five_finished_predecessors": false,
+          "missing_native_xg_provider_ids": [
+            "m_46IsSa",
+            "m_092k38",
+            "m_1H4QXY",
+            "m_3s55Uo",
+            "m_4Ay65n"
+          ],
+          "native_team_id": "t_1O0f4S"
+        },
+        "home_team": {
+          "actual_last5_provider_ids": [
+            "m_4FEuOy",
+            "m_3PW3jT",
+            "m_23c9Wt",
+            "m_0lfjea",
+            "m_1Rm1HV"
+          ],
+          "exact_last5_verified": false,
+          "fewer_than_five_finished_predecessors": false,
+          "missing_native_xg_provider_ids": [
+            "m_4FEuOy",
+            "m_3PW3jT",
+            "m_23c9Wt",
+            "m_0lfjea",
+            "m_1Rm1HV"
+          ],
+          "native_team_id": "t_3ecBqd"
+        }
+      }
+    }
+  ],
+  "report_sha256": "4b846b11e84743c005125986ef5109b3bfae455c4c8f6d8e25e7036cfd75bf0f",
+  "schema": "kb3-step17-native-xg-eight-asof-shadow-v1",
+  "source_chain_sha256": "deae1836fd65e00bc6c403dfb0323997d93ee0beab7e2da49b4ff12e01765b96",
+  "trained_xg_catboost_exists": false,
+  "training_ready": false,
+  "xg_semantic_errors": {}
+}
