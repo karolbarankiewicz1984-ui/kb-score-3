@@ -3,6 +3,10 @@ on:
   pull_request:
     paths:
       - scripts/kb3_historical_pitchapi_backfill.py
+      - scripts/kb3_history_accelerated.py
+      - scripts/kb3_history_issue_recheck.py
+      - tests/test_kb3_history_accelerated.py
+      - tests/test_kb3_history_issue_recheck.py
       - tests/test_kb3_historical_pitchapi_backfill.py
       - src/kb3_historical_feature_quality.py
       - tests/test_kb3_historical_feature_quality.py
@@ -11,6 +15,10 @@ on:
     branches: [main]
     paths:
       - scripts/kb3_historical_pitchapi_backfill.py
+      - scripts/kb3_history_accelerated.py
+      - scripts/kb3_history_issue_recheck.py
+      - tests/test_kb3_history_accelerated.py
+      - tests/test_kb3_history_issue_recheck.py
       - tests/test_kb3_historical_pitchapi_backfill.py
       - src/kb3_historical_feature_quality.py
       - tests/test_kb3_historical_feature_quality.py
@@ -36,8 +44,10 @@ jobs:
         run: python -m pip install --disable-pip-version-check 'cryptography>=42,<47'
       - name: Strict source identity, PIT/TEST exclusion, xG and SQLite regression
         run: |
-          python -m compileall -q scripts/kb3_historical_pitchapi_backfill.py src/kb3_historical_feature_quality.py tests/test_kb3_historical_pitchapi_backfill.py tests/test_kb3_historical_feature_quality.py
+          python -m compileall -q scripts/kb3_historical_pitchapi_backfill.py scripts/kb3_history_accelerated.py scripts/kb3_history_issue_recheck.py src/kb3_historical_feature_quality.py tests/test_kb3_historical_pitchapi_backfill.py tests/test_kb3_historical_feature_quality.py tests/test_kb3_history_issue_recheck.py tests/test_kb3_history_accelerated.py
           python -m unittest discover -s tests -p 'test_kb3_historical_pitchapi_backfill.py' -v
+          python -m unittest discover -s tests -p 'test_kb3_history_accelerated.py' -v
+          python -m unittest discover -s tests -p 'test_kb3_history_issue_recheck.py' -v
           python -m unittest discover -s tests -p 'test_kb3_historical_feature_quality.py' -v
           python -m unittest discover -s tests -p 'test_step14_pitchapi_xg_semantics.py' -v
   live-observed-backfill:
@@ -54,54 +64,73 @@ jobs:
           python-version: '3.11'
       - name: Install existing PitchAPI provider and encryption libraries
         run: python -m pip install --disable-pip-version-check 'pitchapi==0.1.6' 'cryptography>=42,<47'
-      - name: Capture limited research batch with existing owner API secret
+      - name: Capture five independently sealed source batches (max 240 matches), recheck xG and missing yellow cards
         env:
           PITCHAPI_API_KEY: ${{ secrets.PITCHAPI_API_KEY }}
         run: |
-          python -m scripts.kb3_historical_pitchapi_backfill \
-            --run-token "$GITHUB_RUN_ID-$GITHUB_RUN_ATTEMPT" --max-matches 48
-      - name: Validate encrypted payload, safe report and isolated SQLite before commit
+          python -m scripts.kb3_history_accelerated \
+            --run-token "$GITHUB_RUN_ID-$GITHUB_RUN_ATTEMPT" --batches 5
+      - name: Validate all encrypted chunks, independent recheck receipts and final rolling report
         run: |
           python - <<'PY'
           import hashlib,json,os,sqlite3
           from pathlib import Path
           from scripts.kb3_historical_pitchapi_backfill import ARCHIVE,DB,MAX_CALLS
-          dirs=list(ARCHIVE.glob("*/run-"+os.environ["GITHUB_RUN_ID"]+"-"+os.environ["GITHUB_RUN_ATTEMPT"]))
-          assert len(dirs)==1,"BACKFILL_MISSING_ACTUAL_RUN"
+          from scripts.kb3_history_issue_recheck import ISSUE_ROOT,ISSUE_DB
+          token=os.environ["GITHUB_RUN_ID"]+"-"+os.environ["GITHUB_RUN_ATTEMPT"]
+          dirs=list(ARCHIVE.glob("*/run-"+token+"-summary"))
+          assert len(dirs)==1,"MISSING_ACCELERATED_SUMMARY"
           folder=dirs[0]
-          report=json.loads((folder/"HISTORICAL_BACKFILL_REPORT.json").read_text())
-          meta=json.loads((folder/"HISTORICAL_SOURCE.manifest.json").read_text())
-          encrypted=(folder/"HISTORICAL_SOURCE.enc").read_bytes()
-          assert hashlib.sha256(encrypted).hexdigest()==report["source_ciphertext_sha256"]==meta["ciphertext_sha256"]
-          assert report["provider_requests"]<=MAX_CALLS
-          assert report["source_payloads_encrypted"] is True
-          assert report["historical_pit_certified"] is False
-          assert report["official_training_allowed"] is False
-          assert report["existing_m0_modified"] is False
-          assert report["protected_premier_league_test_accessed"] is False
-          assert report["research_training_performed"] is False
-          assert report["gate16_gate17"]=="PENDING"
-          quality=json.loads((folder/"ROLLING_FEATURE_QUALITY.json").read_text())
+          summary=json.loads((folder/"ACCELERATED_CAPTURE_REPORT.json").read_text())
+          quality=json.loads((folder/"ROLLING_AFTER_RECHECK.json").read_text())
+          assert summary["completed_batches"]==len(summary["history_batches"])
+          assert 1<=summary["completed_batches"]<=5
+          assert summary["new_match_stats"]<=240
+          assert summary["provider_requests_history"]<=5*MAX_CALLS
+          assert summary["new_match_stats"]==sum(x["new"] for x in summary["history_batches"])
+          assert summary["effective_xg5_pair_complete"]==quality["totals"]["pair_xg_5_complete"]
+          assert summary["cumulative_match_stats"]==quality["totals"]["total_observed_stats_matches"]
           assert quality["gate16_gate17"]=="PENDING"
-          assert quality["never_use_target_result_as_its_own_feature"] is True
-          assert quality["no_missing_as_zero"] is True
-          assert quality["full_feature_training_approved"] is False
-          assert report["historical_feature_target_rows"] == quality["totals"]["targets_checked"]
-          assert report["cumulative_finished_fixture_index_rows"] == quality["totals"]["indexed_finished_fixtures"]
-          assert report["true_last5_both_xg_complete"] == quality["totals"].get("pair_xg_5_complete",0)
+          assert not quality["full_feature_training_approved"]
+          assert not quality["retrospective_provider_original_publication_proven"]
+          assert summary["issue_status"] in ("OBSERVED_RECHECK","NO_NEW_ISSUES","RECHECK_ERROR")
+          assert summary["original_m0_unchanged"] and summary["protected_english_test_untouched"]
+          for part in summary["history_batches"]:
+              entries=list(ARCHIVE.glob("*/run-"+part["token"]))
+              assert len(entries)==1,"MISSING_AUTHENTIC_ENCRYPTED_BATCH"
+              p=entries[0]
+              rep=json.loads((p/"HISTORICAL_BACKFILL_REPORT.json").read_text())
+              manifest=json.loads((p/"HISTORICAL_SOURCE.manifest.json").read_text())
+              encrypted=(p/"HISTORICAL_SOURCE.enc").read_bytes()
+              assert hashlib.sha256(encrypted).hexdigest()==rep["source_ciphertext_sha256"]==manifest["ciphertext_sha256"]==part["sha256"]
+              assert rep["new_match_stats"]==part["new"]
+              assert rep["provider_requests"]<=MAX_CALLS
+              assert manifest["proof"]["sessions"]>=rep["new_match_stats"]
+              assert rep["historical_pit_certified"] is False
+              assert rep["official_training_allowed"] is False
+          if summary["issue_status"]=="OBSERVED_RECHECK":
+              iss=list(ISSUE_ROOT.glob("*/run-"+token+"-issues"))
+              assert len(iss)==1,"MISSING_ISSUE_EVIDENCE"
+              p=iss[0]
+              proof=json.loads((p/"ISSUE_RECHECK_REPORT.json").read_text())
+              manifest=json.loads((p/"ISSUE_SOURCE.manifest.json").read_text())
+              assert hashlib.sha256((p/"ISSUE_SOURCE.enc").read_bytes()).hexdigest()==proof["source_cipher_sha256"]==manifest["ciphertext_sha256"]
+              assert proof["original_rows_modified"] is False
+              assert proof["official_training_allowed"] is False
+              assert proof["xg_reverified"]+proof["yellow_from_events"]<=proof["cumulative_issue_rows"]
+              with sqlite3.connect(ISSUE_DB) as db:
+                  assert db.execute("PRAGMA integrity_check").fetchone()[0]=="ok"
+                  assert db.execute("SELECT COUNT(*) FROM issue_rechecks WHERE original_provider_first_published_at_utc IS NOT NULL").fetchone()[0]==0
+                  assert db.execute("SELECT COUNT(*) FROM issue_rechecks WHERE scope='ENG'").fetchone()[0]==0
           with sqlite3.connect(DB) as db:
               assert db.execute("PRAGMA integrity_check").fetchone()[0]=="ok"
-              n=db.execute("SELECT COUNT(*) FROM observations").fetchone()[0]
-              assert n==report["cumulative_match_stats"]
-              assert db.execute("SELECT COUNT(*) FROM observations WHERE provider_first_published_at_utc IS NOT NULL").fetchone()[0]==0
+              count=db.execute("SELECT COUNT(*) FROM observations").fetchone()[0]
+              assert count==summary["cumulative_match_stats"]
               assert db.execute("SELECT COUNT(*) FROM observations WHERE scope='ENG'").fetchone()[0]==0
               assert db.execute("SELECT COUNT(*) FROM finished_fixture_index WHERE scope='ENG'").fetchone()[0]==0
-              assert db.execute("SELECT COUNT(*) FROM finished_fixture_index").fetchone()[0]==quality["totals"]["indexed_finished_fixtures"]
-              assert db.execute("SELECT COUNT(*) FROM rolling_feature_cache").fetchone()[0]==quality["totals"]["targets_checked"]
-              assert db.execute("SELECT COUNT(*) FROM finished_fixture_index WHERE original_provider_first_published_utc IS NOT NULL").fetchone()[0]==0
-          print("KB3_HISTORY_REAL_SOURCE_AND_ROLLING_QUALITY_PASS",n,report["new_match_stats"],
-                report["new_native_xg_verified"],quality["totals"]["indexed_finished_fixtures"],
-                quality["totals"].get("pair_xg_5_complete",0))
+              assert db.execute("SELECT COUNT(*) FROM observations WHERE provider_first_published_at_utc IS NOT NULL").fetchone()[0]==0
+          print("KB3_ACCELERATED_REAL_VERIFY",summary["new_match_stats"],count,
+                quality["totals"]["pair_xg_5_complete"],summary["issue_status"])
           PY
       - uses: actions/upload-artifact@v4
         if: always()
@@ -110,6 +139,7 @@ jobs:
           path: |
             data/research/historical_multistat/
             data/pit_sidecar/historical_multistat/
+            data/pit_sidecar/historical_issue_rechecks/
           retention-days: 30
           if-no-files-found: warn
       - name: Commit immutable private research data only
@@ -117,6 +147,7 @@ jobs:
           git config user.name kb3-history-research-bot
           git config user.email kb3-history-research-bot@users.noreply.github.com
           git add -f data/research/historical_multistat/ data/pit_sidecar/historical_multistat/
+          if test -d data/pit_sidecar/historical_issue_rechecks; then git add -f data/pit_sidecar/historical_issue_rechecks/; fi
           if git diff --cached --quiet; then
             echo 'No new independent PitchAPI source records'
           else

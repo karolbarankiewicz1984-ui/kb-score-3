@@ -111,45 +111,86 @@ def validate_match_rows(payload, scope, season, observed):
     return valid
 
 
-def select_batch(groups, known, max_matches=MAX_MATCHES):
-    """Concentrate requests in consecutive matches, not one per 34 scopes.
+def priority_predecessor_matches(groups,known):
+    """Rank truly missing predecessors for actual observed target matches.
 
-    Approximately 180 latest fixtures in a season are needed to make true 15-match
-    windows feasible. Once a scope reaches that density, move to the next scope.
-    Current league season may have fewer than 15 played games per team, so
-    recent completed 2025/26 and 2024/25 have higher research priority.
+    Uses only provider finished fixture IDs and previously acquired source IDs.
+    Never substitutes an older match with xG for one of the actual last 15.
+    The ranking is for *fetching source*, not a feature or a forecast.
     """
+    history=defaultdict(list)
+    indexed={}
+    for (scope,season),matches in groups.items():
+        for m in matches:
+            history[scope].append((season,m))
+            indexed[(scope,m["id"])]=(season,m)
+    for matches in history.values():
+        matches.sort(key=lambda x:(x[1]["time_utc"],x[1]["id"]))
+    scores=Counter()
+    for (scope,mid) in known:
+        target=indexed.get((scope,mid))
+        if target is None:
+            continue
+        _,m=target
+        ko=m["time_utc"]
+        # Strictly preceding fixtures, no target statistics available as input.
+        prior=[(season,p) for season,p in history[scope]
+               if p["time_utc"]<ko and p["id"]!=mid]
+        for side in ("home_team","away_team"):
+            tid=m[side]["id"]
+            true_prior=[x for x in prior
+                        if tid in (x[1]["home_team"]["id"],x[1]["away_team"]["id"])]
+            for distance,(season,p) in enumerate(reversed(true_prior[-15:])):
+                if (scope,p["id"]) not in known:
+                    scores[(scope,season,p["id"])]+=(12 if distance<5 else
+                                                    5 if distance<10 else 2)
+    ranked=sorted(scores,key=lambda key:(-scores[key],key[0],key[1],key[2]))
+    return [(scope,season,indexed[(scope,mid)][1])
+            for scope,season,mid in ranked]
+
+def select_batch(groups, known, max_matches=MAX_MATCHES):
+    """Prioritize true missing 5/10/15 predecessors then dense history blocks."""
     require(1 <= max_matches <= MAX_MATCHES, "MATCH_BATCH_LIMIT")
-    priority = {"2025/2026": 0, "2024/2025": 1,
-                "2026/2027": 2, "2023/2024": 3}
-    queue=[]
-    for (scope, season), rows in groups.items():
-        remaining=[m for m in rows if (scope,m["id"]) not in known]
-        if not remaining:
+    priority={"2025/2026":0,"2024/2025":1,"2026/2027":2,"2023/2024":3}
+    chosen=[]
+    planned=set(known)
+    urgent=priority_predecessor_matches(groups,known)
+    # Most of the budget goes directly to currently incomplete 5/10/15 windows.
+    immediate=max(1,(max_matches*3)//4)
+    for scope,season,m in urgent[:immediate]:
+        if (scope,m["id"]) in planned:
             continue
-        completed=len(rows)-len(remaining)
-        desired=min(len(rows),180)
-        if completed>=desired:
-            continue
-        remaining.sort(key=lambda m:(m["time_utc"],m["id"]),reverse=True)
-        queue.append((priority[season],-completed,scope,season,
-                      remaining[:desired-completed]))
-    if not queue:
-        # Deep-backfill phase: after recent last15 windows are seeded, finish
-        # historical seasons rather than permanently abandoning older fixtures.
+        chosen.append((scope,season,m))
+        planned.add((scope,m["id"]))
+    capacity=max_matches-len(chosen)
+    if capacity:
+        queues=[]
         for (scope,season),rows in groups.items():
-            remaining=[m for m in rows if (scope,m["id"]) not in known]
-            if remaining:
-                remaining.sort(key=lambda m:(m["time_utc"],m["id"]),reverse=True)
-                completed=len(rows)-len(remaining)
-                queue.append((priority[season],-completed,scope,season,remaining))
-    if not queue:
-        return []
-    _,_,scope,season,selection=min(queue,key=lambda a:a[:4])
-    selected=[(scope,season,m) for m in selection[:max_matches]]
-    require(len({(c,m["id"]) for c,_,m in selected})==len(selected),
+            remaining=[m for m in rows if (scope,m["id"]) not in planned]
+            if not remaining:
+                continue
+            completed=len(rows)-len(remaining)
+            desired=min(len(rows),180)
+            if completed>=desired:
+                continue
+            remaining.sort(key=lambda m:(m["time_utc"],m["id"]),reverse=True)
+            queues.append((priority[season],-completed,scope,season,
+                           remaining[:desired-completed]))
+        if not queues:
+            for (scope,season),rows in groups.items():
+                remaining=[m for m in rows if (scope,m["id"]) not in planned]
+                if remaining:
+                    remaining.sort(key=lambda m:(m["time_utc"],m["id"]),reverse=True)
+                    completed=len(rows)-len(remaining)
+                    queues.append((priority[season],-completed,scope,season,remaining))
+        if queues:
+            _,_,scope,season,selection=min(queues,key=lambda x:x[:4])
+            for m in selection[:capacity]:
+                chosen.append((scope,season,m))
+                planned.add((scope,m["id"]))
+    require(len({(c,m["id"]) for c,_,m in chosen})==len(chosen),
             "DUPLICATE_BACKFILL_MATCH")
-    return selected
+    return chosen
 
 
 def all_period_stat_items(payload, match):

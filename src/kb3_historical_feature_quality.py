@@ -193,7 +193,7 @@ def rolling_window(all_history, observed,team_id,n,venue=None):
             "metrics":summary}
 
 
-def _load_records(db):
+def _load_records(db,recheck_db_path=None):
     fixt=defaultdict(list)
     for r in db.execute("""SELECT scope,season,match_id,kickoff_utc,home_team_id,
                     away_team_id,goals_home_90,goals_away_90
@@ -209,10 +209,50 @@ def _load_records(db):
         obs[(scope,mid)]={"season":season,"kickoff_utc":ko,"home_team_id":home,
             "away_team_id":away,"items":json.loads(items),"xg_status":status,
             "xg_home":xgh,"xg_away":xga}
-    return fixt,obs
+    recheck_counts=Counter()
+    # Append-only second observations: overlay only independently reverified
+    # xG or validated card-event values. Never overwrite immutable raw source.
+    if recheck_db_path is not None and Path(recheck_db_path).is_file():
+        with sqlite3.connect(recheck_db_path) as issue_db:
+            for r in issue_db.execute("""SELECT scope,match_id,issue_type,status,
+                    native_home_team_id,native_away_team_id,
+                    xg_verified_home,xg_verified_away,
+                    yellow_events_home,yellow_events_away
+                    FROM issue_rechecks"""):
+                scope,mid,kind,status,home,away,xgh,xga,yh,ya=r
+                item=obs.get((scope,mid))
+                if item is None:
+                    raise ValueError("UNMATCHED_RECHECK_ORIGINAL")
+                if item["home_team_id"]!=home or item["away_team_id"]!=away:
+                    raise ValueError("RECHECK_TEAM_ID_MISMATCH")
+                if kind=="XG" and status=="XG_REVERIFIED":
+                    if item["xg_status"]!="VERIFIED":
+                        if xgh is None or xga is None or not (
+                            math.isfinite(xgh) and math.isfinite(xga) and
+                            0<=xgh<=30 and 0<=xga<=30
+                        ):
+                            raise ValueError("UNTRUSTWORTHY_RECHECK_XG")
+                        item["xg_status"]="VERIFIED"
+                        item["xg_home"]=xgh
+                        item["xg_away"]=xga
+                        recheck_counts["verified_xg_overlay"]+=1
+                if kind=="YELLOW_CARDS" and status=="EVENT_YELLOW_CONFIRMED":
+                    if (yh is None or ya is None or
+                        any(type(z) is not int or z<0 or z>30 for z in (yh,ya))):
+                        raise ValueError("UNTRUSTWORTHY_RECHECK_CARDS")
+                    old_h=raw_stat(item,"yellow_cards","home")
+                    old_a=raw_stat(item,"yellow_cards","away")
+                    if old_h is None or old_a is None:
+                        item["items"].append({"key":"yellow_cards",
+                            "home":str(yh),"away":str(ya),
+                            "origin":"LATER_EVENTS_RECHECK_RESEARCH_ONLY"})
+                        if (raw_stat(item,"yellow_cards","home") is not None and
+                            raw_stat(item,"yellow_cards","away") is not None):
+                            recheck_counts["recovered_yellow_cards"]+=1
+    return fixt,obs,recheck_counts
 
 
-def assess_and_cache(db_path,report_path):
+def assess_and_cache(db_path,report_path,recheck_db_path=None):
     """Recompute research-only rolling features and aggregate source gaps.
 
     Cached derived values may be refreshed; original observations/index cannot.
@@ -232,7 +272,7 @@ def assess_and_cache(db_path,report_path):
     missing_xg_status=Counter()
     with sqlite3.connect(path) as db:
         ensure_tables(db)
-        fixt,obs=_load_records(db)
+        fixt,obs,recheck_counts=_load_records(db,recheck_db_path=recheck_db_path)
         if any(scope=="ENG" for scope in fixt):
             raise ValueError("PROTECTED_PREMIER_LEAGUE_TEST_IN_HISTORY")
         index={(f["scope"],f["match_id"]):f for arr in fixt.values() for f in arr}
@@ -320,6 +360,12 @@ def assess_and_cache(db_path,report_path):
             "by_scope_season":{a+"/"+b:dict(sorted(v.items()))
                                for (a,b),v in sorted(by_scope_season.items())},
             "stat_both_sides_numeric_matches_by_key":dict(sorted(metric_coverage.items())),
+            "append_only_recheck_overlays":dict(sorted(recheck_counts.items())),
+            "issue_recheck_source_sha256":(
+                hashlib.sha256(Path(recheck_db_path).read_bytes()).hexdigest()
+                if recheck_db_path is not None and Path(recheck_db_path).is_file()
+                else None),
+            "overlays_are_later_research_not_original_pit":True,
             "xg_unverified_reason_counts":dict(sorted(missing_xg_status.items())),
             "missing_season_notice":"POL_2023_24_AND_2024_25_UNAVAILABLE_IN_PITCHAPI_CATALOG_AS_OF_2026_11_03",
             "history_n_definition":"ACTUAL_LAST_N_FINISHED_FIXTURES_NOT_LAST_N_WITH_STATS",
