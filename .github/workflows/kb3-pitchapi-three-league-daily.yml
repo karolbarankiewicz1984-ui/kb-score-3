@@ -25,7 +25,7 @@ on:
 permissions:
   contents: write
 concurrency:
-  group: kb3-three-league-daily-pit-capture
+  group: kb3-three-league-feature-db-write
   cancel-in-progress: false
 jobs:
   actual-three-league-source-capture:
@@ -168,6 +168,5 @@ jobs:
             echo 'No new incremental source observations.'
           else
             git commit -m 'm0: daily real PitchAPI 121+38 and immutable research Elo-Poisson 1X2 shadow'
-            git pull --rebase origin main
             git push origin HEAD:main
           fi

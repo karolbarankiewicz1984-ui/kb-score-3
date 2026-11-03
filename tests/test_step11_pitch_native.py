@@ -2,6 +2,7 @@
 from datetime import datetime,timezone,timedelta
 import copy
 import unittest
+from pitch_pair_fixtures import stats
 
 from src.kb3_pitch_native import check_season,verify_native_shots
 
@@ -25,8 +26,8 @@ def sample(season="2026/2027",n=380):
 
 def feed(mid="m_000000",home="t_000000",away="t_000001",xg=0.6):
     return {"data":{"match_id":mid,
-                    "periods":[{"shots":[{"team_id":home,"expected_goals":xg},
-                                         {"team_id":away,"expected_goals":0.3}]}]}}
+                    "periods":[{"period":"All","shots":[{"id":"s_1","team_id":home,"expected_goals":xg},
+                                         {"id":"s_2","team_id":away,"expected_goals":0.3}]}]}}
 
 
 class NativePitchTests(unittest.TestCase):
@@ -72,7 +73,7 @@ class NativePitchTests(unittest.TestCase):
             check_season(s,"2026/2027")
 
     def test_native_xg_sum_and_same_match(self):
-        x=verify_native_shots(sample()[0],feed(),observed_at_utc="2026-10-26T16:00:00Z")
+        x=verify_native_shots(sample()[0],feed(),observed_at_utc="2026-10-26T16:00:00Z",stats_payload=stats("m_000000","t_000000","t_000001",.6,.3))
         self.assertEqual(x["xg_home"],0.6)
         self.assertEqual(x["xg_away"],0.3)
         self.assertIsNone(x["source_provider_published_at_utc"])
@@ -81,7 +82,7 @@ class NativePitchTests(unittest.TestCase):
     def test_mismatched_match_id_rejected(self):
         with self.assertRaisesRegex(ValueError,"FIXTURE_ID_MISMATCH"):
             verify_native_shots(sample()[0],feed(mid="m_999999"),
-                                observed_at_utc="2026-10-26T16:00:00Z")
+                                observed_at_utc="2026-10-26T16:00:00Z",stats_payload=stats("m_000000","t_000000","t_000001",.6,.3))
 
     def test_shots_before_match_blocked(self):
         with self.assertRaisesRegex(ValueError,"NOT_AFTER_MATCH"):
@@ -97,7 +98,7 @@ class NativePitchTests(unittest.TestCase):
         bad=feed()
         bad["data"]["periods"][0]["shots"][0]["expected_goals"]=None
         result=verify_native_shots(sample()[0],bad,
-                                   observed_at_utc="2026-10-26T16:00:00Z")
+                                   observed_at_utc="2026-10-26T16:00:00Z",stats_payload=stats("m_000000","t_000000","t_000001",.6,.3))
         self.assertIsNone(result["xg_home"])
         self.assertIsNone(result["xg_away"])
         self.assertNotEqual(result["shot_state"],"COMPLETE_SHOT_XG")

@@ -1205,3 +1205,78 @@ W tym samym wdrożeniu [Actions #41346411117](https://github.com/karolbarankiewi
 - **Kolejność i równoległość:** CODEX-01 **przed** integracją/odbiorami CODEX-02; CODEX-03 i CODEX-04 można wykonywać równolegle na **oddzielnych gałęziach**, ale z niezależnym CI, rebasingiem i kontrolą kolizji z nowszym `main`.
 - **Wspólne obowiązkowe bramki:** osobny PR na każdą poprawkę, testy regresyjne i realne raporty PASS/PARTIAL/NO-GO, brak zmiany zamrożonych danych i parametrów M0, brak fikcyjnego `published_at`, ochrona Premier League TEST 2026/27, zasady 100 FIT + 50 post-fit HOLDOUT, bez wydatków/API bez zgody. **Zakaz automatycznego merge**. Wynik pracy oraz decyzję odbiorową dopisywać jako **nowy wpis**, bez nadpisywania tego planu.
 - **Status rejestru po zapisie:** `CODEX-01=PLANNED`, `CODEX-02=PLANNED`, `CODEX-03=PLANNED`, `CODEX-04=PLANNED`. Stan pierwotnego harmonogramu **15/29**, GATE16/17 **PENDING**. Zapis dokumentacyjny do `main` **nie zmienił kodu, modelu ani automatyzacji**. Pierwsza oczekiwana aktualizacja: faktyczny raport Codex R1–R5 z ID PR, CI i decyzją o NO-GO/PASS.
+
+### 03.11.2026 — CODEX-01-AUDIT — aktualny main, niezależne poprawki FIND-01/02, PARTIAL / NO-GO
+
+**Baza:** `eabab06139b185d34450d314989783bdc980b088`; osobna gałąź
+`fix/codex-r1-r5-audit-20261103`. Pełny [raport, macierz i warunki wdrożenia](CODEX_CURRENT_MAIN_AUDIT_2026-11-03.md).
+Przeanalizowano PLAN, ZMIANY, issue #120/#121 z historią R1–R6 i draft PR #124.
+
+- **Brak paczki:** oryginalne ZIP-y R1–R5 nie są dostępne w udostępnionym
+  runtime/Library/repo/Drive. Nie odtworzono 57 plików ani brakujących testów
+  z opisów. Z autentycznego head #124 `8631523` odzyskano bajtowo zgodne
+  `migrations/005_m0_publication_proofs.sql` i `tests/test_codex_migration_offline.py`;
+  ich Git blob i SHA256 są w raporcie. Reszta tej gałęzi to niezależne poprawki
+  potwierdzonych błędów obecnego kodu, nie pełny import starego Codex.
+- **Potwierdzone i poprawione dla nowych źródeł:** FIND-01 — obowiązkowy,
+  jednoznaczny `All.total_shots` obu stron, zgodny z liczbą strzałów; strunowe
+  liczniki SDK, jawne 0 vs NULL, brak/duplikat/zły typ/niezgodność odrzucane.
+  Prawidłowe puste 0/0 wymaga niezależnego 0/0 xG i 0/0 counts. FIND-02 —
+  append-only `pitch_source_pairs`, oba payloady i osobne zegary związane SHA
+  z chain capture, jedna transakcja shots+stats i rollback po błędzie.
+  `verify()` i `shots_asof()` kontrolują powiązanie, w tym przeliczony przez
+  sprawcę hash sidecaru; cutoff dopuszcza parę dopiero po obu pobraniach.
+- **P1-05 / źródła:** pełny okres, unikalne ID strzałów, natywne ID meczu
+  i obu drużyn, niezależne xG oraz counts. Step17 ponownie weryfikuje oryginalne
+  receipts i payloady przed zapisem batcha; FK przed commit. Backfill/recheck
+  nie przepuszczają nowej pary wyłącznie na podstawie sum xG. Stary native
+  collector podłączono do obu źródeł z testem SDK→zapis→szyfrowanie→restore:
+  2 pełne pary, 6 requestów w dotychczasowym cap 7; w tej sesji żadnego live.
+- **P1-03/P1-04/P2-02:** wspólna blokada czterech writer workflow starej
+  3-ligowej SQLite i brak binarnego rebase; manualny fit M1-R tylko z jawnym
+  inputem, unikalnymi plikami i bez push wyników do main; nowy pełny offline
+  PR/main CI dla src/scripts/tests/migrations/workflows, bez sekretów/API/fit.
+- **Już wcześniej naprawione:** P2-01 (CLI no-op, commit historii `20e1c62`)
+  i częściowo blokady writerów. Istniejące testy CLI/idempotencji PASS.
+  Zachowano późniejsze poprawki #137–#142; nie podmieniono selektora historii,
+  overlay kartek ani wyników pilota starszą paczką.
+- **Rzeczywiste wyniki:** bazowy main Python 3.12 **1180/1180 PASS**.
+  Końcowy checkout **1218/1218 PASS na Pythonie 3.11.17** i osobno
+  **1218/1218 PASS na 3.12.14**, 0 errors/failures/skips. Jest 1218 unikalnych
+  ID, w tym 38 dodanych/odzyskanych testów; nie raportować 2436 ani 197+108=305
+  jako unikalnych. Historyczne dokładne zestawy 197/108 i 9 R5 są niedostępne,
+  nie zadeklarowano ich odtworzenia. Pięć tych samych błędnych źródeł jest
+  akceptowanych na bazowym main i odrzucanych po poprawce. Bezpośredni moduł
+  Step06 8/8 PASS. Szczegóły wcześniejszych nieudanych przebiegów w raporcie.
+- **SQLite wyłącznie na kopii:** 29 istniejących tabel i wszystkie stare
+  wiersze zachowane, +2 nowe tabele, integrity/FK, dwukrotne DDL, rollback
+  nieudanej migracji, prawdziwe UPDATE/DELETE immutability i konflikt writerów
+  PASS. Oryginał SHA256 `df39abd9daed3b43793a71bb58dc2c9eb548a69e2f84d4e397f671f0a42b7144`
+  bez zmiany. Nowy sidecar native przetestowano na syntetycznym pełnym sezonie;
+  nie udajemy migracji nieudostępnionego oryginalnego archiwum native.
+- **Ochrona:** autentyczne 73/73 stare forecasty vs commit `6813af6` identyczne
+  we wszystkich oryginalnych kolumnach; obecny snapshot ma 91 forecastów.
+  Param SHA M0 nadal `55310f0e1dd3842e6d876069ef21b1380901b3a6cc6884cf6ec6ea351a5812d1`.
+  `git diff -- data models config` pusty; nie zmieniono kalibracji, zamrożonych
+  prognoz, źródeł, chronionego TEST ani Championa. Nie było zakupów, provider API,
+  historycznego backfillu ani fitu na prawdziwych danych. Test runner blokuje
+  sieć, CatBoost.fit i zapisy do data/models/config.
+- **Nadal otwarte i blokujące:** P1-01 — niezgodność definicji TRAIN/forward
+  (kickoff vs cutoff, 48h vs 3h, również różnica zaokrąglenia Elo); P1-02 —
+  stara kalibracja dopuszcza 100 niepoświadczonych próbek do granicy fit.
+  Potwierdzono to na syntetycznej kopii z przechwyceniem fit PRZED wykonaniem,
+  bez zapisania kandydata. Sama migracja 005 nie rozwiązuje problemu.
+  Archiwalne cross-provider v2 oraz konsumenci wcześniejszych rekordów VERIFIED
+  wymagają osobnego wersjonowania/sidecaru lub kwarantanny — nie recertyfikowano
+  starych dowodów i nie nadano im oryginalnego prematch PIT. P2-03 pozostaje
+  ograniczeniem eksperymentu (0.6 na brzegu siatki), bez zmian M0.
+- **Przed wdrożeniem:** udostępnić autentyczną paczkę i listy historycznych
+  testów; rozwiązać dwa powyższe P1 przy zachowaniu M0 V1; zamknąć pozostałe
+  ścieżki legacy i sprawdzić dokładny PR SHA w CI. Ocenić live triggery/koszty
+  i osobno zakres ewentualnej próby dostawcy; bez zbędnego backfillu. Odrzucony
+  push SQLite odzyskiwać z artefaktu i ponawiać na aktualnej bazie, bez force.
+  Następnie niezależny review i decyzja właściciela.
+
+**Status: PARTIAL / MERGE_NO_GO dla całości R1–R5.** Draft diff nadaje się do
+przeglądu, ale nie do zatwierdzenia pełnego wdrożenia. Formalnie nadal 15/29,
+GATE16/GATE17 PENDING; nie wykonano automatycznego merge ani produkcyjnego rollout.

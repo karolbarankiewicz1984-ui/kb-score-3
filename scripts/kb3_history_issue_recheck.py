@@ -80,7 +80,7 @@ def candidates(path, issue_db=ISSUE_DB):
     for scope,season,mid,ko,home,away,items,status in rows:
         if scope=="ENG":
             raise ValueError("PROTECTED_TEST_SCOPE")
-        f={"id":mid,"time_utc":ko,"home_team":{"id":home},
+        f={"id":mid,"time_utc":ko,"status":"finished","home_team":{"id":home},
            "away_team":{"id":away},"season":season,"scope":scope,
            "items":json.loads(items),"xg_status":status}
         if status!="VERIFIED" and (scope,mid,"XG") not in attempted:
@@ -112,6 +112,12 @@ def xg_diagnostics(stats,shots,fixture):
                   xg_abs_delta_home=round(abs(sh-h),6),
                   xg_abs_delta_away=round(abs(sa-a),6))
     if abs(sh-h)<=.15 and abs(sa-a)<=.15:
+        from src.kb3_pitch_source_pair import validate_pair
+        try:
+            validate_pair(shots,stats,mid,h_id,a_id)
+        except (ValueError,TypeError,KeyError):
+            result["status"]="XG_INCOMPLETE_OR_INVALID"
+            return result
         result.update(status="XG_REVERIFIED",
                       xg_verified_home=h,xg_verified_away=a)
     else:
@@ -221,6 +227,12 @@ def recheck(client, *, db_path=DB,issue_db=ISSUE_DB, root=ISSUE_ROOT,
             continue
         receipt=sh or sr
         diag=xg_diagnostics(stats,shots,f)
+        if diag["status"]=="XG_REVERIFIED":
+            from src.kb3_pitch_source_pair import validate_receipts
+            try:
+                validate_receipts(shots,stats,f,sh,sr)
+            except (ValueError,TypeError,KeyError):
+                diag.update(status="XG_INVALID_SOURCE_PAIR",xg_verified_home=None,xg_verified_away=None)
         records.append({**base(f,"XG",diag["status"],receipt),**diag})
     for f in cards:
         mid=f["id"]

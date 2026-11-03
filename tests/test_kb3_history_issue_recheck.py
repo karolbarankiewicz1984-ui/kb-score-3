@@ -33,7 +33,8 @@ def fixture():
 def stats(h=".5",a=".8",cards=False):
     f=fixture()
     items=[{"key":"expected_goals","format_type":"double",
-            "home":h,"away":a}]
+            "home":h,"away":a},
+           {"key":"total_shots","home":"1","away":"1","format_type":"integer"}]
     if cards:
         items.append({"key":"yellow_cards","home":"2","away":None})
     return {"data":{"match_id":MID,"home_team":f["home_team"],

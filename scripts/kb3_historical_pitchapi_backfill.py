@@ -271,12 +271,12 @@ def native_xg_verified(stats, shots, match):
     mid = match["id"]
     home, away = match["home_team"]["id"], match["away_team"]["id"]
     try:
-        h, a = parse_native_team_stats(stats, mid, home, away)
-        sh, sa, nh, na = parse_native_shots(shots, mid, home, away)
-        if abs(h - sh) > .15 or abs(a - sa) > .15:
-            return "XG_SHOTS_STATS_DISAGREE", None, None, None, None
+        from src.kb3_pitch_source_pair import validate_pair
+        sh, sa, nh, na, h, a = validate_pair(shots, stats, mid, home, away)
         return "VERIFIED", h, a, nh, na
-    except (SemanticAuditError, ValueError, TypeError, KeyError):
+    except (SemanticAuditError, ValueError, TypeError, KeyError) as exc:
+        if str(exc)=="NATIVE_SHOT_VS_FULL_MATCH_XG_DISAGREE":
+            return "XG_SHOTS_STATS_DISAGREE", None, None, None, None
         return "XG_INCOMPLETE_OR_INVALID", None, None, None, None
 
 
@@ -397,11 +397,17 @@ def capture(*, client, root=ARCHIVE, db_path=DB, public_key=PUBLIC_KEY,
             continue
         shots, sh = call("pitchapi:history:shots:" + mid, client.matches.shots, mid)
         state, xh, xa, nh, na = native_xg_verified(stats, shots, m)
+        if state == "VERIFIED":
+            from src.kb3_pitch_source_pair import validate_receipts
+            try:
+                validate_receipts(shots,stats,m,sh,sr)
+            except (ValueError,TypeError,KeyError):
+                state,xh,xa,nh,na="XG_INVALID_SOURCE_PAIR",None,None,None,None
         stat_keys.update(i["key"] for i in items)
         samples.append({"scope": scope, "season": season, "id": mid,
             "time_utc": m["time_utc"], "home_id": m["home_team"]["id"],
             "away_id": m["away_team"]["id"], "goals_home": m["score_home"],
-            "goals_away": m["score_away"], "observed_at": sr["completed_at_utc"],
+            "goals_away": m["score_away"], "observed_at": (sh or sr)["completed_at_utc"],
             "items": items, "stat_key_count": len({i["key"] for i in items}),
             "xg_status": state, "xg_home": xh, "xg_away": xa,
             "shots_home": nh, "shots_away": na,

@@ -113,6 +113,5 @@ jobs:
             echo 'No new audit evidence'
           else
             git commit -m 'm0: actual postmatch scores log-loss Brier and strictly gated calibration audit'
-            git pull --rebase origin main
             git push origin HEAD:main
           fi

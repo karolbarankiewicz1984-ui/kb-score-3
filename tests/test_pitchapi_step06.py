@@ -1,5 +1,6 @@
 """Offline deterministic tests for PitchAPI Step 06 audit; no tokens or HTTP."""
 import unittest
+from tests.pitch_pair_fixtures import stats
 from scripts.pitchapi_step06_audit import find_af_match, norm, parse_shots, select_two
 
 class Step06Tests(unittest.TestCase):
@@ -21,18 +22,20 @@ class Step06Tests(unittest.TestCase):
     def test_missing_xg_not_zero(self):
         p={"data":{"periods":[{"shots":[{"team_id":"t_AAAAAA","expected_goals":None}]}]}}
         r=parse_shots(p,"t_AAAAAA","t_BBBBBB")
-        self.assertEqual(r["state"],"PARTIAL_SHOT_XG")
+        self.assertEqual(r["state"],"UNVERIFIED_SHOT_XG")
         self.assertIsNone(r["home_xg_sum"])
 
     def test_valid_zero_per_team(self):
-        p={"data":{"periods":[{"shots":[{"team_id":"t_AAAAAA","expected_goals":0.0},{"team_id":"t_BBBBBB","expected_goals":0.3}]}]}}
-        r=parse_shots(p,"t_AAAAAA","t_BBBBBB")
+        p={"data":{"match_id":"m_AAAAAA","periods":[{"period":"All","shots":[
+            {"id":"s_1","team_id":"t_AAAAAA","expected_goals":0.0},
+            {"id":"s_2","team_id":"t_BBBBBB","expected_goals":0.3}]}]}}
+        r=parse_shots(p,"t_AAAAAA","t_BBBBBB",stats_payload=stats("m_AAAAAA","t_AAAAAA","t_BBBBBB",0,.3))
         self.assertEqual(r["state"],"COMPLETE_SHOT_XG")
         self.assertEqual(r["home_xg_sum"],0.0)
 
     def test_shot_xg_out_of_range_blocked(self):
         p={"data":{"periods":[{"shots":[{"team_id":"t_AAAAAA","expected_goals":1.4}]}]}}
-        self.assertEqual(parse_shots(p,"t_AAAAAA","t_BBBBBB")["state"],"PARTIAL_SHOT_XG")
+        self.assertEqual(parse_shots(p,"t_AAAAAA","t_BBBBBB")["state"],"UNVERIFIED_SHOT_XG")
 
     def test_strict_matching(self):
         p={"time_utc":"2025-10-24T17:00:00Z",

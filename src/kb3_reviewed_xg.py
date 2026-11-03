@@ -10,7 +10,8 @@ import sqlite3
 from datetime import timedelta
 from src.kb3_pit_ledger import as_utc,verify_chain,select_result_asof,hexdigest,canonical
 from src.kb3_xg_pit import verify_xg,MIN_POSTMATCH_LAG
-from scripts.pitchapi_step06_audit import parse_shots
+# Reproduce original archived v2 decisions without rewriting source evidence.
+from scripts.pitchapi_step06_audit import parse_shots_v1_archive as parse_shots
 
 
 def review(db, archive_manifest, crosswalk):

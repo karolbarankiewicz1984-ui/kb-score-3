@@ -100,6 +100,5 @@ jobs:
             echo 'No changed pre-match frozen forecast.'
           else
             git commit -m 'm0: truly before-kickoff frozen 1X2 real shadow predictions for 3 leagues'
-            git pull --rebase origin main
             git push origin HEAD:main
           fi

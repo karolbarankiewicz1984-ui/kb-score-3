@@ -11,7 +11,9 @@ import math
 import sqlite3
 from datetime import timedelta,datetime,timezone
 from src.kb3_pit_ledger import canonical,hexdigest,as_utc
-from scripts.pitchapi_step06_audit import parse_shots
+# Frozen legacy v2 cross-provider schema; not the new paired native intake.
+# Its separate upgrade remains an explicit deployment blocker in the audit.
+from scripts.pitchapi_step06_audit import parse_shots_v1_archive as parse_shots
 from src.kb3_identity_review import inspect_match
 
 MIN_POSTMATCH_LAG=timedelta(hours=3)

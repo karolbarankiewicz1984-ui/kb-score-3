@@ -2,6 +2,7 @@
 from datetime import datetime,timedelta,timezone
 import sqlite3
 import unittest
+from pitch_pair_fixtures import stats
 from src.kb3_pitch_native_ledger import record
 from src.kb3_pitch_native_observed_features import build_native_observed
 from src.kb3_features import FeatureSafetyError,digest
@@ -21,7 +22,8 @@ class NativeRealAsOfTests(unittest.TestCase):
         record(self.db,"matches",self.src,started_at_utc=t(-12),
                completed_at_utc=t(-11),origin="NETWORK_OBSERVED")
         record(self.db,"shots",shots(),started_at_utc=t(-9),
-               completed_at_utc=t(-8),origin="NETWORK_OBSERVED")
+               completed_at_utc=t(-8),stats_payload=stats("m_000000","t_000000","t_000001",.5,.2),
+               stats_started_at_utc=t(-7),stats_completed_at_utc=t(-6),origin="NETWORK_OBSERVED")
 
     def build(self,at=5):
         return build_native_observed(self.db,self.target,cutoff_utc=t(at))
