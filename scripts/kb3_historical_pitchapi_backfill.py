@@ -135,7 +135,15 @@ def select_batch(groups, known, max_matches=MAX_MATCHES):
         queue.append((priority[season],-completed,scope,season,
                       remaining[:desired-completed]))
     if not queue:
-        # All scope-season targets have their recent windows sampled.
+        # Deep-backfill phase: after recent last15 windows are seeded, finish
+        # historical seasons rather than permanently abandoning older fixtures.
+        for (scope,season),rows in groups.items():
+            remaining=[m for m in rows if (scope,m["id"]) not in known]
+            if remaining:
+                remaining.sort(key=lambda m:(m["time_utc"],m["id"]),reverse=True)
+                completed=len(rows)-len(remaining)
+                queue.append((priority[season],-completed,scope,season,remaining))
+    if not queue:
         return []
     _,_,scope,season,selection=min(queue,key=lambda a:a[:4])
     selected=[(scope,season,m) for m in selection[:max_matches]]
