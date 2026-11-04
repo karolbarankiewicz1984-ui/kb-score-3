@@ -1,0 +1,86 @@
+{
+  "calibration_100_fit_50_holdout_unchanged": true,
+  "champion_promotion_authorized": false,
+  "formal_g17_ready": false,
+  "gates_16_17": "PENDING",
+  "historical_original_pit_certified": false,
+  "independent_generalization_evidence": false,
+  "is_this_the_existing_M0_comparison": false,
+  "model_m0_unchanged": true,
+  "paired_results": {
+    "NO_XG_FORM_AND_CORE5": {
+      "feature_count": 14,
+      "fit_only_earlier_records": true,
+      "metrics": {
+        "brier_sum3": 0.6453122181986789,
+        "log_loss": 1.0652284683574906,
+        "n": 47,
+        "top1_accuracy": 0.46808510638297873,
+        "top1_ece5": 0.07674434333872536
+      }
+    },
+    "WITH_NATIVE_XG5_FORM_AND_CORE5": {
+      "feature_count": 18,
+      "fit_only_earlier_records": true,
+      "metrics": {
+        "brier_sum3": 0.6581793784499897,
+        "log_loss": 1.086628577139358,
+        "n": 47,
+        "top1_accuracy": 0.48936170212765956,
+        "top1_ece5": 0.09291236640919998
+      }
+    }
+  },
+  "protected_2026_27_premier_league_test_accessed": false,
+  "report_sha256": "6e7caa26832a2f87c5ed4e6a8e08713d17254ecf3c675d7076becceb5d6d9186",
+  "research_fit_status": "EXECUTED_RESEARCH_ABLATION",
+  "same_games_and_fixed_parameters": true,
+  "schema": "kb3-step17-real-xg5-chronological-ablation-v1",
+  "source": {
+    "excluded_reasons": {
+      "true_last5_xg_incomplete": 895,
+      "ucl_mapping_not_certified": 5
+    },
+    "full_xg5_by_scope": {
+      "BEL": 106,
+      "ESP": 40,
+      "FRA": 2,
+      "ITA": 1,
+      "NED": 1,
+      "POL": 5,
+      "TUR": 1
+    },
+    "full_xg5_targets": 156,
+    "research_targets": 1056,
+    "source_observations": 1056,
+    "source_sqlite_sha256": "75640aefcd14bc50d8903498fc2ff6e9f76f2eaa3000b5c1435ae3f7a886c905"
+  },
+  "split_fixture_ids_sha256": "10b0c44990f5787e81888c853d5f4518243382a1d3e80a878f446f7e83961746",
+  "status": "RESEARCH_NOT_PRODUCTION",
+  "train_last_kickoff_utc": "2026-05-09T14:00:00Z",
+  "train_league_counts": {
+    "BEL": 95,
+    "ESP": 13,
+    "FRA": 1
+  },
+  "train_n": 109,
+  "train_only_before_validation": true,
+  "validation_first_kickoff_utc": "2026-05-10T12:00:00Z",
+  "validation_league_counts": {
+    "BEL": 11,
+    "ESP": 27,
+    "FRA": 1,
+    "ITA": 1,
+    "NED": 1,
+    "POL": 5,
+    "TUR": 1
+  },
+  "validation_n": 47,
+  "validation_unique_iso_weeks": 5,
+  "why": "paired CatBoost no-xG vs xG5 feature ablation only",
+  "with_xg_minus_without_xg": {
+    "brier_sum3": 0.01286716025131085,
+    "log_loss": 0.021400108781867377,
+    "top1_accuracy": 0.021276595744680826
+  }
+}
