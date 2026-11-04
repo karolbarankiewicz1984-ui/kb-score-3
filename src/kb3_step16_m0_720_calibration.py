@@ -247,6 +247,8 @@ def eligible_settlements(db,*,at):
                 hashobj({k:v for k,v in item.items() if k!="forecast_sha256"})==fid
                 and item["params_sha256"]==expected_params[0]
                 and item["model_version"]==MODEL
+                and item.get('league_country')==league and item.get('provider_match_id')==mid
+                and item.get('kickoff_utc')==kick and item.get('generated_at_utc')==captured
                 and item["phase"]=="EARLY"
                 and league in ("ESP","ITA","GER","FRA","NED","BEL","TUR","POL"),
                 "VERSION_COHORT_OR_FROZEN_PROBABILITIES_CHANGED")
@@ -277,12 +279,14 @@ def calibrate_if_eligible(db_path=DB,*,now=None):
         fitted=False;reviewed=False
         if candidate is None and len(rows)>=MIN_FIT:
             sample=rows[:MIN_FIT]
-            fitted_utc=stamp(now)
             temp=fit_temperature([x["p"] for x in sample],
                     [x["y"] for x in sample],min_rows=MIN_FIT)
+            # Real completion clock, never a source cutoff from before fitting.
+            fitted_utc=stamp(max(now,datetime.now(timezone.utc)))
             rec={"model":MODEL,"scope":CALIBRATION_SCOPE,
                  "phase":"EARLY","fitted_at_utc":fitted_utc,
                  "training_ids_sha256":hashobj([x["fid"] for x in sample]),
+                 'training_forecast_ids':[x['fid'] for x in sample],
                  "fitted_temperature":float(temp["temperature"]),
                  "training_count":MIN_FIT,
                  "training_last_kickoff_utc":sample[-1]["kick"],
@@ -312,9 +316,13 @@ def calibrate_if_eligible(db_path=DB,*,now=None):
                     rec["fitted_at_utc"]==fitted_at,
                     "IMMUTABLE_CALIBRATOR_SHA_CHANGED")
             # New predictions AND new kickoffs after T is fitted.
+            fit_ids=rec.get('training_forecast_ids',[])
+            if fit_ids:
+                require(len(fit_ids)==len(set(fit_ids))==MIN_FIT and hashobj(fit_ids)==rec['training_ids_sha256'],
+                        'IMMUTABLE_FIT_MEMBERSHIP_CHANGED')
             after=[x for x in rows if as_utc(x["captured"])>as_utc(fitted_at)
                    and as_utc(x["kick"])>as_utc(fitted_at)
-                   and x["fid"] not in []]
+                   and x['fid'] not in fit_ids]
             review=db.execute("SELECT review_sha256 FROM m0720_holdout_reviews WHERE candidate_sha256=?",(cid,)).fetchone()
             if review is None and len(after)>=MIN_HOLDOUT:
                 sample=after[:MIN_HOLDOUT]
@@ -325,6 +333,7 @@ def calibrate_if_eligible(db_path=DB,*,now=None):
                       "phase":"EARLY","reviewed_at_utc":stamp(now),
                       "holdout_n":MIN_HOLDOUT,
                       "holdout_ids_sha256":hashobj([x["fid"] for x in sample]),
+                      'holdout_forecast_ids':[x['fid'] for x in sample],
                       "holdout_first_captured_utc":sample[0]["captured"],
                       "holdout_raw":metrics["raw"],"holdout_calibrated":metrics["calibrated"],
                       "training_rows_read_by_holdout":False,

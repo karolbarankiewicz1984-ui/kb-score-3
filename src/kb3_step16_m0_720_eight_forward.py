@@ -147,7 +147,8 @@ def historical_phase_id_inventory(receipts):
              "fixture_rows":items}
     return out
 
-def make_forecasts(receipts,*,cutoff,params,param_sha,manifest_sha,challenger_engine=None,challenger_sink=None):
+def make_forecasts(receipts,*,cutoff,params,param_sha,manifest_sha,challenger_engine=None,challenger_sink=None,
+                   known_fixtures=(),diagnostics=None,wall_clock=None):
     require((challenger_engine is None)==(challenger_sink is None),"CHALLENGER_SINK_PAIR_REQUIRED")
     grouped={}
     for rec in receipts:
@@ -160,7 +161,13 @@ def make_forecasts(receipts,*,cutoff,params,param_sha,manifest_sha,challenger_en
                     and rec.get("origin")=="NETWORK_OBSERVED","SOURCE_AFTER_CUTOFF")
             grouped[(country,season)]=rec
     require(len(grouped)==16,"ALL_EIGHT_LEAGUE_SOURCES_REQUIRED")
-    rows=[];by_league=Counter();verified={}
+    rows=[];by_league=Counter();verified={};known_fixtures=set(known_fixtures)
+    reasons=defaultdict(Counter);decisions=[]
+    def decision(country,m,reason):
+        reasons[country][reason]+=1
+        if m.get('status') in ('scheduled','not_started','upcoming'):
+            decisions.append({'league':country,'native_match_id':m['id'],
+                'kickoff_utc':m['time_utc'],'reason':reason})
     for country,title,_ in EIGHT:
         src_old=grouped[(country,PREVIOUS)]
         src_now=grouped[(country,CURRENT)]
@@ -169,11 +176,15 @@ def make_forecasts(receipts,*,cutoff,params,param_sha,manifest_sha,challenger_en
         verified[(country,CURRENT)]=validate_season(current,current=True)
         require(not ({m["id"] for m in old}&{m["id"] for m in current}),
                 "CROSS_SEASON_DUPLICATE_GAME_ID")
-        future=sorted((m for m in current
-            if m["status"] in ("scheduled","not_started","upcoming")
-            and m.get("score_home") is None and m.get("score_away") is None
-            and cutoff+LEAD<as_utc(m["time_utc"])<=cutoff+HORIZON),
-            key=lambda m:(m["time_utc"],m["id"]))
+        future=[]
+        for m in current:
+            if m['status'] not in ('scheduled','not_started','upcoming'):
+                decision(country,m,'STATUS_NOT_UPCOMING')
+            elif as_utc(m['time_utc'])<=cutoff+LEAD:decision(country,m,'INSIDE_90MIN_OR_PAST')
+            elif as_utc(m['time_utc'])>cutoff+HORIZON:decision(country,m,'OUTSIDE_96H')
+            elif (country,m['id']) in known_fixtures:decision(country,m,'ALREADY_FROZEN')
+            else:future.append(m)
+        future.sort(key=lambda m:(m['time_utc'],m['id']))
         # Apply quota AFTER minimum historical completeness, so unavailable teams
         # do not starve subsequent valid upcoming fixtures in the 96h window.
         history=[]
@@ -194,8 +205,8 @@ def make_forecasts(receipts,*,cutoff,params,param_sha,manifest_sha,challenger_en
                   "xgh":None,"xga":None,"xgh_source":None,"xga_source":None})
         source_latest=max(as_utc(src_old["completed_at_utc"]),as_utc(src_now["completed_at_utc"]))
         for m in future:
-            if by_league[country]>=FORECAST_LIMIT:
-                break
+            if wall_clock is not None and wall_clock()>=as_utc(m['time_utc'])-LEAD:
+                decision(country,m,'TOO_LATE_DURING_BUILD');continue
             target={"fixture_id":m["id"],"home_team_id":m["home_team"]["id"],
                     "away_team_id":m["away_team"]["id"],"season_start_year":2026}
             features=_compose_features(target,list(history),cutoff=cutoff,
@@ -213,7 +224,14 @@ def make_forecasts(receipts,*,cutoff,params,param_sha,manifest_sha,challenger_en
                     and features["availability_class"]=="OBSERVED_AT_NOT_CERTIFIED",
                     "UNSAFE_FEATURE_INPUT_OR_UNPROVEN_PIT")
             if v["home_all_5_n"]<5 or v["away_all_5_n"]<5:
+                reason=('BOTH_HISTORY5_SHORT' if v['home_all_5_n']<5 and v['away_all_5_n']<5
+                        else 'HOME_HISTORY5_SHORT' if v['home_all_5_n']<5 else 'AWAY_HISTORY5_SHORT')
+                decision(country,m,reason)
                 continue
+            if by_league[country]>=FORECAST_LIMIT:
+                decision(country,m,'NEW_ELIGIBLE_OVER_QUOTA');continue
+            if wall_clock is not None and wall_clock()>=as_utc(m['time_utc'])-LEAD:
+                decision(country,m,'TOO_LATE_DURING_BUILD');continue
             fx=forecast(v["home_elo"],v["away_elo"],params)
             item={"model_version":MODEL,"params_sha256":param_sha,
                   "manifest_sha256":manifest_sha,
@@ -238,9 +256,19 @@ def make_forecasts(receipts,*,cutoff,params,param_sha,manifest_sha,challenger_en
             if challenger_engine is not None:
                 challenger_sink.extend(challenger_engine.records(features,item))
             rows.append(item);by_league[country]+=1
+            decision(country,m,'NEW_FORECAST_SELECTED')
     require(len(rows)<=80 and len({(f["league_country"],f["provider_match_id"])
             for f in rows})==len(rows),"DUPLICATE_TARGET_OR_OVER_CAP")
+    if diagnostics is not None:
+        diagnostics.update({'reason_counts':{s:dict(c) for s,c in sorted(reasons.items())},
+            'upcoming_decisions':decisions,'known_fixtures_excluded_before_quota':True,
+            'max_new_forecasts_per_league':FORECAST_LIMIT,'source_cutoff_utc':stamp(cutoff)})
     return rows,dict(by_league),{f"{a}/{b}":v for (a,b),v in verified.items()}
+
+def known_forecast_fixtures(path):
+    if not Path(path).exists():return set()
+    with sqlite3.connect(Path(path).resolve().as_uri()+'?mode=ro',uri=True) as db:
+        return set(db.execute('SELECT league,native_match_id FROM forecasts'))
 
 SCHEMA="""
 PRAGMA foreign_keys=ON;
@@ -342,7 +370,7 @@ def settle_sqlite(db_path,real_results,*,observed_at,source_chain_sha):
                       away_team_id,kickoff_utc,captured_at_utc,payload_json
                 FROM forecasts WHERE id NOT IN
                   (SELECT forecast_id FROM settlements) ORDER BY kickoff_utc,id""").fetchall()
-        settled=0;unready=0
+        settled=0;unready=0;reasons=Counter();decisions=[]
         for fid,league,mid,h,a,kick,captured,payload in pending:
             item=json.loads(payload)
             require(item["forecast_sha256"]==hashobj({k:v for k,v in item.items()
@@ -353,14 +381,23 @@ def settle_sqlite(db_path,real_results,*,observed_at,source_chain_sha):
                     and as_utc(captured)<as_utc(kick)-LEAD,
                     "ORIGINAL_FROZEN_VERSION_OR_TIME_DRIFT")
             m=real_results.get((league,mid))
-            if m is None or as_utc(kick)+timedelta(hours=3)>observed_at:
-                unready+=1;continue
-            if (m.get("status")!="finished" or m.get("time_utc")!=kick
-                or m.get("home_team",{}).get("id")!=h
-                or m.get("away_team",{}).get("id")!=a
-                or any(type(m.get(x)) is not int or not 0<=m[x]<=30
-                       for x in ("score_home","score_away"))):
-                unready+=1;continue
+            reason=None
+            if as_utc(kick)+timedelta(hours=3)>observed_at:reason='RESULT_MATURITY_3H_NOT_REACHED'
+            elif m is None:reason='PROVIDER_RESULT_MISSING'
+            elif m.get('id')!=mid:reason='RESULT_NATIVE_MATCH_ID_MISMATCH'
+            else:
+                try:source_kick=as_utc(m.get('time_utc'))
+                except (TypeError,ValueError):reason='RESULT_KICKOFF_INVALID'
+                else:
+                    if source_kick!=as_utc(kick):reason='KICKOFF_CHANGED_REVIEW_REQUIRED'
+            if reason is None:
+                if m.get('home_team',{}).get('id')!=h or m.get('away_team',{}).get('id')!=a:reason='RESULT_TEAM_SIDE_MISMATCH'
+                elif m.get('status')!='finished':reason='RESULT_NOT_FINISHED'
+                elif any(type(m.get(x)) is not int or not 0<=m[x]<=30 for x in ('score_home','score_away')):reason='RESULT_SCORE_INVALID'
+            if reason:
+                unready+=1;reasons[reason]+=1
+                decisions.append({'forecast_id':fid,'league':league,'native_match_id':mid,'reason':reason})
+                continue
             gh,ga=m["score_home"],m["score_away"]
             label="1" if gh>ga else "2" if gh<ga else "X"
             ll,bs=score_one(item["p_1x2"],label)
@@ -377,6 +414,8 @@ def settle_sqlite(db_path,real_results,*,observed_at,source_chain_sha):
               (hrec,fid,league,mid,gh,ga,label,stamp(observed_at),
                stamp(observed_at),source_chain_sha,ll,bs))
             settled+=1
+            reasons['SETTLED_NEW']+=1
+            decisions.append({'forecast_id':fid,'league':league,'native_match_id':mid,'reason':'SETTLED_NEW'})
         db.commit()
         total=db.execute("SELECT COUNT(*) FROM settlements").fetchone()[0]
         all_scores=db.execute("""SELECT f.payload_json,s.outcome FROM settlements s
@@ -385,6 +424,7 @@ def settle_sqlite(db_path,real_results,*,observed_at,source_chain_sha):
                 [y for x,y in all_scores]) if all_scores else None)
     return {"new_settlements":settled,"total_settlements":total,
             "not_yet_settled":unready,"metrics":metrics,
+            'settlement_reason_counts':dict(reasons),'settlement_decisions':decisions,
             "100_fit_threshold_reached":total>=100,
             "50_future_after_fit_verified":False,
             "calibration_fitted":False,"production_approved":False}
@@ -396,8 +436,19 @@ def collect_receipts(client,*,mode,now):
         nonlocal calls
         require(calls<(CALL_CAP_CAPTURE if mode=="forecast" else CALL_CAP_SETTLE),
                 "PROVIDER_REQUEST_BUDGET_EXCEEDED")
-        calls+=1;start=utc_now();data=to_plain(method(*args,**kwargs));end=utc_now()
-        require(isinstance(data,dict),"PROVIDER_INVALID_RESPONSE")
+        calls+=1;start=utc_now()
+        try:data=to_plain(method(*args,**kwargs))
+        except Exception as exc:
+            failure=Research720Error('PROVIDER_CAPTURE_FAILED')
+            failure.capture_detail={'resource':resource,'network_calls':calls,'error_type':type(exc).__name__}
+            failure.partial_receipts=receipts
+            raise failure from None
+        end=utc_now()
+        if not isinstance(data,dict):
+            failure=Research720Error('PROVIDER_INVALID_RESPONSE')
+            failure.capture_detail={'resource':resource,'network_calls':calls,'error_type':'NON_OBJECT_RESPONSE'}
+            failure.partial_receipts=receipts
+            raise failure
         add_observation(receipts,resource=resource,payload=data,
                         started=start,completed=end)
         return data
@@ -413,18 +464,33 @@ def collect_receipts(client,*,mode,now):
             "ACTUAL_PROVIDER_CALL_COUNT_MISMATCH")
     return receipts,chosen,calls
 
-def run(*,mode,client,now=None,db_path=DB,root=SOURCES,public_key=None):
+def run(*,mode,client,now=None,db_path=DB,root=SOURCES,public_key=None,
+        forecast_root=FORECASTS,clock=None):
     now=now or datetime.now(timezone.utc)
     require(isinstance(now,datetime) and now.utcoffset()==timedelta(0),"SERVER_UTC_REQUIRED")
+    require(mode in ('forecast','settle'),'INVALID_RESEARCH_RUN_MODE')
+    require(getattr(client,'_max_retries',0)==0,'SDK_RETRIES_MUST_BE_ZERO_FOR_REQUEST_CAP')
+    clock=clock or (lambda:datetime.now(timezone.utc))
+    if mode=='forecast':
+        from src.kb3_step16_run_policy import forecast_due
+        due,reason=forecast_due(root,forecast_root,now)
+        require(due,'FORECAST_NOT_DUE:'+reason)
     p,param_sha,manifest_sha=trained_params()
-    receipts,chosen,calls=collect_receipts(client,mode=mode,now=now)
-    cutoff=datetime.now(timezone.utc)
-    day=cutoff.date().isoformat()
-    folder=Path(root)/day/("forecast" if mode=="forecast" else "settle-"+cutoff.strftime("%H%M%S%f"))
+    day=now.date().isoformat()
+    run_name=mode+'-'+now.strftime('%H%M%S%f')
+    folder=Path(root)/day/run_name
     require(not folder.exists(),"IMMUTABLE_SOURCE_RUN_ALREADY_EXISTS")
-    folder.mkdir(parents=True)
+    folder.mkdir(parents=True,exist_ok=False)
+    attempt={'model_version':MODEL,'mode':mode,'run_utc':stamp(now),
+             'status':'ATTEMPT_STARTED_NOT_A_FORECAST','provider_call_cap':CALL_CAP_CAPTURE if mode=='forecast' else CALL_CAP_SETTLE}
+    attempt['attempt_sha256']=hashobj(attempt)
+    with (folder/'ATTEMPT.json').open('x') as f:json.dump(attempt,f,sort_keys=True)
     dbp=Path(db_path);staging=folder/"STAGED_M0720.sqlite"
+    reportdir=None;mirror_created=False;receipts=[]
     try:
+        receipts,chosen,calls=collect_receipts(client,mode=mode,now=now)
+        cutoff=clock()
+        require(cutoff>=now,'SERVER_CLOCK_MOVED_BACKWARDS')
         rawmeta=seal(receipts,public_key or ROOT/"config/step11_archive_recipient_public.pem",
             folder/"SOURCE.enc",folder/"SOURCE.manifest.json")
         if dbp.exists():shutil.copy2(dbp,staging)
@@ -433,9 +499,17 @@ def run(*,mode,client,now=None,db_path=DB,root=SOURCES,public_key=None):
                 Challengers,freeze_new_challengers)
             candidate_engine=Challengers()
             candidates=[]
+            diagnostics={}
             forecasts,coverage,season_shapes=make_forecasts(receipts,cutoff=cutoff,
                 params=p,param_sha=param_sha,manifest_sha=manifest_sha,
-                challenger_engine=candidate_engine,challenger_sink=candidates)
+                challenger_engine=candidate_engine,challenger_sink=candidates,
+                known_fixtures=known_forecast_fixtures(staging),diagnostics=diagnostics,
+                wall_clock=clock)
+            freeze_at=clock()
+            late=[f for f in forecasts if freeze_at>=as_utc(f['kickoff_utc'])-LEAD]
+            forecasts=[f for f in forecasts if freeze_at<as_utc(f['kickoff_utc'])-LEAD]
+            diagnostics['too_late_before_sqlite_publish']=[{'league':f['league_country'],'native_match_id':f['provider_match_id']} for f in late]
+            coverage=dict(Counter(f['league_country'] for f in forecasts))
             new_ids=set()
             new,total=freeze_sqlite(staging,forecasts,param_sha=param_sha,
                                     manifest_sha=manifest_sha,now=cutoff,
@@ -445,22 +519,22 @@ def run(*,mode,client,now=None,db_path=DB,root=SOURCES,public_key=None):
                     and challenger_state["new_common_fixture_pairs"]==new,
                     "NOT_ALL_NEW_M0_MATCHES_HAVE_TWO_CHALLENGERS")
             extra={"new_forecasts":new,"total_forecasts":total,"coverage":coverage,
+                   'forecast_selection_diagnostics':diagnostics,
                    "season_shapes":season_shapes,
                    "ned_bel_historical_phase_native_id_review":historical_phase_id_inventory(receipts),
                    "step17_challenger_research":challenger_state,
                    "step17_challengers_are_independent_unfitted_research":True,
                    "step17_challenger_host_artifact_proof_pending":True,
                    "step17_gate":"PENDING_STEP16_AND_FULL_FAIR_BENCHMARK"}
-            reportdir=Path(FORECASTS)/day
-            # One report per UTC day; if day was previously frozen we must not
-            # overwrite/replace its first publication proof.
-            require(not reportdir.exists(),"IMMUTABLE_DAILY_FORECAST_ALREADY_ARCHIVED")
+            reportdir=Path(forecast_root)/day/run_name
+            require(not reportdir.exists(),'IMMUTABLE_FORECAST_RUN_ALREADY_ARCHIVED')
         else:
             results={}
             for entry in receipts:
                 x=entry["resource"].split(":")
                 if len(x)==5 and x[2]=="fixtures" and x[4]==CURRENT:
                     for m in entry["payload"]["matches"]:
+                        require((x[3],m['id']) not in results,'DUPLICATE_RESULT_NATIVE_MATCH_ID')
                         results[(x[3],m["id"])]=m
             extra=settle_sqlite(staging,results,observed_at=cutoff,
                                 source_chain_sha=rawmeta["proof"]["final_chain_sha256"])
@@ -512,18 +586,37 @@ def run(*,mode,client,now=None,db_path=DB,root=SOURCES,public_key=None):
             "historic_native_PIT_proven":False,
             "production_approved":False,"original_2026_27_Premier_League_TEST_accessed":False,
             "existing_three_league_shadow_database_modified":False,
-            "calibrator_auto_fitted":False,"gate16":"PENDING",**extra}
+            "calibrator_auto_fitted":bool(extra.get('calibration_readiness',{}).get('calibrator_first_fit_just_written')),
+            'attempt_started_utc':stamp(now),'gate16':'PENDING',**extra}
         report["report_sha256"]=hashobj(report)
         with (folder/"RECEIPT.json").open("x",encoding="utf8") as f:
             json.dump(report,f,indent=2,sort_keys=True,ensure_ascii=False);f.write("\n")
-        # Move sealed evidence and full forward database only once all checks pass.
-        dbp.parent.mkdir(parents=True,exist_ok=True)
-        os.replace(staging,dbp)
         if mode=="forecast":
             reportdir.mkdir(parents=True,exist_ok=False)
+            mirror_created=True
             with (reportdir/"FROZEN_M0_720_EIGHT.json").open("x",encoding="utf8") as f:
                 json.dump(report,f,sort_keys=True,indent=2,ensure_ascii=False);f.write("\n")
+        # Publish the DB last: evidence and mirror write failures cannot leave
+        # forecast rows without their archive. Old daily files are never changed.
+        if mode=='forecast':
+            require(all(clock()<as_utc(f['kickoff_utc'])-LEAD for f in forecasts),
+                    'PUBLICATION_DEADLINE_ELAPSED')
+        dbp.parent.mkdir(parents=True,exist_ok=True)
+        os.replace(staging,dbp)
         return report
-    except BaseException:
-        shutil.rmtree(folder,ignore_errors=True)
+    except BaseException as exc:
+        partial=getattr(exc,'partial_receipts',receipts)
+        if partial and not (folder/'SOURCE.enc').exists():
+            try:seal(partial,public_key or ROOT/'config/step11_archive_recipient_public.pem',folder/'SOURCE.enc',folder/'SOURCE.manifest.json')
+            except Exception:pass  # Never write partial raw in plaintext.
+        (folder/'RECEIPT.json').unlink(missing_ok=True)
+        staging.unlink(missing_ok=True)
+        if mirror_created:shutil.rmtree(reportdir,ignore_errors=True)
+        failure={'model_version':MODEL,'mode':mode,'run_utc':stamp(now),
+                 'status':'FAILED_NO_DATABASE_PUBLICATION','error_type':type(exc).__name__,
+                 'source_encrypted':(folder/'SOURCE.enc').exists(),
+                 'capture_detail':getattr(exc,'capture_detail',None)}
+        try:
+            with (folder/'FAILURE.json').open('x') as f:json.dump(failure,f,sort_keys=True)
+        except OSError:pass
         raise
