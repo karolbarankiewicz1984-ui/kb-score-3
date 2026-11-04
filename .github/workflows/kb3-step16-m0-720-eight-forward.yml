@@ -106,15 +106,18 @@ jobs:
           CRON: ${{ github.event.schedule }}
           USER_MODE: ${{ inputs.mode }}
         run: python -m scripts.step16_m0_mode_guard
+      # The activation policy imports the forward M0 feature builder, which
+      # imports cryptography. Install the pinned live packages first; neither
+      # the install nor the policy invokes the sports provider API.
+      - name: Install already used PitchAPI SDK and source evidence encryption
+        if: steps.mode.outputs.mode != 'skip'
+        run: python -m pip install --disable-pip-version-check -r config/step16_live_requirements.txt
       - name: Check explicit research-only Shadow Six activation for NEW main-branch forecasts
         id: shadow_activation
         if: steps.mode.outputs.mode != 'skip'
         env:
           RUN_MODE: ${{ steps.mode.outputs.mode }}
         run: python -m scripts.kb3_p1_shadow_activation_policy
-      - name: Install already used PitchAPI SDK and source evidence encryption
-        if: steps.mode.outputs.mode != 'skip'
-        run: python -m pip install --disable-pip-version-check -r config/step16_live_requirements.txt
       - name: Restore immutable reviewed CatBoost Shadow Six bytes from tracked research assets (OFF by default)
         if: steps.mode.outputs.mode == 'forecast' && steps.shadow_activation.outputs.enabled == 'true'
         env:
