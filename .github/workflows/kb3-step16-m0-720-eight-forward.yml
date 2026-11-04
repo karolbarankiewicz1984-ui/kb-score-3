@@ -3,6 +3,8 @@ on:
   pull_request:
     paths:
       - src/kb3_step16_m0_720_eight_forward.py
+      - src/kb3_step16_run_policy.py
+      - tests/test_m0720_operations.py
       - src/kb3_step17_forward_challengers.py
       - tests/test_step17_forward_challengers.py
       - src/kb3_step17_challenger_provenance.py
@@ -20,6 +22,8 @@ on:
     branches: [main]
     paths:
       - src/kb3_step16_m0_720_eight_forward.py
+      - src/kb3_step16_run_policy.py
+      - tests/test_m0720_operations.py
       - src/kb3_step17_forward_challengers.py
       - tests/test_step17_forward_challengers.py
       - src/kb3_step17_challenger_provenance.py
@@ -67,6 +71,7 @@ jobs:
           python -m unittest discover -s tests -p 'test_step17_forward_challengers.py' -v
           python -m unittest discover -s tests -p 'test_step17_challenger_provenance.py' -v
           python -m unittest discover -s tests -p 'test_step16_m0_mode_guard.py' -v
+          python -m unittest discover -s tests -p 'test_m0720_operations.py' -v
   real-eighth-league-fitted-M0-shadow:
     if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
     needs: anti-leakage-and-data-safety
