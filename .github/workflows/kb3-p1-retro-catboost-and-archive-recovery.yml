@@ -1,0 +1,80 @@
+name: KB3 P1 historical archive audit and research CatBoost only
+on:
+  pull_request:
+    paths:
+      - scripts/kb3_p1_archived_source_recovery_audit.py
+      - scripts/kb3_p1_retro_catboost_1007_376.py
+      - tests/test_kb3_p1_archive_research_catboost.py
+      - docs/KB3_P1_ARCHIVE_AND_RETRO_CATBOOST_2026-11-04.md
+      - .github/workflows/kb3-p1-retro-catboost-and-archive-recovery.yml
+
+permissions:
+  contents: read
+
+jobs:
+  no-provider-api-research:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install pinned research-only classifier
+        run: python -m pip install --disable-pip-version-check 'catboost==1.2.8'
+      - name: Real saved public archive + reconstructed split verification
+        run: |
+          python -m unittest discover -s tests -p 'test_kb3_p1_archive_research_catboost.py' -v
+          python -m unittest discover -s tests -p 'test_kb3_p1_historical_eligibility_split.py' -v
+      - name: Audit archived source provenance without fetching or rewriting
+        run: |
+          python -m scripts.kb3_p1_archived_source_recovery_audit --out "$RUNNER_TEMP/kb3_archive_audit.json"
+      - name: Train and evaluate ONLY two isolated reconstructed research CatBoost variants
+        run: |
+          python -m scripts.kb3_p1_retro_catboost_1007_376 --outdir "$RUNNER_TEMP/kb3_retro_catboost"
+      - name: Enforce strict no formal training, no model promotion, no original test usage
+        run: |
+          python - "$RUNNER_TEMP" <<'PY'
+          import json,pathlib,sys
+          root=pathlib.Path(sys.argv[1])
+          a=json.loads((root/"kb3_archive_audit.json").read_text())
+          p=root/"kb3_retro_catboost"/"RETRO_CATBOOST_1007_376_REPORT.json"
+          b=json.loads(p.read_text())
+          assert a["verified_eight_league_historical_prematch_v2_training_targets"]==0
+          assert a["formal_training_approved"] is False
+          assert b["train_n"]==1007 and b["validation_n"]==376
+          assert b["original_historical_provider_first_published_certified"] is False
+          assert b["asof_v2_formal_training_or_validation"] is False
+          assert b["original_catboost_M1R_85_feature_weights_reused"] is False
+          assert b["m0_production_comparison_authorized"] is False
+          assert b["model_champion_auto_promoted"] is False
+          assert b["official_fit_increment"]==0
+          assert b["gate16"]==b["gate17"]=="PENDING"
+          assert set(b["variants"]) == {
+            "TRAIN_ONLY_MARGINAL_LAPLACE",
+            "CATBOOST_RESEARCH_NO_XG",
+            "CATBOOST_RESEARCH_PLUS_XG_WITH_MISSING"}
+          print("RESEARCH_MODEL_ONLY_GATE_PASS",
+                "ARCHIVE_SHA",a["report_sha256"],
+                "RETRO_CATBOOST_SHA",b["report_sha256"],
+                "FIT_INCREMENT",b["official_fit_increment"])
+          PY
+      - name: Fail if source data, legacy CatBoost, original M0 or protected ENG changed
+        run: |
+          git fetch --no-tags origin "${{ github.base_ref }}"
+          git diff --exit-code "origin/${{ github.base_ref }...HEAD" -- \
+            data models config src/kb3_features.py \
+            src/kb3_step16_m0_720_eight_forward.py \
+            scripts/step14_m1r_recompute_1140_relaxed_48h.py
+          git diff --check "origin/${{ github.base_ref }...HEAD"
+      - uses: actions/upload-artifact@v4
+        if: success()
+        with:
+          name: KB3_RESEARCH_RETRO_CATBOOST_PRIVATE_NO_PIT
+          path: |
+            ${{ runner.temp }}/kb3_archive_audit.json
+            ${{ runner.temp }}/kb3_retro_catboost/
+          retention-days: 14
+          if-no-files-found: error
