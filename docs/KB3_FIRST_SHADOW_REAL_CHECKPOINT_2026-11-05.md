@@ -1,0 +1,25 @@
+# KB Score 3.0 — pierwszy rzeczywisty punkt kontrolny M0/Shadow 6 (05.11.2026)
+
+## Faktycznie sprawdzony stan
+
+- Po kontrolowanej aktywacji Shadow 6 w PR #156 (04.11.2026 ok. 23:18 UTC) repozytorium **nie ma jeszcze potwierdzonego kolejnego harmonogramowego przebiegu forecast**. Najnowszy widoczny przebieg M0 [Actions #41932651766](https://github.com/karolbarankiewicz1984-ui/kb-score-3/actions/runs/41932651766) miał `event=push`, `SUCCESS`, lecz jego mode guard prawidłowo zwrócił `skip`; kroki provider API, forecast, Shadow i upload rzeczywistych prognoz zostały pominięte. Stan rzeczywistych nowych par na ten moment: **niepotwierdzony**, NIE 64; 64 to wyłącznie wcześniejszy test syntetyczny.
+- Najbliższy nominalny `forecast` cron w pliku `.github/workflows/kb3-step16-m0-720-eight-forward.yml`: `21 6,9,12 * * *` w UTC (dla 05.11.2026 odpowiednio 07:21, 10:21, 13:21 w Europe/Warsaw). GitHub może opóźnić harmonogram i mode guard może zgodnie z polityką pominąć kolejne próby. Nie zakładać wcześniej `SUCCESS` lub nowego materiału.
+- W trakcie rzeczywistej weryfikacji znaleziono **wadę kolejności**: policy Shadow importuje `src.kb3_step16_m0_720_eight_forward` (zależność `cryptography`) przed zainstalowaniem przez workflow `config/step16_live_requirements.txt`. Samo PR-only CI tego nie wychwytywało. Naprawa w [PR #157](https://github.com/karolbarankiewicz1984-ui/kb-score-3/pull/157): `mode_guard → pip install pinned live requirements → Shadow activation policy → verify exact pinned model bytes → original provider SDK/M0 execution`. **PR #157 scalony po pełnych siedmiu zielonych kontrolach**, z dodanym testem ochronnym kolejności. Bez zmian M0, SQLite, kalibracji, źródeł i bez dodatkowego API.
+- Użytkownik prosi o kontrolę pierwszego REAL M0/Shadow; bez rzeczywistych bajtów i dowodów GitHub nie wolno twierdzić, że istnieje nowa próba. Dlatego kolejny niezależny etap to automatyczny **read-only** checkpoint emitujący liczby po faktycznej przyszłej próbce.
+
+## Nowe narzędzie operacyjne — ścisłe rozdzielenie stanów
+
+- `scripts/kb3_shadow_first_real_checkpoint.py` nie wywołuje żadnego API, nie dopisuje do bazy i nie zmienia oryginalnego M0. Korzysta z istniejącego `data/forward_m0_720_eight/kb3_forward_eight.sqlite` w SQLite `mode=ro`, wymaga `integrity_check=ok`, liczy **nowe M0 po aktywacji, nowe rekordu Shadow, pary z tym samym fixture/cutoff/source SHA, niezależne GitHub host-proofs oraz wspólnie rozliczone spotkania z dowodem hosta**.
+- Każdy potencjalny nowy Shadow musi mieć prawdziwego nowego rodzica M0, identyczną migawkę źródłową i `feature_sha256`, zweryfikowany checksum obu niemodyfikowalnych JSON, przypięty CBM SHA `58c5a7fc35afe942893a25b96233689d1f7814ec8a93ed689a7b46f553dbbbc5`, status research-only i `shadow_generated_at < kickoff-90min`.
+- Brak SQLite → `NO_PERSISTED_M0_SQLITE_FOUND`; M0 bez nowego shadow → `NEW_M0_CAPTURE_WITHOUT_ELIGIBLE_SHADOW_PAIRS`; prawdziwy nowy Shadow ale bez niezależnego GitHub artifact proof → `REAL_CAPTURED_PAIRS_PENDING_INDEPENDENT_GITHUB_HOST_PROOF`; po niezależnym wpisie dowodowym GitHub → `GENUINE_HOST_ATTESTED_PREMATCH_PAIRS_NOT_SETTLED`; dopiero po rozliczeniu po meczu → `FIRST_GENUINE_HOST_ATTESTED_SETTLED_PAIR`. Żaden stan nie zwiększa oficjalnych FIT ani nie dopuszcza CatBoost do produkcji.
+- Nowy krok w rzeczywistym M0 workflow **po zbudowaniu/weryfikacji plików i przed uploadem oryginalnego archiwum** wypisze `KB3_FIRST_REAL_SHADOW_CHECKPOINT {JSON}` dla każdego trybu `forecast` lub `settle`, ale nie dla `skip`. Dzięki temu kolejny audyt może odczytać faktyczne liczniki w logach GH Actions bez zgadywania z testów syntetycznych.
+- Nowy osobny test `tests/test_kb3_shadow_first_real_checkpoint.py` sprawdza SQLite read-only, brak DB, M0-only, jeden Shadow bez host-proof, host-proof z/bez rozliczenia i odrzucanie podmiany SHA na syntetycznych fixtures. Próby te NIGDY nie liczą się jako prawdziwe prognozy.
+
+## Kryterium dalszych decyzji
+
+1. Po pierwszym zaplanowanym uruchomieniu z `mode=forecast` odczytać rzeczywiste logi, `KB3_FIRST_REAL_SHADOW_CHECKPOINT`, oryginalny Actions artifact oraz stan zapisu na `main`. Zliczyć tylko nowe rekordy `shadow_new_since_activation`, nigdy syntetyczne ani stare M0.
+2. Po kolejnym `settle` sprawdzić `kb3_p1_shadow_six_host_proofs` wraz z dokładnym odcinkiem GitHub `created_at` i tym samym historycznym, nieprzepisanym SQLite w oryginalnym ZIP. Przy braku dowodu pozostawić status PENDING; żadnego uznania zegara lokalnego za niezależny proof.
+3. Po rzeczywistym rozliczeniu *tych samych meczów*, porównywać Brier/log loss; bez automatycznego awansu, bez formalnego zaliczenia FIT przez Shadow, bez modyfikowania 100 FIT + 50 nowych HOLDOUT dla M0.
+4. Wystąpienie błędu źródła, niewłaściwy SHA, za późny termin lub brak original ZIP = FAIL CLOSED i opis źródłowego błędu zamiast tworzenia prognoz po fakcie.
+
+**Na czas napisania tego dokumentu nie wykonano jeszcze prawdziwego przyszłego uruchomienia Shadow; wdrożenie skryptu raportującego wymaga osobnego CI i merge.**
