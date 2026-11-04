@@ -38,15 +38,23 @@ jobs:
       - run: python -m pip install 'catboost==1.2.8' 'cryptography>=42,<47' 'pitchapi==0.1.6'
       - name: All unique regressions; no provider calls, real-data fit or protected writes
         run: python scripts/test_m0720_offline.py > m0720-regression.log 2>&1
+      - name: Checkout immutable historic source (private repo, no persistent credentials)
+        uses: actions/checkout@v4
+        with:
+          ref: ad59f8cc3bceb26fea97c937be825d3ee6cde3e6
+          path: kb3-pinned-audit
+          persist-credentials: false
+          sparse-checkout: |
+            data/forward_m0_720_eight
+            data/pit_sidecar/m0_720_eight
+            data/pit_sidecar/step17_native_xg_eight
       - name: Recompute committed real audit on its exact read-only snapshot
         run: |
           # The 2026-11-04 07:11 UTC audit is immutable and refers to
           # a pre-14:43 snapshot with 91 freeze rows. Current main already
           # has 126 forecasts: never compare the old report with live DB.
-          HISTORIC_SHA=ad59f8cc3bceb26fea97c937be825d3ee6cde3e6
-          SNAPSHOT="$RUNNER_TEMP/kb3-pinned-audit"
-          git fetch --no-tags --depth=1 origin "$HISTORIC_SHA"
-          git worktree add --detach "$SNAPSHOT" "$HISTORIC_SHA"
+          SNAPSHOT="$GITHUB_WORKSPACE/kb3-pinned-audit"
+          test -f "$SNAPSHOT/data/forward_m0_720_eight/kb3_forward_eight.sqlite"
           # Historical Git snapshot did not include the PR-only immutable
           # GitHub workflow evidence file; restore only that read-only report.
           mkdir -p "$SNAPSHOT/docs/audits"
