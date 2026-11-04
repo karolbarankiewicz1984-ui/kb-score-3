@@ -1,0 +1,523 @@
+{
+  "append_only_recheck_overlays": {},
+  "by_scope": {
+    "BEL": {
+      "pair_core_10_complete": 12,
+      "pair_core_10_incomplete": 366,
+      "pair_core_15_complete": 2,
+      "pair_core_15_incomplete": 376,
+      "pair_core_5_complete": 58,
+      "pair_core_5_incomplete": 320,
+      "pair_history_10_complete": 358,
+      "pair_history_10_incomplete": 20,
+      "pair_history_15_complete": 348,
+      "pair_history_15_incomplete": 30,
+      "pair_history_5_complete": 368,
+      "pair_history_5_incomplete": 10,
+      "pair_stats_10_complete": 276,
+      "pair_stats_10_incomplete": 102,
+      "pair_stats_15_complete": 237,
+      "pair_stats_15_incomplete": 141,
+      "pair_stats_5_complete": 324,
+      "pair_stats_5_incomplete": 54,
+      "pair_xg_10_complete": 33,
+      "pair_xg_10_incomplete": 345,
+      "pair_xg_15_complete": 6,
+      "pair_xg_15_incomplete": 372,
+      "pair_xg_5_complete": 112,
+      "pair_xg_5_incomplete": 266,
+      "stat_matches_observed": 378,
+      "targets_checked": 378,
+      "xg_unverified_matches": 34,
+      "xg_verified_matches": 344
+    },
+    "ESP": {
+      "pair_core_10_complete": 11,
+      "pair_core_10_incomplete": 173,
+      "pair_core_15_incomplete": 184,
+      "pair_core_5_complete": 48,
+      "pair_core_5_incomplete": 136,
+      "pair_history_10_complete": 184,
+      "pair_history_15_complete": 183,
+      "pair_history_15_incomplete": 1,
+      "pair_history_5_complete": 184,
+      "pair_stats_10_complete": 79,
+      "pair_stats_10_incomplete": 105,
+      "pair_stats_15_complete": 29,
+      "pair_stats_15_incomplete": 155,
+      "pair_stats_5_complete": 128,
+      "pair_stats_5_incomplete": 56,
+      "pair_xg_10_complete": 1,
+      "pair_xg_10_incomplete": 183,
+      "pair_xg_15_incomplete": 184,
+      "pair_xg_5_complete": 40,
+      "pair_xg_5_incomplete": 144,
+      "stat_matches_observed": 184,
+      "targets_checked": 184,
+      "xg_unverified_matches": 21,
+      "xg_verified_matches": 163
+    },
+    "FRA": {
+      "pair_core_10_complete": 3,
+      "pair_core_10_incomplete": 153,
+      "pair_core_15_incomplete": 156,
+      "pair_core_5_complete": 12,
+      "pair_core_5_incomplete": 144,
+      "pair_history_10_complete": 156,
+      "pair_history_15_complete": 156,
+      "pair_history_5_complete": 156,
+      "pair_stats_10_complete": 27,
+      "pair_stats_10_incomplete": 129,
+      "pair_stats_15_incomplete": 156,
+      "pair_stats_5_complete": 73,
+      "pair_stats_5_incomplete": 83,
+      "pair_xg_10_complete": 1,
+      "pair_xg_10_incomplete": 155,
+      "pair_xg_15_incomplete": 156,
+      "pair_xg_5_complete": 19,
+      "pair_xg_5_incomplete": 137,
+      "stat_matches_observed": 156,
+      "targets_checked": 156,
+      "xg_unverified_matches": 15,
+      "xg_verified_matches": 141
+    },
+    "GER": {
+      "pair_core_10_incomplete": 157,
+      "pair_core_15_incomplete": 157,
+      "pair_core_5_complete": 10,
+      "pair_core_5_incomplete": 147,
+      "pair_history_10_complete": 157,
+      "pair_history_15_complete": 157,
+      "pair_history_5_complete": 157,
+      "pair_stats_10_complete": 28,
+      "pair_stats_10_incomplete": 129,
+      "pair_stats_15_incomplete": 157,
+      "pair_stats_5_complete": 75,
+      "pair_stats_5_incomplete": 82,
+      "pair_xg_10_incomplete": 157,
+      "pair_xg_15_incomplete": 157,
+      "pair_xg_5_complete": 15,
+      "pair_xg_5_incomplete": 142,
+      "stat_matches_observed": 157,
+      "targets_checked": 157,
+      "xg_unverified_matches": 16,
+      "xg_verified_matches": 141
+    },
+    "ITA": {
+      "pair_core_10_incomplete": 150,
+      "pair_core_15_incomplete": 150,
+      "pair_core_5_complete": 9,
+      "pair_core_5_incomplete": 141,
+      "pair_history_10_complete": 150,
+      "pair_history_15_complete": 150,
+      "pair_history_5_complete": 150,
+      "pair_stats_10_complete": 2,
+      "pair_stats_10_incomplete": 148,
+      "pair_stats_15_incomplete": 150,
+      "pair_stats_5_complete": 56,
+      "pair_stats_5_incomplete": 94,
+      "pair_xg_10_complete": 1,
+      "pair_xg_10_incomplete": 149,
+      "pair_xg_15_incomplete": 150,
+      "pair_xg_5_complete": 19,
+      "pair_xg_5_incomplete": 131,
+      "stat_matches_observed": 150,
+      "targets_checked": 150,
+      "xg_unverified_matches": 16,
+      "xg_verified_matches": 134
+    },
+    "NED": {
+      "pair_core_10_incomplete": 150,
+      "pair_core_15_incomplete": 150,
+      "pair_core_5_complete": 4,
+      "pair_core_5_incomplete": 146,
+      "pair_history_10_complete": 149,
+      "pair_history_10_incomplete": 1,
+      "pair_history_15_complete": 149,
+      "pair_history_15_incomplete": 1,
+      "pair_history_5_complete": 150,
+      "pair_stats_10_complete": 10,
+      "pair_stats_10_incomplete": 140,
+      "pair_stats_15_incomplete": 150,
+      "pair_stats_5_complete": 57,
+      "pair_stats_5_incomplete": 93,
+      "pair_xg_10_incomplete": 150,
+      "pair_xg_15_incomplete": 150,
+      "pair_xg_5_complete": 9,
+      "pair_xg_5_incomplete": 141,
+      "stat_matches_observed": 150,
+      "targets_checked": 150,
+      "xg_unverified_matches": 26,
+      "xg_verified_matches": 124
+    },
+    "POL": {
+      "pair_core_10_incomplete": 148,
+      "pair_core_15_incomplete": 148,
+      "pair_core_5_complete": 10,
+      "pair_core_5_incomplete": 138,
+      "pair_history_10_complete": 138,
+      "pair_history_10_incomplete": 10,
+      "pair_history_15_complete": 133,
+      "pair_history_15_incomplete": 15,
+      "pair_history_5_complete": 145,
+      "pair_history_5_incomplete": 3,
+      "pair_stats_10_complete": 8,
+      "pair_stats_10_incomplete": 140,
+      "pair_stats_15_complete": 1,
+      "pair_stats_15_incomplete": 147,
+      "pair_stats_5_complete": 55,
+      "pair_stats_5_incomplete": 93,
+      "pair_xg_10_complete": 2,
+      "pair_xg_10_incomplete": 146,
+      "pair_xg_15_incomplete": 148,
+      "pair_xg_5_complete": 25,
+      "pair_xg_5_incomplete": 123,
+      "stat_matches_observed": 148,
+      "targets_checked": 148,
+      "xg_unverified_matches": 13,
+      "xg_verified_matches": 135
+    },
+    "TUR": {
+      "pair_core_10_incomplete": 149,
+      "pair_core_15_incomplete": 149,
+      "pair_core_5_complete": 11,
+      "pair_core_5_incomplete": 138,
+      "pair_history_10_complete": 148,
+      "pair_history_10_incomplete": 1,
+      "pair_history_15_complete": 148,
+      "pair_history_15_incomplete": 1,
+      "pair_history_5_complete": 149,
+      "pair_stats_10_complete": 5,
+      "pair_stats_10_incomplete": 144,
+      "pair_stats_15_incomplete": 149,
+      "pair_stats_5_complete": 51,
+      "pair_stats_5_incomplete": 98,
+      "pair_xg_10_incomplete": 149,
+      "pair_xg_15_incomplete": 149,
+      "pair_xg_5_complete": 20,
+      "pair_xg_5_incomplete": 129,
+      "stat_matches_observed": 149,
+      "targets_checked": 149,
+      "xg_unverified_matches": 12,
+      "xg_verified_matches": 137
+    },
+    "UCL": {
+      "pair_core_10_incomplete": 5,
+      "pair_core_15_incomplete": 5,
+      "pair_core_5_incomplete": 5,
+      "pair_history_10_complete": 3,
+      "pair_history_10_incomplete": 2,
+      "pair_history_15_complete": 2,
+      "pair_history_15_incomplete": 3,
+      "pair_history_5_complete": 4,
+      "pair_history_5_incomplete": 1,
+      "pair_stats_10_incomplete": 5,
+      "pair_stats_15_incomplete": 5,
+      "pair_stats_5_incomplete": 5,
+      "pair_xg_10_incomplete": 5,
+      "pair_xg_15_incomplete": 5,
+      "pair_xg_5_incomplete": 5,
+      "stat_matches_observed": 5,
+      "targets_checked": 5,
+      "xg_unverified_matches": 1,
+      "xg_verified_matches": 4
+    }
+  },
+  "by_scope_season": {
+    "BEL/2023/2024": {
+      "finished_fixtures_indexed": 311,
+      "stat_matches_observed": 1,
+      "xg_verified_matches": 1
+    },
+    "BEL/2024/2025": {
+      "finished_fixtures_indexed": 312,
+      "stat_matches_observed": 62,
+      "xg_unverified_matches": 4,
+      "xg_verified_matches": 58
+    },
+    "BEL/2025/2026": {
+      "finished_fixtures_indexed": 313,
+      "stat_matches_observed": 313,
+      "xg_unverified_matches": 30,
+      "xg_verified_matches": 283
+    },
+    "BEL/2026/2027": {
+      "finished_fixtures_indexed": 89,
+      "stat_matches_observed": 2,
+      "xg_verified_matches": 2
+    },
+    "ESP/2023/2024": {
+      "finished_fixtures_indexed": 379,
+      "stat_matches_observed": 1,
+      "xg_verified_matches": 1
+    },
+    "ESP/2024/2025": {
+      "finished_fixtures_indexed": 380,
+      "stat_matches_observed": 1,
+      "xg_verified_matches": 1
+    },
+    "ESP/2025/2026": {
+      "finished_fixtures_indexed": 380,
+      "stat_matches_observed": 180,
+      "xg_unverified_matches": 20,
+      "xg_verified_matches": 160
+    },
+    "ESP/2026/2027": {
+      "finished_fixtures_indexed": 109,
+      "stat_matches_observed": 2,
+      "xg_unverified_matches": 1,
+      "xg_verified_matches": 1
+    },
+    "FRA/2023/2024": {
+      "finished_fixtures_indexed": 306,
+      "stat_matches_observed": 17,
+      "xg_unverified_matches": 2,
+      "xg_verified_matches": 15
+    },
+    "FRA/2024/2025": {
+      "finished_fixtures_indexed": 306,
+      "stat_matches_observed": 17,
+      "xg_verified_matches": 17
+    },
+    "FRA/2025/2026": {
+      "finished_fixtures_indexed": 306,
+      "stat_matches_observed": 119,
+      "xg_unverified_matches": 13,
+      "xg_verified_matches": 106
+    },
+    "FRA/2026/2027": {
+      "finished_fixtures_indexed": 81,
+      "stat_matches_observed": 3,
+      "xg_verified_matches": 3
+    },
+    "GER/2023/2024": {
+      "finished_fixtures_indexed": 306,
+      "stat_matches_observed": 18,
+      "xg_unverified_matches": 2,
+      "xg_verified_matches": 16
+    },
+    "GER/2024/2025": {
+      "finished_fixtures_indexed": 305,
+      "stat_matches_observed": 15,
+      "xg_unverified_matches": 1,
+      "xg_verified_matches": 14
+    },
+    "GER/2025/2026": {
+      "finished_fixtures_indexed": 306,
+      "stat_matches_observed": 120,
+      "xg_unverified_matches": 13,
+      "xg_verified_matches": 107
+    },
+    "GER/2026/2027": {
+      "finished_fixtures_indexed": 72,
+      "stat_matches_observed": 4,
+      "xg_verified_matches": 4
+    },
+    "ITA/2023/2024": {
+      "finished_fixtures_indexed": 380,
+      "stat_matches_observed": 19,
+      "xg_unverified_matches": 2,
+      "xg_verified_matches": 17
+    },
+    "ITA/2024/2025": {
+      "finished_fixtures_indexed": 380,
+      "stat_matches_observed": 18,
+      "xg_unverified_matches": 4,
+      "xg_verified_matches": 14
+    },
+    "ITA/2025/2026": {
+      "finished_fixtures_indexed": 380,
+      "stat_matches_observed": 110,
+      "xg_unverified_matches": 10,
+      "xg_verified_matches": 100
+    },
+    "ITA/2026/2027": {
+      "finished_fixtures_indexed": 100,
+      "stat_matches_observed": 3,
+      "xg_verified_matches": 3
+    },
+    "NED/2023/2024": {
+      "finished_fixtures_indexed": 309,
+      "stat_matches_observed": 19,
+      "xg_unverified_matches": 5,
+      "xg_verified_matches": 14
+    },
+    "NED/2024/2025": {
+      "finished_fixtures_indexed": 309,
+      "stat_matches_observed": 16,
+      "xg_unverified_matches": 2,
+      "xg_verified_matches": 14
+    },
+    "NED/2025/2026": {
+      "finished_fixtures_indexed": 309,
+      "stat_matches_observed": 102,
+      "xg_unverified_matches": 19,
+      "xg_verified_matches": 83
+    },
+    "NED/2026/2027": {
+      "finished_fixtures_indexed": 99,
+      "stat_matches_observed": 13,
+      "xg_verified_matches": 13
+    },
+    "POL/2025/2026": {
+      "finished_fixtures_indexed": 306,
+      "stat_matches_observed": 112,
+      "xg_unverified_matches": 8,
+      "xg_verified_matches": 104
+    },
+    "POL/2026/2027": {
+      "finished_fixtures_indexed": 115,
+      "stat_matches_observed": 36,
+      "xg_unverified_matches": 5,
+      "xg_verified_matches": 31
+    },
+    "TUR/2023/2024": {
+      "finished_fixtures_indexed": 379,
+      "stat_matches_observed": 18,
+      "xg_unverified_matches": 2,
+      "xg_verified_matches": 16
+    },
+    "TUR/2024/2025": {
+      "finished_fixtures_indexed": 341,
+      "stat_matches_observed": 21,
+      "xg_unverified_matches": 1,
+      "xg_verified_matches": 20
+    },
+    "TUR/2025/2026": {
+      "finished_fixtures_indexed": 306,
+      "stat_matches_observed": 102,
+      "xg_unverified_matches": 8,
+      "xg_verified_matches": 94
+    },
+    "TUR/2026/2027": {
+      "finished_fixtures_indexed": 90,
+      "stat_matches_observed": 8,
+      "xg_unverified_matches": 1,
+      "xg_verified_matches": 7
+    },
+    "UCL/2023/2024": {
+      "finished_fixtures_indexed": 125,
+      "stat_matches_observed": 1,
+      "xg_verified_matches": 1
+    },
+    "UCL/2024/2025": {
+      "finished_fixtures_indexed": 189,
+      "stat_matches_observed": 1,
+      "xg_verified_matches": 1
+    },
+    "UCL/2025/2026": {
+      "finished_fixtures_indexed": 189,
+      "stat_matches_observed": 1,
+      "xg_verified_matches": 1
+    },
+    "UCL/2026/2027": {
+      "finished_fixtures_indexed": 63,
+      "stat_matches_observed": 2,
+      "xg_unverified_matches": 1,
+      "xg_verified_matches": 1
+    }
+  },
+  "existing_m0_modified": false,
+  "full_feature_training_approved": false,
+  "gate16_gate17": "PENDING",
+  "history_n_definition": "ACTUAL_LAST_N_FINISHED_FIXTURES_NOT_LAST_N_WITH_STATS",
+  "issue_recheck_source_sha256": null,
+  "missing_season_notice": "POL_2023_24_AND_2024_25_UNAVAILABLE_IN_PITCHAPI_CATALOG_AS_OF_2026_11_03",
+  "never_use_target_result_as_its_own_feature": true,
+  "no_missing_as_zero": true,
+  "official_calibration_changed": false,
+  "original_source_stat_items_preserved": true,
+  "overlays_are_later_research_not_original_pit": true,
+  "protected_test_touched": false,
+  "quality": "REAL_SOURCE_COUNTS_RETROSPECTIVE_RESEARCH_ONLY",
+  "retrospective_provider_original_publication_proven": false,
+  "rolling_windows": [
+    5,
+    10,
+    15
+  ],
+  "schema": "kb3-historical-rolling-source-v1-research-not-pit",
+  "source_db_sha256_before_feature_cache": "a4671d6feaec3c2b7487f88eb91c6e094559d8a3a7c386f80f65f3dc82d89b63",
+  "stat_both_sides_numeric_matches_by_key": {
+    "Offsides": 1477,
+    "ShotsOffTarget": 1477,
+    "ShotsOnTarget": 1477,
+    "big_chance": 1477,
+    "clearances": 1477,
+    "corners": 1477,
+    "expected_goals_non_penalty": 1477,
+    "expected_goals_on_target": 1469,
+    "expected_goals_open_play": 1477,
+    "expected_goals_set_play": 1475,
+    "fouls": 1477,
+    "interceptions": 1477,
+    "keeper_saves": 1477,
+    "passes": 1477,
+    "red_cards": 1477,
+    "shots_inside_box": 1477,
+    "shots_outside_box": 1477,
+    "total_shots": 1477,
+    "touches_opp_box": 1477,
+    "yellow_cards": 1090
+  },
+  "stat_keys": [
+    "total_shots",
+    "ShotsOnTarget",
+    "ShotsOffTarget",
+    "fouls",
+    "corners",
+    "yellow_cards",
+    "red_cards",
+    "Offsides",
+    "passes",
+    "accurate_passes",
+    "interceptions",
+    "clearances",
+    "keeper_saves",
+    "big_chance",
+    "shots_inside_box",
+    "shots_outside_box",
+    "touches_opp_box",
+    "expected_goals_non_penalty",
+    "expected_goals_open_play",
+    "expected_goals_set_play",
+    "expected_goals_on_target"
+  ],
+  "totals": {
+    "indexed_finished_fixtures": 8630,
+    "missing_stat_match_count": 7153,
+    "pair_core_10_complete": 26,
+    "pair_core_10_incomplete": 1451,
+    "pair_core_15_complete": 2,
+    "pair_core_15_incomplete": 1475,
+    "pair_core_5_complete": 162,
+    "pair_core_5_incomplete": 1315,
+    "pair_history_10_complete": 1443,
+    "pair_history_10_incomplete": 34,
+    "pair_history_15_complete": 1426,
+    "pair_history_15_incomplete": 51,
+    "pair_history_5_complete": 1463,
+    "pair_history_5_incomplete": 14,
+    "pair_stats_10_complete": 435,
+    "pair_stats_10_incomplete": 1042,
+    "pair_stats_15_complete": 267,
+    "pair_stats_15_incomplete": 1210,
+    "pair_stats_5_complete": 819,
+    "pair_stats_5_incomplete": 658,
+    "pair_xg_10_complete": 38,
+    "pair_xg_10_incomplete": 1439,
+    "pair_xg_15_complete": 6,
+    "pair_xg_15_incomplete": 1471,
+    "pair_xg_5_complete": 259,
+    "pair_xg_5_incomplete": 1218,
+    "targets_checked": 1477,
+    "total_observed_stats_matches": 1477,
+    "xg_unverified_matches": 154,
+    "xg_verified_matches": 1323
+  },
+  "venue_specific": true,
+  "xg_shots_vs_stats_absolute_difference_bins": {},
+  "xg_unverified_reason_counts": {
+    "XG_SHOTS_STATS_DISAGREE": 154
+  }
+}
