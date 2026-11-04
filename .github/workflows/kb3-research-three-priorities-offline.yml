@@ -1,0 +1,59 @@
+name: KB3 three research priorities - read-only CI
+on:
+  pull_request:
+    paths:
+      - src/kb3_research_train_forward_contract.py
+      - scripts/kb3_research_parity_audit.py
+      - scripts/kb3_research_xg_coverage_readonly.py
+      - scripts/kb3_research_three_engine_readiness.py
+      - tests/test_kb3_research_train_forward_contract.py
+      - tests/test_kb3_research_xg_and_three_engine.py
+      - .github/workflows/kb3-research-three-priorities-offline.yml
+
+permissions:
+  contents: read
+
+jobs:
+  research-readonly-validation:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ['3.11', '3.12']
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Offline research-only tests
+        run: |
+          python -m unittest tests.test_kb3_research_train_forward_contract tests.test_kb3_research_xg_and_three_engine -v
+      - name: Real source-code parity and checked-in xG/Step17 receipt audits
+        run: |
+          python -m scripts.kb3_research_parity_audit > "$RUNNER_TEMP/kb3_p1_clock.json"
+          python -m scripts.kb3_research_xg_coverage_readonly > "$RUNNER_TEMP/kb3_xg_gaps.json"
+          python -m scripts.kb3_research_three_engine_readiness > "$RUNNER_TEMP/kb3_three_engine.json"
+          python - "$RUNNER_TEMP" <<'PY'
+          import json, pathlib, sys
+          root = pathlib.Path(sys.argv[1])
+          for name in ('kb3_p1_clock.json','kb3_xg_gaps.json','kb3_three_engine.json'):
+              doc = json.loads((root/name).read_text())
+              assert doc.get('gate16') == doc.get('gate17') == 'PENDING'
+              print(name, doc.get('report_sha256'), 'research_only')
+          PY
+      - name: Confirm source datasets and model files unchanged
+        run: |
+          git diff --exit-code -- data models config
+          git diff --check
+      - name: Attach reproducible research audit outputs (not gate PASS)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: KB3_RESEARCH_THREE_PRIORITIES_${{ matrix.python-version }}
+          path: |
+            ${{ runner.temp }}/kb3_p1_clock.json
+            ${{ runner.temp }}/kb3_xg_gaps.json
+            ${{ runner.temp }}/kb3_three_engine.json
+          if-no-files-found: ignore
+          retention-days: 14
