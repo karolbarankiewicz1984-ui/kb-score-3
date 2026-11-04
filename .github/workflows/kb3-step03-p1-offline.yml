@@ -1,0 +1,44 @@
+name: KB3 Step03 P1 safety regression (offline only)
+on:
+  pull_request:
+    paths:
+      - 'src/kb3_m0_live_settlement_calibration.py'
+      - 'src/kb3_m0_shadow_settlement.py'
+      - 'src/kb3_step18_decision_readiness.py'
+      - 'tests/test_step03_p1_guards.py'
+      - 'tests/test_step18_decision_readiness.py'
+      - '.github/workflows/kb3-step03-p1-offline.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'src/kb3_m0_live_settlement_calibration.py'
+      - 'src/kb3_m0_shadow_settlement.py'
+      - 'src/kb3_step18_decision_readiness.py'
+      - 'tests/test_step03_p1_guards.py'
+      - '.github/workflows/kb3-step03-p1-offline.yml'
+permissions:
+  contents: read
+jobs:
+  independent-tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 14
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Existing dependencies, never run provider or fitted model
+        run: python -m pip install --disable-pip-version-check 'cryptography>=42,<47' 'pitchapi==0.1.6'
+      - name: Confirm forbidden calibration on 100 synthetic records, feature parity and regressions
+        run: |
+          python -m compileall -q src/kb3_m0_live_settlement_calibration.py src/kb3_m0_shadow_settlement.py src/kb3_step18_decision_readiness.py tests/test_step03_p1_guards.py
+          python -m unittest discover -s tests -p 'test_step03_p1_guards.py' -v
+          python -m unittest discover -s tests -p 'test_step18_decision_readiness.py' -v
+          python -m unittest discover -s tests -p 'test_step14_m0_actual_settlement_calibration.py' -v
+          python -m unittest discover -s tests -p 'test_step14_m0_shadow_settlement.py' -v
+      - name: Ensure no model or data files changed by tests
+        run: |
+          git diff --exit-code -- data models config
+          git diff --check
