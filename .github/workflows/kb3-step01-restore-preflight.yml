@@ -1,0 +1,24 @@
+name: KB3 Step01 current research database copy and restore preflight
+on:
+  pull_request:
+    paths:
+      - scripts/audit_kb3_step01_restore.py
+      - .github/workflows/kb3-step01-restore-preflight.yml
+      - data/forward_m0_720_eight/kb3_forward_eight.sqlite
+      - models/research/M0_720_TRAIN_STABLE_CANDIDATE_20261029.json
+      - data/forecasts/m0_720_eight/2026-11-04/FROZEN_M0_720_EIGHT.json
+permissions:
+  contents: read
+jobs:
+  real-repository-sqlite-restore:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Read-only original, byte-exact copy and online SQLite backup/restore
+        run: |
+          python -m compileall -q scripts/audit_kb3_step01_restore.py
+          python -m scripts.audit_kb3_step01_restore
