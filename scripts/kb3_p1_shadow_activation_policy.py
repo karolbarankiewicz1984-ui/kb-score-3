@@ -62,6 +62,7 @@ def decide(*,mode,event,ref,repository,policy_path=POLICY,pin_path=None):
         and data.get("required_mode")=="forecast"
         and data.get("required_model_version")==MODEL
         and data.get("formal_model_approval") is False
+        and data.get("production_approved",False) is False
         and data.get("official_fit_increment")==0
         and data.get("allow_retroactive_predictions") is False
         and data.get("allow_champion_promotion") is False,
