@@ -24,3 +24,13 @@ To rozwinięcie [planów](RESEARCH_PRIORITIES_1_3_2026-11-04.md), a nie zakończ
 
 - PR w wersji DRAFT, tylko trzy nowe narzędzia badawcze, kontrakt i testy; osobny workflow PR-only, dwa Pythony 3.11/3.12, bez sekretów i poboru API; odczyt tylko istniejących źródeł. Dane SQLite, PDF, stare archiwa, parametry M0, CBM, protected ENG TEST nietknięte.
 - Dopiero zakończone CI SUCCESS i odczyt artefaktów pozwalają oznaczyć offline audit PASS; same stworzone pliki oznaczają tylko IMPLEMENTED_STAGING. Rozbieżność TRAIN/forward i brak 100+50 nadal są blokadami. Trzy obszary pozostają PARTIAL do niezależnego odbioru.
+
+
+## Zweryfikowany wynik rzeczywistego offline CI (bez API)
+
+[GitHub Actions #41905818556](https://github.com/karolbarankiewicz1984-ui/kb-score-3/actions/runs/41905818556) — **SUCCESS**: obie macierze Python 3.11 i 3.12, w każdej 13/13 unittest PASS, realny read-only audyt źródeł oraz kontrola niezmienności data/models/config. Kod testowany na SHA 1fc673b35c65d2454c5650181a6f8cd41f7e57d2.
+
+- **TRAIN/forward — 1520 realnych ID celu** spośród 1525 obserwowanych historycznie (5 UCL pozostawionych poza ośmioligowym porównaniem). Przy HIPOTETYCZNYM cutoff celu = kickoff−2h i porównaniu heurystycznego wynik+48h TRAIN z wynikiem+3h forward: 0/1520 różnic w listach poprzedników, 1520/1520 różnic w liczbie dni od ostatniego kickoff (odniesienie kickoff celu vs cutoff). Ten wynik NIE udowadnia zgodności autentycznych publikacji ani capture times. Poprawka P1-01 nie jest ukończona.
+- **xG — 1525 historycznych stats, 1363 natywne xG zweryfikowane, 162 niezgodne**; kompletne pary xG5 271, xG10 39, xG15 6, core5 654. xG5 per scope: BEL 115/383, ESP 41/195, FRA 20/163, GER 21/177, ITA 19/150, NED 9/152, POL 26/150, TUR 20/150, UCL 0/5. NED ma szczególnie niewielkie pokrycie xG5; jednak selekcję kolejnych źródeł opierać na koszcie domknięcia całych okien, nie na samym procentowym udziale.
+- **Model comparison — 126 autentycznych frozen, 74 eligible FIT, 52 nierozliczone** na ostatnim realnym receipt. M0/Elo-only, Elo-only/CatBoost no-xG i M0/CatBoost no-xG mają po jednym wspólnym rozliczonym fixture. Brak podstaw do wniosków o przewadze.
+- Wyniki audytu to PARTIAL research; GATE16/GATE17 nie zamykano, modeli ani danych nie zmieniano, historia nadal RECONSTRUCTED. Artefakty trzech osobnych JSON dostępne w Actions dla 3.11 i 3.12.
