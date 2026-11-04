@@ -587,6 +587,10 @@ def run(*,mode,client,now=None,db_path=DB,root=SOURCES,public_key=None,
                 audit_challengers,paired_settled_report)
             challenger_audit=audit_challengers(staging,token=token,now=cutoff)
             paired_results=paired_settled_report(staging)
+            from src.kb3_p1_shadow_host_provenance import (
+                audit_shadow,paired_settled_shadow)
+            shadow_host_audit=audit_shadow(staging,token=token,now=cutoff)
+            shadow_pairs=paired_settled_shadow(staging)
             extra.update({
                 "publication_proof_audit":{
                    "push_event_provider_state":provider_state,
@@ -600,7 +604,9 @@ def run(*,mode,client,now=None,db_path=DB,root=SOURCES,public_key=None,
                    "missing_host_evidence_never_assumed_pre_match":True},
                 "calibration_readiness":ready,
                 "step17_challenger_proof_audit":challenger_audit,
-                "step17_paired_same_fixture_readiness":paired_results})
+                "step17_paired_same_fixture_readiness":paired_results,
+                "catboost_shadow_six_host_audit":shadow_host_audit,
+                "catboost_shadow_six_paired_results":shadow_pairs})
         report={"schema":"kb3-step16-8league-M0-720-TRAIN-forward-v1",
             "mode":mode,"model_version":MODEL,"params_sha256":param_sha,
             "manifest_sha256":manifest_sha,"run_utc":stamp(cutoff),
