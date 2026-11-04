@@ -19,16 +19,16 @@ from collections import Counter, defaultdict
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
-from scripts.pitchapi_step06_audit import to_plain
 from scripts.kb3_ucl_pitchapi_collector import choose_ucl
-from src.kb3_pit_ledger import as_utc, canonical, utc_now
+from src.kb3_pit_ledger import as_utc, canonical
 from src.kb3_pitch_native import MATCH_ID, TEAM_ID
-from src.kb3_pitch_uefa_evidence import add_observation, seal
+from src.kb3_pitch_uefa_evidence import seal
 from src.kb3_step14_pitchapi_xg_semantics import (
     SemanticAuditError, parse_native_shots, parse_native_team_stats,
 )
 from src.kb3_step16_m0_720_eight_forward import ROOT, EIGHT, select_eight
 from src.kb3_historical_feature_quality import add_fixture_rows, assess_and_cache
+from src.kb3_history_request_budget import RequestBudget
 
 SEASONS = ("2023/2024", "2024/2025", "2025/2026", "2026/2027")
 MAIN_SEASONS = ("2024/2025", "2025/2026", "2026/2027")
@@ -150,7 +150,7 @@ def priority_predecessor_matches(groups,known):
     return [(scope,season,indexed[(scope,mid)][1])
             for scope,season,mid in ranked]
 
-def underserved_national_scope(groups,known,max_matches):
+def underserved_national_scope(groups,known,max_matches,*,candidate_keys=None):
     """Select a research league lacking detailed stats, but only in large batches.
 
     A full 48-match batch seeds a meaningful sequence of fixtures for a team.
@@ -163,7 +163,8 @@ def underserved_national_scope(groups,known,max_matches):
     league_rows={scope:rows for (scope,season),rows in groups.items()
                  if scope in NATIONAL_SCOPES and season=="2025/2026"
                  and len(rows)>=100 and
-                 any((scope,m["id"]) not in known for m in rows)}
+                 any((scope,m["id"]) not in known and
+                     (candidate_keys is None or (scope,m["id"]) in candidate_keys) for m in rows)}
     if len(league_rows)<3:
         return None
     coverage=Counter(scope for scope,_ in known if scope in NATIONAL_SCOPES)
@@ -174,14 +175,16 @@ def underserved_national_scope(groups,known,max_matches):
     return min(league_rows,key=lambda scope:(coverage.get(scope,0),scope))
 
 
-def select_batch(groups, known, max_matches=MAX_MATCHES):
+def select_batch(groups, known, max_matches=MAX_MATCHES, *, candidate_keys=None):
     """Prioritize true missing 5/10/15 predecessors then dense history blocks."""
     require(1 <= max_matches <= MAX_MATCHES, "MATCH_BATCH_LIMIT")
     priority={"2025/2026":0,"2024/2025":1,"2026/2027":2,"2023/2024":3}
     chosen=[]
     planned=set(known)
-    balanced_scope=underserved_national_scope(groups,known,max_matches)
+    balanced_scope=underserved_national_scope(groups,known,max_matches,candidate_keys=candidate_keys)
     urgent=priority_predecessor_matches(groups,known)
+    if candidate_keys is not None:
+        urgent=[x for x in urgent if (x[0],x[2]['id']) in candidate_keys]
     if balanced_scope is not None:
         urgent=[x for x in urgent if x[0]==balanced_scope]
     # Most of the budget goes directly to currently incomplete 5/10/15 windows.
@@ -199,10 +202,11 @@ def select_batch(groups, known, max_matches=MAX_MATCHES):
         for (scope,season),rows in groups.items():
             if balanced_scope is not None and scope!=balanced_scope:
                 continue
-            remaining=[m for m in rows if (scope,m["id"]) not in planned]
+            remaining=[m for m in rows if (scope,m["id"]) not in planned and
+                       (candidate_keys is None or (scope,m['id']) in candidate_keys)]
             if not remaining:
                 continue
-            completed=len(rows)-len(remaining)
+            completed=sum((scope,m['id']) in planned for m in rows)
             desired=min(len(rows),180)
             if completed>=desired:
                 continue
@@ -213,10 +217,11 @@ def select_batch(groups, known, max_matches=MAX_MATCHES):
             for (scope,season),rows in groups.items():
                 if balanced_scope is not None and scope!=balanced_scope:
                     continue
-                remaining=[m for m in rows if (scope,m["id"]) not in planned]
+                remaining=[m for m in rows if (scope,m["id"]) not in planned and
+                           (candidate_keys is None or (scope,m['id']) in candidate_keys)]
                 if remaining:
                     remaining.sort(key=lambda m:(m["time_utc"],m["id"]),reverse=True)
-                    completed=len(rows)-len(remaining)
+                    completed=sum((scope,m['id']) in planned for m in rows)
                     queues.append((priority[season],-completed,scope,season,remaining))
         if queues:
             _,_,scope,season,selection=min(queues,key=lambda x:x[:4])
@@ -306,10 +311,16 @@ CREATE TRIGGER IF NOT EXISTS observations_no_delete BEFORE DELETE ON observation
 def existing_ids(path):
     if not Path(path).exists():
         return set()
-    with sqlite3.connect(path) as db:
-        db.executescript(SQL)
+    with sqlite3.connect(Path(path).resolve().as_uri()+'?mode=ro',uri=True) as db:
         require(db.execute("PRAGMA integrity_check").fetchone()[0] == "ok", "BACKFILL_DB_CORRUPTION")
         return set(db.execute("SELECT scope,match_id FROM observations"))
+
+
+def existing_verified_ids(path):
+    if not Path(path).exists():
+        return set()
+    with sqlite3.connect(Path(path).resolve().as_uri()+'?mode=ro',uri=True) as db:
+        return set(db.execute("SELECT scope,match_id FROM observations WHERE xg_status='VERIFIED'"))
 
 
 def put_rows(path, samples):
@@ -338,38 +349,27 @@ def put_rows(path, samples):
 
 
 def capture(*, client, root=ARCHIVE, db_path=DB, public_key=PUBLIC_KEY,
-            run_token, max_matches=MAX_MATCHES):
+            run_token, max_matches=MAX_MATCHES, selector='current'):
     require(bool(re.fullmatch(r"[A-Za-z0-9_-]{1,64}", run_token)), "INVALID_RUN_TOKEN")
     require(1 <= max_matches <= MAX_MATCHES, "UNSAFE_MATCH_LIMIT")
+    require(selector in ('current','window-yield'),'UNKNOWN_HISTORY_SELECTOR')
+    require(getattr(client,'_max_retries',0)==0,'SDK_RETRIES_MUST_BE_ZERO_FOR_REQUEST_CAP')
+    require(not any(Path(root).glob('*/run-'+run_token)), 'HISTORICAL_IMMUTABLE_RUN_ALREADY_EXISTS')
     known = existing_ids(db_path)
     receipts = []
     errors = Counter()
-    calls = 0
-    def call(resource, fn, *args, **kwargs):
-        nonlocal calls
-        require(calls < MAX_CALLS, "HISTORICAL_PROVIDER_CALL_CAP")
-        started = utc_now()
-        try:
-            payload = to_plain(fn(*args, **kwargs))
-        except Exception as exc:
-            calls += 1
-            errors[type(exc).__name__] += 1
-            return None, None
-        ended = utc_now()
-        calls += 1
-        require(isinstance(payload, dict), "NON_OBJECT_SOURCE_PAYLOAD")
-        add_observation(receipts, resource=resource, payload=payload,
-                        started=started, completed=ended)
-        return payload, receipts[-1]
-    catalog, receipt = call("pitchapi:catalog", client.leagues.list)
+    budget=RequestBudget(MAX_CALLS,receipts,errors)
+    call=budget.call
+    catalog, receipt = call("pitchapi:catalog", client.leagues.list,reserve=36+2*max_matches)
     require(catalog is not None, "PITCHAPI_CATALOG_UNAVAILABLE")
     scopes, ucl_status = select_scopes(catalog)
     groups = {}
     source_counts = {}
     indexed = []
-    for scope, lid, season in scopes:
+    for i,(scope, lid, season) in enumerate(scopes):
         listing, r = call("pitchapi:history:fixtures:" + scope + ":" + season,
-                          client.leagues.matches, lid, season=season, status="all")
+                          client.leagues.matches, lid, season=season, status="all",
+                          reserve=len(scopes)-i-1+2*max_matches)
         if listing is None:
             errors["MISSING_SEASON_" + scope + "_" + season] += 1
             continue
@@ -379,35 +379,52 @@ def capture(*, client, root=ARCHIVE, db_path=DB, public_key=PUBLIC_KEY,
         indexed.extend((scope, season, m, r["completed_at_utc"], r["payload_sha256"])
                        for m in rows)
     require(bool(groups), "NO_VALID_HISTORICAL_MATCHES")
-    selected = select_batch(groups, known, max_matches=max_matches)
+    planning=None
+    if selector=='window-yield':
+        require(all((s,se) in groups for s,_,se in scopes if s in NATIONAL_SCOPES),
+                'NEW_SELECTOR_REQUIRES_COMPLETE_SEASON_LISTINGS')
+        from src.kb3_history_window_selector import select_window_batch
+        selected,planning=select_window_batch(groups,known,existing_verified_ids(db_path),max_matches)
+    else:
+        selected = select_batch(groups, known, max_matches=max_matches)
     samples = []
     stat_keys = set()
     missing_stats = 0
-    for scope, season, m in selected:
+    deferred=[]
+    for i,(scope, season, m) in enumerate(selected):
+        remaining=len(selected)-i-1
         mid = m["id"]
-        stats, sr = call("pitchapi:history:stats:" + mid, client.matches.stats, mid)
+        stats, sr = call("pitchapi:history:stats:" + mid, client.matches.stats, mid,reserve=2*remaining+1)
         if stats is None:
             missing_stats += 1
+            deferred.append({'scope':scope,'match_id':mid,'reason':'STATS_REQUEST_UNAVAILABLE'})
             continue
         try:
             items = all_period_stat_items(stats, m)
         except (BackfillError, TypeError, KeyError):
             errors["STATS_SHAPE_OR_IDENTITY"] += 1
             missing_stats += 1
+            deferred.append({'scope':scope,'match_id':mid,'reason':'STATS_SHAPE_OR_IDENTITY'})
             continue
-        shots, sh = call("pitchapi:history:shots:" + mid, client.matches.shots, mid)
+        shots, sh = call("pitchapi:history:shots:" + mid, client.matches.shots, mid,reserve=2*remaining)
+        if shots is None:
+            deferred.append({'scope':scope,'match_id':mid,'reason':'SHOTS_REQUEST_UNAVAILABLE',
+                             'retained_stats_receipt_sha256':sr['payload_sha256']})
+            continue  # Remains eligible on the next batch; no immutable half-pair.
         state, xh, xa, nh, na = native_xg_verified(stats, shots, m)
         stat_keys.update(i["key"] for i in items)
         samples.append({"scope": scope, "season": season, "id": mid,
             "time_utc": m["time_utc"], "home_id": m["home_team"]["id"],
             "away_id": m["away_team"]["id"], "goals_home": m["score_home"],
-            "goals_away": m["score_away"], "observed_at": sr["completed_at_utc"],
+            "goals_away": m["score_away"],
+            "observed_at": max((sr['completed_at_utc'],sh['completed_at_utc']),key=as_utc),
             "items": items, "stat_key_count": len({i["key"] for i in items}),
             "xg_status": state, "xg_home": xh, "xg_away": xa,
             "shots_home": nh, "shots_away": na,
             "stats_sha": sr["payload_sha256"],
             "shots_sha": sh["payload_sha256"] if sh else None,
             "source_chain": (sh or sr)["chain_sha256"]})
+    calls=budget.calls
     require(calls <= MAX_CALLS, "HISTORICAL_PROVIDER_CALL_BUDGET_OVERFLOW")
     started_day = as_utc(receipts[0]["started_at_utc"]).date().isoformat()
     dest = Path(root) / started_day / ("run-" + run_token)
@@ -426,6 +443,11 @@ def capture(*, client, root=ARCHIVE, db_path=DB, public_key=PUBLIC_KEY,
             "started_utc": receipts[0]["started_at_utc"],
             "ended_utc": receipts[-1]["completed_at_utc"],
             "run_token": run_token, "provider_requests": calls,
+            "selector":selector,"selector_planning":planning,
+            "selected_match_count":len(selected),
+            "selected_match_ids":[{'scope':s,'season':se,'match_id':m['id']} for s,se,m in selected],
+            "request_retries":budget.retries,'deferred_pairs':deferred,
+            "successful_response_receipts":len(receipts),
             "provider_call_cap": MAX_CALLS, "match_request_limit": max_matches,
             "source_seasons": list(SEASONS),
             "scopes_catalogued": len(scopes), "scopes_observed": len(groups),
@@ -443,7 +465,7 @@ def capture(*, client, root=ARCHIVE, db_path=DB, public_key=PUBLIC_KEY,
             "true_last5_both_xg_complete": quality["totals"].get("pair_xg_5_complete",0),
             "true_last10_both_xg_complete": quality["totals"].get("pair_xg_10_complete",0),
             "true_last15_both_xg_complete": quality["totals"].get("pair_xg_15_complete",0),
-            "historical_feature_target_rows": quality["totals"]["targets_checked"],
+            "historical_feature_target_rows": quality["totals"].get("targets_checked",0),
             "feature_report_is_reconstructed_not_provider_pit": True,
             "source_ciphertext_sha256": sealed["ciphertext_sha256"],
             "source_chain_sha256": sealed["proof"]["final_chain_sha256"],
@@ -472,14 +494,15 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--run-token", required=True)
     parser.add_argument("--max-matches", type=int, default=MAX_MATCHES)
+    parser.add_argument('--selector',choices=('current','window-yield'),default='current')
     args = parser.parse_args()
     key = os.getenv("PITCHAPI_API_KEY", "").strip()
     if not key:
         raise SystemExit("EXISTING_PITCHAPI_SECRET_NOT_CONFIGURED")
     from pitchapi import PitchAPI
     try:
-        result = capture(client=PitchAPI(api_key=key),
-                         run_token=args.run_token, max_matches=args.max_matches)
+        result = capture(client=PitchAPI(api_key=key,max_retries=0),
+                         run_token=args.run_token, max_matches=args.max_matches,selector=args.selector)
     except Exception as err:
         # Never include provider responses, tokens, fixture/team names in logs.
         print("KB3_HISTORY_CAPTURE_BLOCKED", type(err).__name__)
