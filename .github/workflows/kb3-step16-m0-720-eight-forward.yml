@@ -3,6 +3,8 @@ on:
   pull_request:
     paths:
       - src/kb3_step16_m0_720_eight_forward.py
+      - src/kb3_step16_run_policy.py
+      - tests/test_m0720_operations.py
       - src/kb3_step17_forward_challengers.py
       - tests/test_step17_forward_challengers.py
       - src/kb3_step17_challenger_provenance.py
@@ -20,6 +22,8 @@ on:
     branches: [main]
     paths:
       - src/kb3_step16_m0_720_eight_forward.py
+      - src/kb3_step16_run_policy.py
+      - tests/test_m0720_operations.py
       - src/kb3_step17_forward_challengers.py
       - tests/test_step17_forward_challengers.py
       - src/kb3_step17_challenger_provenance.py
@@ -67,6 +71,7 @@ jobs:
           python -m unittest discover -s tests -p 'test_step17_forward_challengers.py' -v
           python -m unittest discover -s tests -p 'test_step17_challenger_provenance.py' -v
           python -m unittest discover -s tests -p 'test_step16_m0_mode_guard.py' -v
+          python -m unittest discover -s tests -p 'test_m0720_operations.py' -v
   real-eighth-league-fitted-M0-shadow:
     if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
     needs: anti-leakage-and-data-safety
@@ -166,6 +171,10 @@ jobs:
             echo 'No new independent M0-720 research files.'
           else
             git commit -m 'kb3 step16: 8 league fixed M0-720 real pregame and result samples'
-            git pull --rebase origin main
-            git push origin HEAD:main
+            # Binary SQLite cannot be rebased safely. Fail closed and recover
+            # the original encrypted artifact if main advanced meanwhile.
+            if ! git push origin HEAD:main; then
+              echo "::error::M0_RESEARCH_PUSH_REJECTED_RECOVER_ORIGINAL_ARTIFACT_NO_REFORECAST"
+              exit 1
+            fi
           fi

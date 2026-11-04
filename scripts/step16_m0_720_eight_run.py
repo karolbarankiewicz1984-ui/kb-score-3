@@ -6,26 +6,32 @@ from __future__ import annotations
 import argparse,json,os,sys
 from pathlib import Path
 from datetime import datetime,timezone
-from src.kb3_step16_m0_720_eight_forward import run,DB,FORECASTS,SOURCES
+from src.kb3_step16_m0_720_eight_forward import run,DB,FORECASTS,SOURCES,Research720Error
+from src.kb3_step16_run_policy import forecast_due
 from src.kb3_pit_ledger import utc_now
 def main():
     p=argparse.ArgumentParser()
     p.add_argument("--mode",choices=("forecast","settle"),required=True)
     args=p.parse_args()
-    key=os.environ.get("PITCHAPI_API_KEY","")
-    if not key:raise SystemExit("PITCHAPI_SECRET_NOT_CONFIGURED")
     now=datetime.now(timezone.utc)
     print("M0_720_RESEARCH_EXECUTION_INTENT",json.dumps({"mode":args.mode,"utc_day":now.date().isoformat(),"research_only":True,"protected_english_test_access":False},sort_keys=True))
     if args.mode=="forecast":
-        existing=FORECASTS/now.date().isoformat()/"FROZEN_M0_720_EIGHT.json"
-        if existing.is_file():
-            j=json.loads(existing.read_text())
-            if j.get("model_version")!="M0_ELO_POISSON_RESEARCH_720TRAIN_V1":
-                raise SystemExit("FROZEN_FORECAST_VERSION_MISMATCH")
-            print("RESEARCH720_DAILY_FORECAST_ALREADY_FROZEN",existing)
+        due,reason=forecast_due(SOURCES,FORECASTS,now)
+        if not due:
+            print('M0_720_LOCAL_FORECAST_SKIP',reason)
             return
+    key=os.environ.get('PITCHAPI_API_KEY','')
+    if not key:raise SystemExit('PITCHAPI_SECRET_NOT_CONFIGURED')
     from pitchapi import PitchAPI
-    result=run(mode=args.mode,client=PitchAPI(api_key=key),now=now)
+    try:result=run(mode=args.mode,client=PitchAPI(api_key=key,max_retries=0),now=now)
+    except Research720Error as exc:
+        if str(exc).startswith('FORECAST_NOT_DUE:'):
+            print('M0_720_LOCAL_FORECAST_SKIP',str(exc));return
+        print('M0_720_CAPTURE_FAILED',type(exc).__name__,json.dumps(getattr(exc,'capture_detail',{}),sort_keys=True))
+        raise SystemExit(3)
+    except Exception as exc:
+        print('M0_720_CAPTURE_FAILED',type(exc).__name__)
+        raise SystemExit(3)
     print(json.dumps({k:result[k] for k in (
         "mode","model_version","run_utc","network_calls","league_count",
         "countries","params_sha256","gate16")},sort_keys=True))

@@ -7,31 +7,21 @@ from __future__ import annotations
 from datetime import datetime,timedelta,timezone
 from pathlib import Path
 import os
+from src.kb3_step16_run_policy import forecast_due,latest_settlement as policy_latest_settlement,SETTLEMENT_GAP
 
 ROOT=Path(__file__).resolve().parents[1]
 FORECAST_CRONS=("21 6,9,12 * * *","21 6 * * *")
 SETTLE_CRONS=("17 8,14,22 * * *","17 8,22 * * *")
-MIN_SETTLE_GAP=timedelta(hours=8)
+MIN_SETTLE_GAP=SETTLEMENT_GAP
 
 def latest_settlement(root,now):
-    base=Path(root)/"data/pit_sidecar/m0_720_eight"
-    times=[]
-    for lookback in range(3):
-        day=(now.date()-timedelta(days=lookback)).isoformat()
-        for rec in (base/day).glob("settle-*/RECEIPT.json"):
-            hh=rec.parent.name.removeprefix("settle-")
-            if len(hh)<6 or not hh[:6].isdigit():continue
-            try:
-                ts=datetime.fromisoformat(f"{day}T{hh[:2]}:{hh[2:4]}:{hh[4:6]}+00:00")
-            except ValueError:continue
-            if ts<=now:times.append(ts)
-    return max(times,default=None)
+    return policy_latest_settlement(Path(root)/'data/pit_sidecar/m0_720_eight',now)
 
 def select(*,event,cron,user_mode,now,root):
     if now.tzinfo is None or now.utcoffset()!=timedelta(0):
         raise ValueError("UTC_REQUIRED")
-    today=now.date().isoformat()
-    frozen=(Path(root)/"data/forecasts/m0_720_eight"/today/"FROZEN_M0_720_EIGHT.json").is_file()
+    due,forecast_reason=forecast_due(Path(root)/'data/pit_sidecar/m0_720_eight',
+                                    Path(root)/'data/forecasts/m0_720_eight',now)
     last=latest_settlement(root,now)
     stale=last is None or now-last>=MIN_SETTLE_GAP
     if event=="workflow_dispatch" and user_mode=="settle":
@@ -39,15 +29,11 @@ def select(*,event,cron,user_mode,now,root):
     if event=="schedule" and cron in SETTLE_CRONS:
         return ("settle","SETTLEMENT_DUE") if stale else ("skip","SETTLEMENT_ALREADY_RECENT")
     if event=="schedule" and cron in FORECAST_CRONS:
-        return ("skip","TODAY_ALREADY_FROZEN") if frozen else ("forecast","MISSING_DAILY_FORECAST")
+        return ('forecast',forecast_reason) if due else ('skip',forecast_reason)
     if event=="workflow_dispatch" and user_mode=="forecast":
-        return ("skip","TODAY_ALREADY_FROZEN") if frozen else ("forecast","MANUAL_FORECAST")
+        return ('forecast',forecast_reason) if due else ('skip',forecast_reason)
     if event=="push":
-        if not frozen and now.hour>=6:
-            return "forecast","PUSH_RECOVERY_NO_FREEZE"
-        if frozen and stale:
-            return "settle","PUSH_RECOVERY_STALE_SETTLEMENT"
-        return "skip","NO_NEEDED_PAID_PROVIDER_REQUEST"
+        return 'skip','CODE_PUSH_NEVER_STARTS_PROVIDER_REQUESTS'
     raise ValueError("UNRECOGNIZED_EVENT_OR_CRON")
 
 def main():

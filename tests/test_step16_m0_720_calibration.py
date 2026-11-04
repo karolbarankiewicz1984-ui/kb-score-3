@@ -122,6 +122,10 @@ class GateTests(unittest.TestCase):
         with sqlite3.connect(db) as c:
             self.assertEqual(c.execute("SELECT COUNT(*) FROM m0720_calibrators").fetchone()[0],1)
             self.assertEqual(c.execute("SELECT COUNT(*) FROM m0720_holdout_reviews").fetchone()[0],1)
+            fit_ids=json.loads(c.execute('SELECT payload_json FROM m0720_calibrators').fetchone()[0])['training_forecast_ids']
+            holdout_ids=json.loads(c.execute('SELECT payload_json FROM m0720_holdout_reviews').fetchone()[0])['holdout_forecast_ids']
+            self.assertEqual((len(set(fit_ids)),len(set(holdout_ids))),(100,50))
+            self.assertFalse(set(fit_ids)&set(holdout_ids))
             with self.assertRaises(sqlite3.IntegrityError):
                 c.execute("UPDATE m0720_calibrators SET temperature=4")
             with self.assertRaises(sqlite3.IntegrityError):

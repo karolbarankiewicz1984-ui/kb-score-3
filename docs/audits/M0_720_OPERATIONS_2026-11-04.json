@@ -1,0 +1,1195 @@
+{
+  "actions_evidence": {
+    "all_runs_observed": 150,
+    "main_runs_observed": 12,
+    "new_pitchapi_calls": 0,
+    "not_full_workflow_history": true,
+    "observed_mode_counts": {
+      "forecast": 3,
+      "settle": 6
+    },
+    "queried_pages": 3,
+    "repository": "karolbarankiewicz1984-ui/kb-score-3",
+    "runs": [
+      {
+        "conclusion": "success",
+        "created_at": "2026-11-04T02:20:52Z",
+        "event": "schedule",
+        "head_sha": "1f43efd911a49ababbfee2c15d1ef754f834b67a",
+        "id": 41760140135,
+        "matched_committed_receipts": [
+          {
+            "mode": "settle",
+            "network_calls": 9,
+            "new_forecasts": 0,
+            "new_settlements": 0,
+            "run_utc": "2026-11-04T02:22:13.346295Z"
+          }
+        ],
+        "real_job_conclusion": "success",
+        "real_job_id": 126345853741,
+        "selected_log_lines": [
+          "2026-11-04T02:21:45.7948287Z   CRON: 17 8,14,22 * * *",
+          "2026-11-04T02:21:45.8566704Z M0_720_RESEARCH_MODE settle SETTLEMENT_DUE explicitly_no_API_if_skip False",
+          "2026-11-04T02:22:13.9073887Z M0_720_RESEARCH_EXECUTION_INTENT {\"mode\": \"settle\", \"protected_english_test_access\": false, \"research_only\": true, \"utc_day\": \"2026-11-04\"}",
+          "2026-11-04T02:22:13.9079394Z M0_720_RESEARCH_RUN_COUNTS {\"new_settlements\": 0, \"total_settlements\": 74}"
+        ],
+        "updated_at": "2026-11-04T02:22:19Z"
+      },
+      {
+        "conclusion": "success",
+        "created_at": "2026-11-03T16:16:16Z",
+        "event": "schedule",
+        "head_sha": "5a7ee0a6e9602176fa9a6265c28f604f55fcf008",
+        "id": 41672457360,
+        "matched_committed_receipts": [
+          {
+            "mode": "settle",
+            "network_calls": 9,
+            "new_forecasts": 0,
+            "new_settlements": 0,
+            "run_utc": "2026-11-03T16:17:34.908878Z"
+          }
+        ],
+        "real_job_conclusion": "success",
+        "real_job_id": 126044555681,
+        "selected_log_lines": [
+          "2026-11-03T16:17:10.7880408Z   CRON: 17 8,14,22 * * *",
+          "2026-11-03T16:17:10.8207658Z M0_720_RESEARCH_MODE settle SETTLEMENT_DUE explicitly_no_API_if_skip False",
+          "2026-11-03T16:17:41.2909127Z M0_720_RESEARCH_EXECUTION_INTENT {\"mode\": \"settle\", \"protected_english_test_access\": false, \"research_only\": true, \"utc_day\": \"2026-11-03\"}",
+          "2026-11-03T16:17:41.2926472Z M0_720_RESEARCH_RUN_COUNTS {\"new_settlements\": 0, \"total_settlements\": 74}"
+        ],
+        "updated_at": "2026-11-03T16:17:48Z"
+      },
+      {
+        "conclusion": "success",
+        "created_at": "2026-11-03T14:28:33Z",
+        "event": "schedule",
+        "head_sha": "8234f5e2466c9031ba90773410232ec61b861451",
+        "id": 41654038239,
+        "matched_committed_receipts": [
+          {
+            "mode": "forecast",
+            "network_calls": 17,
+            "new_forecasts": 16,
+            "new_settlements": 0,
+            "run_utc": "2026-11-03T14:29:39.361057Z"
+          }
+        ],
+        "real_job_conclusion": "success",
+        "real_job_id": 125979832267,
+        "selected_log_lines": [
+          "2026-11-03T14:29:16.9955113Z   CRON: 21 6,9,12 * * *",
+          "2026-11-03T14:29:17.0205611Z M0_720_RESEARCH_MODE forecast MISSING_DAILY_FORECAST explicitly_no_API_if_skip False",
+          "2026-11-03T14:29:40.1221838Z M0_720_RESEARCH_EXECUTION_INTENT {\"mode\": \"forecast\", \"protected_english_test_access\": false, \"research_only\": true, \"utc_day\": \"2026-11-03\"}",
+          "2026-11-03T14:29:40.1226030Z M0_720_RESEARCH_RUN_COUNTS {\"new_forecasts\": 16, \"total_forecasts\": 91}"
+        ],
+        "updated_at": "2026-11-03T14:29:50Z"
+      },
+      {
+        "conclusion": "success",
+        "created_at": "2026-11-03T03:28:17Z",
+        "event": "schedule",
+        "head_sha": "495c5f1f23899d6c975e640b0d2ab01c765f8571",
+        "id": 41572391144,
+        "matched_committed_receipts": [
+          {
+            "mode": "settle",
+            "network_calls": 9,
+            "new_forecasts": 0,
+            "new_settlements": 8,
+            "run_utc": "2026-11-03T03:29:38.011831Z"
+          }
+        ],
+        "real_job_conclusion": "success",
+        "real_job_id": 125708270113,
+        "selected_log_lines": [
+          "2026-11-03T03:29:14.3127871Z   CRON: 17 8,14,22 * * *",
+          "2026-11-03T03:29:14.3484867Z M0_720_RESEARCH_MODE settle SETTLEMENT_DUE explicitly_no_API_if_skip False",
+          "2026-11-03T03:29:38.6392108Z M0_720_RESEARCH_EXECUTION_INTENT {\"mode\": \"settle\", \"protected_english_test_access\": false, \"research_only\": true, \"utc_day\": \"2026-11-03\"}",
+          "2026-11-03T03:29:38.6409738Z M0_720_RESEARCH_RUN_COUNTS {\"new_settlements\": 8, \"total_settlements\": 74}"
+        ],
+        "updated_at": "2026-11-03T03:29:44Z"
+      },
+      {
+        "conclusion": "success",
+        "created_at": "2026-11-02T18:23:28Z",
+        "event": "schedule",
+        "head_sha": "eab45574ecab736f0bbae727aa0d14be45776040",
+        "id": 41500112326,
+        "matched_committed_receipts": [
+          {
+            "mode": "settle",
+            "network_calls": 9,
+            "new_forecasts": 0,
+            "new_settlements": 6,
+            "run_utc": "2026-11-02T18:24:34.085094Z"
+          }
+        ],
+        "real_job_conclusion": "success",
+        "real_job_id": 125465438638,
+        "selected_log_lines": [
+          "2026-11-02T18:24:15.2509870Z   CRON: 17 8,14,22 * * *",
+          "2026-11-02T18:24:15.2766975Z M0_720_RESEARCH_MODE settle SETTLEMENT_DUE explicitly_no_API_if_skip False",
+          "2026-11-02T18:24:34.7523958Z M0_720_RESEARCH_EXECUTION_INTENT {\"mode\": \"settle\", \"protected_english_test_access\": false, \"research_only\": true, \"utc_day\": \"2026-11-02\"}",
+          "2026-11-02T18:24:34.7528294Z M0_720_RESEARCH_RUN_COUNTS {\"new_settlements\": 6, \"total_settlements\": 66}"
+        ],
+        "updated_at": "2026-11-02T18:25:03Z"
+      },
+      {
+        "conclusion": "success",
+        "created_at": "2026-11-02T16:14:04Z",
+        "event": "schedule",
+        "head_sha": "d48f96c36f686b7fc688696412cdb18fbd3ee8aa",
+        "id": 41479439802,
+        "matched_committed_receipts": [
+          {
+            "mode": "forecast",
+            "network_calls": 17,
+            "new_forecasts": 0,
+            "new_settlements": 0,
+            "run_utc": "2026-11-02T16:15:26.234467Z"
+          }
+        ],
+        "real_job_conclusion": "success",
+        "real_job_id": 125393958094,
+        "selected_log_lines": [
+          "2026-11-02T16:15:00.3350641Z   CRON: 21 6,9,12 * * *",
+          "2026-11-02T16:15:00.3679824Z M0_720_RESEARCH_MODE forecast MISSING_DAILY_FORECAST explicitly_no_API_if_skip False",
+          "2026-11-02T16:15:27.1138122Z M0_720_RESEARCH_EXECUTION_INTENT {\"mode\": \"forecast\", \"protected_english_test_access\": false, \"research_only\": true, \"utc_day\": \"2026-11-02\"}",
+          "2026-11-02T16:15:27.1143480Z M0_720_RESEARCH_RUN_COUNTS {\"new_forecasts\": 0, \"total_forecasts\": 75}"
+        ],
+        "updated_at": "2026-11-02T16:15:37Z"
+      },
+      {
+        "conclusion": "success",
+        "created_at": "2026-11-02T01:30:01Z",
+        "event": "schedule",
+        "head_sha": "c454089b985dab223d98788f17f5ac07e7a678de",
+        "id": 41372787698,
+        "matched_committed_receipts": [],
+        "real_job_conclusion": "success",
+        "real_job_id": 125046815860,
+        "selected_log_lines": [
+          "2026-11-02T01:30:51.2864914Z   CRON: 17 8,14,22 * * *",
+          "2026-11-02T01:30:51.3217662Z M0_720_RESEARCH_MODE skip SETTLEMENT_ALREADY_RECENT explicitly_no_API_if_skip True"
+        ],
+        "updated_at": "2026-11-02T01:30:54Z"
+      },
+      {
+        "conclusion": "success",
+        "created_at": "2026-11-01T20:21:09Z",
+        "event": "push",
+        "head_sha": "03b22b53d5f98cc4238d474a12e9c4bd0f2e4126",
+        "id": 41346411108,
+        "matched_committed_receipts": [
+          {
+            "mode": "settle",
+            "network_calls": 9,
+            "new_forecasts": 0,
+            "new_settlements": 21,
+            "run_utc": "2026-11-01T20:22:12.466838Z"
+          }
+        ],
+        "real_job_conclusion": "success",
+        "real_job_id": 124967188529,
+        "selected_log_lines": [
+          "2026-11-01T20:21:48.8066890Z   CRON: ",
+          "2026-11-01T20:21:48.8397195Z M0_720_RESEARCH_MODE settle PUSH_RECOVERY_STALE_SETTLEMENT explicitly_no_API_if_skip False",
+          "2026-11-01T20:22:13.1976810Z M0_720_RESEARCH_EXECUTION_INTENT {\"mode\": \"settle\", \"protected_english_test_access\": false, \"research_only\": true, \"utc_day\": \"2026-11-01\"}",
+          "2026-11-01T20:22:13.1980821Z M0_720_RESEARCH_RUN_COUNTS {\"new_settlements\": 21, \"total_settlements\": 60}"
+        ],
+        "updated_at": "2026-11-01T20:22:18Z"
+      },
+      {
+        "conclusion": "success",
+        "created_at": "2026-11-01T18:56:35Z",
+        "event": "schedule",
+        "head_sha": "2bf0e1e058ad2bc989a63700197712e5b3e879af",
+        "id": 41339170552,
+        "matched_committed_receipts": [],
+        "real_job_conclusion": "success",
+        "real_job_id": 124945467639,
+        "selected_log_lines": [
+          "2026-11-01T18:57:24.1605344Z   CRON: 17 8,14,22 * * *",
+          "2026-11-01T18:57:24.1902509Z M0_720_RESEARCH_MODE skip SETTLEMENT_ALREADY_RECENT explicitly_no_API_if_skip True"
+        ],
+        "updated_at": "2026-11-01T18:57:27Z"
+      },
+      {
+        "conclusion": "success",
+        "created_at": "2026-11-01T12:26:28Z",
+        "event": "push",
+        "head_sha": "aa730fb820fac561e55168d98bbf1abec6c12653",
+        "id": 41306504012,
+        "matched_committed_receipts": [],
+        "real_job_conclusion": "success",
+        "real_job_id": 124847998675,
+        "selected_log_lines": [
+          "2026-11-01T12:27:09.2114413Z   CRON: ",
+          "2026-11-01T12:27:09.2448259Z M0_720_RESEARCH_MODE skip NO_NEEDED_PAID_PROVIDER_REQUEST explicitly_no_API_if_skip True"
+        ],
+        "updated_at": "2026-11-01T12:27:12Z"
+      },
+      {
+        "conclusion": "success",
+        "created_at": "2026-11-01T12:20:01Z",
+        "event": "push",
+        "head_sha": "809f70d3ff75a0e14538aca4e350b4d89a3f4d66",
+        "id": 41305979888,
+        "matched_committed_receipts": [
+          {
+            "mode": "settle",
+            "network_calls": 9,
+            "new_forecasts": 0,
+            "new_settlements": 1,
+            "run_utc": "2026-11-01T12:21:15.107601Z"
+          }
+        ],
+        "real_job_conclusion": "success",
+        "real_job_id": 124846507384,
+        "selected_log_lines": [
+          "2026-11-01T12:21:12.9823928Z   CRON: ",
+          "2026-11-01T12:21:18.4461008Z M0_720_RESEARCH_EXECUTION_INTENT {\"mode\": \"settle\", \"protected_english_test_access\": false, \"research_only\": true, \"utc_day\": \"2026-11-01\"}",
+          "2026-11-01T12:21:18.4480160Z M0_720_RESEARCH_RUN_COUNTS {\"new_settlements\": 1, \"total_settlements\": 39}"
+        ],
+        "updated_at": "2026-11-01T12:21:25Z"
+      },
+      {
+        "conclusion": "success",
+        "created_at": "2026-11-01T07:38:35Z",
+        "event": "push",
+        "head_sha": "596277c08867ad9ab15176bf58602e301a05e757",
+        "id": 41285607283,
+        "matched_committed_receipts": [
+          {
+            "mode": "forecast",
+            "network_calls": 17,
+            "new_forecasts": 2,
+            "new_settlements": 0,
+            "run_utc": "2026-11-01T07:39:49.720164Z"
+          }
+        ],
+        "real_job_conclusion": "success",
+        "real_job_id": 124786268426,
+        "selected_log_lines": [
+          "2026-11-01T07:39:45.0488229Z   CRON: ",
+          "2026-11-01T07:39:50.8678317Z M0_720_RESEARCH_EXECUTION_INTENT {\"mode\": \"forecast\", \"protected_english_test_access\": false, \"research_only\": true, \"utc_day\": \"2026-11-01\"}",
+          "2026-11-01T07:39:50.8683114Z M0_720_RESEARCH_RUN_COUNTS {\"new_forecasts\": 2, \"total_forecasts\": 75}"
+        ],
+        "updated_at": "2026-11-01T07:39:58Z"
+      }
+    ],
+    "schema": "kb3-m0720-actions-read-only-observed-slice-v1",
+    "source_call_counter_is_historical_SDK_invocations_not_verified_physical_HTTP": true,
+    "workflow": ".github/workflows/kb3-step16-m0-720-eight-forward.yml"
+  },
+  "checked_at_utc": "2026-11-04T07:11:00.534193Z",
+  "counts": {
+    "HOLDOUT_reviews": 0,
+    "calibrators": 0,
+    "eligible_FIT_candidates": 74,
+    "eligible_settled_total": 74,
+    "frozen_forecasts": 91,
+    "host_attested_forecasts": 91,
+    "missing_post_fit_HOLDOUT50": 50,
+    "missing_to_initial_FIT100": 26,
+    "new_post_fit_HOLDOUT": 0,
+    "raw_settlements": 74,
+    "required_independent_HOLDOUT": 50
+  },
+  "forecast_decisions": [
+    {
+      "captured_at_utc": "2026-10-29T19:47:20.508937Z",
+      "forecast_id": "1d325af3a37edcc47de09e8c7acc1628b5f1e848cb5d44e39fa4f30d8f949aa0",
+      "kickoff_utc": "2026-10-30T17:00:00Z",
+      "league": "TUR",
+      "native_match_id": "m_46IsSa",
+      "reason": "ELIGIBLE_SETTLED"
+    },
+    {
+      "captured_at_utc": "2026-10-29T19:47:20.508937Z",
+      "forecast_id": "dfbed5d8dbd633f0ae58b5312402db9679edf7b1106cf6960736c836031ec267",
+      "kickoff_utc": "2026-10-30T17:00:00Z",
+      "league": "POL",
+      "native_match_id": "m_3wPhxn",
+      "reason": "ELIGIBLE_SETTLED"
+    },
+    {
+      "captured_at_utc": "2026-10-29T19:47:20.508937Z",
+      "forecast_id": "50205a74bec3cae07c65bdbfc04410c2c524eec0e6398570b755380fa0606955",
+      "kickoff_utc": "2026-10-30T18:00:00Z",
+      "league": "FRA",
+      "native_match_id": "m_49qvGz",
+      "reason": "ELIGIBLE_SETTLED"
+    },
+    {
+      "captured_at_utc": "2026-10-29T19:47:20.508937Z",
+      "forecast_id": "a6c4493b3167b5d19f2e36172a50401112bba259dfd4753333e4cec3303d5e51",
+      "kickoff_utc": "2026-10-30T18:00:00Z",
+      "league": "FRA",
+      "native_match_id": "m_08g6fR",
+      "reason": "ELIGIBLE_SETTLED"
+    },
+    {
+      "captured_at_utc": "2026-10-29T19:47:20.508937Z",
+      "forecast_id": "02435f27e0131c054a0dfca1375a89024e39331304e44966567ea78066281242",
+      "kickoff_utc": "2026-10-30T19:30:00Z",
+      "league": "GER",
+      "native_match_id": "m_09f2sq",
+      "reason": "ELIGIBLE_SETTLED"
+    },
+    {
+      "captured_at_utc": "2026-10-29T19:47:20.508937Z",
+      "forecast_id": "fa331b11178ae98ed06d550266c30fd1942d6cc2271f337524a74fc77476afcf",
+      "kickoff_utc": "2026-10-30T19:30:00Z",
+      "league": "POL",
+      "native_match_id": "m_4KBARG",
+      "reason": "ELIGIBLE_SETTLED"
+    },
+    {
+      "captured_at_utc": "2026-10-29T19:47:20.508937Z",
+      "forecast_id": "f8605bc21c96a017251fd8ffa8eb2dc2c3051645983aa1550793d99a0d3b2693",
+      "kickoff_utc": "2026-10-30T19:45:00Z",
+      "league": "BEL",
+      "native_match_id": "m_2T8QnJ",
+      "reason": "ELIGIBLE_SETTLED"
+    },
+    {
+      "captured_at_utc": "2026-10-29T19:47:20.508937Z",
+      "forecast_id": "40521d5b7647283fd3883aa843cd712224e11fdc04a522324acca75a7ef10983",
+      "kickoff_utc": "2026-10-30T20:00:00Z",
+      "league": "ESP",
+      "native_match_id": "m_0i0ZRd",
+      "reason": "ELIGIBLE_SETTLED"
+    },
+    {
+      "captured_at_utc": "2026-10-29T19:47:20.508937Z",
+      "forecast_id": "4277b256dedab77854967bc7580e500023962a8e7c2a7f917c347863d181850b",
+      "kickoff_utc": "2026-10-30T20:05:00Z",
+      "league": "FRA",
+      "native_match_id": "m_1bgQkd",
+      "reason": "ELIGIBLE_SETTLED"
+    },
+    {
+      "captured_at_utc": "2026-10-29T19:47:20.508937Z",
+      "forecast_id": "ca0d5df8de556009b9337847a99cf595c5815ac99dfa12cc6c381b579f46bc72",
+      "kickoff_utc": "2026-10-31T10:30:00Z",
+      "league": "TUR",
+      "native_match_id": "m_0Yscow",
+      "reason": "ELIGIBLE_SETTLED"
+    },
+    {
+      "captured_at_utc": "2026-10-29T19:47:20.508937Z",
+      "forecast_id": "5fc9e29b3492956fb0707f966debdbb431dfe16d8e82fdf17f9c544d01d8536c",
+      "kickoff_utc": "2026-10-31T11:15:00Z",
+      "league": "POL",
+      "native_match_id": "m_4WVSrE",
+      "reason": "ELIGIBLE_SETTLED"
+    },
+    {
+      "captured_at_utc": "2026-10-29T19:47:20.508937Z",
+      "forecast_id": "8c2e731eb1e3a2216b6ae599c9513ec2462a01ae1abde91033a7f51934b0952c",
+      "kickoff_utc": "2026-10-31T13:00:00Z",
+      "league": "TUR",
+      "native_match_id": "m_46MtQh",
+      "reason": "ELIGIBLE_SETTLED"
+    },
+    {
+      "captured_at_utc": "2026-10-29T19:47:20.508937Z",
+      "forecast_id": "c1f27fda0a8c8ace8d7b5f6b02c01f6d0048d82e1ace089e1248bba002dcf8f0",
+      "kickoff_utc": "2026-10-31T13:00:00Z",
+      "league": "ESP",
+      "native_match_id": "m_0LxVGC",
+      "reason": "ELIGIBLE_SETTLED"
+    },
+    {
+      "captured_at_utc": "2026-10-29T19:47:20.508937Z",
+      "forecast_id": "ed6535b68fc589243704086839982e5291e0de24b8017e96483293014ffbf5d3",
+      "kickoff_utc": "2026-10-31T13:45:00Z",
+      "league": "POL",
+      "native_match_id": "m_4JdNH8",
+      "reason": "ELIGIBLE_SETTLED"
+    },
+    {
+      "captured_at_utc": "2026-10-29T19:47:20.508937Z",
+      "forecast_id": "57078f131bba732585b50268e0ae5b2dda6fa2c9bcd50cab59eb0bbd5053abb8",
+      "kickoff_utc": "2026-10-31T14:00:00Z",
+      "league": "ITA",
+      "native_match_id": "m_2xKl7N",
+      "reason": "ELIGIBLE_SETTLED"
+    },
+    {
+      "captured_at_utc": "2026-10-29T19:47:20.508937Z",
+      "forecast_id": "00250d23c5022461ce305f5a852c47b64ee329f51e78c506100adabd7d436c48",
+      "kickoff_utc": "2026-10-31T14:30:00Z",
+      "league": "GER",
+      "native_match_id": "m_3nK1ag",
+      "reason": "ELIGIBLE_SETTLED"
+    },
+    {
+      "captured_at_utc": "2026-10-29T19:47:20.508937Z",
+      "forecast_id": "087c34a30a3a6f7b91a3fb4d6a2e6988d931b6cc38672ee80f4f87ee43a271c5",
+      "kickoff_utc": "2026-10-31T14:30:00Z",
+      "league": "GER",
+      "native_match_id": "m_2PFsh5",
+      "reason": "ELIGIBLE_SETTLED"
+    },
+    {
+      "captured_at_utc": "2026-10-29T19:47:20.508937Z",
+      "forecast_id": "27e5cef61d967997780c9ac975b93a55d6f97d16e7b1cdc707cae2aad0c56ab0",
+      "kickoff_utc": "2026-10-31T14:30:00Z",
+      "league": "GER",
+      "native_match_id": "m_1njTAO",
+      "reason": "ELIGIBLE_SETTLED"
+    },
+    {
+      "captured_at_utc": "2026-10-29T19:47:20.508937Z",
+      "forecast_id": "3b757455b61c00deb5fe04c49dee7e2c3d1b87b43d408808ef6355833200b655",
+      "kickoff_utc": "2026-10-31T14:30:00Z",
+      "league": "GER",
+      "native_match_id": "m_2nNBty",
+      "reason": "ELIGIBLE_SETTLED"
+    },
+    {
+      "captured_at_utc": "2026-10-29T19:47:20.508937Z",
+      "forecast_id": "76e28000a8507b5290503b7000ec903e6a336a202ea3c2764f7af5b7a75f375e",
+      "kickoff_utc": "2026-10-31T14:30:00Z",
+      "league": "GER",
+      "native_match_id": "m_1N8gV9",
+      "reason": "ELIGIBLE_SETTLED"
+    },
+    {
+      "captured_at_utc": "2026-10-29T19:47:20.508937Z",
+      "forecast_id": "aea87f45372faf011993d7ded7f4c8d4c06d4162721b101039b258857ac1cc63",
+      "kickoff_utc": "2026-10-31T15:00:00Z",
+      "league": "BEL",
+      "native_match_id": "m_1X9Ter",
+      "reason": "ELIGIBLE_SETTLED"
+    },
+    {
+      "captured_at_utc": "2026-10-29T19:47:20.508937Z",
+      "forecast_id": "edeadd3f3f74804fe2cd0dcea95b92ebe2e68e362aa1c30772a9e0e38d24e7f4",
+      "kickoff_utc": "2026-10-31T15:15:00Z",
+      "league": "ESP",
+      "native_match_id": "m_4KvglU",
+      "reason": "ELIGIBLE_SETTLED"
+    },
+    {
+      "captured_at_utc": "2026-10-29T19:47:20.508937Z",
+      "forecast_id": "3e17b6cff13a7f3eeacfd7229b882ddcbf7fc5f204513fbb4a0ae7964b44dcaa",
+      "kickoff_utc": "2026-10-31T15:30:00Z",
+      "league": "NED",
+      "native_match_id": "m_2dR2ia",
+      "reason": "ELIGIBLE_SETTLED"
+    },
+    {
+      "captured_at_utc": "2026-10-29T19:47:20.508937Z",
+      "forecast_id": "d6b7a3103c37c613515ca3d580a794c70ed34fbc1cb6329b3ff8ee775e7e2369",
+      "kickoff_utc": "2026-10-31T16:00:00Z",
+      "league": "TUR",
+      "native_match_id": "m_2YUMN6",
+      "reason": "ELIGIBLE_SETTLED"
+    },
+    {
+      "captured_at_utc": "2026-10-29T19:47:20.508937Z",
+      "forecast_id": "78dbc80dd4a0ecade22404578cf6e6e90a408f5b781b1ad86c8e03391947e705",
+      "kickoff_utc": "2026-10-31T16:30:00Z",
+      "league": "POL",
+      "native_match_id": "m_0VQtF9",
+      "reason": "ELIGIBLE_SETTLED"
+    },
+    {
+      "captured_at_utc": "2026-10-29T19:47:20.508937Z",
+      "forecast_id": "1dfae7ec2651a31435ecbf61dbc08701ea28ffc0949ae68997f802b458270c12",
+      "kickoff_utc": "2026-10-31T17:00:00Z",
+      "league": "ITA",
+      "native_match_id": "m_0zvm5Y",
+      "reason": "ELIGIBLE_SETTLED"
+    },
+    {
+      "captured_at_utc": "2026-10-29T19:47:20.508937Z",
+      "forecast_id": "382b551ba590914161afdc436dc664b4466c78e594a988ba816bc456f8f430b4",
+      "kickoff_utc": "2026-10-31T17:15:00Z",
+      "league": "BEL",
+      "native_match_id": "m_16NpKG",
+      "reason": "ELIGIBLE_SETTLED"
+    },
+    {
+      "captured_at_utc": "2026-10-29T19:47:20.508937Z",
+      "forecast_id": "631ee342c96956a384cdbf2606c61a51ab4c4802fd5757d70984ac6b9fa2e72c",
+      "kickoff_utc": "2026-10-31T17:30:00Z",
+      "league": "GER",
+      "native_match_id": "m_4BXbtD",
+      "reason": "ELIGIBLE_SETTLED"
+    },
+    {
+      "captured_at_utc": "2026-10-29T19:47:20.508937Z",
+      "forecast_id": "7e5dfe293b88ab646bfb57127f9ab981a5467ae178cb64ad9900e89cefb71c28",
+      "kickoff_utc": "2026-10-31T17:30:00Z",
+      "league": "ESP",
+      "native_match_id": "m_0c2nEn",
+      "reason": "ELIGIBLE_SETTLED"
+    },
+    {
+      "captured_at_utc": "2026-10-29T19:47:20.508937Z",
+      "forecast_id": "c885fb869fac617233812a086970eecba04c3d5bc123d250de8e8aa921def2e2",
+      "kickoff_utc": "2026-10-31T17:45:00Z",
+      "league": "NED",
+      "native_match_id": "m_4EY4Xg",
+      "reason": "ELIGIBLE_SETTLED"
+    },
+    {
+      "captured_at_utc": "2026-10-29T19:47:20.508937Z",
+      "forecast_id": "e6baf0c12315ba1021d350ebd73cff0fdc7d385eac14472acdcdf43171e19519",
+      "kickoff_utc": "2026-10-31T17:45:00Z",
+      "league": "NED",
+      "native_match_id": "m_3ftnql",
+      "reason": "ELIGIBLE_SETTLED"
+    },
+    {
+      "captured_at_utc": "2026-10-29T19:47:20.508937Z",
+      "forecast_id": "e959bd12a2b3f5f31cb2b1c4e87c98b4368749c5a7a451b698073c4ef4fe698a",
+      "kickoff_utc": "2026-10-31T19:15:00Z",
+      "league": "POL",
+      "native_match_id": "m_2RpP60",
+      "reason": "ELIGIBLE_SETTLED"
+    },
+    {
+      "captured_at_utc": "2026-10-29T19:47:20.508937Z",
+      "forecast_id": "1bf1eabd9ddda1d798a838e616e71357d297fb69c308b34eabe37c7f2ba50ce9",
+      "kickoff_utc": "2026-10-31T19:45:00Z",
+      "league": "ITA",
+      "native_match_id": "m_0D0Nv7",
+      "reason": "ELIGIBLE_SETTLED"
+    },
+    {
+      "captured_at_utc": "2026-10-29T19:47:20.508937Z",
+      "forecast_id": "76f8e44e577b317ff1834c2266ac685d42e5a9c769fbfc0a558c9ebebb5d350e",
+      "kickoff_utc": "2026-10-31T19:45:00Z",
+      "league": "BEL",
+      "native_match_id": "m_3Uj2no",
+      "reason": "ELIGIBLE_SETTLED"
+    },
+    {
+      "captured_at_utc": "2026-10-29T19:47:20.508937Z",
+      "forecast_id": "80b193150e0fe602820600dd327f20b1c9ee86b803c99baa9114eb17ce9c11e8",
+      "kickoff_utc": "2026-10-31T19:45:00Z",
+      "league": "FRA",
+      "native_match_id": "m_4XOc3a",
+      "reason": "ELIGIBLE_SETTLED"
+    },
+    {
+      "captured_at_utc": "2026-10-29T19:47:20.508937Z",
+      "forecast_id": "87525833d6b55172c70e2d7c088649280cff575bed09455a716a1644553fb28c",
+      "kickoff_utc": "2026-10-31T19:45:00Z",
+      "league": "BEL",
+      "native_match_id": "m_2B2TmU",
+      "reason": "ELIGIBLE_SETTLED"
+    },
+    {
+      "captured_at_utc": "2026-10-29T19:47:20.508937Z",
+      "forecast_id": "5ea80e4b336af478fd5b0e93203ceb0a80f7a910623aa4e8580c3a05efdd3556",
+      "kickoff_utc": "2026-10-31T20:00:00Z",
+      "league": "NED",
+      "native_match_id": "m_041XzQ",
+      "reason": "ELIGIBLE_SETTLED"
+    },
+    {
+      "captured_at_utc": "2026-10-29T19:47:20.508937Z",
+      "forecast_id": "c87ede239af44db14c439b78a66497494fcad4c285d375c655baf7575b765f69",
+      "kickoff_utc": "2026-10-31T20:00:00Z",
+      "league": "NED",
+      "native_match_id": "m_0nBUd0",
+      "reason": "ELIGIBLE_SETTLED"
+    },
+    {
+      "captured_at_utc": "2026-10-29T19:47:20.508937Z",
+      "forecast_id": "e7fcd288fbe74acc098415b63aec0532fad748da7f8c9d50a18d9adb32ff38e6",
+      "kickoff_utc": "2026-10-31T20:00:00Z",
+      "league": "ESP",
+      "native_match_id": "m_4b9xEU",
+      "reason": "ELIGIBLE_SETTLED"
+    },
+    {
+      "captured_at_utc": "2026-10-29T19:47:20.508937Z",
+      "forecast_id": "26e3bfff6ac635e85493b178ddafb18f6d1e25107863c8fa7b53773a3d0f7154",
+      "kickoff_utc": "2026-11-01T10:30:00Z",
+      "league": "TUR",
+      "native_match_id": "m_1JeJOl",
+      "reason": "ELIGIBLE_SETTLED"
+    },
+    {
+      "captured_at_utc": "2026-10-29T19:47:20.508937Z",
+      "forecast_id": "eecff775b87c606542af72f93fad4a3789594cb81f0e476ef55c2d8a9a5c7676",
+      "kickoff_utc": "2026-11-01T11:15:00Z",
+      "league": "NED",
+      "native_match_id": "m_3022Tt",
+      "reason": "ELIGIBLE_SETTLED"
+    },
+    {
+      "captured_at_utc": "2026-10-29T19:47:20.508937Z",
+      "forecast_id": "a790441afb0dd4fee9a47ae37c0ce2e06d596431ec8c1f65d92a01eafdea4950",
+      "kickoff_utc": "2026-11-01T11:30:00Z",
+      "league": "ITA",
+      "native_match_id": "m_3MjGnF",
+      "reason": "ELIGIBLE_SETTLED"
+    },
+    {
+      "captured_at_utc": "2026-10-29T19:47:20.508937Z",
+      "forecast_id": "aecf2d09179db22bd18afd169034d8a1c7d8b3e7706196401e30ba89feca667d",
+      "kickoff_utc": "2026-11-01T12:30:00Z",
+      "league": "BEL",
+      "native_match_id": "m_0A4Iq5",
+      "reason": "ELIGIBLE_SETTLED"
+    },
+    {
+      "captured_at_utc": "2026-10-29T19:47:20.508937Z",
+      "forecast_id": "bdecd0f4c56cf112bd62948af947b6f912b73f81321a8ec57fefc293d1d20ed3",
+      "kickoff_utc": "2026-11-01T13:00:00Z",
+      "league": "TUR",
+      "native_match_id": "m_4FEuOy",
+      "reason": "ELIGIBLE_SETTLED"
+    },
+    {
+      "captured_at_utc": "2026-10-29T19:47:20.508937Z",
+      "forecast_id": "e410f15bf76fa6ae6a4a82acd8d44a9c5e504a2948c3b21ffadb756896635ed2",
+      "kickoff_utc": "2026-11-01T13:00:00Z",
+      "league": "TUR",
+      "native_match_id": "m_0BwVd8",
+      "reason": "ELIGIBLE_SETTLED"
+    },
+    {
+      "captured_at_utc": "2026-10-29T19:47:20.508937Z",
+      "forecast_id": "e72e737e03216cf347f82fef4d776bddeab93d2c1bc5b84709a024038428ace0",
+      "kickoff_utc": "2026-11-01T13:00:00Z",
+      "league": "ESP",
+      "native_match_id": "m_3CY7K4",
+      "reason": "ELIGIBLE_SETTLED"
+    },
+    {
+      "captured_at_utc": "2026-10-29T19:47:20.508937Z",
+      "forecast_id": "5c86195ef2882876814c1c51f7ec163127dc0435b65f42c1eb890991962edee5",
+      "kickoff_utc": "2026-11-01T13:30:00Z",
+      "league": "NED",
+      "native_match_id": "m_4OH4hE",
+      "reason": "ELIGIBLE_SETTLED"
+    },
+    {
+      "captured_at_utc": "2026-10-29T19:47:20.508937Z",
+      "forecast_id": "62f7bcd771667aaf41cdf9c5ebd42f23905a39b62ae6d6462befd7577012e659",
+      "kickoff_utc": "2026-11-01T13:30:00Z",
+      "league": "NED",
+      "native_match_id": "m_2NTHrt",
+      "reason": "ELIGIBLE_SETTLED"
+    },
+    {
+      "captured_at_utc": "2026-10-29T19:47:20.508937Z",
+      "forecast_id": "07833adb1c291737eaaef459d74c0fac381731bfb8d2f2843683f876019c17b9",
+      "kickoff_utc": "2026-11-01T14:00:00Z",
+      "league": "ITA",
+      "native_match_id": "m_2mVrHa",
+      "reason": "ELIGIBLE_SETTLED"
+    },
+    {
+      "captured_at_utc": "2026-10-29T19:47:20.508937Z",
+      "forecast_id": "24d7b314d1ba0b2d4c15815eb66cb5478ddbf71a3af5c495b8a27c20f8ecb8db",
+      "kickoff_utc": "2026-11-01T14:00:00Z",
+      "league": "FRA",
+      "native_match_id": "m_0h9fte",
+      "reason": "ELIGIBLE_SETTLED"
+    },
+    {
+      "captured_at_utc": "2026-10-29T19:47:20.508937Z",
+      "forecast_id": "3f4720877d0a4b9e68bc9b9d7d9b67dbde456592ccc578d437d8c04437f655ee",
+      "kickoff_utc": "2026-11-01T14:00:00Z",
+      "league": "ITA",
+      "native_match_id": "m_1PHYqG",
+      "reason": "ELIGIBLE_SETTLED"
+    },
+    {
+      "captured_at_utc": "2026-10-29T19:47:20.508937Z",
+      "forecast_id": "92fe0f7eb00b03c3148c8d61573d47693c2fdaa5bd43745116967d40e27c9f8b",
+      "kickoff_utc": "2026-11-01T14:30:00Z",
+      "league": "GER",
+      "native_match_id": "m_1cglVW",
+      "reason": "ELIGIBLE_SETTLED"
+    },
+    {
+      "captured_at_utc": "2026-10-29T19:47:20.508937Z",
+      "forecast_id": "bda978404a1c43c72595c38a895296dda5ba1df58f14bff82cc425fa947c2db7",
+      "kickoff_utc": "2026-11-01T15:00:00Z",
+      "league": "BEL",
+      "native_match_id": "m_3bo24D",
+      "reason": "ELIGIBLE_SETTLED"
+    },
+    {
+      "captured_at_utc": "2026-10-29T19:47:20.508937Z",
+      "forecast_id": "d9748c6fb31d6b2428881e24c52be287f193ca880c77a0ddb53eefe4b5e2a484",
+      "kickoff_utc": "2026-11-01T15:15:00Z",
+      "league": "ESP",
+      "native_match_id": "m_3Zye1t",
+      "reason": "ELIGIBLE_SETTLED"
+    },
+    {
+      "captured_at_utc": "2026-10-29T19:47:20.508937Z",
+      "forecast_id": "061905fce97e805361f60512e109e770f874a19d0d91edfccabe0e737ec373ce",
+      "kickoff_utc": "2026-11-01T15:45:00Z",
+      "league": "NED",
+      "native_match_id": "m_1DMpTu",
+      "reason": "ELIGIBLE_SETTLED"
+    },
+    {
+      "captured_at_utc": "2026-10-29T19:47:20.508937Z",
+      "forecast_id": "28efefc481836ff422b82785902479e7f6fa52c169ff8f1d3df125daed679fc6",
+      "kickoff_utc": "2026-11-01T16:00:00Z",
+      "league": "TUR",
+      "native_match_id": "m_0obrfR",
+      "reason": "ELIGIBLE_SETTLED"
+    },
+    {
+      "captured_at_utc": "2026-10-29T19:47:20.508937Z",
+      "forecast_id": "2673ec9974a7b6891db9356ebd91a1ffc0c029fca1e64ead1cb4cc8664055a77",
+      "kickoff_utc": "2026-11-01T16:15:00Z",
+      "league": "FRA",
+      "native_match_id": "m_1IGE7o",
+      "reason": "ELIGIBLE_SETTLED"
+    },
+    {
+      "captured_at_utc": "2026-10-29T19:47:20.508937Z",
+      "forecast_id": "56fff9e1decf972b9cf78310144fd05416c807ef5633c4067addff9e9adb7975",
+      "kickoff_utc": "2026-11-01T16:15:00Z",
+      "league": "FRA",
+      "native_match_id": "m_18Uw0k",
+      "reason": "ELIGIBLE_SETTLED"
+    },
+    {
+      "captured_at_utc": "2026-10-29T19:47:20.508937Z",
+      "forecast_id": "33cf9c4e536619f6ad59f74037eb96c70f22b2477e14a7f0618630286fa19c3d",
+      "kickoff_utc": "2026-11-01T16:30:00Z",
+      "league": "GER",
+      "native_match_id": "m_0ryKWG",
+      "reason": "ELIGIBLE_SETTLED"
+    },
+    {
+      "captured_at_utc": "2026-10-29T19:47:20.508937Z",
+      "forecast_id": "196b93202f07234d7e69d97d3b71c457a4ace0a2ae4aa8ba43278c93adaaf0e8",
+      "kickoff_utc": "2026-11-01T17:00:00Z",
+      "league": "ITA",
+      "native_match_id": "m_1Z3qMe",
+      "reason": "ELIGIBLE_SETTLED"
+    },
+    {
+      "captured_at_utc": "2026-10-29T19:47:20.508937Z",
+      "forecast_id": "bbdb3915d7c3c6b2e03446bc6343256d04ee80c25aeb6b25743c22058bb3e282",
+      "kickoff_utc": "2026-11-01T17:30:00Z",
+      "league": "BEL",
+      "native_match_id": "m_4CxQAt",
+      "reason": "ELIGIBLE_SETTLED"
+    },
+    {
+      "captured_at_utc": "2026-10-29T19:47:20.508937Z",
+      "forecast_id": "f2f5558c5789c3ac519ec3381422a39570863601b1e2a50310c3b161da017f90",
+      "kickoff_utc": "2026-11-01T17:30:00Z",
+      "league": "ESP",
+      "native_match_id": "m_4fAP3c",
+      "reason": "ELIGIBLE_SETTLED"
+    },
+    {
+      "captured_at_utc": "2026-10-29T19:47:20.508937Z",
+      "forecast_id": "61e423be5888f8b2ed87b70c58d938884a58a821507ffb817c63d2b04b9930b8",
+      "kickoff_utc": "2026-11-01T18:15:00Z",
+      "league": "BEL",
+      "native_match_id": "m_20rWJL",
+      "reason": "ELIGIBLE_SETTLED"
+    },
+    {
+      "captured_at_utc": "2026-10-29T19:47:20.508937Z",
+      "forecast_id": "c19dbe26dc6fbf306cae850180d77790a1f9a2c069d1b19451c70fc86f552bc7",
+      "kickoff_utc": "2026-11-01T19:45:00Z",
+      "league": "FRA",
+      "native_match_id": "m_22n8XS",
+      "reason": "ELIGIBLE_SETTLED"
+    },
+    {
+      "captured_at_utc": "2026-10-29T19:47:20.508937Z",
+      "forecast_id": "e1abeb65506eaf76db3ff322ad64fb4edb2460b20d9df57cabbbccf8a87c648f",
+      "kickoff_utc": "2026-11-01T19:45:00Z",
+      "league": "ITA",
+      "native_match_id": "m_0cwaNs",
+      "reason": "ELIGIBLE_SETTLED"
+    },
+    {
+      "captured_at_utc": "2026-10-29T19:47:20.508937Z",
+      "forecast_id": "dd873cbaab2a34ed9c2920ec47f9bafd7bdee0cff90981b56e3a642a5ce8da01",
+      "kickoff_utc": "2026-11-01T20:00:00Z",
+      "league": "ESP",
+      "native_match_id": "m_34Q5mN",
+      "reason": "ELIGIBLE_SETTLED"
+    },
+    {
+      "captured_at_utc": "2026-10-29T19:47:20.508937Z",
+      "forecast_id": "65abfad0253012b7dba921dce55eac373d63a43a6597d8622a50f2b124e24602",
+      "kickoff_utc": "2026-11-02T17:00:00Z",
+      "league": "POL",
+      "native_match_id": "m_48fN3e",
+      "reason": "ELIGIBLE_SETTLED"
+    },
+    {
+      "captured_at_utc": "2026-10-29T19:47:20.508937Z",
+      "forecast_id": "7332933fa9370f58e054c0091b8dc0a7b67c77e5517ad65e65382d7318ea250d",
+      "kickoff_utc": "2026-11-02T17:00:00Z",
+      "league": "TUR",
+      "native_match_id": "m_0ILNZ3",
+      "reason": "ELIGIBLE_SETTLED"
+    },
+    {
+      "captured_at_utc": "2026-10-29T19:47:20.508937Z",
+      "forecast_id": "a2cd40445cb2df66415bf91c51307002f8f51eaf51e897a2b42fbd10de1c7666",
+      "kickoff_utc": "2026-11-02T17:00:00Z",
+      "league": "POL",
+      "native_match_id": "m_2ro7O5",
+      "reason": "ELIGIBLE_SETTLED"
+    },
+    {
+      "captured_at_utc": "2026-10-29T19:47:20.508937Z",
+      "forecast_id": "d4e1e6a9989aadabb3a8e25c4c2afe0e3144cc582485a3e1b293263aaddf95b1",
+      "kickoff_utc": "2026-11-02T17:30:00Z",
+      "league": "ITA",
+      "native_match_id": "m_32m5m0",
+      "reason": "ELIGIBLE_SETTLED"
+    },
+    {
+      "captured_at_utc": "2026-10-29T19:47:20.508937Z",
+      "forecast_id": "a5a84e5ccf61c2e3c45e25a13913814047022525501aeaef162d44b267c14ad7",
+      "kickoff_utc": "2026-11-02T19:30:00Z",
+      "league": "POL",
+      "native_match_id": "m_0JOsqP",
+      "reason": "ELIGIBLE_SETTLED"
+    },
+    {
+      "captured_at_utc": "2026-10-29T19:47:20.508937Z",
+      "forecast_id": "9bd9e999d525d0defa7d99073ffeccbc2319d9415723f33ac6debe29c7cceee6",
+      "kickoff_utc": "2026-11-02T19:45:00Z",
+      "league": "ITA",
+      "native_match_id": "m_4Z0Hkz",
+      "reason": "ELIGIBLE_SETTLED"
+    },
+    {
+      "captured_at_utc": "2026-10-29T19:47:20.508937Z",
+      "forecast_id": "9beb772a5d81eee26f7fccf44b3531daa8284786683c6ee86158a4a15357d345",
+      "kickoff_utc": "2026-11-02T19:45:00Z",
+      "league": "FRA",
+      "native_match_id": "m_0xOQtL",
+      "reason": "ELIGIBLE_SETTLED"
+    },
+    {
+      "captured_at_utc": "2026-11-01T07:39:49.720164Z",
+      "forecast_id": "57d39a3985283fcd256e46390f04b6ece35abbb3ab673fe8c03891c949b395bb",
+      "kickoff_utc": "2026-11-02T20:00:00Z",
+      "league": "ESP",
+      "native_match_id": "m_2P8d0o",
+      "reason": "ELIGIBLE_SETTLED"
+    },
+    {
+      "captured_at_utc": "2026-11-01T07:39:49.720164Z",
+      "forecast_id": "d7debafb715a4f6fcc64ede49c9f2e563345cf5ec835199d96217db9b7f12123",
+      "kickoff_utc": "2026-11-04T19:30:00Z",
+      "league": "BEL",
+      "native_match_id": "m_4JyHOG",
+      "reason": "FUTURE_KICKOFF"
+    },
+    {
+      "captured_at_utc": "2026-11-03T14:29:39.361057Z",
+      "forecast_id": "721a95bf34b87744523ce547d28511701450b144417eedd2ff0419271d28b819",
+      "kickoff_utc": "2026-11-06T17:00:00Z",
+      "league": "POL",
+      "native_match_id": "m_4euj53",
+      "reason": "FUTURE_KICKOFF"
+    },
+    {
+      "captured_at_utc": "2026-11-03T14:29:39.361057Z",
+      "forecast_id": "e6e35bb4a151a6b6b0d5e0b4d2aaea99f23f4a66bf8d6d7b37a98f91a5f645fc",
+      "kickoff_utc": "2026-11-06T17:00:00Z",
+      "league": "TUR",
+      "native_match_id": "m_12G6QF",
+      "reason": "FUTURE_KICKOFF"
+    },
+    {
+      "captured_at_utc": "2026-11-03T14:29:39.361057Z",
+      "forecast_id": "04eb6b571957f0fab72046e6ab2e0e3dd23a2f4d599c9f2325ee2890a2ddbd72",
+      "kickoff_utc": "2026-11-06T19:00:00Z",
+      "league": "NED",
+      "native_match_id": "m_1qdH6l",
+      "reason": "FUTURE_KICKOFF"
+    },
+    {
+      "captured_at_utc": "2026-11-03T14:29:39.361057Z",
+      "forecast_id": "260cf73ba6670003824a72ae945d2ba304a0f09d71eda119bc847af993bb21a9",
+      "kickoff_utc": "2026-11-06T19:30:00Z",
+      "league": "POL",
+      "native_match_id": "m_1VgAIj",
+      "reason": "FUTURE_KICKOFF"
+    },
+    {
+      "captured_at_utc": "2026-11-03T14:29:39.361057Z",
+      "forecast_id": "3047d7deb58665d70a4687e848a91b7acb91a703b5d427e776d7b90ba94a2d0c",
+      "kickoff_utc": "2026-11-06T19:30:00Z",
+      "league": "GER",
+      "native_match_id": "m_2DSeYr",
+      "reason": "FUTURE_KICKOFF"
+    },
+    {
+      "captured_at_utc": "2026-11-03T14:29:39.361057Z",
+      "forecast_id": "8ec0d02f35cb60ea1bee97763a881006c99696ee8b49338b82222ed2671e74d7",
+      "kickoff_utc": "2026-11-06T19:45:00Z",
+      "league": "FRA",
+      "native_match_id": "m_2vsKSO",
+      "reason": "FUTURE_KICKOFF"
+    },
+    {
+      "captured_at_utc": "2026-11-03T14:29:39.361057Z",
+      "forecast_id": "bd84be75faeda92626763e7dcc62212fee5979e4b821ba1f5e04163d74f16b55",
+      "kickoff_utc": "2026-11-06T19:45:00Z",
+      "league": "ITA",
+      "native_match_id": "m_3A4n8A",
+      "reason": "FUTURE_KICKOFF"
+    },
+    {
+      "captured_at_utc": "2026-11-03T14:29:39.361057Z",
+      "forecast_id": "bea555b1cb135192c5ec3c2bacbe75ca32e1a3e4e19d373acdcbf3de34a201de",
+      "kickoff_utc": "2026-11-06T19:45:00Z",
+      "league": "BEL",
+      "native_match_id": "m_2AeM1n",
+      "reason": "FUTURE_KICKOFF"
+    },
+    {
+      "captured_at_utc": "2026-11-03T14:29:39.361057Z",
+      "forecast_id": "f30caeb69cd26e63ccd2f6d1d239dd2bbba4f0598300ef1ab280ad23a899ba87",
+      "kickoff_utc": "2026-11-06T20:00:00Z",
+      "league": "ESP",
+      "native_match_id": "m_3apOTP",
+      "reason": "FUTURE_KICKOFF"
+    },
+    {
+      "captured_at_utc": "2026-11-03T14:29:39.361057Z",
+      "forecast_id": "f6e9b048d093fa4bfadf3439ec361fb5ad2b2e55659a7b570d1bf4aaddf6f58d",
+      "kickoff_utc": "2026-11-07T10:30:00Z",
+      "league": "TUR",
+      "native_match_id": "m_1ZfVht",
+      "reason": "FUTURE_KICKOFF"
+    },
+    {
+      "captured_at_utc": "2026-11-03T14:29:39.361057Z",
+      "forecast_id": "0c7a93f6448bb7168f5777415ff7c0f6955e88872320d0ba29dade761b37e2ac",
+      "kickoff_utc": "2026-11-07T11:15:00Z",
+      "league": "POL",
+      "native_match_id": "m_1qCH0w",
+      "reason": "FUTURE_KICKOFF"
+    },
+    {
+      "captured_at_utc": "2026-11-03T14:29:39.361057Z",
+      "forecast_id": "43f5943db3a620e1dd4abc790fa5ae874387e730f66f0b1f36f84e1593228002",
+      "kickoff_utc": "2026-11-07T13:00:00Z",
+      "league": "ESP",
+      "native_match_id": "m_0cvasI",
+      "reason": "FUTURE_KICKOFF"
+    },
+    {
+      "captured_at_utc": "2026-11-03T14:29:39.361057Z",
+      "forecast_id": "e67d1bd225508fee2973b68d6e98631dc1f898db6fce59858a3b88c709262a98",
+      "kickoff_utc": "2026-11-07T13:00:00Z",
+      "league": "TUR",
+      "native_match_id": "m_3PC9J0",
+      "reason": "FUTURE_KICKOFF"
+    },
+    {
+      "captured_at_utc": "2026-11-03T14:29:39.361057Z",
+      "forecast_id": "fb1eff3d1015d12d88e558824a50f0eec9aa102cc7f9878f6fb52e9a7e0a3712",
+      "kickoff_utc": "2026-11-07T13:45:00Z",
+      "league": "POL",
+      "native_match_id": "m_1Cd8Es",
+      "reason": "FUTURE_KICKOFF"
+    },
+    {
+      "captured_at_utc": "2026-11-03T14:29:39.361057Z",
+      "forecast_id": "d0f5a72794af8966ea0de6a997ee337c6fd097d230f422aaf7c1026af17eeb7e",
+      "kickoff_utc": "2026-11-07T14:00:00Z",
+      "league": "ITA",
+      "native_match_id": "m_4L3dqh",
+      "reason": "FUTURE_KICKOFF"
+    },
+    {
+      "captured_at_utc": "2026-11-03T14:29:39.361057Z",
+      "forecast_id": "fe74e39ca5116931275bc7f6f2bf32914b459b4fb64f69e6ddb2de1f4437ed13",
+      "kickoff_utc": "2026-11-07T14:00:00Z",
+      "league": "ITA",
+      "native_match_id": "m_4Qe0mW",
+      "reason": "FUTURE_KICKOFF"
+    }
+  ],
+  "formal_100_plus_50_acceptance": false,
+  "formal_GATE16": "PENDING",
+  "manifest_sha256": "add298d85ec2957f657bf6a6765cc093b284119bb2f45e001278bfd0c90da8bb",
+  "model": "M0_ELO_POISSON_RESEARCH_720TRAIN_V1",
+  "model_or_calibration_changed": false,
+  "opportunity_audit": {
+    "global_qualified_but_missed_count": null,
+    "last_M0_source_cutoff_utc": "2026-11-03T14:29:39.361057Z",
+    "no_retroactive_forecasts_created": true,
+    "separate_inventory_details": [
+      {
+        "kickoff_utc": "2026-11-04T19:30:00Z",
+        "league": "BEL",
+        "native_match_id": "m_4JyHOG",
+        "reason": "ALREADY_FROZEN"
+      },
+      {
+        "kickoff_utc": "2026-11-06T19:45:00Z",
+        "league": "BEL",
+        "native_match_id": "m_2AeM1n",
+        "reason": "ALREADY_FROZEN"
+      },
+      {
+        "kickoff_utc": "2026-11-06T20:00:00Z",
+        "league": "ESP",
+        "native_match_id": "m_3apOTP",
+        "reason": "ALREADY_FROZEN"
+      },
+      {
+        "kickoff_utc": "2026-11-07T13:00:00Z",
+        "league": "ESP",
+        "native_match_id": "m_0cvasI",
+        "reason": "ALREADY_FROZEN"
+      },
+      {
+        "kickoff_utc": "2026-11-06T19:45:00Z",
+        "league": "FRA",
+        "native_match_id": "m_2vsKSO",
+        "reason": "ALREADY_FROZEN"
+      },
+      {
+        "kickoff_utc": "2026-11-06T19:30:00Z",
+        "league": "GER",
+        "native_match_id": "m_2DSeYr",
+        "reason": "ALREADY_FROZEN"
+      },
+      {
+        "kickoff_utc": "2026-11-07T14:30:00Z",
+        "league": "GER",
+        "native_match_id": "m_0j8R2e",
+        "reason": "OUTSIDE_LAST_M0_96H_HORIZON"
+      },
+      {
+        "kickoff_utc": "2026-11-07T14:30:00Z",
+        "league": "GER",
+        "native_match_id": "m_2X8YYk",
+        "reason": "OUTSIDE_LAST_M0_96H_HORIZON"
+      },
+      {
+        "kickoff_utc": "2026-11-07T14:30:00Z",
+        "league": "GER",
+        "native_match_id": "m_2zGfLM",
+        "reason": "OUTSIDE_LAST_M0_96H_HORIZON"
+      },
+      {
+        "kickoff_utc": "2026-11-07T14:30:00Z",
+        "league": "GER",
+        "native_match_id": "m_4RiOkV",
+        "reason": "OUTSIDE_LAST_M0_96H_HORIZON"
+      },
+      {
+        "kickoff_utc": "2026-11-06T19:45:00Z",
+        "league": "ITA",
+        "native_match_id": "m_3A4n8A",
+        "reason": "ALREADY_FROZEN"
+      },
+      {
+        "kickoff_utc": "2026-11-07T14:00:00Z",
+        "league": "ITA",
+        "native_match_id": "m_4L3dqh",
+        "reason": "ALREADY_FROZEN"
+      },
+      {
+        "kickoff_utc": "2026-11-07T14:00:00Z",
+        "league": "ITA",
+        "native_match_id": "m_4Qe0mW",
+        "reason": "ALREADY_FROZEN"
+      },
+      {
+        "kickoff_utc": "2026-11-06T19:00:00Z",
+        "league": "NED",
+        "native_match_id": "m_1qdH6l",
+        "reason": "ALREADY_FROZEN"
+      },
+      {
+        "kickoff_utc": "2026-11-06T17:00:00Z",
+        "league": "POL",
+        "native_match_id": "m_4euj53",
+        "reason": "ALREADY_FROZEN"
+      },
+      {
+        "kickoff_utc": "2026-11-06T19:30:00Z",
+        "league": "POL",
+        "native_match_id": "m_1VgAIj",
+        "reason": "ALREADY_FROZEN"
+      },
+      {
+        "kickoff_utc": "2026-11-07T11:15:00Z",
+        "league": "POL",
+        "native_match_id": "m_1qCH0w",
+        "reason": "ALREADY_FROZEN"
+      },
+      {
+        "kickoff_utc": "2026-11-07T13:45:00Z",
+        "league": "POL",
+        "native_match_id": "m_1Cd8Es",
+        "reason": "ALREADY_FROZEN"
+      },
+      {
+        "kickoff_utc": "2026-11-06T17:00:00Z",
+        "league": "TUR",
+        "native_match_id": "m_12G6QF",
+        "reason": "ALREADY_FROZEN"
+      },
+      {
+        "kickoff_utc": "2026-11-07T10:30:00Z",
+        "league": "TUR",
+        "native_match_id": "m_1ZfVht",
+        "reason": "ALREADY_FROZEN"
+      },
+      {
+        "kickoff_utc": "2026-11-07T13:00:00Z",
+        "league": "TUR",
+        "native_match_id": "m_3PC9J0",
+        "reason": "ALREADY_FROZEN"
+      }
+    ],
+    "separate_inventory_is_not_M0_eligibility_proof": true,
+    "separate_inventory_observed_at_utc": "2026-11-03T14:37:45.757128Z",
+    "separate_inventory_reason_counts": {
+      "ALREADY_FROZEN": 17,
+      "OUTSIDE_LAST_M0_96H_HORIZON": 4
+    },
+    "separate_inventory_source": "data/pit_sidecar/step17_native_xg_eight/2026-11-03/XG_READINESS_RECEIPT.json",
+    "status": "ORIGINAL_FULL_FORECAST_LISTING_UNAVAILABLE_ENCRYPTED_RAW_NOT_DECRYPTED"
+  },
+  "parameters_sha256": "55310f0e1dd3842e6d876069ef21b1380901b3a6cc6884cf6ec6ea351a5812d1",
+  "pooled_verified_metrics": {
+    "brier_sum3": 0.5618179311214316,
+    "log_loss": 0.9470508062296159,
+    "n": 74,
+    "top1_accuracy": 0.5945945945945946,
+    "top1_ece_5_bins": 0.1509747389566415
+  },
+  "provider_calls": 0,
+  "qualification_partition": {
+    "ELIGIBLE_SETTLED": 74,
+    "FUTURE_KICKOFF": 17
+  },
+  "read_only": true,
+  "report_sha256": "68a21df0c5815ab5714c8bd1186c1acc674687112c215823664e959b952f1651",
+  "schema": "kb3-m0720-operations-readonly-audit-v1",
+  "source_sqlite_sha256": "af1bd3bebc962490b3ad8765be587152428cb323ad2e65115655caefdf689556",
+  "upstream_host_proofs_rechecked_locally_not_artifact_bytes_reauthenticated": true
+}
