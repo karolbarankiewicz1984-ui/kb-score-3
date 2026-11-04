@@ -235,6 +235,67 @@ class NewSixLiveIntegration(unittest.TestCase):
                 with self.assertRaises(sqlite3.IntegrityError):
                     conn.execute("UPDATE kb3_p1_shadow_six_host_proofs SET github_artifact_id='666'")
 
+
+    def test_optional_missing_six_features_does_not_change_m0_or_other_shadows(self):
+        """Only expected optional missing six-field candidate may be skipped.
+
+        The existing M0 generator still freezes its own prediction and all
+        Step17 challengers; unrelated model SHA/clock problems are not hidden.
+        """
+        originals,_,_=make_forecasts(
+            fake_receipts(),cutoff=NOW,params=self.params,
+            param_sha=self.params_sha,manifest_sha=self.manifest_sha)
+        class OneIncomplete:
+            def __init__(self,original):
+                self.original=original
+                self.first=True
+            def records(self,state,parent):
+                if self.first:
+                    self.first=False
+                    raise ShadowSafetyError(
+                        "SIX_FORWARD_REAL_GOAL_FORM_FEATURE_UNAVAILABLE:home_all_5_gf_avg")
+                return self.original.records(state,parent)
+        challenge=[];shadow=[];diagnostics={}
+        rows,_,_=make_forecasts(fake_receipts(),cutoff=NOW,
+            params=self.params,param_sha=self.params_sha,
+            manifest_sha=self.manifest_sha,
+            challenger_engine=self.legacy_engine,challenger_sink=challenge,
+            shadow_engine=OneIncomplete(self.engine),
+            shadow_sink=shadow,wall_clock=self.clock,
+            diagnostics=diagnostics)
+        self.assertEqual(len(rows),len(originals))
+        self.assertEqual(len(rows),64)
+        self.assertEqual([p["forecast_sha256"] for p in rows],
+                         [p["forecast_sha256"] for p in originals])
+        self.assertEqual(len(challenge),128)
+        self.assertEqual(len(shadow),63)
+        self.assertEqual(len(diagnostics["optional_shadow_unavailable"]),1)
+        bad=diagnostics["optional_shadow_unavailable"][0]
+        self.assertEqual(bad["source_m0_forecast_sha256"],rows[0]["forecast_sha256"])
+        with tempfile.TemporaryDirectory() as td:
+            db=Path(td)/"optional-shadow-missing.sqlite"
+            fresh=set()
+            freeze_sqlite(db,rows,param_sha=self.params_sha,
+                manifest_sha=self.manifest_sha,now=NOW,new_frozen_ids=fresh)
+            freeze_new_challengers(db,challenge,new_m0_ids=fresh)
+            result=freeze_only_new_m0(db,shadow,new_m0_ids=fresh)
+            self.assertEqual(result["added"],63)
+            self.assertEqual(result["total"],63)
+            self.assertEqual(result["added"]+len(
+                [i for i in diagnostics["optional_shadow_unavailable"]
+                 if i["source_m0_forecast_sha256"] in fresh]),len(fresh))
+
+    def test_optional_shadow_integrity_exception_is_never_swallowed(self):
+        class Broken:
+            def records(self,state,parent):
+                raise ShadowSafetyError("SHADOW_MODEL_BYTES_NOT_PINNED")
+        with self.assertRaisesRegex(ShadowSafetyError,
+                                    "SHADOW_MODEL_BYTES_NOT_PINNED"):
+            make_forecasts(fake_receipts(),cutoff=NOW,
+                params=self.params,param_sha=self.params_sha,
+                manifest_sha=self.manifest_sha,
+                shadow_engine=Broken(),shadow_sink=[])
+
     def test_bad_shadow_model_rejected_before_forecast_api(self):
         # The runtime calls the same gate BEFORE calling collect_receipts.
         with self.assertRaisesRegex(ShadowSafetyError,"ARTIFACT_MISSING"):
