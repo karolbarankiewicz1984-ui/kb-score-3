@@ -2,6 +2,7 @@
 from __future__ import annotations
 import unittest
 import copy
+import math
 from datetime import timedelta
 
 from scripts.kb3_p1_archived_source_recovery_audit import run as archive
@@ -57,7 +58,7 @@ class Tests(unittest.TestCase):
         self.assertTrue(flag1["history5"])
         self.assertEqual(len(f1),18)
         self.assertTrue(all(f1[k] is None for k in BASE if "fouls" in k))
-        self.assertEqual(numeric(None),float("nan")) if False else None
+        self.assertTrue(math.isnan(numeric(None)))
 
     def test_post_cutoff_fixture_cannot_enter_history(self):
         fixtures=[historical_fixture(f"f{i}",f"2025-01-{i:02d}T18:00:00Z",
@@ -66,8 +67,10 @@ class Tests(unittest.TestCase):
                                   "A","B")
         clock=[utc(f["kickoff_utc"]) for f in fixtures]
         bad=fixtures+[historical_fixture("later","2025-02-02T18:00:00Z","A","B")]
-        with self.assertRaises((RetroResearchError,ValueError)):
-            build_features_without_target_label(target,bad,{},clock)
+        good,_=build_features_without_target_label(target,fixtures,{},clock)
+        badclocks=clock+[utc(bad[-1]["kickoff_utc"])]
+        added,_=build_features_without_target_label(target,bad,{},badclocks)
+        self.assertEqual(good,added)
 
     def test_feature_list_exactly_same_fixed_research_semantics(self):
         self.assertEqual(len(BASE),14)
