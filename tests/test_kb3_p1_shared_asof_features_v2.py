@@ -4,10 +4,13 @@ All rows below are synthetic, NOT real signed host/provider receipts or FIT.
 """
 from __future__ import annotations
 import copy
+import json
 import unittest
+from pathlib import Path
 
 from src.kb3_p1_shared_asof_features_v2 import (
     SCHEMA, SharedAsOfError, build_shared_features, compare_same_asof,
+    candidate_m1r_85_schema_bridge,
 )
 
 H = "a" * 64
@@ -214,6 +217,32 @@ class SharedAsOfV2Safety(unittest.TestCase):
         with self.assertRaisesRegex(SharedAsOfError,
                                     "TRAIN_FORWARD_FEATURE_CONTRACT_DRIFT"):
             compare_same_asof(a,b)
+
+
+    def test_exact_original_85_feature_names_shape_not_old_model_approval(self):
+        root = Path(__file__).resolve().parents[1]
+        audit = json.loads((root / "data/audits/"
+            "STEP14_M1R_BASE_CATBOOST_720_374_REAL_METRICS_2026-10-29.json").read_text())
+        a = candidate_m1r_85_schema_bridge(run("TRAIN"), audit)
+        b = candidate_m1r_85_schema_bridge(run("FORWARD"), audit)
+        self.assertEqual(a["feature_count"], 85)
+        self.assertEqual(a["candidate_values"], b["candidate_values"])
+        self.assertEqual(a["feature_names"], audit["frozen_feature_names"])
+        self.assertFalse(a["training_allowed"])
+        self.assertFalse(a["safe_to_score_with_frozen_original_m1r"])
+        self.assertTrue(a["new_model_retrain_required"])
+
+    def test_m1r_85_shape_rejects_missing_field_and_corrupt_audit(self):
+        root = Path(__file__).resolve().parents[1]
+        audit = json.loads((root / "data/audits/"
+            "STEP14_M1R_BASE_CATBOOST_720_374_REAL_METRICS_2026-10-29.json").read_text())
+        v = run("TRAIN")
+        del v["features"]["elo_home_minus_away"]
+        with self.assertRaisesRegex(SharedAsOfError, "MODEL_REQUIRED_FEATURE_NOT_IN_V2"):
+            candidate_m1r_85_schema_bridge(v, audit)
+        audit["training"] = 777
+        with self.assertRaisesRegex(SharedAsOfError, "ORIGINAL_M1R_AUDIT_MISMATCH"):
+            candidate_m1r_85_schema_bridge(run(), audit)
 
     def test_deterministic_over_input_order_and_hash(self):
         s=sample()
