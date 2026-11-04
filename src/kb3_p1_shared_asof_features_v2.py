@@ -279,3 +279,65 @@ def compare_same_asof(train, forward):
     return {"contract": SCHEMA, "canonical_features_sha256": digest(left),
             "same_asof_feature_parity": True, "training_allowed": False,
             "gate16": "PENDING", "gate17": "PENDING"}
+
+
+def candidate_m1r_85_schema_bridge(view, frozen_audit):
+    """Read-only SHAPE comparison with old M1-R 85 names, NOT old-model parity.
+
+    Existing M1-R was trained with +48h historical semantics, therefore a
+    85-column shape match NEVER authorizes passing these v2 values to its
+    frozen trained weights or declaring calibrated prediction quality.
+    Missing numbers are JSON null, never invented zero; a later independent
+    training adapter can decide a model-specific NaN representation.
+    """
+    need(isinstance(view, dict) and view.get("schema") == SCHEMA,
+         "ASOF_V2_SOURCE_REQUIRED")
+    need(view.get("training_allowed") is False and
+         view.get("production_approved") is False,
+         "UNAUTHORIZED_SOURCE_APPROVAL")
+    need(isinstance(frozen_audit, dict) and
+         frozen_audit.get("frozen_feature_count") == 85 and
+         frozen_audit.get("training") == 720 and
+         frozen_audit.get("validation") == 374,
+         "ORIGINAL_M1R_AUDIT_MISMATCH")
+    names = frozen_audit.get("frozen_feature_names")
+    need(isinstance(names, list) and len(names) == 85 and
+         len(set(names)) == 85, "ORIGINAL_85_FEATURE_SCHEMA_INVALID")
+    need(frozen_audit.get("original_TEST_2026_27_never_requested") is True,
+         "ORIGINAL_TEST_PROTECTION_MISSING")
+    need(frozen_audit.get("future_actual_PIT_certified") is False,
+         "FALSE_OLD_PIT_CERTIFICATION")
+    typed = []
+    for name in names:
+        need(type(name) is str and name.count(":") == 1,
+             "MODEL_FEATURE_NAME_INVALID")
+        kind, key = name.split(":")
+        need(kind in ("num","miss"), "MODEL_FEATURE_KIND_UNKNOWN")
+        source = view["features"] if kind == "num" else view["missing_flags"]
+        need(key in source, "MODEL_REQUIRED_FEATURE_NOT_IN_V2_" + key)
+        value = source[key]
+        if kind == "miss":
+            need(type(value) is bool, "INVALID_V2_MISSING_MASK_" + key)
+            typed.append(int(value))
+        elif value is None:
+            typed.append(None)
+        else:
+            import math
+            need(type(value) in (int, float) and math.isfinite(value),
+                 "INVALID_V2_NUMERIC_" + key)
+            typed.append(float(value))
+    columns = {"schema": "kb3-p1-shared-asof-v2-m1r85-shape-bridge",
+               "contract_sha256": view["canonical_features_sha256"],
+               "fixture_id": view["target_fixture_id"],
+               "purpose": view["purpose"],
+               "feature_names": names, "candidate_values": typed,
+               "feature_count": len(names),
+               "missing_numeric": sum(
+                   kind.startswith("num:") and value is None
+                   for kind, value in zip(names,typed)),
+               "same_names_not_same_old_training_semantics": True,
+               "safe_to_score_with_frozen_original_m1r": False,
+               "new_model_retrain_required": True,
+               "training_allowed": False, "production_approved": False}
+    columns["sha256"] = digest(columns)
+    return columns
