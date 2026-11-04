@@ -1,0 +1,94 @@
+name: KB3 independent CatBoost ABC chronological research
+on:
+  pull_request:
+    paths:
+      - 'src/kb3_catboost_*'
+      - 'src/kb3_features.py'
+      - 'src/kb3_historical_feature_quality.py'
+      - 'scripts/step17_catboost_abc_research.py'
+      - 'scripts/test_catboost_abc_offline.py'
+      - 'scripts/verify_catboost_abc_results.py'
+      - 'docs/audits/CATBOOST_ABC_*'
+      - 'tests/test_catboost_abc_research.py'
+      - '.github/workflows/kb3-catboost-abc-research.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'src/kb3_catboost_*'
+      - 'scripts/step17_catboost_abc_research.py'
+      - 'scripts/verify_catboost_abc_results.py'
+      - 'docs/audits/CATBOOST_ABC_*'
+      - 'tests/test_catboost_abc_research.py'
+      - '.github/workflows/kb3-catboost-abc-research.yml'
+  workflow_dispatch:
+    inputs:
+      run_research_fit:
+        type: boolean
+        default: false
+        description: Explicitly run the fixed offline research experiment
+permissions:
+  contents: read
+concurrency:
+  group: kb3-catboost-abc-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install existing project dependencies
+        run: python -m pip install 'catboost==1.2.8' 'cryptography>=42,<47' 'pitchapi==0.1.6'
+      - name: Full regression with network, real-source fits and protected writes blocked
+        run: python scripts/test_catboost_abc_offline.py > offline-tests.log 2>&1
+      - name: Independently recompute archived research metrics
+        run: |
+          python scripts/verify_catboost_abc_results.py \
+            --report docs/audits/CATBOOST_ABC_FULL_RESULTS_2026-11-03.json.gz \
+            --predictions docs/audits/CATBOOST_ABC_PREDICTIONS_2026-11-03.jsonl.gz
+      - name: Check unchanged sources, models, forecasts and whitespace
+        run: |
+          git diff --exit-code -- data models config
+          git diff --check
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: KB3_ABC_TESTS_${{ github.run_id }}_${{ github.run_attempt }}
+          path: offline-tests.log
+          if-no-files-found: error
+  research:
+    if: github.event_name == 'workflow_dispatch' && inputs.run_research_fit == true
+    needs: tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: python -m pip install 'catboost==1.2.8' 'cryptography>=42,<47'
+      - name: Allocate a separate append-only research output
+        run: echo "ABC_OUTPUT=${RUNNER_TEMP}/abc-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}" >> "$GITHUB_ENV"
+      - name: Fit only prior TRAIN and evaluate fixed later windows without API
+        run: |
+          python -m scripts.step17_catboost_abc_research --fit \
+            --out "${ABC_OUTPUT}/report.json" \
+            --predictions "${ABC_OUTPUT}/predictions.jsonl.gz" \
+            --model-dir "${ABC_OUTPUT}/models"
+          python scripts/verify_catboost_abc_results.py \
+            --report "${ABC_OUTPUT}/report.json" \
+            --predictions "${ABC_OUTPUT}/predictions.jsonl.gz" \
+            --models "${ABC_OUTPUT}/models" > "${ABC_OUTPUT}/independent_verification.json"
+          git diff --exit-code -- data models config
+      - uses: actions/upload-artifact@v4
+        with:
+          name: KB3_ABC_RESEARCH_${{ github.run_id }}_${{ github.run_attempt }}
+          path: ${{ env.ABC_OUTPUT }}
+          if-no-files-found: error
