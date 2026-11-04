@@ -538,20 +538,17 @@ def run(*,mode,client,now=None,db_path=DB,root=SOURCES,public_key=None,
                         shadow_state["official_fit_increment"]==0,
                         "SHADOW_NOT_ATOMIC_WITH_NEW_M0_PARENTS")
                 shadow_state["enabled"]=True
-            else:
-                shadow_state={"enabled":False,"new_shadow_forecasts":0,
-                              "official_fit_increment":0,
-                              "no_later_backfill":True}
             extra={"new_forecasts":new,"total_forecasts":total,"coverage":coverage,
                    'forecast_selection_diagnostics':diagnostics,
                    "season_shapes":season_shapes,
                    "ned_bel_historical_phase_native_id_review":historical_phase_id_inventory(receipts),
                    "step17_challenger_research":challenger_state,
-                   "catboost_shadow_six_research":shadow_state,
-                   "shadow_research_not_production":True,
                    "step17_challengers_are_independent_unfitted_research":True,
                    "step17_challenger_host_artifact_proof_pending":True,
                    "step17_gate":"PENDING_STEP16_AND_FULL_FAIR_BENCHMARK"}
+            if shadow_engine is not None:
+                extra["catboost_shadow_six_research"]=shadow_state
+                extra["shadow_research_not_production"]=True
             reportdir=Path(forecast_root)/day/run_name
             require(not reportdir.exists(),'IMMUTABLE_FORECAST_RUN_ALREADY_ARCHIVED')
         else:
@@ -604,9 +601,10 @@ def run(*,mode,client,now=None,db_path=DB,root=SOURCES,public_key=None,
                    "missing_host_evidence_never_assumed_pre_match":True},
                 "calibration_readiness":ready,
                 "step17_challenger_proof_audit":challenger_audit,
-                "step17_paired_same_fixture_readiness":paired_results,
-                "catboost_shadow_six_host_audit":shadow_host_audit,
-                "catboost_shadow_six_paired_results":shadow_pairs})
+                "step17_paired_same_fixture_readiness":paired_results})
+            if shadow_host_audit.get("state")!="SHADOW_DISABLED_OR_NO_NEW_ROWS":
+                extra["catboost_shadow_six_host_audit"]=shadow_host_audit
+                extra["catboost_shadow_six_paired_results"]=shadow_pairs
         report={"schema":"kb3-step16-8league-M0-720-TRAIN-forward-v1",
             "mode":mode,"model_version":MODEL,"params_sha256":param_sha,
             "manifest_sha256":manifest_sha,"run_utc":stamp(cutoff),
