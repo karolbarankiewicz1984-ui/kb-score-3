@@ -76,6 +76,42 @@ class ProspectiveShadowTests(unittest.TestCase):
             self.assertFalse(child["official_fit_eligible"])
             self.assertFalse(child["production_approved"])
 
+
+    def test_last5_goal_points_orientation_matches_training_reconstruction(self):
+        # Independent recalc from the SAME synthetic source fixtures, without
+        # reading or passing the future target score or modifying M0 feature.
+        from src.kb3_historical_feature_quality import rolling_window
+        from src.kb3_pit_ledger import as_utc
+        state,parent=self.snapshots[0]
+        country=parent["league_country"]
+        historical=[]
+        for receipt in fake_receipts():
+            if receipt["resource"].split(":")[3]!=country:
+                continue
+            captured=as_utc(receipt["completed_at_utc"])
+            for game in receipt["payload"]["matches"]:
+                ko=as_utc(game["time_utc"])
+                if (game["status"]=="finished" and
+                    ko+timedelta(hours=3)<=captured):
+                    historical.append({
+                        "scope":country,"match_id":game["id"],
+                        "kickoff_utc":game["time_utc"],
+                        "home_team_id":game["home_team"]["id"],
+                        "away_team_id":game["away_team"]["id"],
+                        "goals_home_90":game["score_home"],
+                        "goals_away_90":game["score_away"]})
+        historical.sort(key=lambda p:(p["kickoff_utc"],p["match_id"]))
+        for side,team in (("home",parent["home_team_id"]),
+                          ("away",parent["away_team_id"])):
+            roll=rolling_window(historical,{},team,5)
+            self.assertTrue(roll["history_complete"])
+            for old,new in (("goals_for","gf"),
+                            ("goals_against","ga"),
+                            ("points","points")):
+                fkey=f"{side}_all_5_{new}_avg"
+                self.assertEqual(state["features"][fkey],
+                                 roll["metrics"][old]["mean"])
+
     def test_snapshot_provenance_reject_late_and_labelled_sources(self):
         state,parent=self.snapshots[0]
         bad=copy.deepcopy(state)
