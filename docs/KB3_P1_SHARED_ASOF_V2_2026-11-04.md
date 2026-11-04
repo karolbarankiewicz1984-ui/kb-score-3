@@ -33,3 +33,9 @@ W starym rekonstruowanym zbiorze M1-R używano stałego opóźnienia +48h od roz
 ## Zgodność nazewnictwa z historycznymi 85 cechami M1-R
 
 Dodatkowo zaimplementowano **candidate_m1r_85_schema_bridge()**, który odczytuje **rzeczywistą** listę frozen_feature_names z istniejącego audytu `data/audits/STEP14_M1R_BASE_CATBOOST_720_374_REAL_METRICS_2026-10-29.json` (720 TRAIN / 374 VALIDATION), wymaga 85 niepowtarzalnych nazw, zachowuje typy num/miss, rozróżnia brak numeryczny NULL i flagę missing oraz wylicza osobne SHA. To wyłącznie kontrola **kształtu** 85-kolumnowego wejścia. **Nie oznacza zgodności statystycznej ze starymi wagami** M1-R; źródła, czas odcięcia i dystrybucja cech się zmieniły, zatem trzeba wytrenować odrębny model z nowym SHA i nowym identyfikatorem. Dla każdej kandydackiej próbki pozostają `safe_to_score_with_frozen_original_m1r=false` i `training_allowed=false` do właściwych dowodów i decyzji.
+
+## Rzeczywisty odbiór offline CI
+
+- [GitHub Actions #41911645305](https://github.com/karolbarankiewicz1984-ui/kb-score-3/actions/runs/41911645305) — **SUCCESS**, obydwa joby Python **3.11** i **3.12**. W każdym z nich **17 nowych testów PASS** i **21 istniejących Step11 PASS**. Kontrole compileall, niezmienionych data/models/config oraz bazowych plików źródłowych także PASS.
+- Przetestowany kod na source HEAD `4f7404c07193a6b91da8f730bb8780423e95b784`. W pierwszym przebiegu [#41911317531](https://github.com/karolbarankiewicz1984-ui/kb-score-3/actions/runs/41911317531) wychwycono dwie błędne asercje kierunku xGA w testach, poprawiono je i wykonano ponownie pełną regresję. Oryginalna logika Step11 i M0 nie była modyfikowana.
+- Zewnętrzny dowód historii oryginalnych bajtów źródła, provider first-published i prawdziwa ilość adekwatnych TRAIN dla v2 nadal NIEPOZYSKANE. P1-01 ma status **PARTIAL / CODE-LEVEL PARITY TESTED**, nie pełny GATE PASS. Cały PR pozostaje **DRAFT** bez merge.
