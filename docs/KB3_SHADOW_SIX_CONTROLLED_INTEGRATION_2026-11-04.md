@@ -24,3 +24,14 @@ Przegląd i kontrolowane scalenie zależnych PR #151, #152, #153, #154 i tego PR
 ## Status
 
 Implementacja robocza do weryfikacji CI. Wyniki testów, identyfikator runu i rzeczywiste blokady należy uzupełnić wyłącznie po potwierdzonym wykonaniu.
+
+## 04.11.2026 — rozwiązanie problemu wygasającego modelu (wykonane)
+
+- **Trwała kopia konkretnego modelu:** nowy [GitHub Actions #41929594196](https://github.com/karolbarankiewicz1984-ui/kb-score-3/actions/runs/41929594196) `SUCCESS`. Repozytorium otrzymało wyłącznie na gałęzi badawczej PR #155, w `assets/research/kb3_shadow_six_v1/`, **dokładne bajty 65 032 B** istniejącego modelu `.cbm` i jego historyczny manifest `JSON` ze starego artefaktu `13366883765`. Workflow weryfikował wymagane SHA: **CBM** `58c5a7fc35afe942893a25b96233689d1f7814ec8a93ed689a7b46f553dbbbc5`, **manifest** `9a1b2ce07d11aa369066de712469470f862836a5ba5d3e817402589e65fc8eca`; nie trenował ponownie ani nie dotykał M0. Kopia znajduje się w prywatnym repo jako wersjonowane pliki i **nie zniknie wskutek wygaśnięcia starego artefaktu Actions**. Nie utożsamiać kopii z dopuszczeniem historycznego PIT.
+- **Integracja workflow zmieniona:** warunkowy, wyłączony domyślnie krok przed wywołaniem PitchAPI odczytuje teraz dokładnie te trwałe pliki z checkout repo i kopiuje do katalogu roboczego, z weryfikacją SHA/manifestu. Nie pobiera już modelu z wygasającego artefaktu. `load_opted_shadow()` dodatkowo wymaga wpisu w pin JSON potwierdzającego konkretny folder w repo i rzeczywisty GitHub mirror run ID. Przy brakach lub zamianie bajtów zakończy błąd przed żądaniem sportowego API.
+- **PR-only CI** również odczytuje teraz trwałą kopię, nie stare archiwum; dzięki temu będzie można ponawiać testy **po 18.11.2026**. Kontrole SHA, home/away, zgodności z istniejącym 6-cechowym `make_forecasts()`, niemodyfikowalności SQLite i braku retro-backfill pozostają takie same. Osobny mirror workflow ma ściśle ograniczoną docelową gałąź, żadnych force-push i ponownego fitowania; po pierwszym udanym zapisie nie zostaje ponownie uruchomiony przy każdym update plików modelu.
+- **Nie włączono LIVE:** PR #151–#155 pozostają robocze; `main` nie został zmodyfikowany w obszarze działania M0. Nie zmieniono repo variable `KB3_SHADOW_SIX_ENABLED`, kalibratorów, danych i polityki 100 FIT + 50 przyszłych HOLDOUT. Pierwszy realny forward/host-proof dla Shadow 6 nadal 0, aż nastąpi osobny odbiór i kontrolowane uruchomienie.
+
+### Odbiór integracji z trwałej kopii
+
+Po zmianie źródła artefaktu ponownie wykonać pełne, rzeczywiste GitHub CI PR #155 i rejestr wyników, nie opierać się wyłącznie na testach sprzed zmiany.
