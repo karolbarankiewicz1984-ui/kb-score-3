@@ -1,0 +1,79 @@
+name: KB3 three research priorities - read-only CI
+on:
+  pull_request:
+    paths:
+      - src/kb3_research_train_forward_contract.py
+      - scripts/kb3_research_parity_audit.py
+      - scripts/kb3_research_xg_coverage_readonly.py
+      - scripts/kb3_research_three_engine_readiness.py
+      - tests/test_kb3_research_train_forward_contract.py
+      - tests/test_kb3_research_xg_and_three_engine.py
+      - .github/workflows/kb3-research-three-priorities-offline.yml
+
+permissions:
+  contents: read
+
+jobs:
+  research-readonly-validation:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ['3.11', '3.12']
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Offline research-only tests
+        run: |
+          python -m unittest discover -s tests -p 'test_kb3_research*.py' -v
+      - name: Real source-code parity and checked-in xG/Step17 receipt audits
+        run: |
+          python -m scripts.kb3_research_parity_audit --historical-db data/research/historical_multistat/observations.sqlite --max-targets 2000 > "$RUNNER_TEMP/kb3_p1_clock.json"
+          python -m scripts.kb3_research_xg_coverage_readonly > "$RUNNER_TEMP/kb3_xg_gaps.json"
+          python -m scripts.kb3_research_three_engine_readiness > "$RUNNER_TEMP/kb3_three_engine.json"
+          python - "$RUNNER_TEMP" <<'PY'
+          import json, pathlib, sys
+          root = pathlib.Path(sys.argv[1])
+          for name in ('kb3_p1_clock.json','kb3_xg_gaps.json','kb3_three_engine.json'):
+              doc = json.loads((root/name).read_text())
+              assert doc.get('gate16') == doc.get('gate17') == 'PENDING'
+              print(name, doc.get('report_sha256'), 'research_only')
+              if name == 'kb3_p1_clock.json':
+                  s=doc['real_historical_clock_case_study']
+                  print('P1_REAL_HISTORICAL_CLOCK_CASE_STUDY',
+                        'samples',s['sample_targets_checked'],
+                        'predecessor_set_diff',s['predecessor_set_difference_targets'],
+                        'age_diff',s['days_since_last_difference_targets'],
+                        'original_PIT_certified',s['provider_first_publication_certified'])
+              if name == 'kb3_xg_gaps.json':
+                  print('XG_SOURCE_COVERAGE',doc['observed_stats'],
+                        doc['native_xg_verified'],
+                        doc['native_xg_unverified'],
+                        doc['complete_both_teams_windows'])
+                  for league,info in sorted(doc['by_scope'].items()):
+                      print('XG5_LEAGUE',league,info['windows']['5']['xg_complete'],
+                            'OF',info['targets'])
+              if name == 'kb3_three_engine.json':
+                  print('M0_REAL_FORWARD_COMPARISON',doc['frozen_forecasts'],
+                        doc['eligible_fit'],doc['pending'],
+                        doc['triplet_same_game_proven_at_least'],
+                        doc['paired_counts'])
+          PY
+      - name: Confirm source datasets and model files unchanged
+        run: |
+          git diff --exit-code -- data models config
+          git diff --check
+      - name: Attach reproducible research audit outputs (not gate PASS)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: KB3_RESEARCH_THREE_PRIORITIES_${{ matrix.python-version }}
+          path: |
+            ${{ runner.temp }}/kb3_p1_clock.json
+            ${{ runner.temp }}/kb3_xg_gaps.json
+            ${{ runner.temp }}/kb3_three_engine.json
+          if-no-files-found: ignore
+          retention-days: 14
