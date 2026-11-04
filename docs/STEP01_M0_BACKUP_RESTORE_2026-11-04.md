@@ -16,3 +16,12 @@
 
 ## Decyzja operacyjna
 Krok 01: **Bajtowa i logiczna kopia + szyfrowany upload poza repo = PASS; pełny odczyt plaintext z offsite = PENDING.** Kolejny bezpieczny ruch: rozpocząć odbiór #146 i równolegle naprawy #143, ale bez live merge/przełączenia przed zamknięciem uzgodnionych bramek. Osiągnięcie kroku 01 nie zmienia 15/29, GATE16/GATE17 PENDING, M0 ani Championa.
+
+## Aneks decyzyjny 04.11.2026 — brak wymogu obsługi klucza prywatnego
+
+Na życzenie właściciela **nie wymagamy posługiwania się prywatnym kluczem RSA jako blokującego warunku dalszych badań i przygotowania PR #146/#143**. Obowiązują dwa osobne statusy:
+
+- `STEP01_OPERATIONAL_GO`: fizyczne kopiowanie obecnej realnej SQLite, druga kopia przez API SQLite, kontrola tabel/wierszy/SHA, poprawność kluczy obcych oraz odrzucenie próby modyfikacji immutable — PASS wg [CI 41853754238](https://github.com/karolbarankiewicz1984-ui/kb-score-3/actions/runs/41853754238). Można przejść do audytu, przygotowania kodu, testów na kopii i warunkowego pilotażowego wdrożenia w osobnych bramkach.
+- `OFFSITE_DECRYPT_RESTORE_NOT_VERIFIED`: zaszyfrowany ZIP na Drive ma poprawny SHA/CRC i jest w prywatnym folderze, ale nie ma dowodu, że obecnie można go odszyfrować i odtworzyć po utracie repo; nie traktować jako jedynej kopii odtworzeniowej.
+
+Oryginalne historyczne ustalenia powyżej pozostają nietknięte. **Bez przechowywania prywatnego klucza w GitHub/ChatGPT, bez odszyfrowywania, bez publikacji jawnej SQLite i bez obchodzenia szyfrowania.** Pełną disaster recovery można później rozwiązać alternatywnym zarządzanym magazynem po osobnym uzgodnieniu; nie blokuje to dalszego badania modelu.
