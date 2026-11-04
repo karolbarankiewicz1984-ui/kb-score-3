@@ -4,6 +4,7 @@ on:
     paths:
       - src/kb3_p1_shadow_live_gate.py
       - src/kb3_p1_prospective_shadow_six_v1.py
+      - src/kb3_p1_shadow_host_provenance.py
       - src/kb3_step16_m0_720_eight_forward.py
       - config/kb3_shadow_six_pinned_research_model.json
       - tests/test_kb3_p1_shadow_live_integration.py
