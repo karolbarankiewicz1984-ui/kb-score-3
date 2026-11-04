@@ -15,5 +15,8 @@
   "historical_native_pit_certified": false,
   "no_new_provider_calls": true,
   "approval_gate": "MANUAL_REVIEW_AND_EXPLICIT_ENABLE_REPO_VAR_ONLY",
-  "note": "The selected single artifact is pinned by exact model and manifest hashes. Never combine outputs from separate retrains."
+  "note": "Exact binary and manifest durably mirrored into private research review branch by GitHub Actions 41929594196, source artifact 13366883765; never mix retrain outputs. Main M0 stays OFF until separately reviewed merge plus explicit opt-in.",
+  "durable_repo_relative_dir": "assets/research/kb3_shadow_six_v1",
+  "durable_mirror_workflow_run_id": 41929594196,
+  "durable_source_verified_model_sha256": "58c5a7fc35afe942893a25b96233689d1f7814ec8a93ed689a7b46f553dbbbc5"
 }
