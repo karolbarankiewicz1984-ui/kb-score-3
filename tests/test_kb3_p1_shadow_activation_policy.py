@@ -10,6 +10,22 @@ from scripts.kb3_p1_shadow_activation_policy import (
 
 
 class ShadowActivationPolicyTests(unittest.TestCase):
+    def test_live_workflow_installs_import_dependencies_before_shadow_activation(self):
+        workflow=(Path(__file__).resolve().parents[1] /
+                  ".github/workflows/kb3-step16-m0-720-eight-forward.yml").read_text()
+        mode=workflow.index("run: python -m scripts.step16_m0_mode_guard")
+        install=workflow.index(
+            "run: python -m pip install --disable-pip-version-check -r config/step16_live_requirements.txt")
+        activate=workflow.index("run: python -m scripts.kb3_p1_shadow_activation_policy")
+        restore=workflow.index("PINNED_SHADOW_SIX_DURABLY_RESTORED_NO_ARTIFACT_EXPIRY_DEPENDENCY")
+        provider=workflow.index("run: python -m scripts.step16_m0_720_eight_run")
+        self.assertLess(mode,install)
+        self.assertLess(install,activate)
+        self.assertLess(activate,restore)
+        self.assertLess(restore,provider)
+        self.assertIn("if: steps.mode.outputs.mode != 'skip'",workflow)
+        self.assertIn("steps.shadow_activation.outputs.enabled == 'true'",workflow)
+
     def test_current_reviewed_policy_enables_only_new_main_schedule(self):
         x=decide(mode="forecast",event="schedule",ref=BRANCH,repository=REPO)
         self.assertTrue(x["enabled"])
