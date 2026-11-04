@@ -12,6 +12,8 @@ on:
       - src/kb3_p1_prospective_shadow_six_v1.py
       - src/kb3_p1_shadow_live_gate.py
       - scripts/kb3_p1_shadow_activation_policy.py
+      - scripts/kb3_shadow_first_real_checkpoint.py
+      - tests/test_kb3_shadow_first_real_checkpoint.py
       - config/kb3_shadow_six_forward_activation.json
       - tests/test_kb3_p1_shadow_live_integration.py
       - config/kb3_shadow_six_pinned_research_model.json
@@ -37,6 +39,8 @@ on:
       - src/kb3_p1_prospective_shadow_six_v1.py
       - src/kb3_p1_shadow_live_gate.py
       - scripts/kb3_p1_shadow_activation_policy.py
+      - scripts/kb3_shadow_first_real_checkpoint.py
+      - tests/test_kb3_shadow_first_real_checkpoint.py
       - config/kb3_shadow_six_forward_activation.json
       - tests/test_kb3_p1_shadow_live_integration.py
       - config/kb3_shadow_six_pinned_research_model.json
@@ -196,6 +200,9 @@ jobs:
               assert cn.execute('SELECT COUNT(*) FROM m0720_calibrators WHERE production_approved != 0').fetchone()[0]==0
               assert cn.execute('SELECT COUNT(*) FROM m0720_holdout_reviews WHERE production_approved != 0').fetchone()[0]==0
           PY
+      - name: Check first genuine M0 and Shadow capture, host proof and settlement (read-only)
+        if: steps.mode.outputs.mode != 'skip'
+        run: python -m scripts.kb3_shadow_first_real_checkpoint
       - uses: actions/upload-artifact@v4
         if: always() && steps.mode.outputs.mode != 'skip'
         with:
