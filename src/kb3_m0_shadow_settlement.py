@@ -62,16 +62,15 @@ def review_calibration(db,*,now):
             candidate["state"]="COLLECTING"
             candidate["needed_for_first_fit"]=100-n
         else:
-            fit=fit_temperature(forecasts[:100],labels[:100],min_rows=100)
-            candidate["candidate_temperature"]=fit["temperature"]
-            candidate["calibration_fit"]=fit
-            if n<150:
-                candidate["state"]="FITTED_AWAIT_HOLDOUT"
-                candidate["needed_for_later_holdout"]=150-n
-            else:
-                candidate["state"]="EVALUATED_NO_AUTO_APPROVAL"
-                candidate["independent_evaluation"]=evaluate_calibrated_holdout(
-                    forecasts[100:],labels[100:],fit)
+            # P1-02: even 100/150 existing rows cannot demonstrate that the
+            # exact frozen predictions were GitHub-published pre-kickoff.
+            # Keep scoring diagnostics but NEVER fit or report evaluated
+            # calibration without independent host publication attestation.
+            candidate["state"]="BLOCKED_UNATTESTED_HOST_PUBLICATION"
+            candidate["fit_eligible_proofs"]=0
+            candidate["needed_for_first_fit"]="100_HOST_ATTESTED_AFTER_REVIEW"
+            candidate["candidate_temperature"]=None
+            candidate["independent_evaluation"]=None
         out.append(candidate)
     if not out:
         out=[{"state":"COLLECTING","n_unique_resolved":0,

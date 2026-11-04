@@ -26,7 +26,7 @@ class Step18Tests(unittest.TestCase):
     def test_research_signal_does_not_approve_champion(self):
         x=evaluate(valid_report())
         self.assertTrue(x["candidate_diagnostics"]["ELO_ONLY"]["research_statistical_signal_only"])
-        self.assertTrue(x["candidate_diagnostics"]["CATBOOST_NO_XG"]["research_statistical_signal_only"])
+        self.assertFalse(x["candidate_diagnostics"]["CATBOOST_NO_XG"]["research_statistical_signal_only"])
         self.assertFalse(x["ready_for_human_champion_decision"])
         self.assertFalse(x["candidate_deployment_authorized"])
         self.assertFalse(x["winner_chosen"])

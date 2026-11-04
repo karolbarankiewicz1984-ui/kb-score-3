@@ -187,69 +187,20 @@ def audit_and_prepare_calibration(db_path,*,now=None):
            fitting_sample_size FROM m0_shadow_calibration_candidates
            WHERE model_version_id=? AND phase='EARLY' AND scope=?""",
            (MODEL,SCOPE)).fetchone()
+        # P1-02: Legacy 3-league forecast rows have only caller-controlled
+        # generated_at_utc, not a historical GitHub-hosted first-publication
+        # proof with exact bytes. They are scoreable, NOT fit-eligible.
+        # Fail closed even at >=100 settlements; preserve prior candidates
+        # unchanged for separate forensic review. Eight-league M0 has its own
+        # independently verified publication-proof gate.
         new_candidate=None;review=None;new_review=None
-        if candidate is None and len(pairs)>=100:
-            sample=[x for x in pairs if x["settled"]<=now][:100]
-            if len(sample)>=100:
-                fit=fit_temperature([x["p"] for x in sample],
-                                    [x["label"] for x in sample],min_rows=100)
-                trainsha=sealhash([x["id"] for x in sample])
-                payload={"schema":SCHEMA,"scope":SCOPE,"model_version_id":MODEL,
-                  "phase":"EARLY","fit_at_utc":utc_string(now),
-                  "training_rows":len(sample),"training_ids_sha":trainsha,
-                  "temperature":fit["temperature"],"raw_log_loss":fit["calibration_log_loss_raw"],
-                  "fit_log_loss":fit["calibration_log_loss_fitted"],
-                  "no_auto_activation":True}
-                cid=sealhash(payload)
-                db.execute("""INSERT INTO m0_shadow_calibration_candidates
-                  (candidate_id,model_version_id,phase,scope,calibration_cutoff_utc,
-                   fitted_at_utc,fitted_temperature,fitting_sample_size,
-                   training_forecast_ids_sha256,raw_fit_log_loss,calibrated_fit_log_loss,
-                   candidate_payload_sha256)
-                  VALUES(?,?,?,?,?,?,?,?,?,?,?,?)""",
-                  (cid,MODEL,"EARLY",SCOPE,utc_string(now),utc_string(now),
-                   fit["temperature"],len(sample),trainsha,fit["calibration_log_loss_raw"],
-                   fit["calibration_log_loss_fitted"],cid))
-                db.commit();candidate=(cid,utc_string(now),fit["temperature"],len(sample))
-                new_candidate=payload|{"candidate_sha256":cid}
-        if candidate is not None:
-            cid,created,temperature,n=candidate
-            after=_strict_post_fit_holdout(pairs,as_utc(created),now)
-            already_reviewed=db.execute("""SELECT review_id FROM
-                m0_shadow_calibration_holdout_reviews WHERE candidate_id=?""",(cid,)).fetchone()
-            if len(after)>=50 and not already_reviewed:
-                sample=after[:50]
-                evaluated=evaluate_calibrated_holdout(
-                    [x["p"] for x in sample],[x["label"] for x in sample],
-                    {"temperature":temperature})
-                raw=evaluated["raw"];cal=evaluated["calibrated"]
-                positive=(cal["log_loss"]<raw["log_loss"]
-                    and cal["brier_sum3"]<raw["brier_sum3"])
-                payload={"schema":SCHEMA,"candidate_id":cid,"reviewed_at_utc":utc_string(now),
-                 "holdout_samples":len(sample),"holdout_forecast_ids_sha256":
-                     sealhash([x["id"] for x in sample]),
-                 "raw_log_loss":raw["log_loss"],"calibrated_log_loss":cal["log_loss"],
-                 "raw_brier_sum3":raw["brier_sum3"],"calibrated_brier_sum3":cal["brier_sum3"],
-                 "raw_ece_top1":raw["top1_ece_10bins"],
-                 "calibrated_ece_top1":cal["top1_ece_10bins"],
-                 "positive_both_primary_metrics":positive,
-                 "independent_after_fit_kickoff":True,"approved_for_production":False}
-                rid=sealhash(payload)
-                db.execute("""INSERT INTO m0_shadow_calibration_holdout_reviews
-                  (review_id,candidate_id,reviewed_at_utc,independent_post_fit_matches,
-                   holdout_forecast_ids_sha256,raw_log_loss,calibrated_log_loss,
-                   raw_brier_sum3,calibrated_brier_sum3,raw_ece_top1,calibrated_ece_top1,
-                   improvement_confirmed,approved_for_production,review_sha256)
-                  VALUES(?,?,?,?,?,?,?,?,?,?,?,?,0,?)""",
-                  (rid,cid,utc_string(now),50,payload["holdout_forecast_ids_sha256"],
-                   raw["log_loss"],cal["log_loss"],raw["brier_sum3"],cal["brier_sum3"],
-                   raw["top1_ece_10bins"],cal["top1_ece_10bins"],int(positive),rid))
-                db.commit();new_review=payload|{"review_sha256":rid}
-            review={"candidate_id":cid,"temperature":temperature,
-                "fitted_rows":n,"future_post_candidate_kickoffs_settled":len(after),
-                "holdout_minimum":50,
-                "review_completed":bool(already_reviewed or new_review),
-                "automatic_activation":False}
+        if len(pairs)>=100 or candidate is not None:
+            review={"state":"BLOCKED_LEGACY_NO_INDEPENDENT_HOST_PROOF",
+                    "reason":"P1_02_UNATTESTED_PUBLICATION",
+                    "scored_settlements_not_fit_eligible":len(pairs),
+                    "old_candidate_exists_needs_audit":candidate is not None,
+                    "automatic_activation":False,
+                    "requires_independent_exact_bytes_and_github_time":True}
         if db.execute("SELECT COUNT(*) FROM predictions").fetchone()[0]!=0:
             raise ResultSafetyError("ORIGINAL_STRICT_M1_PREDICTIONS_TOUCHED")
         if db.execute("PRAGMA foreign_key_check").fetchall():
@@ -260,4 +211,6 @@ def audit_and_prepare_calibration(db_path,*,now=None):
      "aggregate_score":metrics,"candidate":review,
      "new_calibration_candidate":new_candidate,"new_holdout_review":new_review,
      "production_calibration_activated":False,"original_TEST_leak":False,
-     "historic_M1_gate14_pass":False}
+     "historic_M1_gate14_pass":False,
+      "legacy_host_proof_fit_eligible":False,
+      "P1_02_status":"BLOCKED_UNTIL_INDEPENDENT_PUBLICATION_PROOF"}
