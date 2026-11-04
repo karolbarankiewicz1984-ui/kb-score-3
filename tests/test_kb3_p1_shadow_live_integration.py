@@ -12,6 +12,7 @@ import sqlite3
 import tempfile
 import unittest
 from datetime import timedelta
+from unittest.mock import patch
 from pathlib import Path
 
 from test_step16_m0_720_eight_forward import fake_receipts, NOW
@@ -149,6 +150,90 @@ class NewSixLiveIntegration(unittest.TestCase):
             repeated=freeze_only_new_m0(db,shadow_rows,new_m0_ids=set())
             self.assertEqual(repeated["skipped_old_m0"],64)
             self.assertEqual(repeated["added"],0)
+
+
+    def test_synthetic_host_artifact_requires_exact_original_bytes_and_early_server_clock(self):
+        # All timestamps/results here are synthetic: this does not certify
+        # actual future predictions, it exercises the positive proof path.
+        from src.kb3_step16_m0_720_eight_forward import stamp,MODEL as M0
+        from src.kb3_step16_m0_720_calibration import ensure_schema
+        from src.kb3_p1_shadow_host_provenance import ARTIFACT_NAME
+        originals=[];shadow=[]
+        forecast,_,_=make_forecasts(
+            fake_receipts(),cutoff=NOW,params=self.params,
+            param_sha=self.params_sha,manifest_sha=self.manifest_sha,
+            shadow_engine=self.engine,shadow_sink=shadow,
+            wall_clock=self.clock)
+        self.assertEqual(len(forecast),64)
+        self.assertEqual(len(shadow),64)
+        with tempfile.TemporaryDirectory() as td:
+            db=Path(td)/"synthetic-parent.sqlite"
+            fresh=set()
+            freeze_sqlite(db,forecast[:1],param_sha=self.params_sha,
+                          manifest_sha=self.manifest_sha,now=NOW,new_frozen_ids=fresh)
+            child=next(x for x in shadow if x["source_m0_forecast_sha256"] in fresh)
+            freeze_only_new_m0(db,[child],new_m0_ids=fresh)
+            # Make the immutable ZIP from BEFORE any GitHub host proof appears.
+            archive=io.BytesIO()
+            with zipfile.ZipFile(archive,"w") as out:
+                out.write(db,"data/forward_m0_720_eight/kb3_forward_eight.sqlite")
+            frozen=archive.getvalue()
+            archived=_archived_shadow(frozen)
+            self.assertIn(child["shadow_sha256"],archived)
+
+            host_at=NOW+timedelta(minutes=1)
+            parent=child["source_m0_forecast_sha256"]
+            self.assertLess(host_at,NOW+timedelta(hours=2))
+            with sqlite3.connect(db) as conn:
+                conn.execute("PRAGMA foreign_keys=ON")
+                ensure_schema(conn)
+                conn.execute("""INSERT INTO m0720_github_push_proofs(
+                     proof_id,forecast_id,model,github_event_id,github_commit_sha,
+                     github_server_event_utc,original_forecast_sha256,source,audit_utc)
+                     VALUES(?,?,?,?,?,?,?,?,?)""",(
+                    "synthetic-m0-early-proof",parent,M0,"actions-artifact:999001",
+                    "a"*40,stamp(host_at),parent,
+                    "GITHUB_SERVER_ACTIONS_ARTIFACT_PLUS_EXACT_DB_BYTES",
+                    stamp(host_at)))
+                conn.commit()
+
+            fake_meta={
+                "id":999001,"name":ARTIFACT_NAME,"expired":False,
+                "created_at":stamp(host_at),
+                "archive_download_url":"https://localhost.invalid/research-only.zip"}
+            with patch("src.kb3_p1_shadow_host_provenance._gh_json",
+                       return_value={**fake_meta,"created_at":stamp(
+                           NOW+timedelta(days=1))}), patch(
+                    "src.kb3_p1_shadow_host_provenance._gh_artifact_zip",
+                    return_value=frozen):
+                late=audit_shadow(db,token="synthetic-not-a-real-github-token",
+                                  now=NOW+timedelta(days=2))
+                self.assertEqual(late["new_host_proofs"],0)
+            with patch("src.kb3_p1_shadow_host_provenance._gh_json",
+                       return_value=fake_meta), patch(
+                    "src.kb3_p1_shadow_host_provenance._gh_artifact_zip",
+                    return_value=b"not-the-original-sqlite-zip"):
+                corrupt=audit_shadow(db,token="synthetic-not-a-real-github-token",
+                                     now=NOW+timedelta(days=1))
+                self.assertEqual(corrupt["new_host_proofs"],0)
+                self.assertGreater(corrupt["errors"],0)
+            with patch("src.kb3_p1_shadow_host_provenance._gh_json",
+                       return_value=fake_meta), patch(
+                    "src.kb3_p1_shadow_host_provenance._gh_artifact_zip",
+                    return_value=frozen):
+                verified=audit_shadow(db,token="synthetic-not-a-real-github-token",
+                                      now=NOW+timedelta(days=1))
+                self.assertEqual(verified["new_host_proofs"],1)
+                self.assertEqual(verified["verified"],1)
+                retry=audit_shadow(db,token="synthetic-not-a-real-github-token",
+                                   now=NOW+timedelta(days=1))
+                self.assertEqual(retry["new_host_proofs"],0)
+            self.assertEqual(paired_settled_shadow(db)["paired_settled_host_attested"],0)
+            with sqlite3.connect(db) as conn:
+                self.assertEqual(conn.execute(
+                    "SELECT COUNT(*) FROM kb3_p1_shadow_six_host_proofs").fetchone()[0],1)
+                with self.assertRaises(sqlite3.IntegrityError):
+                    conn.execute("UPDATE kb3_p1_shadow_six_host_proofs SET github_artifact_id='666'")
 
     def test_bad_shadow_model_rejected_before_forecast_api(self):
         # The runtime calls the same gate BEFORE calling collect_receipts.
