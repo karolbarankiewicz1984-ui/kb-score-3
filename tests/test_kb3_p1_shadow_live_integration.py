@@ -40,7 +40,7 @@ class NewSixLiveIntegration(unittest.TestCase):
         cls.folder=os.environ.get("KB3_SHADOW_SIX_MODEL_DIR")
         if not cls.folder:
             raise RuntimeError("REQUIRED_VERIFIED_PINNED_ARTIFACT_NOT_DOWNLOADED")
-        cls.clock=lambda:NOW+timedelta(seconds=20)
+        cls.clock=staticmethod(lambda:NOW+timedelta(seconds=20))
         cls.engine=load_opted_shadow(
             clock=cls.clock,
             environ={ENV_NAME:"true",MODEL_DIR_ENV:cls.folder})
