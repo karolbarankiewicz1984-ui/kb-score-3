@@ -1,0 +1,196 @@
+{
+  "schema": "kb3-m0720-actions-read-only-observed-slice-v1",
+  "repository": "karolbarankiewicz1984-ui/kb-score-3",
+  "workflow": ".github/workflows/kb3-step16-m0-720-eight-forward.yml",
+  "queried_pages": 3,
+  "all_runs_observed": 150,
+  "main_runs_observed": 12,
+  "not_full_workflow_history": true,
+  "new_pitchapi_calls": 0,
+  "runs": [
+    {
+      "id": 41760140135,
+      "event": "schedule",
+      "created_at": "2026-11-04T02:20:52Z",
+      "updated_at": "2026-11-04T02:22:19Z",
+      "conclusion": "success",
+      "head_sha": "1f43efd911a49ababbfee2c15d1ef754f834b67a",
+      "real_job_id": 126345853741,
+      "real_job_conclusion": "success",
+      "selected_log_lines": [
+        "2026-11-04T02:21:45.7948287Z   CRON: 17 8,14,22 * * *",
+        "2026-11-04T02:21:45.8566704Z M0_720_RESEARCH_MODE settle SETTLEMENT_DUE explicitly_no_API_if_skip False",
+        "2026-11-04T02:22:13.9073887Z M0_720_RESEARCH_EXECUTION_INTENT {\"mode\": \"settle\", \"protected_english_test_access\": false, \"research_only\": true, \"utc_day\": \"2026-11-04\"}",
+        "2026-11-04T02:22:13.9079394Z M0_720_RESEARCH_RUN_COUNTS {\"new_settlements\": 0, \"total_settlements\": 74}"
+      ]
+    },
+    {
+      "id": 41672457360,
+      "event": "schedule",
+      "created_at": "2026-11-03T16:16:16Z",
+      "updated_at": "2026-11-03T16:17:48Z",
+      "conclusion": "success",
+      "head_sha": "5a7ee0a6e9602176fa9a6265c28f604f55fcf008",
+      "real_job_id": 126044555681,
+      "real_job_conclusion": "success",
+      "selected_log_lines": [
+        "2026-11-03T16:17:10.7880408Z   CRON: 17 8,14,22 * * *",
+        "2026-11-03T16:17:10.8207658Z M0_720_RESEARCH_MODE settle SETTLEMENT_DUE explicitly_no_API_if_skip False",
+        "2026-11-03T16:17:41.2909127Z M0_720_RESEARCH_EXECUTION_INTENT {\"mode\": \"settle\", \"protected_english_test_access\": false, \"research_only\": true, \"utc_day\": \"2026-11-03\"}",
+        "2026-11-03T16:17:41.2926472Z M0_720_RESEARCH_RUN_COUNTS {\"new_settlements\": 0, \"total_settlements\": 74}"
+      ]
+    },
+    {
+      "id": 41654038239,
+      "event": "schedule",
+      "created_at": "2026-11-03T14:28:33Z",
+      "updated_at": "2026-11-03T14:29:50Z",
+      "conclusion": "success",
+      "head_sha": "8234f5e2466c9031ba90773410232ec61b861451",
+      "real_job_id": 125979832267,
+      "real_job_conclusion": "success",
+      "selected_log_lines": [
+        "2026-11-03T14:29:16.9955113Z   CRON: 21 6,9,12 * * *",
+        "2026-11-03T14:29:17.0205611Z M0_720_RESEARCH_MODE forecast MISSING_DAILY_FORECAST explicitly_no_API_if_skip False",
+        "2026-11-03T14:29:40.1221838Z M0_720_RESEARCH_EXECUTION_INTENT {\"mode\": \"forecast\", \"protected_english_test_access\": false, \"research_only\": true, \"utc_day\": \"2026-11-03\"}",
+        "2026-11-03T14:29:40.1226030Z M0_720_RESEARCH_RUN_COUNTS {\"new_forecasts\": 16, \"total_forecasts\": 91}"
+      ]
+    },
+    {
+      "id": 41572391144,
+      "event": "schedule",
+      "created_at": "2026-11-03T03:28:17Z",
+      "updated_at": "2026-11-03T03:29:44Z",
+      "conclusion": "success",
+      "head_sha": "495c5f1f23899d6c975e640b0d2ab01c765f8571",
+      "real_job_id": 125708270113,
+      "real_job_conclusion": "success",
+      "selected_log_lines": [
+        "2026-11-03T03:29:14.3127871Z   CRON: 17 8,14,22 * * *",
+        "2026-11-03T03:29:14.3484867Z M0_720_RESEARCH_MODE settle SETTLEMENT_DUE explicitly_no_API_if_skip False",
+        "2026-11-03T03:29:38.6392108Z M0_720_RESEARCH_EXECUTION_INTENT {\"mode\": \"settle\", \"protected_english_test_access\": false, \"research_only\": true, \"utc_day\": \"2026-11-03\"}",
+        "2026-11-03T03:29:38.6409738Z M0_720_RESEARCH_RUN_COUNTS {\"new_settlements\": 8, \"total_settlements\": 74}"
+      ]
+    },
+    {
+      "id": 41500112326,
+      "event": "schedule",
+      "created_at": "2026-11-02T18:23:28Z",
+      "updated_at": "2026-11-02T18:25:03Z",
+      "conclusion": "success",
+      "head_sha": "eab45574ecab736f0bbae727aa0d14be45776040",
+      "real_job_id": 125465438638,
+      "real_job_conclusion": "success",
+      "selected_log_lines": [
+        "2026-11-02T18:24:15.2509870Z   CRON: 17 8,14,22 * * *",
+        "2026-11-02T18:24:15.2766975Z M0_720_RESEARCH_MODE settle SETTLEMENT_DUE explicitly_no_API_if_skip False",
+        "2026-11-02T18:24:34.7523958Z M0_720_RESEARCH_EXECUTION_INTENT {\"mode\": \"settle\", \"protected_english_test_access\": false, \"research_only\": true, \"utc_day\": \"2026-11-02\"}",
+        "2026-11-02T18:24:34.7528294Z M0_720_RESEARCH_RUN_COUNTS {\"new_settlements\": 6, \"total_settlements\": 66}"
+      ]
+    },
+    {
+      "id": 41479439802,
+      "event": "schedule",
+      "created_at": "2026-11-02T16:14:04Z",
+      "updated_at": "2026-11-02T16:15:37Z",
+      "conclusion": "success",
+      "head_sha": "d48f96c36f686b7fc688696412cdb18fbd3ee8aa",
+      "real_job_id": 125393958094,
+      "real_job_conclusion": "success",
+      "selected_log_lines": [
+        "2026-11-02T16:15:00.3350641Z   CRON: 21 6,9,12 * * *",
+        "2026-11-02T16:15:00.3679824Z M0_720_RESEARCH_MODE forecast MISSING_DAILY_FORECAST explicitly_no_API_if_skip False",
+        "2026-11-02T16:15:27.1138122Z M0_720_RESEARCH_EXECUTION_INTENT {\"mode\": \"forecast\", \"protected_english_test_access\": false, \"research_only\": true, \"utc_day\": \"2026-11-02\"}",
+        "2026-11-02T16:15:27.1143480Z M0_720_RESEARCH_RUN_COUNTS {\"new_forecasts\": 0, \"total_forecasts\": 75}"
+      ]
+    },
+    {
+      "id": 41372787698,
+      "event": "schedule",
+      "created_at": "2026-11-02T01:30:01Z",
+      "updated_at": "2026-11-02T01:30:54Z",
+      "conclusion": "success",
+      "head_sha": "c454089b985dab223d98788f17f5ac07e7a678de",
+      "real_job_id": 125046815860,
+      "real_job_conclusion": "success",
+      "selected_log_lines": [
+        "2026-11-02T01:30:51.2864914Z   CRON: 17 8,14,22 * * *",
+        "2026-11-02T01:30:51.3217662Z M0_720_RESEARCH_MODE skip SETTLEMENT_ALREADY_RECENT explicitly_no_API_if_skip True"
+      ]
+    },
+    {
+      "id": 41346411108,
+      "event": "push",
+      "created_at": "2026-11-01T20:21:09Z",
+      "updated_at": "2026-11-01T20:22:18Z",
+      "conclusion": "success",
+      "head_sha": "03b22b53d5f98cc4238d474a12e9c4bd0f2e4126",
+      "real_job_id": 124967188529,
+      "real_job_conclusion": "success",
+      "selected_log_lines": [
+        "2026-11-01T20:21:48.8066890Z   CRON: ",
+        "2026-11-01T20:21:48.8397195Z M0_720_RESEARCH_MODE settle PUSH_RECOVERY_STALE_SETTLEMENT explicitly_no_API_if_skip False",
+        "2026-11-01T20:22:13.1976810Z M0_720_RESEARCH_EXECUTION_INTENT {\"mode\": \"settle\", \"protected_english_test_access\": false, \"research_only\": true, \"utc_day\": \"2026-11-01\"}",
+        "2026-11-01T20:22:13.1980821Z M0_720_RESEARCH_RUN_COUNTS {\"new_settlements\": 21, \"total_settlements\": 60}"
+      ]
+    },
+    {
+      "id": 41339170552,
+      "event": "schedule",
+      "created_at": "2026-11-01T18:56:35Z",
+      "updated_at": "2026-11-01T18:57:27Z",
+      "conclusion": "success",
+      "head_sha": "2bf0e1e058ad2bc989a63700197712e5b3e879af",
+      "real_job_id": 124945467639,
+      "real_job_conclusion": "success",
+      "selected_log_lines": [
+        "2026-11-01T18:57:24.1605344Z   CRON: 17 8,14,22 * * *",
+        "2026-11-01T18:57:24.1902509Z M0_720_RESEARCH_MODE skip SETTLEMENT_ALREADY_RECENT explicitly_no_API_if_skip True"
+      ]
+    },
+    {
+      "id": 41306504012,
+      "event": "push",
+      "created_at": "2026-11-01T12:26:28Z",
+      "updated_at": "2026-11-01T12:27:12Z",
+      "conclusion": "success",
+      "head_sha": "aa730fb820fac561e55168d98bbf1abec6c12653",
+      "real_job_id": 124847998675,
+      "real_job_conclusion": "success",
+      "selected_log_lines": [
+        "2026-11-01T12:27:09.2114413Z   CRON: ",
+        "2026-11-01T12:27:09.2448259Z M0_720_RESEARCH_MODE skip NO_NEEDED_PAID_PROVIDER_REQUEST explicitly_no_API_if_skip True"
+      ]
+    },
+    {
+      "id": 41305979888,
+      "event": "push",
+      "created_at": "2026-11-01T12:20:01Z",
+      "updated_at": "2026-11-01T12:21:25Z",
+      "conclusion": "success",
+      "head_sha": "809f70d3ff75a0e14538aca4e350b4d89a3f4d66",
+      "real_job_id": 124846507384,
+      "real_job_conclusion": "success",
+      "selected_log_lines": [
+        "2026-11-01T12:21:12.9823928Z   CRON: ",
+        "2026-11-01T12:21:18.4461008Z M0_720_RESEARCH_EXECUTION_INTENT {\"mode\": \"settle\", \"protected_english_test_access\": false, \"research_only\": true, \"utc_day\": \"2026-11-01\"}",
+        "2026-11-01T12:21:18.4480160Z M0_720_RESEARCH_RUN_COUNTS {\"new_settlements\": 1, \"total_settlements\": 39}"
+      ]
+    },
+    {
+      "id": 41285607283,
+      "event": "push",
+      "created_at": "2026-11-01T07:38:35Z",
+      "updated_at": "2026-11-01T07:39:58Z",
+      "conclusion": "success",
+      "head_sha": "596277c08867ad9ab15176bf58602e301a05e757",
+      "real_job_id": 124786268426,
+      "real_job_conclusion": "success",
+      "selected_log_lines": [
+        "2026-11-01T07:39:45.0488229Z   CRON: ",
+        "2026-11-01T07:39:50.8678317Z M0_720_RESEARCH_EXECUTION_INTENT {\"mode\": \"forecast\", \"protected_english_test_access\": false, \"research_only\": true, \"utc_day\": \"2026-11-01\"}",
+        "2026-11-01T07:39:50.8683114Z M0_720_RESEARCH_RUN_COUNTS {\"new_forecasts\": 2, \"total_forecasts\": 75}"
+      ]
+    }
+  ]
+}

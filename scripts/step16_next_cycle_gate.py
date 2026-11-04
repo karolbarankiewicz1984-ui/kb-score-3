@@ -25,7 +25,7 @@ def run(root=ROOT,*,now=None,merge=BASELINE_MERGE_UTC):
     require(now.tzinfo is not None and now.utcoffset().total_seconds()==0,"UTC_REQUIRED")
     mrdir=root/"data/pit_sidecar/m0_720_eight"
     xrdir=root/"data/pit_sidecar/step17_native_xg_eight"
-    forecasts=after_merge_run(latest(mrdir,"*/forecast/RECEIPT.json"),merge,"run_utc")
+    forecasts=after_merge_run(latest(mrdir,"*/forecast*/RECEIPT.json"),merge,"run_utc")
     captures=after_merge_run(latest(xrdir,"*/XG_READINESS_RECEIPT.json"),merge,"observed_at_utc")
     with open_readonly(root/"data/forward_m0_720_eight/kb3_forward_eight.sqlite") as db:
         m0=audit_m0(db,now=now)
