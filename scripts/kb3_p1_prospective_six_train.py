@@ -33,14 +33,16 @@ def run(*,output):
             source["formal_training_allowed"] is False,"UNSAFE_SOURCE_COHORT")
     require(len(FEATURES)==len(FORWARD_KEYS)==6,"FEATURES_NOT_SIX")
     root.mkdir(parents=True,exist_ok=False)
-    from catboost import CatBoostClassifier
+    from catboost import CatBoostClassifier,Pool
     train_x=[[float(x["features"][k]) for k in FEATURES] for x in train]
     val_x=[[float(x["features"][k]) for k in FEATURES] for x in valid]
     require(all(len(x)==6 for x in train_x+val_x),"CANDIDATE_SHAPE_INVALID")
     params={**PARAMS,"thread_count":1}
     clf=CatBoostClassifier(**params)
     # Train under forward field names: they become an immutable binary schema.
-    clf.fit(train_x,[x["label"] for x in train],feature_names=list(FORWARD_KEYS))
+    pool=Pool(train_x,label=[x["label"] for x in train],
+              feature_names=list(FORWARD_KEYS))
+    clf.fit(pool)
     classes=[str(c) for c in clf.classes_]
     require(set(classes)==set(CLASSES) and
             list(clf.feature_names_)==list(FORWARD_KEYS),"MODEL_SCHEMA_DRIFT")
