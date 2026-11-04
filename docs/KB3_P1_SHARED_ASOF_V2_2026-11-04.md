@@ -29,3 +29,7 @@ W starym rekonstruowanym zbiorze M1-R używano stałego opóźnienia +48h od roz
 4. P1-01 = PARTIAL, #143 nadal DRAFT/NO-GO, #150 niezależny draft read-only audytu, M0 bez zmian, 100 FIT + 50 nowych HOLDOUT bez zmian, formalny plan 15/29.
 
 **Brak automatycznego merge, wyboru Championa, zmian modeli produkcyjnych lub kodu starego M1-R.**
+
+## Zgodność nazewnictwa z historycznymi 85 cechami M1-R
+
+Dodatkowo zaimplementowano **candidate_m1r_85_schema_bridge()**, który odczytuje **rzeczywistą** listę frozen_feature_names z istniejącego audytu `data/audits/STEP14_M1R_BASE_CATBOOST_720_374_REAL_METRICS_2026-10-29.json` (720 TRAIN / 374 VALIDATION), wymaga 85 niepowtarzalnych nazw, zachowuje typy num/miss, rozróżnia brak numeryczny NULL i flagę missing oraz wylicza osobne SHA. To wyłącznie kontrola **kształtu** 85-kolumnowego wejścia. **Nie oznacza zgodności statystycznej ze starymi wagami** M1-R; źródła, czas odcięcia i dystrybucja cech się zmieniły, zatem trzeba wytrenować odrębny model z nowym SHA i nowym identyfikatorem. Dla każdej kandydackiej próbki pozostają `safe_to_score_with_frozen_original_m1r=false` i `training_allowed=false` do właściwych dowodów i decyzji.
