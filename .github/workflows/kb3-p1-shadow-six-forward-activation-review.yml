@@ -1,0 +1,63 @@
+name: KB3 Shadow Six future-only activation policy and M0 regression
+on:
+  pull_request:
+    paths:
+      - config/kb3_shadow_six_forward_activation.json
+      - scripts/kb3_p1_shadow_activation_policy.py
+      - tests/test_kb3_p1_shadow_activation_policy.py
+      - .github/workflows/kb3-step16-m0-720-eight-forward.yml
+      - .github/workflows/kb3-p1-shadow-six-forward-activation-review.yml
+      - docs/KB3_SHADOW_SIX_FORWARD_ACTIVATION_2026-11-05.md
+
+permissions:
+  contents: read
+
+jobs:
+  future-only-main-schedule-policy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ['3.11','3.12']
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Compile standalone policy and verify no provider dependency
+        run: python -m compileall -q scripts/kb3_p1_shadow_activation_policy.py
+      - name: 8 explicit activation, rollback and research non-promotion tests
+        run: python -m unittest discover -s tests -p 'test_kb3_p1_shadow_activation_policy.py' -v
+      - name: Verify scheduled M0 workflow uses approved activation gate
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import json
+          wf=Path(".github/workflows/kb3-step16-m0-720-eight-forward.yml").read_text()
+          policy=json.loads(Path("config/kb3_shadow_six_forward_activation.json").read_text())
+          assert wf.count("steps.shadow_activation.outputs.enabled")==2
+          assert "python -m scripts.kb3_p1_shadow_activation_policy" in wf
+          expected="KB3_SHADOW_SIX_ENABLED: "+chr(36)+"{{ steps.shadow_activation.outputs.enabled }}"
+          assert expected in wf
+          assert "vars.KB3_SHADOW_SIX_ENABLED" not in wf
+          assert "steps.mode.outputs.mode == 'forecast'" in wf
+          assert policy["enabled"] is True
+          assert policy["formal_model_approval"] is False
+          assert policy["official_fit_increment"]==0
+          assert policy["allow_retroactive_predictions"] is False
+          assert policy["allow_champion_promotion"] is False
+          print("SHADOW_FUTURE_ONLY_POLICY_NO_M0_MODEL_CHANGE")
+          PY
+      - name: Confirm no original M0 code, model or history were changed by activation PR
+        run: |
+          git fetch --no-tags origin main
+          git diff --exit-code origin/main...HEAD -- \
+            data models assets src config/kb3_shadow_six_pinned_research_model.json \
+            src/kb3_step16_m0_720_eight_forward.py \
+            src/kb3_step16_m0_720_calibration.py \
+            src/kb3_step17_forward_challengers.py \
+            scripts/step16_m0_720_eight_run.py
+          git diff --check origin/main...HEAD
