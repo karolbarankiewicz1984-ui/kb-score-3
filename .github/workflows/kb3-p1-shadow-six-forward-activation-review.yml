@@ -27,6 +27,8 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
+      - name: Use the existing offline M0 dependency lock (no provider calls)
+        run: python -m pip install --disable-pip-version-check -r config/step16_ci_requirements.txt
       - name: Compile standalone policy and verify no provider dependency
         run: python -m compileall -q scripts/kb3_p1_shadow_activation_policy.py
       - name: 8 explicit activation, rollback and research non-promotion tests
