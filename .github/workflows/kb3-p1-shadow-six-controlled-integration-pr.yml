@@ -37,10 +37,10 @@ jobs:
           run-id: 41922809252
           repository: karolbarankiewicz1984-ui/kb-score-3
           github-token: ${{ github.token }}
-          path: ${{ runner.temp }}}/shadow_six_selected
+          path: ${{ runner.temp }}/shadow_six_selected
       - name: First verify pinned artifact and OFF-by-default before collection simulation
         env:
-          KB3_SHADOW_SIX_MODEL_DIR: ${{ runner.temp }}}/shadow_six_selected
+          KB3_SHADOW_SIX_MODEL_DIR: ${{ runner.temp }}/shadow_six_selected
         run: |
           python - <<'PY'
           from src.kb3_p1_shadow_live_gate import (
@@ -55,7 +55,7 @@ jobs:
           PY
       - name: Real selected CatBoost through both M0 Step17 and new append-only path
         env:
-          KB3_SHADOW_SIX_MODEL_DIR: ${{ runner.temp }}}/shadow_six_selected
+          KB3_SHADOW_SIX_MODEL_DIR: ${{ runner.temp }}/shadow_six_selected
           KB3_SHADOW_SIX_ENABLED: 'false'
         run: |
           python -m unittest discover -s tests -p 'test_kb3_p1_shadow_live_integration.py' -v
