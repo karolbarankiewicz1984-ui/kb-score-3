@@ -1,0 +1,19 @@
+{
+  "schema": "kb3-shadow-six-research-model-pin-v1",
+  "artifact_id": 13366883765,
+  "artifact_run_id": 41922809252,
+  "artifact_name": "KB3_CATBOOST_SIX_FORWARD_COMPATIBLE_RESEARCH_NOT_LIVE",
+  "source_branch": "research/kb3-prospective-catboost-shadow-six-v1-20261104",
+  "model_version": "KB3_CATBOOST_SHADOW_LAST5_GOALS_6_RESEARCH_V1",
+  "model_sha256": "58c5a7fc35afe942893a25b96233689d1f7814ec8a93ed689a7b46f553dbbbc5",
+  "manifest_sha256": "9a1b2ce07d11aa369066de712469470f862836a5ba5d3e817402589e65fc8eca",
+  "model_filename": "KB3_CATBOOST_SHADOW_SIX_RESEARCH.cbm",
+  "manifest_filename": "KB3_CATBOOST_SHADOW_SIX_MANIFEST.json",
+  "artifact_expires_utc": "2026-11-18T22:10:33Z",
+  "production_approved": false,
+  "enabled_by_default": false,
+  "historical_native_pit_certified": false,
+  "no_new_provider_calls": true,
+  "approval_gate": "MANUAL_REVIEW_AND_EXPLICIT_ENABLE_REPO_VAR_ONLY",
+  "note": "The selected single artifact is pinned by exact model and manifest hashes. Never combine outputs from separate retrains."
+}
