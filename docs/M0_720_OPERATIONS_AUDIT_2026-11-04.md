@@ -6,7 +6,9 @@ dopasowania kalibratora na danych użytkownika. Nie jest to formalny odbiór
 kroku 16. Wymagane pozostaje 100 FIT, następnie 50 nowych prognoz po fit,
 rozliczenie niezależnego HOLDOUT oraz formalna decyzja właściciela.
 
-Źródło: main `ad59f8cc3bceb26fea97c937be825d3ee6cde3e6`.
+Źródło M0: main `ad59f8cc3bceb26fea97c937be825d3ee6cde3e6`.
+Gałąź zgodna także z main `360c595f2c7f78691b8f17e5fd6912d090837480`;
+późniejsze zmiany obejmują inne dane, bez zmiany badanego kodu lub źródeł M0.
 [Rzeczywisty raport](audits/M0_720_OPERATIONS_2026-11-04.json),
 [odczytane uruchomienia Actions](audits/M0_720_ACTIONS_OBSERVED_2026-11-04.json).
 SQLite SHA256 `af1bd3bebc962490b3ad8765be587152428cb323ad2e65115655caefdf689556`.
