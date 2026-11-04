@@ -1,0 +1,96 @@
+name: KB3 Shadow Six - durable pinned CBM research-branch mirror
+on:
+  push:
+    branches:
+      - research/kb3-shadow-six-controlled-live-integration-20261104
+    paths:
+      - .github/workflows/kb3-shadow-six-durable-pin-branch.yml
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  actions: read
+
+concurrency:
+  group: kb3-shadow-six-durable-pin-exact-reviewed-binary
+  cancel-in-progress: false
+
+jobs:
+  mirror-exact-existing-artifact:
+    if: >-
+      github.repository == 'karolbarankiewicz1984-ui/kb-score-3' &&
+      github.ref == 'refs/heads/research/kb3-shadow-six-controlled-live-integration-20261104'
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Download exact 2026-11-04 source artifact, NEVER re-fit
+        uses: actions/download-artifact@v4
+        with:
+          name: KB3_CATBOOST_SIX_FORWARD_COMPATIBLE_RESEARCH_NOT_LIVE
+          repository: karolbarankiewicz1984-ui/kb-score-3
+          run-id: 41922809252
+          github-token: ${{ github.token }}
+          path: ${{ runner.temp }}/reviewed_shadow_binary
+      - name: Verify both SHA before copying into research-only durable assets
+        env:
+          SOURCE: ${{ runner.temp }}/reviewed_shadow_binary
+        run: |
+          python - <<'PY'
+          import os,hashlib,json,pathlib
+          source=pathlib.Path(os.environ['SOURCE'])
+          dest=pathlib.Path('assets/research/kb3_shadow_six_v1')
+          pin=json.loads(pathlib.Path('config/kb3_shadow_six_pinned_research_model.json').read_text())
+          assert pin['schema']=='kb3-shadow-six-research-model-pin-v1'
+          assert pin['artifact_id']==13366883765 and pin['artifact_run_id']==41922809252
+          assert pin['model_sha256']=='58c5a7fc35afe942893a25b96233689d1f7814ec8a93ed689a7b46f553dbbbc5'
+          assert pin['manifest_sha256']=='9a1b2ce07d11aa369066de712469470f862836a5ba5d3e817402589e65fc8eca'
+          data=(source/pin['model_filename']).read_bytes()
+          assert hashlib.sha256(data).hexdigest()==pin['model_sha256'], 'PINNED_MODEL_BYTES_NOT_FOUND'
+          manifest=(source/pin['manifest_filename']).read_bytes()
+          parsed=json.loads(manifest)
+          assert parsed['manifest_sha256']==pin['manifest_sha256']
+          assert parsed['model_binary_sha256']==pin['model_sha256']
+          assert parsed['production_approved'] is False
+          assert parsed['trained_on_reconstructed_history'] is True
+          assert parsed['training_rows']==1007 and parsed['validation_rows']==376
+          assert len(parsed['feature_names'])==6
+          dest.mkdir(parents=True,exist_ok=True)
+          model_dest=dest/pin['model_filename']
+          manifest_dest=dest/pin['manifest_filename']
+          if model_dest.exists():
+              assert model_dest.read_bytes()==data, 'MIRRORED_MODEL_REPLACEMENT_FORBIDDEN'
+          else:
+              model_dest.write_bytes(data)
+          if manifest_dest.exists():
+              assert json.loads(manifest_dest.read_text())==parsed, 'MIRRORED_MANIFEST_REPLACEMENT_FORBIDDEN'
+          else:
+              manifest_dest.write_bytes(manifest)
+          print('DURABLE_SHADOW_SIX_EXACT_BYTES_VERIFIED',pin['model_sha256'])
+          print('DURABLE_RESEARCH_ONLY_NO_FIT_NO_M0_REPLACEMENT')
+          PY
+      - name: Commit research-only reviewed binary+manifest to this review branch
+        run: |
+          set -euo pipefail
+          branch=research/kb3-shadow-six-controlled-live-integration-20261104
+          git fetch --no-tags origin "$branch"
+          if test "$(git rev-parse HEAD)" != "$(git rev-parse "origin/$branch")"; then
+            echo "::error::REVIEW_BRANCH_CHANGED_RETRY_ON_NEW_HEAD_NO_FORCE_PUSH"
+            exit 1
+          fi
+          git config user.name 'kb3-shadow-research-model-archive-bot'
+          git config user.email 'kb3-shadow-research-model-archive-bot@users.noreply.github.com'
+          git add -f assets/research/kb3_shadow_six_v1/
+          if git diff --cached --quiet; then
+            echo 'Exact SHA-pinned reviewed bytes already durably mirrored.'
+            exit 0
+          fi
+          git commit -m 'research(kb3): preserve exact SHA-pinned six-feature CatBoost model bytes on review branch'
+          git push origin "HEAD:refs/heads/$branch"
+          echo "DURABLE_PIN_READY_FOR_REVIEW_BRANCH_NO_MAIN_CHANGE"
