@@ -67,11 +67,11 @@ jobs:
           PY
       - name: Verify history, live model and protected original TEST unchanged
         run: |
-          git fetch --no-tags origin "${{ github.base_ref }}"
-          git diff --exit-code "origin/${{ github.base_ref }...HEAD" -- data models config \
+          git fetch --no-tags origin "${{ github.base_ref }}}"
+          git diff --exit-code "origin/${{ github.base_ref }}...HEAD" -- data models config \
             src/kb3_features.py src/kb3_step16_m0_720_eight_forward.py \
             scripts/step14_m1r_recompute_1140_relaxed_48h.py
-          git diff --check "origin/${{ github.base_ref }...HEAD"
+          git diff --check "origin/${{ github.base_ref }}...HEAD"
       - uses: actions/upload-artifact@v4
         if: always()
         with:
