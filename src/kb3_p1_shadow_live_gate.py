@@ -46,6 +46,11 @@ def pinned_model_details(pin_path=PIN_FILE):
         and pin.get("enabled_by_default") is False
         and pin.get("historical_native_pit_certified") is False
         and pin.get("no_new_provider_calls") is True
+        and pin.get("durable_repo_relative_dir")==
+            "assets/research/kb3_shadow_six_v1"
+        and pin.get("durable_mirror_workflow_run_id")==41929594196
+        and pin.get("durable_source_verified_model_sha256")==
+            pin.get("model_sha256")
     ):
         raise ShadowSafetyError("SHADOW_PIN_IMMUTABLE_POLICY_DRIFT")
     return pin
