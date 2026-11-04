@@ -3,6 +3,7 @@ on:
   pull_request:
     paths:
       - scripts/audit_kb3_step01_restore.py
+      - scripts/audit_kb3_step01_encrypted_backup.py
       - .github/workflows/kb3-step01-restore-preflight.yml
       - data/forward_m0_720_eight/kb3_forward_eight.sqlite
       - models/research/M0_720_TRAIN_STABLE_CANDIDATE_20261029.json
@@ -12,7 +13,7 @@ permissions:
 jobs:
   real-repository-sqlite-restore:
     runs-on: ubuntu-latest
-    timeout-minutes: 8
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -22,3 +23,18 @@ jobs:
         run: |
           python -m compileall -q scripts/audit_kb3_step01_restore.py
           python -m scripts.audit_kb3_step01_restore
+      - name: Install crypto only for ENCRYPTED copy, without provider API
+        run: python -m pip install --disable-pip-version-check 'cryptography>=42,<47'
+      - name: Encrypt current actual M0 SQLite under existing owner public RSA key
+        run: |
+          python -m compileall -q scripts/audit_kb3_step01_encrypted_backup.py
+          python -m scripts.audit_kb3_step01_encrypted_backup
+      - name: Upload only ciphertext and manifest; NEVER raw SQLite
+        uses: actions/upload-artifact@v4
+        with:
+          name: kb3-step01-M0-current-encrypted-sqlite
+          path: |
+            audit/step01_backup_encrypted/M0_REAL_SQLITE_2026-11-04.enc
+            audit/step01_backup_encrypted/M0_REAL_SQLITE_2026-11-04.manifest.json
+          retention-days: 14
+          if-no-files-found: error
