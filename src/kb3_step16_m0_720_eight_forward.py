@@ -165,6 +165,7 @@ def make_forecasts(receipts,*,cutoff,params,param_sha,manifest_sha,challenger_en
     require(len(grouped)==16,"ALL_EIGHT_LEAGUE_SOURCES_REQUIRED")
     rows=[];by_league=Counter();verified={};known_fixtures=set(known_fixtures)
     reasons=defaultdict(Counter);decisions=[]
+    shadow_unavailable=[]
     def decision(country,m,reason):
         reasons[country][reason]+=1
         if m.get('status') in ('scheduled','not_started','upcoming'):
@@ -258,14 +259,32 @@ def make_forecasts(receipts,*,cutoff,params,param_sha,manifest_sha,challenger_en
             if challenger_engine is not None:
                 challenger_sink.extend(challenger_engine.records(features,item))
             if shadow_engine is not None:
-                shadow_sink.extend(shadow_engine.records(features,item))
+                # An optional challenger must never suppress a valid M0
+                # forecast simply because its six-feature vector is absent.
+                # Source integrity, bad model SHA, clocks and unexpected errors
+                # remain strict NO-GO and are NOT caught here.
+                from src.kb3_p1_prospective_shadow_six_v1 import ShadowSafetyError
+                try:
+                    shadow_sink.extend(shadow_engine.records(features,item))
+                except ShadowSafetyError as exc:
+                    error=str(exc)
+                    if (error=="MISSING_LAST5_HISTORY" or
+                            error.startswith("SIX_FORWARD_REAL_GOAL_FORM_FEATURE_UNAVAILABLE:")):
+                        shadow_unavailable.append({
+                            "league":country,"native_match_id":m["id"],
+                            "source_m0_forecast_sha256":item["forecast_sha256"],
+                            "reason":error})
+                    else:
+                        raise
             rows.append(item);by_league[country]+=1
             decision(country,m,'NEW_FORECAST_SELECTED')
     require(len(rows)<=80 and len({(f["league_country"],f["provider_match_id"])
             for f in rows})==len(rows),"DUPLICATE_TARGET_OR_OVER_CAP")
     if diagnostics is not None:
         diagnostics.update({'reason_counts':{s:dict(c) for s,c in sorted(reasons.items())},
-            'upcoming_decisions':decisions,'known_fixtures_excluded_before_quota':True,
+            'upcoming_decisions':decisions,
+            **({'optional_shadow_unavailable':shadow_unavailable} if shadow_engine is not None else {}),
+            'known_fixtures_excluded_before_quota':True,
             'max_new_forecasts_per_league':FORECAST_LIMIT,'source_cutoff_utc':stamp(cutoff)})
     return rows,dict(by_league),{f"{a}/{b}":v for (a,b),v in verified.items()}
 
@@ -534,9 +553,14 @@ def run(*,mode,client,now=None,db_path=DB,root=SOURCES,public_key=None,
                 from src.kb3_p1_prospective_shadow_six_v1 import freeze_only_new_m0
                 shadow_state=freeze_only_new_m0(
                     staging,shadow_candidates,new_m0_ids=new_ids)
-                require(shadow_state["added"]==new and
-                        shadow_state["official_fit_increment"]==0,
-                        "SHADOW_NOT_ATOMIC_WITH_NEW_M0_PARENTS")
+                shadow_missing_new=[
+                    row for row in diagnostics.get("optional_shadow_unavailable",[])
+                    if row["source_m0_forecast_sha256"] in new_ids]
+                require(
+                    shadow_state["added"]+len(shadow_missing_new)==new and
+                    shadow_state["official_fit_increment"]==0,
+                    "SHADOW_NEW_M0_COVERAGE_ACCOUNTING_OR_INTEGRITY_DRIFT")
+                shadow_state["missing_features_new_m0"]=len(shadow_missing_new)
                 shadow_state["enabled"]=True
             extra={"new_forecasts":new,"total_forecasts":total,"coverage":coverage,
                    'forecast_selection_diagnostics':diagnostics,
