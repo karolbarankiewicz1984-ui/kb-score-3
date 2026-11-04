@@ -1,0 +1,22 @@
+{
+  "schema": "kb3-shadow-six-forward-activation-v1",
+  "enabled": true,
+  "owner_authorized_in_chat": true,
+  "research_only": true,
+  "only_new_m0": true,
+  "eligible_event_types": [
+    "schedule",
+    "workflow_dispatch"
+  ],
+  "required_branch": "refs/heads/main",
+  "required_repository": "karolbarankiewicz1984-ui/kb-score-3",
+  "required_mode": "forecast",
+  "required_model_version": "KB3_CATBOOST_SHADOW_LAST5_GOALS_6_RESEARCH_V1",
+  "required_model_sha256": "58c5a7fc35afe942893a25b96233689d1f7814ec8a93ed689a7b46f553dbbbc5",
+  "formal_model_approval": false,
+  "official_fit_increment": 0,
+  "allow_retroactive_predictions": false,
+  "allow_champion_promotion": false,
+  "rollback": "Change enabled to false and merge; the next scheduled runs revert to original M0-only forecasts.",
+  "note": "Explicitly approve future-only read-only research shadow; M0 and its FIT/HOLDOUT unaffected. New source capture and host proof still required."
+}
