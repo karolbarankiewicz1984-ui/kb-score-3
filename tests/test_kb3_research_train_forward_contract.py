@@ -1,7 +1,10 @@
 """Pure-clock regression only; synthetic examples never become FIT or forecasts."""
 import unittest
+import sqlite3
+import tempfile
+from pathlib import Path
 from src.kb3_research_train_forward_contract import audit_target, audit_batch, ParityError
-from scripts.kb3_research_parity_audit import inspect_source
+from scripts.kb3_research_parity_audit import inspect_source, real_fixture_clock_case_study
 
 
 def sample():
@@ -64,6 +67,24 @@ class ResearchParityTests(unittest.TestCase):
         r = audit_target(row)
         self.assertEqual(r["forward3h_unverified_evidence_claim_ids"], [])
         self.assertEqual(r["reasons"]["PIT_EVIDENCE_NOT_SUPPLIED"], 2)
+
+    def test_actual_fixture_id_readonly_clock_case_study(self):
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "historical.sqlite"
+            with sqlite3.connect(path) as db:
+                db.execute("CREATE TABLE finished_fixture_index (scope TEXT, match_id TEXT, kickoff_utc TEXT, home_team_id TEXT, away_team_id TEXT)")
+                db.execute("CREATE TABLE observations (scope TEXT, match_id TEXT)")
+                db.executemany("INSERT INTO finished_fixture_index VALUES (?,?,?,?,?)", [
+                    ("ESP", "older", "2026-11-01T12:00:00Z", "A", "C"),
+                    ("ESP", "recent", "2026-11-04T14:00:00Z", "A", "D"),
+                    ("ESP", "target", "2026-11-04T20:00:00Z", "A", "B"),
+                ])
+                db.execute("INSERT INTO observations VALUES (?,?)", ("ESP", "target"))
+            result = real_fixture_clock_case_study(path, max_targets=10)
+            self.assertEqual(result["sample_targets_checked"], 1)
+            self.assertEqual(result["predecessor_set_difference_targets"], 1)
+            self.assertFalse(result["provider_first_publication_certified"])
+            self.assertFalse(result["training_allowed"])
 
     def test_source_contract_policy_markers(self):
         f = ('RESULT_LAG=timedelta(hours=3)\n'
