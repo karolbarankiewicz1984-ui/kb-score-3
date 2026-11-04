@@ -28,7 +28,7 @@ jobs:
           python-version: ${{ matrix.python-version }}
       - name: Offline research-only tests
         run: |
-          python -m unittest tests.test_kb3_research_train_forward_contract tests.test_kb3_research_xg_and_three_engine -v
+          python -m unittest discover -s tests -p 'test_kb3_research*.py' -v
       - name: Real source-code parity and checked-in xG/Step17 receipt audits
         run: |
           python -m scripts.kb3_research_parity_audit > "$RUNNER_TEMP/kb3_p1_clock.json"
