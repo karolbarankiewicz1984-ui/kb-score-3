@@ -39,3 +39,10 @@
 ## Rejestr bieżącego wykonania
 - **2026-11-04:** plan 12 kroków zatwierdzony na polecenie właściciela. Nie jest dowodem uruchomienia generatora TEST.
 - **Następna czynność:** niezależna weryfikacja dostępnych backupów i ich odtwarzalności na kopii (krok 01); następnie kontrola najnowszego main vs PR #146 i równoległe P1 #143.
+
+## Dyspozycja właściciela — 04.11.2026, bez prywatnych kluczy
+
+- Właściciel nie chce angażowania prywatnego klucza RSA w dalszą budowę. Krok 01: **operacyjny GO** na podstawie odtworzenia kopii SQLite na izolowanej bazie, testów integralności i hashy. Nie stanowi to potwierdzenia odtwarzalności szyfrowanej kopii offsite.
+- Szyfrowany backup na Google Drive pozostaje `OFFSITE_DECRYPT_RESTORE_NOT_VERIFIED`, a bez klucza może być niemożliwy do odtworzenia. Nie przedstawiać go jako samodzielnej, pełnej ochrony przed utratą wszystkich innych kopii.
+- Nie wymagać wysyłania/ujawniania żadnych kluczy w rozmowie. Nie zamieniać automatycznie backupu w jawny plik w Drive. Dalsze prace: #146 i równolegle #143, po odrębnych testach i bez naruszania M0.
+- Szczegółowa wersjonowana decyzja: [plan uzupełniający](PLAN_WYKONAWCZY_KB3_TEST_DEVELOPMENT_2026-11-04.md) i [rejestr](ZMIANY.md).
