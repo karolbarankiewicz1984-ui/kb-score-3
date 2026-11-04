@@ -1,0 +1,57 @@
+name: KB3 P1 shared as-of TRAIN FORWARD v2 - isolated offline CI
+on:
+  pull_request:
+    paths:
+      - src/kb3_p1_shared_asof_features_v2.py
+      - tests/test_kb3_p1_shared_asof_features_v2.py
+      - docs/KB3_P1_SHARED_ASOF_V2_2026-11-04.md
+      - .github/workflows/kb3-p1-shared-asof-v2-offline.yml
+
+permissions:
+  contents: read
+
+jobs:
+  safety-and-parity:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ['3.11', '3.12']
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Compile new isolated v2 and unchanged Step11
+        run: |
+          python -m compileall -q src/kb3_p1_shared_asof_features_v2.py src/kb3_features.py
+      - name: Real v2 TRAIN FORWARD contract parity and anti-lookahead tests
+        run: |
+          python -m unittest discover -s tests -p 'test_kb3_p1_shared_asof_features_v2.py' -v
+      - name: Regression for existing Step11 source features
+        run: |
+          python -m unittest discover -s tests -p 'test_step11_features.py' -v
+      - name: Ensure no old feature implementation, trained models, SQL or forecast changed
+        run: |
+          git fetch --no-tags origin main
+          git diff --exit-code origin/main...HEAD -- \
+            src/kb3_features.py \
+            scripts/step14_m1r_recompute_1140_relaxed_48h.py \
+            src/kb3_step16_m0_720_eight_forward.py \
+            data models config
+          git diff --check origin/main...HEAD
+      - name: Independently verify model gate is fail closed
+        run: |
+          python - <<'PY'
+          from src.kb3_p1_shared_asof_features_v2 import (
+              SCHEMA, PURPOSES, MIN_LEAD, RESULT_MIN_LAG)
+          assert SCHEMA.endswith('-asof-v2')
+          assert PURPOSES == frozenset(('TRAIN','FORWARD'))
+          assert MIN_LEAD.total_seconds() == 90*60
+          assert RESULT_MIN_LAG.total_seconds() == 3*3600
+          print('P1_ASOF_V2_RESEARCH_CONTRACT_ONLY', SCHEMA,
+                'NO_CHAMPION_SELECTION', 'NO_FIT')
+          PY
