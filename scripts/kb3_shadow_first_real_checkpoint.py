@@ -149,8 +149,11 @@ def audit(db_path=DB,activation_utc=ACTIVATION_UTC):
         result["real_pre_match_pair_confirmed"]=len(valid)>0
         if valid and _has_table(db,"kb3_p1_shadow_six_host_proofs"):
             proof_rows=db.execute("""
-                SELECT p.shadow_sha256,p.github_artifact_id,
+                SELECT p.proof_sha256,p.shadow_sha256,
+                       p.source_m0_forecast_sha256,
+                       p.github_artifact_id,
                        p.github_server_artifact_created_utc,
+                       p.attestation_source,p.audited_at_utc,
                        s.shadow_generated_at_utc,s.kickoff_utc,
                        s.source_m0_forecast_sha256
                 FROM kb3_p1_shadow_six_host_proofs p
@@ -160,12 +163,23 @@ def audit(db_path=DB,activation_utc=ACTIVATION_UTC):
                 """,(activation_utc,)).fetchall()
             ids=set(valid)
             passed=set()
-            for cid,art,server,created,kick,parent in proof_rows:
-                need(cid in ids and cid not in passed,
+            for proofsha,cid,proofparent,art,server,source,audited,created,kick,parent in proof_rows:
+                need(cid in ids and cid not in passed and proofparent==parent,
                      "DUPLICATE_OR_OLD_SHADOW_HOST_PROOF")
+                proof={
+                    "shadow_sha256":cid,
+                    "source_m0_forecast_sha256":proofparent,
+                    "github_artifact_id":art,
+                    "github_server_artifact_created_utc":server,
+                    "attestation_source":source,
+                    "audited_at_utc":audited}
+                need(hash_obj(proof)==proofsha and
+                     source=="GITHUB_HOST_ARCHIVED_ORIGINAL_SHADOW_SIX_SQLITE_BYTES",
+                     "SHADOW_HOST_PROOF_IMMUTABLE_SHA_OR_SOURCE_INVALID")
                 need(str(art).isdigit()
                      and as_utc(created)<=as_utc(server)
-                     and as_utc(server)<=as_utc(kick)-timedelta(minutes=90),
+                     and as_utc(server)<=as_utc(kick)-timedelta(minutes=90)
+                     and as_utc(server)<=as_utc(audited),
                      "HOST_PROOF_CLOCK_INVALID")
                 passed.add(cid)
             result["github_host_verified_shadow_pairs"]=len(passed)
