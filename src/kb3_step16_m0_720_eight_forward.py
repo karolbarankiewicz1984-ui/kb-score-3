@@ -148,8 +148,10 @@ def historical_phase_id_inventory(receipts):
     return out
 
 def make_forecasts(receipts,*,cutoff,params,param_sha,manifest_sha,challenger_engine=None,challenger_sink=None,
-                   known_fixtures=(),diagnostics=None,wall_clock=None):
+                   known_fixtures=(),diagnostics=None,wall_clock=None,
+                   shadow_engine=None,shadow_sink=None):
     require((challenger_engine is None)==(challenger_sink is None),"CHALLENGER_SINK_PAIR_REQUIRED")
+    require((shadow_engine is None)==(shadow_sink is None),"SHADOW_SINK_PAIR_REQUIRED")
     grouped={}
     for rec in receipts:
         part=rec["resource"].split(":")
@@ -255,6 +257,8 @@ def make_forecasts(receipts,*,cutoff,params,param_sha,manifest_sha,challenger_en
                     "INVALID_FORECAST_PROBABILITY")
             if challenger_engine is not None:
                 challenger_sink.extend(challenger_engine.records(features,item))
+            if shadow_engine is not None:
+                shadow_sink.extend(shadow_engine.records(features,item))
             rows.append(item);by_league[country]+=1
             decision(country,m,'NEW_FORECAST_SELECTED')
     require(len(rows)<=80 and len({(f["league_country"],f["provider_match_id"])
@@ -476,6 +480,12 @@ def run(*,mode,client,now=None,db_path=DB,root=SOURCES,public_key=None,
         due,reason=forecast_due(root,forecast_root,now)
         require(due,'FORECAST_NOT_DUE:'+reason)
     p,param_sha,manifest_sha=trained_params()
+    # Preflight the actual pinned research model BEFORE any new provider API.
+    # OFF by default; this is not production promotion or historical PIT.
+    shadow_engine=None
+    if mode=="forecast":
+        from src.kb3_p1_shadow_live_gate import load_opted_shadow
+        shadow_engine=load_opted_shadow(clock=clock)
     day=now.date().isoformat()
     run_name=mode+'-'+now.strftime('%H%M%S%f')
     folder=Path(root)/day/run_name
@@ -499,10 +509,12 @@ def run(*,mode,client,now=None,db_path=DB,root=SOURCES,public_key=None,
                 Challengers,freeze_new_challengers)
             candidate_engine=Challengers()
             candidates=[]
+            shadow_candidates=[] if shadow_engine is not None else None
             diagnostics={}
             forecasts,coverage,season_shapes=make_forecasts(receipts,cutoff=cutoff,
                 params=p,param_sha=param_sha,manifest_sha=manifest_sha,
                 challenger_engine=candidate_engine,challenger_sink=candidates,
+                shadow_engine=shadow_engine,shadow_sink=shadow_candidates,
                 known_fixtures=known_forecast_fixtures(staging),diagnostics=diagnostics,
                 wall_clock=clock)
             freeze_at=clock()
@@ -518,11 +530,25 @@ def run(*,mode,client,now=None,db_path=DB,root=SOURCES,public_key=None,
             require(challenger_state["new_challengers"]==2*new
                     and challenger_state["new_common_fixture_pairs"]==new,
                     "NOT_ALL_NEW_M0_MATCHES_HAVE_TWO_CHALLENGERS")
+            if shadow_engine is not None:
+                from src.kb3_p1_prospective_shadow_six_v1 import freeze_only_new_m0
+                shadow_state=freeze_only_new_m0(
+                    staging,shadow_candidates,new_m0_ids=new_ids)
+                require(shadow_state["added"]==new and
+                        shadow_state["official_fit_increment"]==0,
+                        "SHADOW_NOT_ATOMIC_WITH_NEW_M0_PARENTS")
+                shadow_state["enabled"]=True
+            else:
+                shadow_state={"enabled":False,"new_shadow_forecasts":0,
+                              "official_fit_increment":0,
+                              "no_later_backfill":True}
             extra={"new_forecasts":new,"total_forecasts":total,"coverage":coverage,
                    'forecast_selection_diagnostics':diagnostics,
                    "season_shapes":season_shapes,
                    "ned_bel_historical_phase_native_id_review":historical_phase_id_inventory(receipts),
                    "step17_challenger_research":challenger_state,
+                   "catboost_shadow_six_research":shadow_state,
+                   "shadow_research_not_production":True,
                    "step17_challengers_are_independent_unfitted_research":True,
                    "step17_challenger_host_artifact_proof_pending":True,
                    "step17_gate":"PENDING_STEP16_AND_FULL_FAIR_BENCHMARK"}
