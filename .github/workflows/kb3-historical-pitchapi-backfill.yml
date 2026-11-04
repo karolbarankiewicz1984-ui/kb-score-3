@@ -5,6 +5,9 @@ on:
       - scripts/kb3_historical_pitchapi_backfill.py
       - scripts/kb3_history_accelerated.py
       - scripts/kb3_history_issue_recheck.py
+      - src/kb3_history_window_selector.py
+      - src/kb3_history_request_budget.py
+      - tests/test_history_window_selector.py
       - tests/test_kb3_history_accelerated.py
       - tests/test_kb3_history_issue_recheck.py
       - tests/test_kb3_historical_pitchapi_backfill.py
@@ -17,6 +20,9 @@ on:
       - scripts/kb3_historical_pitchapi_backfill.py
       - scripts/kb3_history_accelerated.py
       - scripts/kb3_history_issue_recheck.py
+      - src/kb3_history_window_selector.py
+      - src/kb3_history_request_budget.py
+      - tests/test_history_window_selector.py
       - tests/test_kb3_history_accelerated.py
       - tests/test_kb3_history_issue_recheck.py
       - tests/test_kb3_historical_pitchapi_backfill.py
@@ -26,6 +32,12 @@ on:
   schedule:
     - cron: '15 2,10,18 * * *'
   workflow_dispatch:
+    inputs:
+      selector:
+        description: Research source selector; schedule retains current
+        type: choice
+        options: [current, window-yield]
+        default: current
 permissions:
   contents: write
 concurrency:
@@ -40,8 +52,8 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-      - name: Install crypto, no provider secret in PR job
-        run: python -m pip install --disable-pip-version-check 'cryptography>=42,<47'
+      - name: Install crypto and SDK transport, no provider secret in PR job
+        run: python -m pip install --disable-pip-version-check 'cryptography>=42,<47' 'pitchapi==0.1.6'
       - name: Strict source identity, PIT/TEST exclusion, xG and SQLite regression
         run: |
           python -m compileall -q scripts/kb3_historical_pitchapi_backfill.py scripts/kb3_history_accelerated.py scripts/kb3_history_issue_recheck.py src/kb3_historical_feature_quality.py tests/test_kb3_historical_pitchapi_backfill.py tests/test_kb3_historical_feature_quality.py tests/test_kb3_history_issue_recheck.py tests/test_kb3_history_accelerated.py
@@ -50,6 +62,7 @@ jobs:
           python -m unittest discover -s tests -p 'test_kb3_history_issue_recheck.py' -v
           python -m unittest discover -s tests -p 'test_kb3_historical_feature_quality.py' -v
           python -m unittest discover -s tests -p 'test_step14_pitchapi_xg_semantics.py' -v
+          python -m unittest discover -s tests -p 'test_history_window_selector.py' -v
   live-observed-backfill:
     needs: offline-history-safety
     if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
@@ -67,9 +80,10 @@ jobs:
       - name: Capture five independently sealed source batches (max 240 matches), recheck xG and missing yellow cards
         env:
           PITCHAPI_API_KEY: ${{ secrets.PITCHAPI_API_KEY }}
+          HISTORY_SELECTOR: ${{ inputs.selector || 'current' }}
         run: |
           python -m scripts.kb3_history_accelerated \
-            --run-token "$GITHUB_RUN_ID-$GITHUB_RUN_ATTEMPT" --batches 5
+            --run-token "$GITHUB_RUN_ID-$GITHUB_RUN_ATTEMPT" --batches 5 --selector "$HISTORY_SELECTOR"
       - name: Validate all encrypted chunks, independent recheck receipts and final rolling report
         run: |
           python - <<'PY'

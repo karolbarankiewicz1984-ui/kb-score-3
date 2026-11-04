@@ -1,0 +1,53 @@
+name: KB3 history selector logged A-B and offline regression
+on:
+  pull_request:
+    paths:
+      - 'src/kb3_history_*.py'
+      - 'src/kb3_historical_feature_quality.py'
+      - 'scripts/kb3_historical_pitchapi_backfill.py'
+      - 'scripts/kb3_history_accelerated.py'
+      - 'scripts/kb3_history_issue_recheck.py'
+      - 'scripts/history_selector_ab.py'
+      - 'scripts/verify_history_selector_ab.py'
+      - 'scripts/test_history_selector_offline.py'
+      - 'tests/test_history_window_selector.py'
+      - 'docs/audits/HISTORY_SELECTOR_*'
+      - '.github/workflows/kb3-history-selector-audit.yml'
+      - '.github/workflows/kb3-historical-pitchapi-backfill.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'src/kb3_history_*.py'
+      - 'scripts/history_selector_ab.py'
+      - 'scripts/verify_history_selector_ab.py'
+      - 'tests/test_history_window_selector.py'
+      - 'docs/audits/HISTORY_SELECTOR_*'
+      - '.github/workflows/kb3-history-selector-audit.yml'
+permissions:
+  contents: read
+jobs:
+  offline-selector-audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: python -m pip install 'catboost==1.2.8' 'cryptography>=42,<47' 'pitchapi==0.1.6'
+      - name: Full regression, block network, real-data fit and protected writes
+        run: python scripts/test_history_selector_offline.py > selector-tests.log 2>&1
+      - name: Verify real logged outcomes, equal costs and actual fixture IDs without API
+        run: |
+          python scripts/verify_history_selector_ab.py \
+            --report docs/audits/HISTORY_SELECTOR_AB_2026-11-03.json.gz
+          git diff --exit-code -- data models config
+          git diff --check
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: KB3_HISTORY_SELECTOR_OFFLINE_${{ github.run_id }}_${{ github.run_attempt }}
+          path: selector-tests.log
+          if-no-files-found: error

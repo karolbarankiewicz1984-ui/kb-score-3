@@ -1,0 +1,675 @@
+{
+  "availability_class": "HISTORICAL_RECONSTRUCTED_NOT_ORIGINAL_PIT",
+  "baseline_counts": {
+    "all_indexed_targets": {
+      "all": {
+        "10": 32,
+        "15": 5,
+        "5": 155
+      },
+      "venue": {
+        "10": 20,
+        "15": 2,
+        "5": 115
+      }
+    },
+    "observed_targets": {
+      "all": {
+        "10": 32,
+        "15": 5,
+        "5": 150
+      },
+      "venue": {
+        "10": 18,
+        "15": 2,
+        "5": 107
+      }
+    }
+  },
+  "independent_verification": {
+    "independent_naive_window_count_checks": 55,
+    "logged_candidate_pairs": 240,
+    "not_live_effectiveness_proof": true,
+    "real_ID_plan_entries_checked": 480,
+    "report_sha256": "f5321e6024f8a171012dc155825097608d6bfb38db0e04e08228fa177703fb31",
+    "source_unchanged": true,
+    "status": "PASS"
+  },
+  "matched_cost_replay": [
+    {
+      "additional_all_xg5_per_100_pair_fetches": 2.0833333333333335,
+      "additional_all_xg5_per_100_successful_endpoint_reads": 1.0416666666666667,
+      "catalogue_batches_touched": {
+        "current": 1,
+        "window-yield": 1
+      },
+      "complete": {
+        "current": {
+          "all": {
+            "10": 32,
+            "15": 5,
+            "5": 146
+          },
+          "venue": {
+            "10": 18,
+            "15": 2,
+            "5": 107
+          }
+        },
+        "window-yield": {
+          "all": {
+            "10": 32,
+            "15": 5,
+            "5": 147
+          },
+          "venue": {
+            "10": 18,
+            "15": 2,
+            "5": 107
+          }
+        }
+      },
+      "fixed_original_target_count": 571,
+      "gain_from_replay_start": {
+        "current": {
+          "all": {
+            "10": 0,
+            "15": 0,
+            "5": 0
+          },
+          "venue": {
+            "10": 0,
+            "15": 0,
+            "5": 0
+          }
+        },
+        "window-yield": {
+          "all": {
+            "10": 0,
+            "15": 0,
+            "5": 1
+          },
+          "venue": {
+            "10": 0,
+            "15": 0,
+            "5": 0
+          }
+        }
+      },
+      "new_minus_current": {
+        "all": {
+          "10": 0,
+          "15": 0,
+          "5": 1
+        },
+        "venue": {
+          "10": 0,
+          "15": 0,
+          "5": 0
+        }
+      },
+      "pairs_each": 48,
+      "successful_endpoint_reads_each": 96
+    },
+    {
+      "additional_all_xg5_per_100_pair_fetches": 3.125,
+      "additional_all_xg5_per_100_successful_endpoint_reads": 1.5625,
+      "catalogue_batches_touched": {
+        "current": 2,
+        "window-yield": 2
+      },
+      "complete": {
+        "current": {
+          "all": {
+            "10": 32,
+            "15": 5,
+            "5": 146
+          },
+          "venue": {
+            "10": 18,
+            "15": 2,
+            "5": 107
+          }
+        },
+        "window-yield": {
+          "all": {
+            "10": 32,
+            "15": 5,
+            "5": 149
+          },
+          "venue": {
+            "10": 18,
+            "15": 2,
+            "5": 107
+          }
+        }
+      },
+      "fixed_original_target_count": 571,
+      "gain_from_replay_start": {
+        "current": {
+          "all": {
+            "10": 0,
+            "15": 0,
+            "5": 0
+          },
+          "venue": {
+            "10": 0,
+            "15": 0,
+            "5": 0
+          }
+        },
+        "window-yield": {
+          "all": {
+            "10": 0,
+            "15": 0,
+            "5": 3
+          },
+          "venue": {
+            "10": 0,
+            "15": 0,
+            "5": 0
+          }
+        }
+      },
+      "new_minus_current": {
+        "all": {
+          "10": 0,
+          "15": 0,
+          "5": 3
+        },
+        "venue": {
+          "10": 0,
+          "15": 0,
+          "5": 0
+        }
+      },
+      "pairs_each": 96,
+      "successful_endpoint_reads_each": 192
+    },
+    {
+      "additional_all_xg5_per_100_pair_fetches": 2.0833333333333335,
+      "additional_all_xg5_per_100_successful_endpoint_reads": 1.0416666666666667,
+      "catalogue_batches_touched": {
+        "current": 4,
+        "window-yield": 3
+      },
+      "complete": {
+        "current": {
+          "all": {
+            "10": 32,
+            "15": 5,
+            "5": 147
+          },
+          "venue": {
+            "10": 18,
+            "15": 2,
+            "5": 107
+          }
+        },
+        "window-yield": {
+          "all": {
+            "10": 32,
+            "15": 5,
+            "5": 150
+          },
+          "venue": {
+            "10": 18,
+            "15": 2,
+            "5": 107
+          }
+        }
+      },
+      "fixed_original_target_count": 571,
+      "gain_from_replay_start": {
+        "current": {
+          "all": {
+            "10": 0,
+            "15": 0,
+            "5": 1
+          },
+          "venue": {
+            "10": 0,
+            "15": 0,
+            "5": 0
+          }
+        },
+        "window-yield": {
+          "all": {
+            "10": 0,
+            "15": 0,
+            "5": 4
+          },
+          "venue": {
+            "10": 0,
+            "15": 0,
+            "5": 0
+          }
+        }
+      },
+      "new_minus_current": {
+        "all": {
+          "10": 0,
+          "15": 0,
+          "5": 3
+        },
+        "venue": {
+          "10": 0,
+          "15": 0,
+          "5": 0
+        }
+      },
+      "pairs_each": 144,
+      "successful_endpoint_reads_each": 288
+    },
+    {
+      "additional_all_xg5_per_100_pair_fetches": 1.0416666666666667,
+      "additional_all_xg5_per_100_successful_endpoint_reads": 0.5208333333333334,
+      "catalogue_batches_touched": {
+        "current": 5,
+        "window-yield": 4
+      },
+      "complete": {
+        "current": {
+          "all": {
+            "10": 32,
+            "15": 5,
+            "5": 148
+          },
+          "venue": {
+            "10": 18,
+            "15": 2,
+            "5": 107
+          }
+        },
+        "window-yield": {
+          "all": {
+            "10": 32,
+            "15": 5,
+            "5": 150
+          },
+          "venue": {
+            "10": 18,
+            "15": 2,
+            "5": 107
+          }
+        }
+      },
+      "fixed_original_target_count": 571,
+      "gain_from_replay_start": {
+        "current": {
+          "all": {
+            "10": 0,
+            "15": 0,
+            "5": 2
+          },
+          "venue": {
+            "10": 0,
+            "15": 0,
+            "5": 0
+          }
+        },
+        "window-yield": {
+          "all": {
+            "10": 0,
+            "15": 0,
+            "5": 4
+          },
+          "venue": {
+            "10": 0,
+            "15": 0,
+            "5": 0
+          }
+        }
+      },
+      "new_minus_current": {
+        "all": {
+          "10": 0,
+          "15": 0,
+          "5": 2
+        },
+        "venue": {
+          "10": 0,
+          "15": 0,
+          "5": 0
+        }
+      },
+      "pairs_each": 192,
+      "successful_endpoint_reads_each": 384
+    },
+    {
+      "additional_all_xg5_per_100_pair_fetches": 0.0,
+      "additional_all_xg5_per_100_successful_endpoint_reads": 0.0,
+      "catalogue_batches_touched": {
+        "current": 5,
+        "window-yield": 5
+      },
+      "complete": {
+        "current": {
+          "all": {
+            "10": 32,
+            "15": 5,
+            "5": 150
+          },
+          "venue": {
+            "10": 18,
+            "15": 2,
+            "5": 107
+          }
+        },
+        "window-yield": {
+          "all": {
+            "10": 32,
+            "15": 5,
+            "5": 150
+          },
+          "venue": {
+            "10": 18,
+            "15": 2,
+            "5": 107
+          }
+        }
+      },
+      "fixed_original_target_count": 571,
+      "gain_from_replay_start": {
+        "current": {
+          "all": {
+            "10": 0,
+            "15": 0,
+            "5": 4
+          },
+          "venue": {
+            "10": 0,
+            "15": 0,
+            "5": 0
+          }
+        },
+        "window-yield": {
+          "all": {
+            "10": 0,
+            "15": 0,
+            "5": 4
+          },
+          "venue": {
+            "10": 0,
+            "15": 0,
+            "5": 0
+          }
+        }
+      },
+      "new_minus_current": {
+        "all": {
+          "10": 0,
+          "15": 0,
+          "5": 0
+        },
+        "venue": {
+          "10": 0,
+          "15": 0,
+          "5": 0
+        }
+      },
+      "pairs_each": 233,
+      "successful_endpoint_reads_each": 466
+    }
+  ],
+  "optimistic_only_next_5x48": [
+    {
+      "batches": [
+        {
+          "batch": 1,
+          "complete_if_all_pairs_validate": {
+            "all": {
+              "10": 32,
+              "15": 5,
+              "5": 158
+            },
+            "venue": {
+              "10": 20,
+              "15": 2,
+              "5": 115
+            }
+          },
+          "leagues": {
+            "ITA": 48
+          },
+          "maximum_total_requests": 150,
+          "pair_endpoint_request_budget": 96,
+          "pairs": 48
+        },
+        {
+          "batch": 2,
+          "complete_if_all_pairs_validate": {
+            "all": {
+              "10": 33,
+              "15": 5,
+              "5": 162
+            },
+            "venue": {
+              "10": 20,
+              "15": 2,
+              "5": 116
+            }
+          },
+          "leagues": {
+            "POL": 48
+          },
+          "maximum_total_requests": 150,
+          "pair_endpoint_request_budget": 96,
+          "pairs": 48
+        },
+        {
+          "batch": 3,
+          "complete_if_all_pairs_validate": {
+            "all": {
+              "10": 33,
+              "15": 5,
+              "5": 165
+            },
+            "venue": {
+              "10": 20,
+              "15": 2,
+              "5": 117
+            }
+          },
+          "leagues": {
+            "NED": 48
+          },
+          "maximum_total_requests": 150,
+          "pair_endpoint_request_budget": 96,
+          "pairs": 48
+        },
+        {
+          "batch": 4,
+          "complete_if_all_pairs_validate": {
+            "all": {
+              "10": 33,
+              "15": 5,
+              "5": 166
+            },
+            "venue": {
+              "10": 20,
+              "15": 2,
+              "5": 117
+            }
+          },
+          "leagues": {
+            "TUR": 48
+          },
+          "maximum_total_requests": 150,
+          "pair_endpoint_request_budget": 96,
+          "pairs": 48
+        },
+        {
+          "batch": 5,
+          "complete_if_all_pairs_validate": {
+            "all": {
+              "10": 33,
+              "15": 5,
+              "5": 170
+            },
+            "venue": {
+              "10": 20,
+              "15": 2,
+              "5": 117
+            }
+          },
+          "leagues": {
+            "FRA": 48
+          },
+          "maximum_total_requests": 150,
+          "pair_endpoint_request_budget": 96,
+          "pairs": 48
+        }
+      ],
+      "new_provider_calls": 0,
+      "not_observed_gain": true,
+      "selector": "current"
+    },
+    {
+      "batches": [
+        {
+          "batch": 1,
+          "complete_if_all_pairs_validate": {
+            "all": {
+              "10": 33,
+              "15": 5,
+              "5": 169
+            },
+            "venue": {
+              "10": 20,
+              "15": 2,
+              "5": 117
+            }
+          },
+          "leagues": {
+            "ITA": 48
+          },
+          "maximum_total_requests": 150,
+          "pair_endpoint_request_budget": 96,
+          "pairs": 48
+        },
+        {
+          "batch": 2,
+          "complete_if_all_pairs_validate": {
+            "all": {
+              "10": 41,
+              "15": 5,
+              "5": 184
+            },
+            "venue": {
+              "10": 20,
+              "15": 2,
+              "5": 123
+            }
+          },
+          "leagues": {
+            "POL": 48
+          },
+          "maximum_total_requests": 150,
+          "pair_endpoint_request_budget": 96,
+          "pairs": 48
+        },
+        {
+          "batch": 3,
+          "complete_if_all_pairs_validate": {
+            "all": {
+              "10": 44,
+              "15": 5,
+              "5": 200
+            },
+            "venue": {
+              "10": 20,
+              "15": 2,
+              "5": 127
+            }
+          },
+          "leagues": {
+            "NED": 48
+          },
+          "maximum_total_requests": 150,
+          "pair_endpoint_request_budget": 96,
+          "pairs": 48
+        },
+        {
+          "batch": 4,
+          "complete_if_all_pairs_validate": {
+            "all": {
+              "10": 45,
+              "15": 5,
+              "5": 217
+            },
+            "venue": {
+              "10": 20,
+              "15": 2,
+              "5": 128
+            }
+          },
+          "leagues": {
+            "TUR": 48
+          },
+          "maximum_total_requests": 150,
+          "pair_endpoint_request_budget": 96,
+          "pairs": 48
+        },
+        {
+          "batch": 5,
+          "complete_if_all_pairs_validate": {
+            "all": {
+              "10": 49,
+              "15": 5,
+              "5": 243
+            },
+            "venue": {
+              "10": 20,
+              "15": 2,
+              "5": 134
+            }
+          },
+          "leagues": {
+            "FRA": 48
+          },
+          "maximum_total_requests": 150,
+          "pair_endpoint_request_budget": 96,
+          "pairs": 48
+        }
+      ],
+      "new_provider_calls": 0,
+      "not_observed_gain": true,
+      "selector": "window-yield"
+    }
+  ],
+  "replay_contract": {
+    "actual_new_selector_live_gain": null,
+    "initial_observations": 571,
+    "initial_recorded_verified_xg": 518,
+    "limitation": "CLOSED_WORLD_LOGGED_SUPPORT_SELECTED_BY_OLD_COLLECTOR_NOT_FUTURE_LIVE_CAUSAL_PROOF",
+    "outcomes_hidden_until_selection": true,
+    "recorded_candidate_pairs": 240,
+    "recorded_candidate_statuses": {
+      "VERIFIED": 220,
+      "XG_SHOTS_STATS_DISAGREE": 20
+    },
+    "recorded_original_provider_requests": 655,
+    "same_candidate_IDs_and_history": true
+  },
+  "report_sha256": "f5321e6024f8a171012dc155825097608d6bfb38db0e04e08228fa177703fb31",
+  "schema": "kb3-history-selector-logged-ab-v1",
+  "selector_policy": "closure-bundles-balanced-eight-v1",
+  "source": {
+    "availability_class": "HISTORICAL_RECONSTRUCTED_NOT_ORIGINAL_PIT",
+    "national_fixtures": 8064,
+    "national_observations": 811,
+    "original_pit_certified": false,
+    "raw_receipts_reauthenticated": false,
+    "recorded_verified_xg": 738,
+    "sqlite_sha256": "bf95048fdff2dc098d0d3add55a0a3b5fadc45687f4a24703a03f9cbf87ed164",
+    "xg_policy": "EXISTING_MAIN_STATUS_NOT_RAW_REAUTHENTICATED"
+  },
+  "source_report_sha256": {
+    "run-41692857683-1-b1": "a7e2cb5218f409e3d3b5e293c046e62d803b4f07d984a438dd19cbe26c762577",
+    "run-41692857683-1-b2": "f2cf5b467dbecf0c73bf33d6781613684c94d00c87cb3c099fb4e465499d4756",
+    "run-41692857683-1-b3": "b7329e305ec54fc8d23fd2f12f7640d66a3e48bc244a24664ef49b49fb8dd333",
+    "run-41692857683-1-b4": "c3aecde41ecb65c7e58fd649c2b152c0a6c54f5329674fe38a2ed06a6ad222b8",
+    "run-41692857683-1-b5": "c2b4e2502d9f0b4d96294ae2e723173e465fffa891316145097cb539e22ed1ca"
+  }
+}

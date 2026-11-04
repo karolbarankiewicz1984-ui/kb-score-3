@@ -16,16 +16,16 @@ from collections import Counter
 from datetime import timedelta
 from pathlib import Path
 
-from scripts.pitchapi_step06_audit import to_plain
 from scripts.kb3_historical_pitchapi_backfill import (
     DB, PUBLIC_KEY, ROOT, native_xg_verified,
 )
 from src.kb3_historical_feature_quality import raw_stat
-from src.kb3_pit_ledger import as_utc, utc_now
-from src.kb3_pitch_uefa_evidence import add_observation, seal
+from src.kb3_pit_ledger import as_utc
+from src.kb3_pitch_uefa_evidence import seal
 from src.kb3_step14_pitchapi_xg_semantics import (
     SemanticAuditError, parse_native_shots, parse_native_team_stats,
 )
+from src.kb3_history_request_budget import RequestBudget
 
 ISSUE_ROOT = ROOT/"data/pit_sidecar/historical_issue_rechecks"
 ISSUE_DB = ROOT/"data/research/historical_multistat/issue_rechecks.sqlite"
@@ -185,46 +185,39 @@ def recheck(client, *, db_path=DB,issue_db=ISSUE_DB, root=ISSUE_ROOT,
             public_key=PUBLIC_KEY,run_token):
     if not re.fullmatch(r"[A-Za-z0-9_-]{1,64}",run_token):
         raise ValueError("UNSAFE_RECHECK_TOKEN")
+    if getattr(client,'_max_retries',0)!=0:
+        raise ValueError('SDK_RETRIES_MUST_BE_ZERO_FOR_REQUEST_CAP')
+    if any(Path(root).glob('*/run-'+run_token)):
+        raise FileExistsError('RECHECK_IMMUTABLE_RUN_EXISTS')
     xg,cards=candidates(db_path,issue_db)
     if not xg and not cards:
         return {"status":"NO_NEW_ISSUES","requests":0,
                 "xg_reviewed":0,"cards_reviewed":0,"new_corrections":0}
-    receipts=[];records=[];errors=Counter();calls=0
-    def call(resource,fn,*args):
-        nonlocal calls
-        if calls>=MAX_CALLS:raise ValueError("RECHECK_PROVIDER_CAP")
-        start=utc_now()
-        try: value=to_plain(fn(*args))
-        except Exception as exc:
-            calls+=1
-            errors[type(exc).__name__]+=1
-            return None,None
-        ended=utc_now();calls+=1
-        if not isinstance(value,dict):
-            errors["NON_OBJECT"]+=1
-            return None,None
-        add_observation(receipts,resource=resource,payload=value,
-                        started=start,completed=ended)
-        return value,receipts[-1]
+    receipts=[];records=[];errors=Counter()
+    budget=RequestBudget(MAX_CALLS,receipts,errors);call=budget.call
     def base(f,kind,status,receipt):
         return {"scope":f["scope"],"match_id":f["id"],"issue_type":kind,
                 "initial_issue":f["xg_status"] if kind=="XG" else "MISSING_YELLOW_STAT",
                 "status":status,"observed_at_utc":receipt["completed_at_utc"],
                 "chain":receipt["chain_sha256"],"sha":receipt["payload_sha256"],
                 "home":f["home_team"]["id"],"away":f["away_team"]["id"]}
-    for f in xg:
+    for i,f in enumerate(xg):
+        reserve=2*(len(xg)-i-1)+len(cards)
         mid=f["id"]
-        stats,sr=call("pitchapi:recheck:stats:"+mid,client.matches.stats,mid)
-        shots,sh=call("pitchapi:recheck:shots:"+mid,client.matches.shots,mid)
+        stats,sr=call("pitchapi:recheck:stats:"+mid,client.matches.stats,mid,reserve=reserve+1)
+        shots,sh=call("pitchapi:recheck:shots:"+mid,client.matches.shots,mid,reserve=reserve)
         if sr is None and sh is None:
             errors["XG_BOTH_PROVIDER_SOURCES_FAILED"]+=1
             continue
+        if stats is None or shots is None:
+            errors['XG_INCOMPLETE_PAIR_DEFERRED']+=1
+            continue  # Do not terminally suppress an original issue after transport failure.
         receipt=sh or sr
         diag=xg_diagnostics(stats,shots,f)
         records.append({**base(f,"XG",diag["status"],receipt),**diag})
-    for f in cards:
+    for i,f in enumerate(cards):
         mid=f["id"]
-        events,er=call("pitchapi:recheck:events:"+mid,client.matches.events,mid)
+        events,er=call("pitchapi:recheck:events:"+mid,client.matches.events,mid,reserve=len(cards)-i-1)
         if er is None:
             errors["CARD_EVENTS_SOURCE_FAILED"]+=1
             continue
@@ -248,7 +241,8 @@ def recheck(client, *, db_path=DB,issue_db=ISSUE_DB, root=ISSUE_ROOT,
         statuses=Counter(f["issue_type"]+":"+f["status"] for f in records)
         report={"schema":SCHEMA,"status":"OBSERVED_RECHECK",
                 "xg_issues_selected":len(xg),"card_issues_selected":len(cards),
-                "provider_requests":calls,"source_receipts":len(receipts),
+                "provider_requests":budget.calls,"source_receipts":len(receipts),
+                'request_retries':budget.retries,
                 "xg_reviewed":sum(r["issue_type"]=="XG" for r in records),
                 "cards_reviewed":sum(r["issue_type"]=="YELLOW_CARDS" for r in records),
                 "xg_reverified":statuses["XG:XG_REVERIFIED"],
@@ -277,7 +271,7 @@ def main():
     if not key:raise SystemExit("MISSING_PITCHAPI_SECRET")
     from pitchapi import PitchAPI
     try:
-        r=recheck(PitchAPI(api_key=key),run_token=args.run_token)
+        r=recheck(PitchAPI(api_key=key,max_retries=0),run_token=args.run_token)
     except Exception as exc:
         print("KB3_ISSUE_RECHECK_BLOCKED",type(exc).__name__)
         raise SystemExit(3)
