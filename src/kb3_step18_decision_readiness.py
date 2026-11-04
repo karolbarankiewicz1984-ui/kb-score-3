@@ -51,6 +51,14 @@ def evaluate(report):
         intervals={}
         blocked=[]
         if n<MIN_PAIRED:blocked.append("NOT_ENOUGH_PAIRED_GAMES")
+        # P1-01: M1-R TRAIN reconstructs feature availability at kickoff
+        # after 48h result maturation; live challengers use a source
+        # snapshot cutoff and 3h maturity. Identical column names do NOT
+        # prove point-in-time semantic parity. No Champion evidence until
+        # independent before-kickoff parity audit accepts a NEW version.
+        if engine=="CATBOOST_NO_XG":
+            blocked.append("P1_01_TRAIN_48H_VS_FORWARD_3H_FEATURE_SEMANTICS")
+
         for metric in ("brier_sum3","log_loss"):
             ci=(x.get("deltas") or {}).get(metric)
             if not isinstance(ci,dict):
