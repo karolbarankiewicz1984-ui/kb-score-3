@@ -60,16 +60,20 @@ jobs:
           print("SHADOW_SIX_MANIFEST_SHA",man["manifest_sha256"])
           print("SHADOW_SIX_REPORT_SHA",r["report_sha256"])
           PY
-      - name: Assert original collectors, production M0, data and old models not modified
+      - name: Integration stage may add opt-in M0 glue; original models, data and core unchanged
         run: |
           git fetch --no-tags origin "${{ github.base_ref }}"
           git diff --exit-code "origin/${{ github.base_ref }}...HEAD" -- \
-            data models config src/kb3_features.py \
-            src/kb3_step16_m0_720_eight_forward.py \
-            src/kb3_step17_forward_challengers.py \
+            data models \
+            config/step16_ci_requirements.txt \
+            config/step16_live_requirements.txt \
+            src/kb3_features.py src/kb3_step17_forward_challengers.py \
             src/kb3_step17_challenger_provenance.py \
-            scripts/step16_m0_720_eight_run.py \
-            .github/workflows/kb3-step16-m0-720-eight-forward.yml
+            scripts/step16_m0_720_eight_run.py
+          # A new research-only opt-in sink in src/kb3_step16_m0_720_eight_forward.py
+          # is explicitly tested, with the exact source SHA + old model output
+          # parity, by the dedicated controlled-integration PR workflow.
+          python -m unittest discover -s tests -p 'test_step16_m0_720_eight_forward.py' -v
           git diff --check "origin/${{ github.base_ref }}...HEAD"
       - uses: actions/upload-artifact@v4
         if: success()
