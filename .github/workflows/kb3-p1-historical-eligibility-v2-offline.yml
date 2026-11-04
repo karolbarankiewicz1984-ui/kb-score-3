@@ -1,0 +1,81 @@
+name: KB3 P1 v2 historical eligibility and split - offline research
+on:
+  pull_request:
+    paths:
+      - scripts/kb3_p1_historical_eligibility_split.py
+      - tests/test_kb3_p1_historical_eligibility_split.py
+      - src/kb3_p1_shared_asof_features_v2.py
+      - docs/KB3_P1_HISTORICAL_ELIGIBILITY_SPLIT_2026-11-04.md
+      - .github/workflows/kb3-p1-historical-eligibility-v2-offline.yml
+
+permissions:
+  contents: read
+
+jobs:
+  read-only-dataset-inventory:
+    runs-on: ubuntu-latest
+    timeout-minutes: 16
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ['3.11','3.12']
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Real source and chronological safety tests
+        run: |
+          python -m unittest discover -s tests -p 'test_kb3_p1_historical_eligibility_split.py' -v
+          python -m unittest discover -s tests -p 'test_kb3_p1_shared_asof_features_v2.py' -v
+      - name: Build actual source evidence gate and isolated research TRAIN/VALIDATION selectors
+        env:
+          REPORT_DIR: ${{ runner.temp }}/kb3_p1_historical_eligibility
+        run: |
+          python -m scripts.kb3_p1_historical_eligibility_split --outdir "$REPORT_DIR"
+          python - "$REPORT_DIR" <<'PY'
+          import json, pathlib,sys
+          root=pathlib.Path(sys.argv[1])
+          r=json.loads((root/"HISTORICAL_V2_ELIGIBILITY_READINESS.json").read_text())
+          tr=json.loads((root/"RECONSTRUCTED_RESEARCH_TRAIN_SELECTORS.json").read_text())
+          va=json.loads((root/"RECONSTRUCTED_RESEARCH_VALIDATION_SELECTORS.json").read_text())
+          formal=json.loads((root/"FORMAL_V2_TRAIN_VALIDATION_NO_ELIGIBLE_ROWS.json").read_text())
+          assert r["official_v2_training_eligible"] == 0
+          assert r["official_v2_validation_eligible"] == 0
+          assert not formal["fit_allowed"] and not formal["train"] and not formal["validation"]
+          a=r["research_reconstruction"]
+          assert len(tr)==a["chronological_train_rows"]
+          assert len(va)==a["chronological_validation_rows"]
+          assert all(v["train_approved"] is False for v in tr+va)
+          print("SOURCE_ASOF_GATE",r["official_v2_training_gate"])
+          print("HISTORICAL_PIT_ELIGIBLE",r["official_v2_training_eligible"])
+          print("HISTORICAL_RESEARCH_COUNTS",json.dumps({
+            "observed":a["observed_historical_match_stats"],
+            "eight_scope":a["national_league_observations"],
+            "history5":a["potential_historical_no_xg_history5"],
+            "core5":a["optional_core5_subset"],
+            "xg5":a["optional_xg5_subset"],
+            "research_train":a["chronological_train_rows"],
+            "research_validation":a["chronological_validation_rows"],
+            "embargo_excluded":a["embargo_discarded"],
+            "train_by_league":a["train_by_league"],
+            "validation_by_league":a["validation_by_league"]
+          },sort_keys=True))
+          print("READINESS_REPORT_SHA256",r["report_sha256"])
+          PY
+      - name: Verify history, live model and protected original TEST unchanged
+        run: |
+          git fetch --no-tags origin "${{ github.base_ref }}"
+          git diff --exit-code "origin/${{ github.base_ref }...HEAD" -- data models config \
+            src/kb3_features.py src/kb3_step16_m0_720_eight_forward.py \
+            scripts/step14_m1r_recompute_1140_relaxed_48h.py
+          git diff --check "origin/${{ github.base_ref }...HEAD"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: KB3_P1_ASOF_HISTORICAL_ELIGIBILITY_${{ matrix.python-version }}
+          path: ${{ runner.temp }}/kb3_p1_historical_eligibility/
+          retention-days: 14
+          if-no-files-found: ignore
