@@ -7,11 +7,11 @@ on:
   workflow_dispatch:
 permissions:
   contents: write
-concurrency:
-  group: kb3-three-league-feature-db-write
-  cancel-in-progress: false
 jobs:
   real-initial-forward-m0-feature-freeze:
+    concurrency:
+      group: kb3-three-league-feature-db-write
+      cancel-in-progress: false
     if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     timeout-minutes: 25
@@ -79,6 +79,5 @@ jobs:
             echo 'Already archived real initial forward feature freeze.'
           else
             git commit -m 'm0: actual 12 pre-kickoff 121+38 features frozen in immutable SQLite'
-            git pull --rebase origin main
             git push origin HEAD:main
           fi

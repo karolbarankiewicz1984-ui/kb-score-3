@@ -18,6 +18,7 @@ from src.kb3_pit_ledger import utc_now,as_utc
 from src.kb3_pitch_uefa_evidence import add_observation,seal
 from src.kb3_step14_pitchapi_xg_semantics import (
     parse_native_shots,parse_native_team_stats,SemanticAuditError)
+from src.kb3_pitch_source_pair import validate_pair,validate_receipts
 
 DB=ROOT/"data/forward_step17_xg_eight/observed_xg.sqlite"
 ARCHIVE=ROOT/"data/pit_sidecar/step17_native_xg_eight"
@@ -107,12 +108,11 @@ def rank_sources(grouped,known,now):
 
 def parse_pair(shots,stats,*,match,country,shot_receipt,stat_receipt):
     mid=match["id"];home=match["home_team"]["id"];away=match["away_team"]["id"]
-    sh,sa,nh,na=parse_native_shots(shots,mid,home,away)
-    h,a=parse_native_team_stats(stats,mid,home,away)
-    if abs(sh-h)>MAX_SEMANTIC_ABS_DELTA or abs(sa-a)>MAX_SEMANTIC_ABS_DELTA:
-        raise SemanticAuditError("NATIVE_SHOT_VS_FULL_MATCH_XG_DISAGREE")
-    observed=max(as_utc(shot_receipt["completed_at_utc"]),
-                 as_utc(stat_receipt["completed_at_utc"]))
+    sh,sa,nh,na,h,a=validate_pair(shots,stats,mid,home,away)
+    for kind,receipt in (("shots",shot_receipt),("stats",stat_receipt)):
+        require(receipt.get("resource")=="pitchapi:step17xg:"+kind+":"+mid,
+                "XG_RECEIPT_RESOURCE_MISMATCH")
+    observed=validate_receipts(shots,stats,match,shot_receipt,stat_receipt)
     require(as_utc(match["time_utc"])+timedelta(hours=3)<=observed,
             "XG_NOT_PUBLISHED_AFTER_FINISH")
     return {"country":country,"provider_match_id":mid,
@@ -122,11 +122,18 @@ def parse_pair(shots,stats,*,match,country,shot_receipt,stat_receipt):
        "source_shots_sha256":shot_receipt["payload_sha256"],
        "source_stats_sha256":stat_receipt["payload_sha256"],
        "source_chain_sha256":stat_receipt["chain_sha256"],
-       "source_published_at_utc":None}
+       "source_published_at_utc":None,
+       "_source_pair":{"shots":shots,"stats":stats,"match":match,
+                       "shot_receipt":shot_receipt,"stat_receipt":stat_receipt}}
 
 def store_samples(db_path,samples):
     with connect(db_path) as db:
         for s in samples:
+            pair=s.get("_source_pair")
+            require(isinstance(pair,dict),"XG_ORIGINAL_SOURCE_PAIR_REQUIRED")
+            checked=parse_pair(country=s["country"],**pair)
+            require({k:v for k,v in checked.items() if k!="_source_pair"}==
+                    {k:v for k,v in s.items() if k!="_source_pair"},"XG_SAMPLE_SOURCE_DRIFT")
             db.execute("""INSERT INTO observed_native_xg(
                country,provider_match_id,kickoff_utc,home_team_id,away_team_id,
                stats_xg_home,stats_xg_away,shots_xg_home,shots_xg_away,
@@ -138,9 +145,9 @@ def store_samples(db_path,samples):
                 s["shots_xg_home"],s["shots_xg_away"],s["shots_home"],s["shots_away"],
                 s["observed_utc"],s["source_shots_sha256"],s["source_stats_sha256"],
                 s["source_chain_sha256"],None))
-        db.commit()
         require(db.execute("PRAGMA foreign_key_check").fetchall()==[],"XG_DB_FK")
         total=db.execute("SELECT COUNT(*) FROM observed_native_xg").fetchone()[0]
+        db.commit()
     return total
 
 def future_xg_coverage(db_path,groups,at):

@@ -1,6 +1,7 @@
 """Single-source shadow feature computation, never certified historical PIT."""
 from datetime import datetime,timezone,timedelta
 import unittest
+from pitch_pair_fixtures import stats
 from src.kb3_pitch_native_features import native_shadow_features
 from src.kb3_features import FeatureSafetyError,digest
 
@@ -26,10 +27,11 @@ def matches():
 def shot(mid="m_000000"):
     return {"match_id":mid,
       "observed_at_utc":"2026-10-26T08:00:00Z",
+      "stats_response":stats(mid,"t_000001","t_000002",.7,.4),
       "shots_response":{"data":{"match_id":mid,
-             "periods":[{"shots":[
-                  {"team_id":"t_000001","expected_goals":0.7},
-                  {"team_id":"t_000002","expected_goals":0.4}]}]}}}
+             "periods":[{"period":"All","shots":[
+                  {"id":"s_1","team_id":"t_000001","expected_goals":0.7},
+                  {"id":"s_2","team_id":"t_000002","expected_goals":0.4}]}]}}}
 
 class OneSourceEloTests(unittest.TestCase):
     def setUp(self):

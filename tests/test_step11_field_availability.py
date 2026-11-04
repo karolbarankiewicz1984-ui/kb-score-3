@@ -2,6 +2,7 @@
 from datetime import datetime,timezone,timedelta
 import sqlite3
 import unittest
+from pitch_pair_fixtures import stats
 from copy import deepcopy
 from src.kb3_pitch_native_ledger import record
 from src.kb3_pitch_native_observed_features import build_native_observed
@@ -26,6 +27,8 @@ class FieldAvailabilityTests(unittest.TestCase):
                origin="NETWORK_OBSERVED")
         record(self.db,"shots",shots(),
                started_at_utc=t(-14),completed_at_utc=t(-13),
+               stats_payload=stats("m_000000","t_000000","t_000001",.5,.2),
+               stats_started_at_utc=t(-12),stats_completed_at_utc=t(-11),
                origin="NETWORK_OBSERVED")
         self.target=self.fixtures[7]["id"]
 
@@ -66,7 +69,8 @@ class FieldAvailabilityTests(unittest.TestCase):
         record(other,"matches",fixtures,started_at_utc=t(-25),
                completed_at_utc=t(-24),origin="NETWORK_OBSERVED")
         record(other,"shots",shots(),started_at_utc=t(-14),
-               completed_at_utc=t(-13),origin="NETWORK_OBSERVED")
+               completed_at_utc=t(-13),stats_payload=stats("m_000000","t_000000","t_000001",.5,.2),
+               stats_started_at_utc=t(-12),stats_completed_at_utc=t(-11),origin="NETWORK_OBSERVED")
         r=build_native_observed(other,fixtures[7]["id"],cutoff_utc=t(5))
         self.assertEqual(r["features"]["away_all_5_xg_n"],1)
         self.assertGreater(timestamp(

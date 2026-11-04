@@ -30,9 +30,9 @@ def season():
 
 def shots(mid="m_000000",value=0.5):
     i=int(mid[2:])
-    return {"data":{"match_id":mid,"periods":[{"shots":[
-       {"team_id":f"t_{i*2:06d}","expected_goals":value},
-       {"team_id":f"t_{i*2+1:06d}","expected_goals":0.2}]}]}}
+    return {"data":{"match_id":mid,"periods":[{"period":"All","shots":[
+       {"id":"s_1","team_id":f"t_{i*2:06d}","expected_goals":value},
+       {"id":"s_2","team_id":f"t_{i*2+1:06d}","expected_goals":0.2}]}]}}
 
 class TestPitchNativeImmutableLedger(unittest.TestCase):
     @classmethod

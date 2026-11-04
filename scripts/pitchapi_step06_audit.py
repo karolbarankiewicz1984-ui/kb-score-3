@@ -18,6 +18,9 @@ import urllib.parse
 import urllib.request
 from pathlib import Path
 
+if __package__ in (None, ""):
+    sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+
 PITCH = "https://api.pitchapi.dev"
 FOOTBALL = "https://v3.football.api-sports.io"
 MAX_PITCH = 110
@@ -148,7 +151,7 @@ def select_two(games):
         return [], 0
     return [good[i] for i in sorted(set((len(good)//4, (3*len(good))//4)))], len(good)
 
-def parse_shots(payload, home_id, away_id):
+def parse_shots_v1_archive(payload, home_id, away_id):
     """A legitimate 0 xG total is possible ONLY with a complete, valid shot feed."""
     data = (payload or {}).get("data")
     if not isinstance(data, dict):
@@ -189,6 +192,21 @@ def parse_shots(payload, home_id, away_id):
             "home_shots": count[home_id], "away_shots": count[away_id],
             "home_xg_sum": round(sums[home_id], 4) if state == "COMPLETE_SHOT_XG" else None,
             "away_xg_sum": round(sums[away_id], 4) if state == "COMPLETE_SHOT_XG" else None}
+
+def parse_shots(payload, home_id, away_id, *, stats_payload=None):
+    """New observations require independent All stats, including shot counts."""
+    from src.kb3_pitch_source_pair import validate_pair
+    try:
+        data=payload.get("data", payload) if isinstance(payload,dict) else {}
+        mid=data.get("match_id")
+        h,a,nh,na,_,_=validate_pair(payload,stats_payload,mid,home_id,away_id)
+    except (ValueError,TypeError,KeyError,AttributeError) as exc:
+        return {"state":"UNVERIFIED_SHOT_XG","reason":str(exc),"shots":None,
+                "home_shots":None,"away_shots":None,
+                "home_xg_sum":None,"away_xg_sum":None}
+    return {"state":"COMPLETE_SHOT_XG","shots":nh+na,
+            "home_shots":nh,"away_shots":na,"home_xg_sum":round(h,4),
+            "away_xg_sum":round(a,4),"missing_xg":0,"invalid_xg":0,"unknown_team":0}
 
 def find_af_match(pitch, fixtures):
     """Strict pair; ambiguous and alias suggestions remain NON-VERIFIED."""

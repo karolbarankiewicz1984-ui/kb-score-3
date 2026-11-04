@@ -195,17 +195,20 @@ def capture(*, client, out_root, public_key, run_token):
             mid = game["id"]
             shots, shot_at = call("pitchapi:shots:" + mid,
                                   client.matches.shots, mid)
+            stats, stat_at = call("pitchapi:uefa:ucl:stats:" + mid,
+                                 client.matches.stats, mid)
             # A present payload is not proof that xG is complete.
             try:
                 wrapped = {"data": shots.get("data", shots)} if isinstance(shots, dict) else {}
-                checked = verify_native_shots(game, wrapped, observed_at_utc=shot_at)
+                from src.kb3_pitch_source_pair import validate_receipts
+                validate_receipts(shots,stats,game,receipts[-2],receipts[-1])
+                checked = verify_native_shots(game, wrapped, observed_at_utc=stat_at,
+                                               stats_payload=stats)
                 complete = checked.get("shot_state") == "COMPLETE_SHOT_XG"
             except (ValueError, KeyError, TypeError):
                 complete = False
             report["native_shots_xg_complete"] += int(complete)
             report["native_shots_xg_missing_or_invalid"] += int(not complete)
-            stats, _ = call("pitchapi:uefa:ucl:stats:" + mid,
-                             client.matches.stats, mid)
             report["sampled_stat_key_counts"].append(_safe_stat_key_count(stats))
             report["sampled_finished_games"] += 1
         report["catalog_status"] = "UCL_SOURCE_CAPTURED_PREMATCH_RESEARCH_ONLY"

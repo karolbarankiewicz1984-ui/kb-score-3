@@ -76,7 +76,7 @@ def parse_native_team_stats(payload,match_id,home_id,away_id):
         raise SemanticAuditError("TEAM_STATS_TOP_AND_XG_GROUP_CONFLICT")
     return exact[0]
 
-def parse_native_shots(payload,match_id,home_id,away_id):
+def parse_native_shots(payload,match_id,home_id,away_id,*,allow_empty=False):
     """Validate exact shot fixture and each shot's original team ID.
 
     Ignore xGOT entirely: expected_goals in [0,1] is distinct from
@@ -88,6 +88,15 @@ def parse_native_shots(payload,match_id,home_id,away_id):
     periods=d.get("periods")
     if not isinstance(periods,list) or not periods:
         raise SemanticAuditError("SHOTS_PERIODS_MISSING")
+    labels=[p.get("period") if isinstance(p,dict) else None for p in periods]
+    # Never sum an aggregate and its halves, unknown periods or extra time.
+    valid_halves=({"First","Second"},{"1st","2nd"},{"1H","2H"},
+                  {"1st half","2nd half"})
+    if not (all(isinstance(x,str) for x in labels) and
+            (labels==["All"] or len(labels)==2 and any(set(labels)==x for x in valid_halves))):
+        raise SemanticAuditError("SHOTS_FULL_MATCH_PERIODS_INVALID")
+    if home_id==away_id:
+        raise SemanticAuditError("MATCH_SIDES_NOT_DISTINCT")
     out={home_id:0.0,away_id:0.0}
     counts=Counter();seen=set()
     for period in periods:
@@ -97,15 +106,14 @@ def parse_native_shots(payload,match_id,home_id,away_id):
             if not isinstance(s,dict) or s.get("team_id") not in out:
                 raise SemanticAuditError("SHOT_WRONG_TEAM_OR_MALFORMED")
             shot_id=s.get("id")
-            if shot_id is not None:
-                if not isinstance(shot_id,str) or (match_id,shot_id) in seen:
-                    raise SemanticAuditError("DUPLICATE_OR_INVALID_NATIVE_SHOT")
-                seen.add((match_id,shot_id))
+            if not isinstance(shot_id,str) or not shot_id or (match_id,shot_id) in seen:
+                raise SemanticAuditError("DUPLICATE_OR_INVALID_NATIVE_SHOT")
+            seen.add((match_id,shot_id))
             v=num(s.get("expected_goals"),maximum=1)
             t=s["team_id"]
             out[t]+=v
             counts[t]+=1
-    if not sum(counts.values()):
+    if not sum(counts.values()) and not allow_empty:
         raise SemanticAuditError("SHOTS_EMPTY_CANNOT_CERTIFY_0_XG")
     return out[home_id],out[away_id],counts[home_id],counts[away_id]
 

@@ -4,6 +4,7 @@ import tempfile
 from datetime import datetime,timezone,timedelta
 from pathlib import Path
 import unittest
+from pitch_pair_fixtures import stats
 from cryptography.hazmat.primitives import serialization
 from cryptography.hazmat.primitives.asymmetric import rsa
 from src.kb3_pitch_uefa_evidence import add_observation,verify_receipts,seal,restore
@@ -28,9 +29,9 @@ def games(n=54):
 
 def shots(mid="m_000000"):
     i=int(mid[2:])
-    return {"data":{"match_id":mid,"periods":[{"shots":[
-      {"team_id":f"t_{2*i:06d}","expected_goals":0.31},
-      {"team_id":f"t_{2*i+1:06d}","expected_goals":0.19}]}]}}
+    return {"data":{"match_id":mid,"periods":[{"period":"All","shots":[
+      {"id":"s_1","team_id":f"t_{2*i:06d}","expected_goals":0.31},
+      {"id":"s_2","team_id":f"t_{2*i+1:06d}","expected_goals":0.19}]}]}}
 
 class UefaNativeEvidenceTests(unittest.TestCase):
     @classmethod
@@ -103,7 +104,7 @@ class UefaNativeEvidenceTests(unittest.TestCase):
 
     def test_shot_response_must_have_correct_native_match_id(self):
         m=games()[0]
-        val=verify_native_shots(m,shots(),observed_at_utc=now())
+        val=verify_native_shots(m,shots(),observed_at_utc=now(),stats_payload=stats(m["id"],m["home_team"]["id"],m["away_team"]["id"],.31,.19))
         self.assertEqual(val["shot_state"],"COMPLETE_SHOT_XG")
         self.assertEqual(val["xg_home"],0.31)
         bad=shots("m_000001")

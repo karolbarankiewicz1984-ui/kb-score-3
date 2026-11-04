@@ -14,7 +14,7 @@ import math
 import re
 
 from src.kb3_pit_ledger import as_utc, canonical
-from scripts.pitchapi_step06_audit import parse_shots
+from scripts.pitchapi_step06_audit import parse_shots,parse_shots_v1_archive
 
 MATCH_ID=re.compile(r"^m_[A-Za-z0-9]{6}$")
 TEAM_ID=re.compile(r"^t_[A-Za-z0-9]{6}$")
@@ -75,7 +75,7 @@ def check_season(match_list,season,*,expected_count=380,require_upcoming=False):
             "training_allowed":False}
 
 
-def verify_native_shots(match,shot_feed,*,observed_at_utc):
+def _verify_native_shots_v1(match,shot_feed,*,observed_at_utc):
     """Validate shot xG under EXACT SAME native match ID + two team IDs."""
     if not isinstance(match,dict) or match.get("status")!=FINISHED:
         raise ValueError("PITCH_XG_REQUIRES_FINISHED_MATCH")
@@ -91,7 +91,7 @@ def verify_native_shots(match,shot_feed,*,observed_at_utc):
     if not isinstance(body,dict) or body.get("match_id")!=mid:
         raise ValueError("PITCH_SHOT_FIXTURE_ID_MISMATCH")
     home,away=match["home_team"]["id"],match["away_team"]["id"]
-    parsed=parse_shots(shot_feed,home,away)
+    parsed=parse_shots_v1_archive(shot_feed,home,away)
     if parsed.get("state")!="COMPLETE_SHOT_XG":
         return {"match_id":mid,"xg_home":None,"xg_away":None,
                 "shot_state":parsed.get("state"),
@@ -106,3 +106,14 @@ def verify_native_shots(match,shot_feed,*,observed_at_utc):
             "captured_at_utc":observed_at_utc,
             "source_provider_published_at_utc":None,
             "training_allowed":False}
+
+def verify_native_shots(match,shot_feed,*,observed_at_utc,stats_payload=None):
+    """Validate new observations; an unpaired source cannot certify xG."""
+    result=_verify_native_shots_v1(match,shot_feed,observed_at_utc=observed_at_utc)
+    parsed=parse_shots(shot_feed,match["home_team"]["id"],match["away_team"]["id"],
+                       stats_payload=stats_payload)
+    result.update(shot_state=parsed["state"],xg_home=parsed["home_xg_sum"],
+                  xg_away=parsed["away_xg_sum"])
+    if "reason" in parsed:
+        result["reason"]=parsed["reason"]
+    return result

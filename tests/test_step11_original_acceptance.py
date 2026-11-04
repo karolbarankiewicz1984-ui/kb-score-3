@@ -8,6 +8,7 @@ from __future__ import annotations
 from datetime import datetime,timedelta,timezone
 import sqlite3
 import unittest
+from pitch_pair_fixtures import stats
 from src.kb3_pitch_native_ledger import record
 from src.kb3_pitch_native_observed_features import build_native_observed
 from src.kb3_features import FeatureSafetyError
@@ -51,7 +52,8 @@ class OriginalGate11ContractTests(unittest.TestCase):
 
     def test_complete_native_shot_produces_source_qualified_xg(self):
         record(self.db,"shots",shots(),started_at_utc=now(-14),
-               completed_at_utc=now(-13),origin="NETWORK_OBSERVED")
+               completed_at_utc=now(-13),stats_payload=stats("m_000000","t_000000","t_000001",.5,.2),
+               stats_started_at_utc=now(-12),stats_completed_at_utc=now(-11),origin="NETWORK_OBSERVED")
         output=build_native_observed(self.db,self.target,cutoff_utc=self.cutoff)
         self.assertEqual(output["features"]["home_all_5_xg_n"],1)
         self.assertGreater(output["features"]["home_all_5_xg_avg"],0)

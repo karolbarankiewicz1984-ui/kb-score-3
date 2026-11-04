@@ -11,19 +11,39 @@ on:
       - 'scripts/step14_m1r_train_real_catboost_720_evaluate_374.py'
       - '.github/workflows/kb3-step14-m1r-catboost720-eval374.yml'
   workflow_dispatch:
+    inputs:
+      confirm_research_fit:
+        type: boolean
+        default: false
+        required: true
+        description: Explicitly authorize a separate research fit (never changes M0)
 permissions:
-  contents: write
+  contents: read
 concurrency:
   group: kb3-m1r-base-fit-720-eval-374
   cancel-in-progress: false
 jobs:
+  offline-validation:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: python -m pip install 'cryptography>=42,<47'
+      - run: python -m unittest discover -s tests -p 'test_step14_m1r*.py' -v
   independent-research-m1r-catboost:
+    if: github.event_name == 'workflow_dispatch' && inputs.confirm_research_fit == true
+    needs: offline-validation
     runs-on: ubuntu-latest
     timeout-minutes: 35
     steps:
       - uses: actions/checkout@v4
         with:
-          persist-credentials: true
+          persist-credentials: false
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
@@ -35,23 +55,25 @@ jobs:
           python -m compileall -q scripts/step14_m1r_train_real_catboost_720_evaluate_374.py
           python -m unittest discover -s tests -p 'test_step14_m1r_train_catboost_720_eval_374.py' -v
           python -m unittest discover -s tests -p 'test_step14_m1r_relaxed_1140.py' -v
+      - name: Allocate unique append-only experiment output
+        run: echo "OUTPUT_DIR=${RUNNER_TEMP}/m1r-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}" >> "$GITHUB_ENV"
       - name: Train separate real CatBoost M1-R 720 and evaluate 374 vs two M0 baselines
         env:
           PITCHAPI_API_KEY: ${{ secrets.PITCHAPI_API_KEY }}
         run: |
           python -m scripts.step14_m1r_train_real_catboost_720_evaluate_374 \
-            --summary data/audits/STEP14_M1R_BASE_CATBOOST_720_374_REAL_METRICS_2026-10-29.json \
-            --predictions data/audits/STEP14_M1R_BASE_CATBOOST_374_FROZEN_PROBS_2026-10-29.jsonl.gz \
-            --model models/research/M1_R_BASE_CATBOOST_720_TRAIN_2026-10-29.cbm
+            --summary ${{ env.OUTPUT_DIR }}/METRICS.json \
+            --predictions ${{ env.OUTPUT_DIR }}/FROZEN_PROBS.jsonl.gz \
+            --model ${{ env.OUTPUT_DIR }}/MODEL.cbm
       - name: Verify immutability and hard 760 TRAIN / 380 VAL / TEST quarantine
         run: |
           python - <<'PY'
-          import gzip,hashlib,json,math
+          import gzip,hashlib,json,math,os
           from pathlib import Path
-          p=Path('data/audits')
-          s=json.loads((p/'STEP14_M1R_BASE_CATBOOST_720_374_REAL_METRICS_2026-10-29.json').read_text())
-          probs=p/'STEP14_M1R_BASE_CATBOOST_374_FROZEN_PROBS_2026-10-29.jsonl.gz'
-          model=Path('models/research/M1_R_BASE_CATBOOST_720_TRAIN_2026-10-29.cbm')
+          p=Path(os.environ['OUTPUT_DIR'])
+          s=json.loads((p/'METRICS.json').read_text())
+          probs=p/'FROZEN_PROBS.jsonl.gz'
+          model=p/'MODEL.cbm'
           assert s['training']==720 and s['validation']==374
           assert s['all_1140_source_rows_matched']==1140
           assert s['real_PitchAPI_API_calls']==4
@@ -85,23 +107,10 @@ jobs:
           PY
       - uses: actions/upload-artifact@v4
         with:
-          name: KB3_M1R_REAL_720_374_CATBOOST_M0_SCORE_CALIBRATION
+          name: KB3_M1R_RESEARCH_${{ github.run_id }}_${{ github.run_attempt }}
           path: |
-            data/audits/STEP14_M1R_BASE_CATBOOST_720_374_REAL_METRICS_2026-10-29.json
-            data/audits/STEP14_M1R_BASE_CATBOOST_374_FROZEN_PROBS_2026-10-29.jsonl.gz
-            models/research/M1_R_BASE_CATBOOST_720_TRAIN_2026-10-29.cbm
+            ${{ env.OUTPUT_DIR }}/METRICS.json
+            ${{ env.OUTPUT_DIR }}/FROZEN_PROBS.jsonl.gz
+            ${{ env.OUTPUT_DIR }}/MODEL.cbm
           retention-days: 90
           if-no-files-found: error
-      - name: Persist real research metrics and frozen model to main
-        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-        run: |
-          git config user.name kb3-step14-research-bot
-          git config user.email kb3-step14-research-bot@users.noreply.github.com
-          git add -f data/audits/STEP14_M1R_BASE_CATBOOST_720_374_REAL_METRICS_2026-10-29.json
-          git add -f data/audits/STEP14_M1R_BASE_CATBOOST_374_FROZEN_PROBS_2026-10-29.jsonl.gz
-          git add -f models/research/M1_R_BASE_CATBOOST_720_TRAIN_2026-10-29.cbm
-          if ! git diff --cached --quiet; then
-            git commit -m 'step14: freeze isolated actual M1-R CatBoost 720/374 research validation and M0 calibration'
-            git pull --rebase origin main
-            git push origin HEAD:main
-          fi

@@ -27,6 +27,7 @@ def stats(g=None):
         {"group_name":"Expected goals (xG)","items":[
           {"key":"expected_goals","format_type":"double","home":"0.4","away":"0.7"}]},
         {"group_name":"Other","items":[
+          {"key":"total_shots","home":"1","away":"1","format_type":"integer"},
           {"key":"fouls","home":"13","away":"8"},
           {"key":"corners","home":"4","away":"6"}]}]}]}
 
@@ -149,7 +150,7 @@ class HistoricalBackfillTests(unittest.TestCase):
         raw["periods"].append({"period":"First","groups":[
              {"group_name":"Other","items":[{"key":"corners","home":"99","away":"99"}]}]})
         items=all_period_stat_items(raw,game())
-        self.assertEqual(len(items),3)
+        self.assertEqual(len(items),4)
         self.assertEqual(next(x["home"] for x in items if x["key"]=="corners"),"4")
 
     def test_stats_side_mismatch_not_silently_accepted(self):

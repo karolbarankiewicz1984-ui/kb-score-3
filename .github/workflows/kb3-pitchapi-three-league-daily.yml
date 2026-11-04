@@ -24,11 +24,11 @@ on:
   workflow_dispatch:
 permissions:
   contents: write
-concurrency:
-  group: kb3-three-league-daily-pit-capture
-  cancel-in-progress: false
 jobs:
   actual-three-league-source-capture:
+    concurrency:
+      group: ${{ github.event_name == 'pull_request' && format('kb3-three-league-pr-{0}', github.ref) || 'kb3-three-league-feature-db-write' }}
+      cancel-in-progress: false
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
@@ -168,6 +168,5 @@ jobs:
             echo 'No new incremental source observations.'
           else
             git commit -m 'm0: daily real PitchAPI 121+38 and immutable research Elo-Poisson 1X2 shadow'
-            git pull --rebase origin main
             git push origin HEAD:main
           fi

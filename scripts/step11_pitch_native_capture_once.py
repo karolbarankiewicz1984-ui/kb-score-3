@@ -1,4 +1,4 @@
-"""One-shot PitchAPI-only provider-native real observation, maximum seven requests."""
+"""One-shot paired native observation, bounded by the original seven-call cap."""
 from __future__ import annotations
 import argparse
 from collections import Counter
@@ -51,19 +51,25 @@ def capture(outdir,recipient):
     with sqlite3.connect(ephemeral) as db:
         first=record(db,"matches",matches,started_at_utc=first_start,
                      completed_at_utc=first_end,origin="NETWORK_OBSERVED")
-        sample=choose(matches,first_end)
+        # Two independent responses per match; never silently double the old cap.
+        sample=choose(matches,first_end)[:(MAX_REQUESTS-2)//2]
         status=Counter()
         for match in sample:
             started=utc_now()
             rawshot=to_plain(sdk.matches.shots(match["id"]))
             completed=utc_now()
             shots={"data":rawshot.get("data",rawshot)}
+            stats_started=utc_now()
+            stats=to_plain(sdk.matches.stats(match["id"]))
+            stats_completed=utc_now()
             record(db,"shots",shots,started_at_utc=started,
-                   completed_at_utc=completed,origin="NETWORK_OBSERVED")
+                   completed_at_utc=completed,origin="NETWORK_OBSERVED",
+                   stats_payload=stats,stats_started_at_utc=stats_started,
+                   stats_completed_at_utc=stats_completed)
             status[verify_native_shots(match,shots,
-                     observed_at_utc=completed)["shot_state"]]+=1
+                     observed_at_utc=stats_completed,stats_payload=stats)["shot_state"]]+=1
         evidence=verify(db)
-    if evidence["fixture_captures"]!=1 or evidence["shot_captures"]!=SAMPLE:
+    if evidence["fixture_captures"]!=1 or evidence["shot_captures"]!=len(sample):
         raise ValueError("INCOMPLETE_CAPTURE")
     encrypted=root/"KB3_PITCH_NATIVE_2026-27_PIT.enc"
     mf=root/"KB3_PITCH_NATIVE_2026-27_PIT.manifest.json"
@@ -71,16 +77,17 @@ def capture(outdir,recipient):
     if meta["chain_evidence"]!=evidence:
         raise ValueError("ARCHIVE_EVIDENCE_MISMATCH")
     ephemeral.unlink()
-    return {"schema":"kb3-step11-pitch-native-live-receipt-v1",
+    return {"schema":"kb3-step11-pitch-native-live-receipt-paired-v2",
        "source":"PitchAPI","season":"2026/2027",
-       "first_observed_at_utc":first_end,"last_observed_at_utc":completed,
-       "fixture_count":first["count"],"shot_receipts":SAMPLE,
+       "first_observed_at_utc":first_end,"last_observed_at_utc":stats_completed,
+       "fixture_count":first["count"],"shot_receipts":len(sample),
+       "paired_stats_receipts":len(sample),
        "shot_states":dict(sorted(status.items())),
        "captures":evidence["captures"],"records":evidence["stored_records"],
        "source_payload_sha256":first["response_sha256"],
        "final_chain_sha256":evidence["last_chain_sha256"],
        "cipher_sha256":meta["encrypted_sha256"],
-       "provider_requests":2+SAMPLE,
+       "provider_requests":2+2*len(sample),
        "other_sports_provider_requests":0,
        "source_initial_publication_known":False,
        "historical_pit_certified":False,

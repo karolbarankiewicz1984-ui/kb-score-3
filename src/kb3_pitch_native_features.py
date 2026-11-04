@@ -41,7 +41,8 @@ def native_shadow_features(matches,target_match_id,*,season,source_observed_at_u
             raise FeatureSafetyError("DUPLICATE_NATIVE_SHOTS")
         try:
             xg=verify_native_shots(by_id[mid],o["shots_response"],
-                                   observed_at_utc=o["observed_at_utc"])
+                                   observed_at_utc=o["observed_at_utc"],
+                                   stats_payload=o.get("stats_response"))
         except (KeyError,ValueError,TypeError) as exc:
             raise FeatureSafetyError("INVALID_NATIVE_SHOT_RECORD") from exc
         accepted[mid]=xg

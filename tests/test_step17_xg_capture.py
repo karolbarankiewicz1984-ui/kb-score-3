@@ -32,7 +32,7 @@ class FakeMatches:
     return {"data":{"match_id":mid,"home_team":{"id":m["home_team"]["id"]},
      "away_team":{"id":m["away_team"]["id"]},"periods":[{"period":"All","groups":[{
        "group_name":"Expected goals (xG)","items":[{
-          "key":"expected_goals","home":"0.40","away":"0.75","format_type":"double"}]}]}]}}
+          "key":"expected_goals","home":"0.40","away":"0.75","format_type":"double"}, {"key":"total_shots","home":"1","away":"1","format_type":"integer"}]}]}]}}
 class FakeClient:
  def __init__(self):
     self.rows={}

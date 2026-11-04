@@ -1,0 +1,82 @@
+{
+  "M0_parameter_sha256": "55310f0e1dd3842e6d876069ef21b1380901b3a6cc6884cf6ec6ea351a5812d1",
+  "historical_M0": {
+    "reference_commit": "6813af619dbe620d321f233e73d2d107d34f8004",
+    "original_forecasts": 73,
+    "all_original_columns_unchanged": true,
+    "current_forecasts": 91,
+    "original_rows_sha256": "cf3e4c81615e424c7c1d10888adffc65112a8c57d78b3297e9c743b102413bf7"
+  },
+  "feature_contract": {
+    "status": "CONFIRMED_OPEN",
+    "training_lag_hours": 48,
+    "forward_minimum_result_lag_hours": 3,
+    "training_days_since_reference": "target kickoff",
+    "forward_days_since_reference": "forecast cutoff",
+    "same_synthetic_source_differences": [
+      {
+        "name": "num:away_days_since_last_kickoff",
+        "train_definition": 46.5451,
+        "forward_definition": 46.3367
+      },
+      {
+        "name": "num:elo_home_minus_away",
+        "train_definition": -110.22773,
+        "forward_definition": -110.22772
+      },
+      {
+        "name": "num:home_days_since_last_kickoff",
+        "train_definition": 43.2117,
+        "forward_definition": 43.0034
+      }
+    ],
+    "synthetic_only": true,
+    "model_fit_performed": false
+  },
+  "legacy_calibration": {
+    "status": "CONFIRMED_OPEN",
+    "unverified_synthetic_samples": 100,
+    "reaches_fit_without_publication_proof": true,
+    "fit_intercepted_before_execution": true,
+    "calibration_rows_written": 0
+  },
+  "protected_files_unchanged": true,
+  "overall": "NO_GO",
+  "audit_date": "2026-11-03",
+  "timezone": "Europe/Warsaw",
+  "base_commit": "eabab06139b185d34450d314989783bdc980b088",
+  "source_package_available": false,
+  "historical_197_108_and_R5_suite_reproduced": false,
+  "provider_api_calls": 0,
+  "regression": {
+    "3.11.17": {
+      "tests": 1218,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "log_sha256": "1e2d02272ac272eccc5b40d5fe2abf1d39ec04aa6b9bfadc77e4cd4c79faf011"
+    },
+    "3.12.14": {
+      "tests": 1218,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "log_sha256": "50508eb13ee99ef4bf059367cfbdf4542c96ad163ab1b80b080151fe80df8bfc"
+    }
+  },
+  "unique_test_count": 1218,
+  "negative_probes_main": {
+    "first_half_only_accepted": true,
+    "forged_receipt_accepted": true,
+    "missing_total_shots_accepted": true,
+    "shots_without_stats_accepted": true,
+    "wrong_count_accepted": true
+  },
+  "negative_probes_fixed": {
+    "first_half_only_accepted": false,
+    "forged_receipt_accepted": false,
+    "missing_total_shots_accepted": false,
+    "shots_without_stats_accepted": false,
+    "wrong_count_accepted": false
+  }
+}
