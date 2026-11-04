@@ -1,0 +1,80 @@
+name: KB3 P1 prospective shadow six-field CatBoost - isolated research CI
+on:
+  pull_request:
+    paths:
+      - scripts/kb3_p1_prospective_six_train.py
+      - src/kb3_p1_prospective_shadow_six_v1.py
+      - tests/test_kb3_p1_prospective_shadow_six_v1.py
+      - docs/KB3_PROSPECTIVE_CATBOOST_SHADOW_SIX_2026-11-04.md
+      - .github/workflows/kb3-p1-prospective-catboost-six-shadow-research.yml
+
+permissions:
+  contents: read
+
+jobs:
+  model-and-shadow-offline:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install fixed research classifier and source verifier
+        run: python -m pip install --disable-pip-version-check -r config/step16_ci_requirements.txt
+      - name: Compile all new independent research modules
+        run: |
+          python -m compileall -q \
+            scripts/kb3_p1_prospective_six_train.py \
+            src/kb3_p1_prospective_shadow_six_v1.py \
+            tests/test_kb3_p1_prospective_shadow_six_v1.py
+      - name: Train separate six-feature CatBoost on exact historical research partition
+        run: |
+          python -m scripts.kb3_p1_prospective_six_train --out "$RUNNER_TEMP/shadow_six"
+      - name: Test live collector feature compatibility and immutable NEW-only shadow freeze
+        env:
+          KB3_SHADOW_SIX_MODEL_DIR: ${{ runner.temp }}/shadow_six
+        run: |
+          python -m unittest discover -s tests -p 'test_kb3_p1_prospective_shadow_six_v1.py' -v
+      - name: Validate read-only model manifest and absence of live deployment
+        run: |
+          python - "$RUNNER_TEMP/shadow_six" <<'PY'
+          import json,pathlib,sys
+          p=pathlib.Path(sys.argv[1])
+          man=json.loads((p/"KB3_CATBOOST_SHADOW_SIX_MANIFEST.json").read_text())
+          r=json.loads((p/"KB3_CATBOOST_SHADOW_SIX_RETRO_REPORT.json").read_text())
+          assert man["training_rows"]==1007 and man["validation_rows"]==376
+          assert len(man["feature_names"])==6
+          assert man["formal_asof_v2_trained"] is False
+          assert man["production_approved"] is False
+          assert man["new_live_forecasts_generated"]==0
+          assert r["official_fit_increment"]==0
+          assert r["gate16"]==r["gate17"]=="PENDING"
+          assert r["old_m0_unchanged"] is True
+          assert man["model_binary_sha256"]==r["model_binary_sha256"]
+          print("KB3_SIX_SHADOW_READINESS_CODE_PASS_NO_LIVE_RUN")
+          print("SHADOW_SIX_METRICS",json.dumps(r["validation_metrics"],sort_keys=True))
+          print("SHADOW_SIX_BINARY_SHA",man["model_binary_sha256"])
+          print("SHADOW_SIX_MANIFEST_SHA",man["manifest_sha256"])
+          print("SHADOW_SIX_REPORT_SHA",r["report_sha256"])
+          PY
+      - name: Assert original collectors, production M0, data and old models not modified
+        run: |
+          git fetch --no-tags origin "${{ github.base_ref }}"
+          git diff --exit-code "origin/${{ github.base_ref }}...HEAD" -- \
+            data models config src/kb3_features.py \
+            src/kb3_step16_m0_720_eight_forward.py \
+            src/kb3_step17_forward_challengers.py \
+            src/kb3_step17_challenger_provenance.py \
+            scripts/step16_m0_720_eight_run.py \
+            .github/workflows/kb3-step16-m0-720-eight-forward.yml
+          git diff --check "origin/${{ github.base_ref }}...HEAD"
+      - uses: actions/upload-artifact@v4
+        if: success()
+        with:
+          name: KB3_CATBOOST_SIX_FORWARD_COMPATIBLE_RESEARCH_NOT_LIVE
+          path: ${{ runner.temp }}/shadow_six/
+          retention-days: 14
+          if-no-files-found: error
