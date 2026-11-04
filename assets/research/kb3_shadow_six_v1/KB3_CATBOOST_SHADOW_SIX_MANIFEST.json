@@ -1,0 +1,56 @@
+{
+  "embargo_days": 7,
+  "expected_classes": [
+    "1",
+    "X",
+    "2"
+  ],
+  "feature_contract": "SAME_LAST5_ALL_MATCHES_GOALS_FOR_AGAINST_AND_POINTS",
+  "feature_names": [
+    "home_all_5_gf_avg",
+    "home_all_5_ga_avg",
+    "home_all_5_points_avg",
+    "away_all_5_gf_avg",
+    "away_all_5_ga_avg",
+    "away_all_5_points_avg"
+  ],
+  "features_count": 6,
+  "fixed_params": {
+    "allow_writing_files": false,
+    "depth": 3,
+    "iterations": 180,
+    "l2_leaf_reg": 8.0,
+    "learning_rate": 0.035,
+    "loss_function": "MultiClass",
+    "nan_mode": "Min",
+    "random_seed": 20261104,
+    "thread_count": 1,
+    "verbose": false
+  },
+  "formal_asof_v2_trained": false,
+  "forward_source_observations_prospective_at_freeze_only": true,
+  "gate16": "PENDING",
+  "gate17": "PENDING",
+  "historic_native_provider_first_published_proven": false,
+  "manifest_sha256": "9a1b2ce07d11aa369066de712469470f862836a5ba5d3e817402589e65fc8eca",
+  "model_binary_sha256": "58c5a7fc35afe942893a25b96233689d1f7814ec8a93ed689a7b46f553dbbbc5",
+  "model_version": "KB3_CATBOOST_SHADOW_LAST5_GOALS_6_RESEARCH_V1",
+  "new_live_forecasts_generated": 0,
+  "production_approved": false,
+  "prospective_host_proof_verified": false,
+  "retrospective_source_sha256": "a2a66740246f90920533ff3cf8fb22dfe4a9e5a836ef43bc2aa2e20f3c1e342f",
+  "schema": "KB3_CATBOOST_SHADOW_SIX_ASOF_M0_STEP11_V1",
+  "source_reconstructed_feature_names": [
+    "home_goals_for",
+    "home_goals_against",
+    "home_points",
+    "away_goals_for",
+    "away_goals_against",
+    "away_points"
+  ],
+  "trained_on_reconstructed_history": true,
+  "training_rows": 1007,
+  "training_selector_sha256": "2bbc596e46081bcda1e41f556e26e57ade85f59110152102fcff5bd21a5fa7f0",
+  "validation_rows": 376,
+  "validation_selector_sha256": "43de7092cb2d5bada1585a766d8d5bd2cb031e374cf6daa1200f4f6185ac0852"
+}

@@ -9,6 +9,10 @@ on:
       - tests/test_step17_forward_challengers.py
       - src/kb3_step17_challenger_provenance.py
       - tests/test_step17_challenger_provenance.py
+      - src/kb3_p1_prospective_shadow_six_v1.py
+      - src/kb3_p1_shadow_live_gate.py
+      - tests/test_kb3_p1_shadow_live_integration.py
+      - config/kb3_shadow_six_pinned_research_model.json
       - scripts/step16_m0_720_eight_run.py
       - scripts/step16_m0_mode_guard.py
       - tests/test_step16_m0_mode_guard.py
@@ -28,6 +32,10 @@ on:
       - tests/test_step17_forward_challengers.py
       - src/kb3_step17_challenger_provenance.py
       - tests/test_step17_challenger_provenance.py
+      - src/kb3_p1_prospective_shadow_six_v1.py
+      - src/kb3_p1_shadow_live_gate.py
+      - tests/test_kb3_p1_shadow_live_integration.py
+      - config/kb3_shadow_six_pinned_research_model.json
       - scripts/step16_m0_720_eight_run.py
       - tests/test_step16_m0_720_eight_forward.py
       - config/step16_ci_requirements.txt
@@ -97,12 +105,38 @@ jobs:
       - name: Install already used PitchAPI SDK and source evidence encryption
         if: steps.mode.outputs.mode != 'skip'
         run: python -m pip install --disable-pip-version-check -r config/step16_live_requirements.txt
+      - name: Restore immutable reviewed CatBoost Shadow Six bytes from tracked research assets (OFF by default)
+        if: steps.mode.outputs.mode == 'forecast' && vars.KB3_SHADOW_SIX_ENABLED == 'true'
+        env:
+          KB3_SHADOW_SIX_MODEL_DIR: ${{ runner.temp }}/kb3_shadow_six
+        run: |
+          python - <<'PY'
+          import json,hashlib,os,pathlib,shutil
+          from src.kb3_p1_shadow_live_gate import pinned_model_details
+          pin=pinned_model_details()
+          source=pathlib.Path('assets/research/kb3_shadow_six_v1')
+          dest=pathlib.Path(os.environ['KB3_SHADOW_SIX_MODEL_DIR'])
+          names=(pin['model_filename'],pin['manifest_filename'])
+          for name in names:
+              assert (source/name).is_file(), 'DURABLE_EXACT_SHADOW_RESEARCH_BINARY_REQUIRED'
+          assert hashlib.sha256((source/names[0]).read_bytes()).hexdigest()==pin['model_sha256'], 'SHADOW_DURABLE_BINARY_SHA_INVALID'
+          manifest=json.loads((source/names[1]).read_text())
+          assert manifest['manifest_sha256']==pin['manifest_sha256']
+          assert manifest['model_binary_sha256']==pin['model_sha256']
+          assert manifest['production_approved'] is False
+          dest.mkdir(parents=True,exist_ok=True)
+          for name in names:
+              shutil.copy2(source/name,dest/name)
+          print('PINNED_SHADOW_SIX_DURABLY_RESTORED_NO_ARTIFACT_EXPIRY_DEPENDENCY')
+          PY
       - name: Real encrypted before-kickoff research forecast or verified postmatch
         if: steps.mode.outputs.mode != 'skip'
         env:
           PITCHAPI_API_KEY: ${{ secrets.PITCHAPI_API_KEY }}
           GH_TOKEN: ${{ github.token }}
           RUN_MODE: ${{ steps.mode.outputs.mode }}
+          KB3_SHADOW_SIX_ENABLED: ${{ vars.KB3_SHADOW_SIX_ENABLED }}
+          KB3_SHADOW_SIX_MODEL_DIR: ${{ runner.temp }}/kb3_shadow_six
         run: python -m scripts.step16_m0_720_eight_run --mode "$RUN_MODE"
       - name: Verify full immutable independent database and no legacy DB modification
         if: steps.mode.outputs.mode != 'skip'

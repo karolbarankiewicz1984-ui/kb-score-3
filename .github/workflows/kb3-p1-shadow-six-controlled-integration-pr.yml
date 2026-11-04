@@ -1,0 +1,102 @@
+name: KB3 shadow six controlled integration - pinned model, no provider API
+on:
+  pull_request:
+    paths:
+      - src/kb3_p1_shadow_live_gate.py
+      - src/kb3_p1_prospective_shadow_six_v1.py
+      - src/kb3_p1_shadow_host_provenance.py
+      - src/kb3_step16_m0_720_eight_forward.py
+      - config/kb3_shadow_six_pinned_research_model.json
+      - tests/test_kb3_p1_shadow_live_integration.py
+      - tests/test_kb3_p1_prospective_shadow_six_v1.py
+      - docs/KB3_SHADOW_SIX_CONTROLLED_INTEGRATION_2026-11-04.md
+      - .github/workflows/kb3-p1-shadow-six-controlled-integration-pr.yml
+      - .github/workflows/kb3-step16-m0-720-eight-forward.yml
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  pinned-live-integration-offline-simulation:
+    runs-on: ubuntu-latest
+    timeout-minutes: 17
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Use exact dependencies of current operational M0 collector
+        run: python -m pip install --disable-pip-version-check -r config/step16_ci_requirements.txt
+      - name: Verify exact durable branch bytes against source artifact SHA and prepare model folder
+        env:
+          TARGET: ${{ runner.temp }}/shadow_six_selected
+        run: |
+          python - <<'PY'
+          import json,hashlib,pathlib,os,shutil
+          from src.kb3_p1_shadow_live_gate import pinned_model_details
+          pin=pinned_model_details()
+          source=pathlib.Path('assets/research/kb3_shadow_six_v1')
+          target=pathlib.Path(os.environ['TARGET'])
+          target.mkdir(parents=True,exist_ok=True)
+          model=(source/pin['model_filename']).read_bytes()
+          assert hashlib.sha256(model).hexdigest()==pin['model_sha256']
+          manifest=json.loads((source/pin['manifest_filename']).read_text())
+          assert manifest['manifest_sha256']==pin['manifest_sha256']
+          assert manifest['model_binary_sha256']==pin['model_sha256']
+          assert manifest['production_approved'] is False
+          assert manifest['trained_on_reconstructed_history'] is True
+          for filename in (pin['model_filename'],pin['manifest_filename']):
+              shutil.copy2(source/filename,target/filename)
+          print('DURABLE_PIN_MODEL_AND_MANIFEST_SHA_VERIFIED_NO_EXPIRY')
+          PY
+      - name: First verify pinned artifact and OFF-by-default before collection simulation
+        env:
+          KB3_SHADOW_SIX_MODEL_DIR: ${{ runner.temp }}/shadow_six_selected
+        run: |
+          python - <<'PY'
+          from src.kb3_p1_shadow_live_gate import (
+              opt_in_enabled,load_opted_shadow,MODEL_DIR_ENV,ENV_NAME)
+          import os
+          assert opt_in_enabled({}) is False
+          assert load_opted_shadow(environ={}) is None
+          engine=load_opted_shadow(environ={
+              ENV_NAME:"true",MODEL_DIR_ENV:os.environ[MODEL_DIR_ENV]})
+          assert engine.manifest["production_approved"] is False
+          print("SHADOW_GATE_SELECTED_ARTIFACT_SHA_VERIFIED_DEFAULT_OFF")
+          PY
+      - name: Real selected CatBoost through both M0 Step17 and new append-only path
+        env:
+          KB3_SHADOW_SIX_MODEL_DIR: ${{ runner.temp }}/shadow_six_selected
+          KB3_SHADOW_SIX_ENABLED: 'false'
+        run: |
+          python -m unittest discover -s tests -p 'test_kb3_p1_shadow_live_integration.py' -v
+          python -m unittest discover -s tests -p 'test_kb3_p1_prospective_shadow_six_v1.py' -v
+      - name: Existing operational M0 anti-leakage and Step17 backward compatibility
+        run: |
+          python -m unittest discover -s tests -p 'test_step16_m0_720_eight_forward.py' -v
+          python -m unittest discover -s tests -p 'test_step17_forward_challengers.py' -v
+          python -m unittest discover -s tests -p 'test_step17_challenger_provenance.py' -v
+      - name: No source, research data, calibration or CatBoost binaries changed
+        run: |
+          git fetch --no-tags origin "${{ github.base_ref }}"
+          git diff --exit-code "origin/${{ github.base_ref }}...HEAD" -- \
+            data models \
+            config/step16_live_requirements.txt \
+            src/kb3_features.py src/kb3_step16_m0_720_calibration.py \
+            src/kb3_step17_forward_challengers.py \
+            scripts/step16_m0_720_eight_run.py
+          git diff --check "origin/${{ github.base_ref }}...HEAD"
+      - name: No live provider requests or changes to official calibration
+        run: |
+          python - <<'PY'
+          import json
+          pin=json.load(open("config/kb3_shadow_six_pinned_research_model.json"))
+          assert pin["enabled_by_default"] is False
+          assert pin["production_approved"] is False
+          assert pin["no_new_provider_calls"] is True
+          assert pin["artifact_id"]==13366883765
+          print("KB3_SHADOW_SIX_PREPARED_BUT_NOT_LIVE",pin["artifact_id"])
+          PY
