@@ -124,3 +124,13 @@
 - [Audyt #143–146](AUDIT_PR_143_146_2026-11-04.md): #143 pełne NO-GO, #144 badawczy, #145 i #146 warunkowo po kontroli i pilocie.
 - Żadnego automatycznego merge czterech PR. Plan właściciela „zacznij wykonywać” uruchamia analizy i przygotowania, nie uchyla bramek przed modyfikacją istniejącego M0.
 - Przy audycie kroku 01, jeśli nie ma dostępu do oryginalnych kluczy lub nie można odszyfrować źródeł z poziomu konektora, zapisać uczciwie **PARTIAL / RESTORE_NOT_VERIFIED** zamiast deklarować PASS.
+
+## Decyzja 04.11.2026 — krok 01 bez obsługi prywatnego klucza
+
+**Dyspozycja właściciela:** „Omiń kwestie korzystania z prywatnych kluczy jeśli to możliwe”.
+
+- **Krok 01 — gotowość OPERACYJNA do kontynuacji:** PASS dla byte-for-byte copy i niezależnego SQLite `backup()`/restore na odrębnej kopii, row/table SHA, `integrity_check`, `foreign_key_check` oraz immutable triggers. Dowody: [raport kroku 01](STEP01_M0_BACKUP_RESTORE_2026-11-04.md), [CI 41853754238](https://github.com/karolbarankiewicz1984-ui/kb-score-3/actions/runs/41853754238). Jest to wystarczające, aby **przygotowywać krok 02 i 03**, bez oczekiwania na obsługę klucza prywatnego.
+- **Pełna odtwarzalność kopii OFFSITE:** nadal `NOT_VERIFIED`. Google Drive zawiera przesłaną zaszyfrowaną paczkę, z potwierdzonym SHA/CRC, ale nie odszyfrowano jej ani nie wykonano końcowego restore. Taka paczka **bez dostępnego klucza prywatnego nie jest praktycznie odtwarzalną kopią**, dlatego NIE traktować jej jako jedynego zabezpieczenia ani dowodu disaster recovery. Zachować historię i ryzyko.
+- **Nie wymagać od użytkownika przesyłania, importowania czy udostępniania klucza prywatnego w ChatGPT, GitHub lub Codex**. Nie zmieniać obecnego szyfrowania, nie publikować wrażliwych danych ani nie przechodzić na jawny backup w chmurze bez osobnego zatwierdzenia użytkownika.
+- **Możliwa przyszła alternatywa:** usługa zarządzanego przechowywania prywatnych kopii, z szyfrowaniem po stronie usługi i dostępem za pomocą konta (bez ręcznej obsługi własnego klucza), dopiero po audycie uprawnień, retencji i wyraźnej decyzji. To nie jest bieżące wdrożenie.
+- **Status:** `STEP01_OPERATIONAL_GO / OFFSITE_DECRYPT_RESTORE_NOT_VERIFIED`; nie oznacza formalnego pełnego `OFFSITE_RESTORE_PASS`. Dalej #146 i #143 według pozostałych bramek oraz 15/29, GATE16/17 PENDING.
