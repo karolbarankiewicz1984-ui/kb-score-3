@@ -111,14 +111,29 @@ class RealShadowCheckpointTests(unittest.TestCase):
         with sqlite3.connect(self.db) as db:
             db.executescript("""
              CREATE TABLE kb3_p1_shadow_six_host_proofs(
-               shadow_sha256 TEXT PRIMARY KEY,
+               proof_sha256 TEXT PRIMARY KEY,
+               shadow_sha256 TEXT UNIQUE NOT NULL,
+               source_m0_forecast_sha256 TEXT NOT NULL,
                github_artifact_id TEXT NOT NULL,
-               github_server_artifact_created_utc TEXT NOT NULL);
+               github_server_artifact_created_utc TEXT NOT NULL,
+               attestation_source TEXT NOT NULL,
+               audited_at_utc TEXT NOT NULL);
             """)
+            proof={
+                "shadow_sha256":sid,"source_m0_forecast_sha256":pid,
+                "github_artifact_id":"12345",
+                "github_server_artifact_created_utc":"2026-11-05T07:15:00Z",
+                "attestation_source":
+                    "GITHUB_HOST_ARCHIVED_ORIGINAL_SHADOW_SIX_SQLITE_BYTES",
+                "audited_at_utc":"2026-11-05T10:00:00Z"}
             db.execute("""INSERT INTO kb3_p1_shadow_six_host_proofs
-              (shadow_sha256,github_artifact_id,
-               github_server_artifact_created_utc) VALUES(?,?,?)""",
-               (sid,"12345","2026-11-05T07:15:00Z"))
+              (proof_sha256,shadow_sha256,source_m0_forecast_sha256,
+               github_artifact_id,github_server_artifact_created_utc,
+               attestation_source,audited_at_utc)
+               VALUES (?,?,?,?,?,?,?)""",
+               (hash_obj(proof),sid,pid,proof["github_artifact_id"],
+                proof["github_server_artifact_created_utc"],
+                proof["attestation_source"],proof["audited_at_utc"]))
         a=audit(self.db)
         self.assertEqual(a["state"],
           "GENUINE_HOST_ATTESTED_PREMATCH_PAIRS_NOT_SETTLED")
@@ -131,6 +146,26 @@ class RealShadowCheckpointTests(unittest.TestCase):
         self.assertEqual(b["state"],"FIRST_GENUINE_HOST_ATTESTED_SETTLED_PAIR")
         self.assertEqual(b["settled_github_host_verified_pairs"],1)
         self.assertEqual(b["official_fit_increment"],0)
+
+    def test_forged_host_proof_not_accepted_without_matching_sha(self):
+        sid,pid=self.make_pair()
+        with sqlite3.connect(self.db) as db:
+            db.executescript("""
+              CREATE TABLE kb3_p1_shadow_six_host_proofs (
+                proof_sha256 TEXT PRIMARY KEY,shadow_sha256 TEXT NOT NULL,
+                source_m0_forecast_sha256 TEXT NOT NULL,
+                github_artifact_id TEXT NOT NULL,
+                github_server_artifact_created_utc TEXT NOT NULL,
+                attestation_source TEXT NOT NULL,audited_at_utc TEXT NOT NULL);
+            """)
+            db.execute("""INSERT INTO kb3_p1_shadow_six_host_proofs
+                 VALUES(?,?,?,?,?,?,?)""",("0"*64,sid,pid,"12345",
+                 "2026-11-05T07:15:00Z",
+                 "GITHUB_HOST_ARCHIVED_ORIGINAL_SHADOW_SIX_SQLITE_BYTES",
+                 "2026-11-05T10:00:00Z"))
+        with self.assertRaisesRegex(CheckpointError,
+                                     "SHADOW_HOST_PROOF_IMMUTABLE_SHA_OR_SOURCE_INVALID"):
+            audit(self.db)
 
     def test_tamper_prevented_not_silently_counted(self):
         sid,pid=self.make_pair()
