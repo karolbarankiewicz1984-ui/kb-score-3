@@ -135,11 +135,13 @@ def audit(db_path,*,root=ROOT,at=None):
 
 def main():
     p=argparse.ArgumentParser();p.add_argument('--db',type=Path,default=ROOT/'data/forward_m0_720_eight/kb3_forward_eight.sqlite')
+    p.add_argument('--root',type=Path,default=ROOT,help='Exact immutable snapshot root for historical verification')
     p.add_argument('--out',type=Path);p.add_argument('--verify-report',type=Path);a=p.parse_args()
     if a.verify_report:
         expected=json.loads(a.verify_report.read_text())
         need(expected['report_sha256']==hashobj({k:v for k,v in expected.items() if k!='report_sha256'}),'AUDIT_REPORT_SHA_CHANGED')
-        actual=audit(a.db,at=as_utc(expected['checked_at_utc']))
+        need(sha(a.db)==expected['source_sqlite_sha256'],'AUDIT_HISTORICAL_SOURCE_SHA_MISMATCH')
+        actual=audit(a.db,root=a.root,at=as_utc(expected['checked_at_utc']))
         need(actual==expected,'AUDIT_SOURCE_OR_RESULTS_CHANGED')
         print('M0_720_READONLY_REPORT_VERIFIED',expected['report_sha256']);return
     need(a.out is not None,'OUT_OR_VERIFY_REQUIRED')
