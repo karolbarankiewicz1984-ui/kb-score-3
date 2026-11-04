@@ -63,3 +63,8 @@ zachodzi dla starego selektora w ograniczonej puli (233 zamiast 240).
 Weryfikator nie wymusza już fikcyjnego domknięcia starej metody; wylicza wspólne
 prefiksy 48/96/144/192/233 oraz osobno wykorzystanie paczek. Nie zmieniono
 wag, rankingu, puli ani statusów źródeł w odpowiedzi na wyniki jakościowe.
+
+Kontrola zgodności 04.11: main dopisał nowe źródła (ad59f8c). Zamrożony A/B
+pozostaje na oryginalnym eabab06, a aktualny plan jest liczony przez osobne
+`--plan-only` na nowym SHA SQLite. CI sprawdza oba źródła oddzielnie. Nie
+zmieniono rankingu ani mianownika starego replay, aby dopasować wynik do nowych danych.

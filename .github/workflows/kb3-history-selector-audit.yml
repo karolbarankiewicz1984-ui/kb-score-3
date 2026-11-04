@@ -40,9 +40,20 @@ jobs:
       - name: Full regression, block network, real-data fit and protected writes
         run: python scripts/test_history_selector_offline.py > selector-tests.log 2>&1
       - name: Verify real logged outcomes, equal costs and actual fixture IDs without API
+        run: python scripts/verify_history_selector_ab.py --report docs/audits/HISTORY_SELECTOR_LATEST_PLAN_2026-11-04.json.gz
+      - name: Read the immutable source snapshot used by the frozen A-B replay
+        uses: actions/checkout@v4
+        with:
+          ref: eabab06139b185d34450d314989783bdc980b088
+          path: .selector-baseline
+          persist-credentials: false
+          sparse-checkout-cone-mode: false
+          sparse-checkout: data/research/historical_multistat/observations.sqlite
+      - name: Independently verify the frozen A-B replay against its original source
         run: |
           python scripts/verify_history_selector_ab.py \
-            --report docs/audits/HISTORY_SELECTOR_AB_2026-11-03.json.gz
+            --report docs/audits/HISTORY_SELECTOR_AB_2026-11-03.json.gz \
+            --db .selector-baseline/data/research/historical_multistat/observations.sqlite
           git diff --exit-code -- data models config
           git diff --check
       - uses: actions/upload-artifact@v4

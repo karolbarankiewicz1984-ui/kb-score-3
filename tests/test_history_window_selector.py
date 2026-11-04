@@ -11,7 +11,7 @@ from src.kb3_history_window_selector import WindowGraph,select_window_batch,load
 from src.kb3_history_request_budget import RequestBudget
 from scripts.kb3_historical_pitchapi_backfill import capture,select_batch,BackfillError
 from src.kb3_historical_feature_quality import rolling_window
-from scripts.history_selector_ab import logged_replay
+from scripts.history_selector_ab import logged_replay,plan_snapshot
 from src.kb3_pitch_uefa_evidence import add_observation as real_add,verify_receipts as real_verify
 from scripts.kb3_history_accelerated import drive
 from scripts.kb3_history_issue_recheck import recheck,candidates
@@ -134,6 +134,14 @@ class WindowSelectionTests(unittest.TestCase):
         right=logged_replay(g,known,known,pool,b,variant='window-yield')
         self.assertEqual(left['selections'],right['selections'])
         self.assertNotEqual(left['checkpoints'][0]['verified_xg_in_selected'],right['checkpoints'][0]['verified_xg_in_selected'])
+
+    def test_latest_plan_remains_separate_from_frozen_replay(self):
+        g=history(10);rows=next(iter(g.values()));known=keys(rows[:4]);fingerprint='a'*64
+        with patch('scripts.history_selector_ab.load_snapshot',return_value=(g,known,known,{}, {'sqlite_sha256':fingerprint})),patch('scripts.history_selector_ab.sha',return_value=fingerprint):
+            result=plan_snapshot('synthetic-source-not-opened')
+        self.assertNotIn('replay',result)
+        self.assertIsNone(result['actual_live_gain']);self.assertEqual(result['new_provider_calls'],0)
+        self.assertTrue(all(p['only_a_theoretical_ceiling_not_observed_gain'] for p in result['optimistic_next_5x48']))
 
 class RequestRetryTests(unittest.TestCase):
     def setUp(self):

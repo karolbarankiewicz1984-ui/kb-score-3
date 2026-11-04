@@ -17,6 +17,7 @@ def clock(raw):return datetime.fromisoformat(raw.replace('Z','+00:00'))
 def verify(report_path,db_path,archive):
     raw=Path(report_path).read_bytes();report=json.loads(gzip.decompress(raw) if str(report_path).endswith('.gz') else raw)
     payload={k:v for k,v in report.items() if k!='report_sha256'}
+    need(report['schema'] in ('kb3-history-selector-logged-ab-v1','kb3-history-selector-planning-only-v1'),'UNSUPPORTED_REPORT_SCHEMA')
     need(hashlib.sha256(json.dumps(payload,sort_keys=True,separators=(',',':'),allow_nan=False).encode()).hexdigest()==report['report_sha256'],'REPORT_SHA_MISMATCH')
     need(sha(db_path)==report['source']['sqlite_sha256'],'SOURCE_SHA_MISMATCH')
     with sqlite3.connect(Path(db_path).resolve().as_uri()+'?mode=ro',uri=True) as db:
@@ -46,14 +47,17 @@ def verify(report_path,db_path,archive):
     known={(s,m) for s,m,_,_ in sources if s in SCOPES}
     verified={(s,m) for s,m,status,_ in sources if s in SCOPES and status=='VERIFIED'}
     reports=[]
-    for name,expected in report['source_report_sha256'].items():
+    for name,expected in report.get('source_report_sha256',{}).items():
         paths=list(Path(archive).glob('*/'+name+'/HISTORICAL_BACKFILL_REPORT.json'))
         need(len(paths)==1 and sha(paths[0])==expected,'SOURCE_BATCH_REPORT_CHANGED')
         reports.append(json.loads(paths[0].read_text()))
-    start=min(clock(r['started_utc']) for r in reports);end=max(clock(r['ended_utc']) for r in reports)
-    initial={(s,m) for s,m,_,t in sources if s in SCOPES and clock(t)<start}
-    pool={(s,m) for s,m,_,t in sources if s in SCOPES and start<=clock(t)<=end}
-    need(len(pool)==240,'LOGGED_POOL_MISMATCH')
+    initial=set();pool=set()
+    if 'replay' in report:
+        need(bool(reports),'LOGGED_BATCH_REPORTS_MISSING')
+        start=min(clock(r['started_utc']) for r in reports);end=max(clock(r['ended_utc']) for r in reports)
+        initial={(s,m) for s,m,_,t in sources if s in SCOPES and clock(t)<start}
+        pool={(s,m) for s,m,_,t in sources if s in SCOPES and start<=clock(t)<=end}
+        need(len(pool)==240,'LOGGED_POOL_MISMATCH')
     checked=0
     def check(expected,now_verified,targets=None):
         nonlocal checked
@@ -69,10 +73,11 @@ def verify(report_path,db_path,archive):
         checked+=1
     check(report['baseline']['observed_targets'],verified,known)
     check(report['baseline']['all_indexed_targets'],verified)
-    check(report['replay_before_all_targets'],verified&initial)
-    check(report['replay_before_fixed_original_targets'],verified&initial,initial)
+    if 'replay' in report:
+        check(report['replay_before_all_targets'],verified&initial)
+        check(report['replay_before_fixed_original_targets'],verified&initial,initial)
     selections={}
-    for run in report['replay']:
+    for run in report.get('replay',[]):
         seq=[(x['scope'],x['match_id']) for x in run['selections']]
         need(len(seq)==len(set(seq)) and set(seq)<=pool,'DUPLICATE_OR_UNRECORDED_REPLAY_SOURCE')
         need(all(fixtures[(x['scope'],x['match_id'])]['season']==x['season'] for x in run['selections']),'REPLAY_SEASON_DRIFT')
@@ -84,13 +89,13 @@ def verify(report_path,db_path,archive):
             subset=set(seq[:n]);v=(verified&initial)|(verified&subset)
             check(c['all_indexed_targets'],v);check(c['fixed_original_observed_targets'],v,initial)
             last=n
-    for c in report['equal_source_pair_budgets']:
+    for c in report.get('equal_source_pair_budgets',[]):
         n=c['source_pairs_each'];need(c['successful_archived_endpoint_read_units_each']==2*n,'PREFIX_COST_MISMATCH')
         for selector,score in c['models'].items():
             subset=set(selections[selector][:n]);need(len(subset)==n,'UNEQUAL_PREFIX_SIZE')
             v=(verified&initial)|(verified&subset)
             check(score['all_indexed_targets'],v);check(score['fixed_original_observed_targets'],v,initial)
-    check(report['full_recorded_pool_control'],verified)
+    if 'full_recorded_pool_control' in report:check(report['full_recorded_pool_control'],verified)
     planned=0
     for run in report.get('optimistic_next_5x48',[]):
         need(run['only_a_theoretical_ceiling_not_observed_gain'] is True,'OPTIMISTIC_PLAN_CANNOT_BE_OBSERVED_GAIN')

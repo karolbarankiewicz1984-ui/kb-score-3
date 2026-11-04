@@ -1,0 +1,257 @@
+{
+  "actual_live_gain": null,
+  "baseline_counts": {
+    "all_indexed_targets": {
+      "all": {
+        "10": 33,
+        "15": 5,
+        "5": 165
+      },
+      "venue": {
+        "10": 20,
+        "15": 2,
+        "5": 116
+      }
+    },
+    "observed_targets": {
+      "all": {
+        "10": 33,
+        "15": 5,
+        "5": 156
+      },
+      "venue": {
+        "10": 18,
+        "15": 2,
+        "5": 108
+      }
+    }
+  },
+  "independent_verification": {
+    "independent_naive_window_count_checks": 12,
+    "logged_candidate_pairs": 0,
+    "not_live_effectiveness_proof": true,
+    "real_ID_plan_entries_checked": 480,
+    "report_sha256": "8f403a9e0fb8aeaa5acaf8017179faa6e87d57a5e4c37a111ccd7885d54a8556",
+    "source_unchanged": true,
+    "status": "PASS"
+  },
+  "new_provider_calls": 0,
+  "plans": [
+    {
+      "batches": [
+        {
+          "batch": 1,
+          "complete_if_all_validate": {
+            "all": {
+              "10": 34,
+              "15": 5,
+              "5": 174
+            },
+            "venue": {
+              "10": 20,
+              "15": 2,
+              "5": 117
+            }
+          },
+          "leagues": {
+            "GER": 48
+          },
+          "pairs": 48
+        },
+        {
+          "batch": 2,
+          "complete_if_all_validate": {
+            "all": {
+              "10": 34,
+              "15": 5,
+              "5": 177
+            },
+            "venue": {
+              "10": 20,
+              "15": 2,
+              "5": 117
+            }
+          },
+          "leagues": {
+            "ITA": 48
+          },
+          "pairs": 48
+        },
+        {
+          "batch": 3,
+          "complete_if_all_validate": {
+            "all": {
+              "10": 40,
+              "15": 5,
+              "5": 219
+            },
+            "venue": {
+              "10": 20,
+              "15": 2,
+              "5": 130
+            }
+          },
+          "leagues": {
+            "POL": 48
+          },
+          "pairs": 48
+        },
+        {
+          "batch": 4,
+          "complete_if_all_validate": {
+            "all": {
+              "10": 43,
+              "15": 5,
+              "5": 255
+            },
+            "venue": {
+              "10": 20,
+              "15": 2,
+              "5": 139
+            }
+          },
+          "leagues": {
+            "NED": 48
+          },
+          "pairs": 48
+        },
+        {
+          "batch": 5,
+          "complete_if_all_validate": {
+            "all": {
+              "10": 48,
+              "15": 5,
+              "5": 294
+            },
+            "venue": {
+              "10": 20,
+              "15": 2,
+              "5": 153
+            }
+          },
+          "leagues": {
+            "TUR": 48
+          },
+          "pairs": 48
+        }
+      ],
+      "planning_only_not_observed_gain": true,
+      "selector": "current"
+    },
+    {
+      "batches": [
+        {
+          "batch": 1,
+          "complete_if_all_validate": {
+            "all": {
+              "10": 37,
+              "15": 5,
+              "5": 190
+            },
+            "venue": {
+              "10": 20,
+              "15": 2,
+              "5": 122
+            }
+          },
+          "leagues": {
+            "GER": 48
+          },
+          "pairs": 48
+        },
+        {
+          "batch": 2,
+          "complete_if_all_validate": {
+            "all": {
+              "10": 38,
+              "15": 5,
+              "5": 215
+            },
+            "venue": {
+              "10": 20,
+              "15": 2,
+              "5": 126
+            }
+          },
+          "leagues": {
+            "ITA": 48
+          },
+          "pairs": 48
+        },
+        {
+          "batch": 3,
+          "complete_if_all_validate": {
+            "all": {
+              "10": 52,
+              "15": 5,
+              "5": 268
+            },
+            "venue": {
+              "10": 20,
+              "15": 2,
+              "5": 148
+            }
+          },
+          "leagues": {
+            "POL": 48
+          },
+          "pairs": 48
+        },
+        {
+          "batch": 4,
+          "complete_if_all_validate": {
+            "all": {
+              "10": 57,
+              "15": 5,
+              "5": 307
+            },
+            "venue": {
+              "10": 20,
+              "15": 2,
+              "5": 158
+            }
+          },
+          "leagues": {
+            "NED": 48
+          },
+          "pairs": 48
+        },
+        {
+          "batch": 5,
+          "complete_if_all_validate": {
+            "all": {
+              "10": 67,
+              "15": 5,
+              "5": 355
+            },
+            "venue": {
+              "10": 20,
+              "15": 2,
+              "5": 175
+            }
+          },
+          "leagues": {
+            "TUR": 48
+          },
+          "pairs": 48
+        }
+      ],
+      "planning_only_not_observed_gain": true,
+      "selector": "window-yield"
+    }
+  ],
+  "report_sha256": "8f403a9e0fb8aeaa5acaf8017179faa6e87d57a5e4c37a111ccd7885d54a8556",
+  "schema": "kb3-history-selector-planning-only-v1",
+  "selector_policy": "closure-bundles-balanced-eight-v1",
+  "source": {
+    "availability_class": "HISTORICAL_RECONSTRUCTED_NOT_ORIGINAL_PIT",
+    "national_fixtures": 8064,
+    "national_observations": 1051,
+    "original_pit_certified": false,
+    "raw_receipts_reauthenticated": false,
+    "recorded_verified_xg": 961,
+    "sqlite_sha256": "75640aefcd14bc50d8903498fc2ff6e9f76f2eaa3000b5c1435ae3f7a886c905",
+    "xg_policy": "EXISTING_MAIN_STATUS_NOT_RAW_REAUTHENTICATED"
+  },
+  "source_main_commit": "ad59f8cc3bceb26fea97c937be825d3ee6cde3e6"
+}

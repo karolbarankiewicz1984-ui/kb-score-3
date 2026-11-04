@@ -72,6 +72,22 @@ def matched_prefixes(graph,initial,verified,pool_outcomes,replays):
         output.append(part)
     return output
 
+def plan_snapshot(db):
+    """A fresh plan on the latest source; never silently replace a frozen replay."""
+    groups,known,verified,observed,source=load_snapshot(db)
+    graph=WindowGraph(groups)
+    result={'schema':'kb3-history-selector-planning-only-v1','selector_policy':POLICY,
+        'availability_class':DOMAIN,'source':source,'new_provider_calls':0,
+        'existing_m0_modified':False,'protected_TEST_used':False,
+        'raw_receipts_reauthenticated':False,'official_training_approved':False,
+        'actual_live_gain':None,
+        'baseline':{'observed_targets':graph.coverage(known,verified,known),
+                    'all_indexed_targets':graph.coverage(known,verified)},
+        'optimistic_next_5x48':[optimistic_plan(groups,known,verified,v) for v in ('current','window-yield')]}
+    need(sha(db)==source['sqlite_sha256'],'ORIGINAL_SOURCE_MUTATED')
+    result['report_sha256']=hashlib.sha256(json.dumps(result,sort_keys=True,separators=(',',':'),allow_nan=False).encode()).hexdigest()
+    return result
+
 def audit(db,archive,token,*,with_plan=True):
     groups,known,verified,observed,source=load_snapshot(db)
     paths=sorted(Path(archive).glob('*/run-'+token+'-b*/HISTORICAL_BACKFILL_REPORT.json'))
@@ -115,13 +131,13 @@ def main():
     p=argparse.ArgumentParser();p.add_argument('--db',type=Path,default=ROOT/'data/research/historical_multistat/observations.sqlite')
     p.add_argument('--archive',type=Path,default=ROOT/'data/pit_sidecar/historical_multistat')
     p.add_argument('--replay-run',default='41692857683-1');p.add_argument('--out',type=Path,required=True)
-    p.add_argument('--no-plan',action='store_true');args=p.parse_args()
+    p.add_argument('--no-plan',action='store_true');p.add_argument('--plan-only',action='store_true');args=p.parse_args()
     need(not args.out.exists(),'APPEND_ONLY_REPORT_EXISTS')
-    result=audit(args.db,args.archive,args.replay_run,with_plan=not args.no_plan)
+    result=plan_snapshot(args.db) if args.plan_only else audit(args.db,args.archive,args.replay_run,with_plan=not args.no_plan)
     raw=(json.dumps(result,sort_keys=True,indent=2,allow_nan=False)+'\n').encode()
     args.out.parent.mkdir(parents=True,exist_ok=True)
     with args.out.open('xb') as f:f.write(gzip.compress(raw,mtime=0) if str(args.out).endswith('.gz') else raw)
-    for run in result['replay']:
+    for run in result.get('replay',[]):
         print(json.dumps({'selector':run['selector'],'checkpoints':[
             (c['source_pairs_read'],c['all_indexed_targets']['complete_pairs']) for c in run['checkpoints']]},sort_keys=True),flush=True)
     print('REPORT_SHA256',result['report_sha256'])

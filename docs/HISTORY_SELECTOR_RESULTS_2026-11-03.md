@@ -7,11 +7,14 @@ uszeregowanie szybciej domyka xG5. Nie wykazano przyrostu xG10/15 ani
 skuteczności na niepobranych źródłach. Nowy selektor pozostaje opcją badawczą;
 harmonogram używa `current`. Bez automatycznego merge lub uruchomienia live.
 
-Baza main: `eabab06139b185d34450d314989783bdc980b088`.
+Baza zamrożonego replay: `eabab06139b185d34450d314989783bdc980b088`.
+Gałąź przeliczona i zrebasowana na nowszy main
+`ad59f8cc3bceb26fea97c937be825d3ee6cde3e6`; nowe źródła zachowano.
 [Protokół przed A/B](HISTORY_SELECTOR_PROTOCOL_2026-11-03.md),
 [pełny raport A/B i obu planów](audits/HISTORY_SELECTOR_AB_2026-11-03.json.gz),
 [podsumowanie](audits/HISTORY_SELECTOR_SUMMARY_2026-11-03.json),
-[konkretne następne 240 ID](audits/HISTORY_SELECTOR_NEXT_240_2026-11-03.csv).
+[aktualne następne 240 ID](audits/HISTORY_SELECTOR_NEXT_240_2026-11-04.csv),
+[plan na bazie z 04.11](audits/HISTORY_SELECTOR_LATEST_PLAN_2026-11-04.json.gz).
 
 ## Kontrola starszych prac
 
@@ -31,7 +34,7 @@ uzupełniające się zestawy brakujących meczów. Wagi all5/10/15=16/8/4 oraz
 venue5/10/15=4/2/1 są zamrożone przed A/B; nie stroiliśmy ich na wyniku replay.
 Nie jest to dowód globalnie optymalnego rozwiązania.
 
-## Potwierdzony stan źródeł
+## Zamrożony stan źródeł użyty do replay (03.11)
 
 Odczyt read-only potwierdza **8621** indeksowanych spotkań, **816** obserwacji
 i **742** źródłowe statusy VERIFIED. Po wykluczeniu UCL: **8064 / 811 / 738**
@@ -98,11 +101,48 @@ Nie obejmuje wyników nieudanych pobrań, które nie utworzyły rekordu.
 Porównanie daje dowód lepszego porządku w tej puli, bez generalizacji wyniku
 3 do pozostałych lig lub przyszłych okresów. Nie zaobserwowano przyrostu 10/15.
 
-## Które mecze pobrać dalej
+## Aktualizacja main i bieżący plan (04.11)
 
-[CSV 240 prawdziwych ID](audits/HISTORY_SELECTOR_NEXT_240_2026-11-03.csv)
+Po automatycznym dopisaniu źródeł main ma nadal 8621 wyników indeksu, lecz
+już **1056 obserwacji / 965 statusów VERIFIED**, krajowe 1051/961.
+Pełne okna dla obserwowanych celów: **156/33/5**, venue **108/18/2**;
+dla wszystkich 8064 krajowych celów: **165/33/5**, venue **116/20/2**.
+Źródłowy SHA:
+`75640aefcd14bc50d8903498fc2ff6e9f76f2eaa3000b5c1435ae3f7a886c905`.
+
+Te dodatkowe pobrania wykonał wcześniejszy, automatyczny kolektor; nie
+przypisujemy ich nowemu selektorowi. Replay powyżej pozostaje na niezmienionej
+bazie eabab06. CI sprawdza go na osobno odczytanym, przypiętym oryginale,
+a nowy plan niezależnie na aktualnej bazie — nie podmienia próby po czasie.
+
+[Nowy CSV następnych 240 ID](audits/HISTORY_SELECTOR_NEXT_240_2026-11-04.csv)
+obejmuje **GER48 → ITA48 → POL48 → NED48 → TUR48**. Wszystkie ID są zakończone
+i nieobecne w aktualnych observations. Uwzględniono wszystkie osiem lig;
+FRA/BEL/ESP pozostają w rotacji, bez dalszej koncentracji na BEL/ESP.
+Plan jest ważny dla powyższego SHA; faktyczny capture przelicza wybór z nowego
+stanu przed każdą paczką, więc późniejsze dopisanie danych nie powoduje
+ponownego wstawiania znanych meczów.
+
+**Wyłącznie sufit planowania** po następnych 5×48, przy założeniu poprawności
+każdej nowej pary, na stałej populacji 8064 celów:
+
+| Metoda | xG5 | xG10 | xG15 |
+| --- | ---: | ---: | ---: |
+| Początek aktualnej bazy | 165 | 33 | 5 |
+| Current, jeśli wszystkie pary poprawne | 294 | 48 | 5 |
+| Nowy, jeśli wszystkie pary poprawne | 355 | 67 | 5 |
+
+[Pełny aktualny plan](audits/HISTORY_SELECTOR_LATEST_PLAN_2026-11-04.json.gz)
+i [podsumowanie](audits/HISTORY_SELECTOR_LATEST_SUMMARY_2026-11-04.json)
+zachowują `actual_live_gain=null`, `new_provider_calls=0`.
+Nie jest to dowód dodatkowych 61/19 przykładów; przyszłe xG są nieznane.
+
+## Historyczny plan na bazie 03.11 — zachowany do audytu
+
+[Starszy CSV 240 prawdziwych ID](audits/HISTORY_SELECTOR_NEXT_240_2026-11-03.csv)
 podaje paczkę, kolejność, ligę, sezon i kickoff. Każdy rekord ma status
-`PLANNING_NOT_FETCHED`. Indeks potwierdza zakończenie spotkania, nie przyszłą
+`PLANNING_NOT_FETCHED` według stanu 03.11. Ten CSV nie jest już bieżącą rekomendacją.
+Indeks potwierdza zakończenie spotkania, nie przyszłą
 kompletność jego stats/shots. Paczki: **ITA48 → POL48 → NED48 → TUR48 → FRA48**.
 GER, BEL i ESP pozostają w kandydaturze ośmiu lig; po tej rotacji GER będzie
 jedną z najmniej pobranych. Nie zwiększamy koncentracji BEL/ESP. Jeśli źródła
@@ -159,8 +199,9 @@ pełne zamknięcie R1–R5.
 
 ## Testy i odtworzenie
 
-- Końcowo **1207/1207 PASS**, 0 errors/failures/skips na Pythonie **3.11.17**
-  oraz **3.12.14**, w tym **27 nowych**. Zestawy liczone po unikalnych ID.
+- Przed aktualizacją main: **1207/1207 PASS**. Po rebase i dodaniu kontroli
+  odrębności bieżącego planu od replay: **1208/1208 PASS**, 0 errors/failures/skips
+  na Pythonie **3.11.17 i 3.12.14**, w tym **28 nowych**. Unikalne ID testów.
   Blokada sieci, realnego fit oraz zapisów do oryginalnych data/models/config;
   SQLite read-only. Wyjątki fit dotyczą tylko trzech nazwanych starych demo
   syntetycznych. Nie wykonywano rzeczywistego treningu.
@@ -182,10 +223,15 @@ pełne zamknięcie R1–R5.
   funkcji oczekującej string i błąd pustego agregatu; oba poprawiono przed PASS.
 
 ```bash
-# Brak API, brak fit, oryginał SQLite otwierany tylko mode=ro:
-python -m scripts.history_selector_ab --out /tmp/history-ab-new.json.gz
+# Brak API/fit; zamrożony replay wymaga własnego, niezmienionego snapshotu:
+git show eabab06139b185d34450d314989783bdc980b088:data/research/historical_multistat/observations.sqlite > /tmp/history-original.sqlite
+python -m scripts.history_selector_ab --db /tmp/history-original.sqlite --out /tmp/history-ab-new.json.gz
 python scripts/verify_history_selector_ab.py \
-  --report docs/audits/HISTORY_SELECTOR_AB_2026-11-03.json.gz
+  --report docs/audits/HISTORY_SELECTOR_AB_2026-11-03.json.gz --db /tmp/history-original.sqlite
+# Bieżący plan pozostaje wyłącznie planem i ma osobny raport:
+python -m scripts.history_selector_ab --plan-only --out /tmp/history-latest-plan.json.gz
+python scripts/verify_history_selector_ab.py \
+  --report docs/audits/HISTORY_SELECTOR_LATEST_PLAN_2026-11-04.json.gz
 python scripts/test_history_selector_offline.py
 ```
 
