@@ -4,6 +4,8 @@ These are synthetic provider fixtures and real model binary bytes downloaded
 from the previously validated research GitHub artifact; not true forecasts.
 """
 import copy
+import io
+import zipfile
 import json
 import os
 import sqlite3
@@ -25,6 +27,9 @@ from src.kb3_p1_shadow_live_gate import (
 )
 from src.kb3_p1_prospective_shadow_six_v1 import (
     ShadowSafetyError,freeze_only_new_m0
+)
+from src.kb3_p1_shadow_host_provenance import (
+    _archived_shadow,audit_shadow,paired_settled_shadow
 )
 
 
@@ -125,6 +130,21 @@ class NewSixLiveIntegration(unittest.TestCase):
                     "JOIN forecasts p ON p.id=s.source_m0_forecast_sha256 "
                     "WHERE s.feature_sha256!=json_extract(p.payload_json,'$.feature_sha256')"
                     ).fetchone()[0],0)
+            # Host archive verification reads ORIGINAL zipped SQLite bytes,
+            # not merely the locally claimed shadow-generated timestamp.
+            buff=io.BytesIO()
+            with zipfile.ZipFile(buff,"w",compression=zipfile.ZIP_DEFLATED) as z:
+                z.write(db,"data/forward_m0_720_eight/kb3_forward_eight.sqlite")
+            old=_archived_shadow(buff.getvalue())
+            self.assertEqual(set(old),{
+                row["shadow_sha256"] for row in shadow_rows})
+            self.assertTrue(all(
+                original[3]==self.pinned["model_sha256"]
+                for original in old.values()))
+            proof_state=audit_shadow(db,token=None,now=NOW+timedelta(days=1))
+            self.assertEqual(proof_state["new_host_proofs"],0)
+            paired=paired_settled_shadow(db)
+            self.assertEqual(paired["paired_settled_host_attested"],0)
             repeated=freeze_only_new_m0(db,shadow_rows,new_m0_ids=set())
             self.assertEqual(repeated["skipped_old_m0"],64)
             self.assertEqual(repeated["added"],0)
