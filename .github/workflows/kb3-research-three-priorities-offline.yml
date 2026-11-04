@@ -31,7 +31,7 @@ jobs:
           python -m unittest discover -s tests -p 'test_kb3_research*.py' -v
       - name: Real source-code parity and checked-in xG/Step17 receipt audits
         run: |
-          python -m scripts.kb3_research_parity_audit > "$RUNNER_TEMP/kb3_p1_clock.json"
+          python -m scripts.kb3_research_parity_audit --historical-db data/research/historical_multistat/observations.sqlite --max-targets 128 > "$RUNNER_TEMP/kb3_p1_clock.json"
           python -m scripts.kb3_research_xg_coverage_readonly > "$RUNNER_TEMP/kb3_xg_gaps.json"
           python -m scripts.kb3_research_three_engine_readiness > "$RUNNER_TEMP/kb3_three_engine.json"
           python - "$RUNNER_TEMP" <<'PY'
