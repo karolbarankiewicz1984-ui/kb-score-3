@@ -133,8 +133,8 @@ class SharedAsOfV2Safety(unittest.TestCase):
 
     def test_missing_xg_is_null_never_zero(self):
         s = sample()
-        s["predecessor_rows"][0]["xga"] = None
-        s["predecessor_rows"][0]["xga_receipt"] = None
+        s["predecessor_rows"][0]["xgh"] = None
+        s["predecessor_rows"][0]["xgh_receipt"] = None
         r = build_shared_features(purpose="TRAIN", **s)
         self.assertEqual(r["features"]["home_all_5_xga_n"], 0)
         self.assertEqual(r["features"]["home_all_5_xga_avg"], None)
@@ -142,7 +142,7 @@ class SharedAsOfV2Safety(unittest.TestCase):
 
     def test_xg_after_cutoff_does_not_leak_to_model(self):
         s = sample()
-        s["predecessor_rows"][0]["xga_receipt"]["captured_at_utc"] = (
+        s["predecessor_rows"][0]["xgh_receipt"]["captured_at_utc"] = (
             "2026-11-04T18:01:00Z")
         r = build_shared_features(purpose="TRAIN", **s)
         self.assertEqual(r["features"]["home_all_5_xga_n"], 0)
