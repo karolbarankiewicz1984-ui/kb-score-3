@@ -1,0 +1,33 @@
+name: KB3 eight-league historical fixture structure — read only, zero API
+on:
+  push:
+    branches: [research/step16-trainonly-walkforward-20261101]
+    paths:
+      - scripts/step16_eight_league_history_inventory.py
+      - tests/test_step16_eight_league_history_inventory.py
+      - .github/workflows/kb3-step16-eight-history-inventory.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  inventory:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Offline fixture structure verification and exact-source report
+        run: |
+          python -m compileall -q scripts/step16_eight_league_history_inventory.py
+          python -m unittest discover -s tests -p 'test_step16_eight_league_history_inventory.py' -v
+          python -m scripts.step16_eight_league_history_inventory --out research/results/STEP16_EIGHT_HISTORY_INVENTORY_2026-11-01.json
+          git diff --exit-code -- data/ models/
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: KB3_EIGHT_HISTORY_STRUCTURE_NO_API
+          path: research/results/STEP16_EIGHT_HISTORY_INVENTORY_2026-11-01.json
+          if-no-files-found: warn
+          retention-days: 30
