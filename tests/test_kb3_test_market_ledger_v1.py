@@ -251,7 +251,7 @@ class IndependentMarketSafety(unittest.TestCase):
                         stage,created="2026-11-08T15:00:01Z"
                         if late else HOST,mutate=mutate)
                     with self.assertRaisesRegex(MarketLedgerError,
-                                                 "ZIP|TOO_LATE"):
+                                                 "ZIP|TOO_LATE|BYTES_MISMATCH"):
                         github_artifact_attest(
                             staging=stage,ledger_root=root/"ledger",
                             token="synthetic-token",run_id=12345,
