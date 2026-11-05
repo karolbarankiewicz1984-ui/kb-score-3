@@ -1,0 +1,26 @@
+{
+  "card_issues_selected": 45,
+  "cards_reviewed": 45,
+  "cumulative_issue_rows": 571,
+  "error_types": {},
+  "observed_at_utc": "2026-11-05T09:32:08.997486Z",
+  "official_training_allowed": false,
+  "original_historical_pit_certified": false,
+  "original_rows_modified": false,
+  "production_approved": false,
+  "provider_requests": 105,
+  "schema": "kb3-historical-issue-recheck-v1-20261103",
+  "source_chain_sha256": "c51ea90511f2afd145c68c4d49fee1f1a08e0d27b5d7693d12a1e26050f9f2bc",
+  "source_cipher_sha256": "82c6ccd57491f4d8c4752dbacca8442eab8391fb6350b7190eed7e5fec0bc0ce",
+  "source_receipts": 105,
+  "status": "OBSERVED_RECHECK",
+  "status_counts": {
+    "XG:XG_DISAGREEMENT_PERSISTS": 30,
+    "YELLOW_CARDS:EVENTS_TEAM_STATS_CONFLICT": 4,
+    "YELLOW_CARDS:EVENT_YELLOW_CONFIRMED": 41
+  },
+  "xg_issues_selected": 30,
+  "xg_reverified": 0,
+  "xg_reviewed": 30,
+  "yellow_from_events": 41
+}
