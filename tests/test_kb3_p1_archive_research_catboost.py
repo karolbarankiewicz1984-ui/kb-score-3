@@ -3,14 +3,20 @@ from __future__ import annotations
 import unittest
 import copy
 import math
+import hashlib
+import json
+import shutil
+import sqlite3
+import tempfile
+from pathlib import Path
 from datetime import timedelta
 
-from scripts.kb3_p1_archived_source_recovery_audit import run as archive
+from scripts.kb3_p1_archived_source_recovery_audit import run as archive,ArchiveSafety
 from scripts.kb3_p1_retro_catboost_1007_376 import (
     BASE, WITH_XG, GOALS, CORE, XG, RetroResearchError,
     build_features_without_target_label, load_sets, numeric,
 )
-from scripts.kb3_p1_historical_eligibility_split import utc
+from scripts.kb3_p1_historical_eligibility_split import utc,SOURCE_DB,assess
 
 
 def historical_fixture(match,ko,home,away,goals=(0,0)):
@@ -27,10 +33,29 @@ class Tests(unittest.TestCase):
         self.assertEqual(a["verified_eight_league_historical_prematch_v2_training_targets"],0)
         self.assertFalse(a["formal_training_approved"])
         self.assertTrue(a["do_not_transfer_public_fpl_xg_to_native_pitchapi"])
+        source=a["eight_league_source_observations"]
+        self.assertGreaterEqual(source["observed_stats_rows"],1525)
+        self.assertGreaterEqual(source["native_eight_stats_rows"],1520)
+        self.assertEqual(a["current_inventory_delta_from_archived_experiment"],
+                         source["observed_stats_rows"]-1525)
+        self.assertEqual(source["provider_first_published_present"],0)
+        self.assertEqual(source["fixture_first_published_present"],0)
+        self.assertEqual(source["observed_stats_before_target_minus90min"],0)
+        self.assertEqual(source["fixture_listed_before_target_minus90min"],0)
+        self.assertEqual(source["distinct_history_target_receipts"],0)
+        self.assertFalse(a["original_experiment_replayed_on_current_source"])
 
     def test_actual_retro_source_partition_safety(self):
         tr,val,meta=load_sets()
-        self.assertEqual((len(tr),len(val)),(1007,376))
+        current_gate,train_selectors,validation_selectors=assess(SOURCE_DB)
+        self.assertEqual(len(tr),len(train_selectors))
+        self.assertEqual(len(val),len(validation_selectors))
+        self.assertEqual(len(tr)+len(val)+meta["cohort_embargo_discarded"],
+                         current_gate["research_reconstruction"][
+                             "potential_historical_no_xg_history5"])
+        self.assertEqual((meta["cohort_train_n"],meta["cohort_validation_n"]),
+                         (len(tr),len(val)))
+        self.assertFalse(meta["original_shadow_six_immutable_binary_reused"])
         self.assertFalse(meta["formal_training_allowed"])
         self.assertEqual(meta["feature_count_no_xg"],14)
         self.assertEqual(meta["feature_count_with_xg"],18)
@@ -39,6 +64,32 @@ class Tests(unittest.TestCase):
             -max(utc(x["kickoff_utc"]) for x in tr),timedelta(days=7))
         self.assertTrue(all("target_score" not in x["features"]
                             for x in tr+val))
+
+    def test_pinned_shadow_six_stays_immutable_when_research_history_grows(self):
+        manifest=json.loads((Path(__file__).resolve().parents[1] /
+            "assets/research/kb3_shadow_six_v1/KB3_CATBOOST_SHADOW_SIX_MANIFEST.json").read_text())
+        _,_,meta=load_sets()
+        self.assertEqual((manifest["training_rows"],manifest["validation_rows"]),
+                         (1007,376))
+        self.assertFalse(manifest["production_approved"])
+        self.assertFalse(meta["formal_training_allowed"])
+        self.assertNotEqual(manifest["retrospective_source_sha256"],
+                            meta["historical_source_sha256"],
+                            "Growing source must not masquerade as frozen research snapshot")
+
+    def test_forged_original_publication_clock_still_fails_closed(self):
+        # Separate disposable SQLite copy: never change the checked-in source.
+        with tempfile.TemporaryDirectory() as td:
+            copy_db=Path(td)/"observations.sqlite"
+            shutil.copyfile(SOURCE_DB,copy_db)
+            with sqlite3.connect(copy_db) as db:
+                db.execute("""UPDATE observations
+                    SET provider_first_published_at_utc=?
+                    WHERE rowid=(SELECT MIN(rowid) FROM observations)""",
+                    ("2024-01-01T00:00:00Z",))
+                db.commit()
+            with self.assertRaises(ArchiveSafety):
+                archive(db_path=copy_db)
 
     def test_no_label_leak_even_if_target_result_changes(self):
         fixtures=[historical_fixture(f"f{i}",f"2025-01-{i:02d}T18:00:00Z",
