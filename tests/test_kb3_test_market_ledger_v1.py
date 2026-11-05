@@ -10,6 +10,7 @@ import sqlite3
 import tempfile
 import unittest
 import zipfile
+import urllib.request
 
 from src.kb3_pit_ledger import canonical
 from src.kb3_step15_goal_markets import markets_from_lambdas
@@ -19,7 +20,7 @@ from src.kb3_test_market_ledger_v1 import (
     market_label, score_market_row, settle_market_freeze)
 from scripts.kb3_test_market_ledger_runner import (
     ARTIFACT_NAME, capture_new_market_freezes, github_artifact_attest,
-    verify_host_proof, settle_existing,
+    verify_host_proof, settle_existing, _StripAuthOnOffsiteRedirect,
 )
 
 CUTOFF="2026-11-05T08:18:40Z"
@@ -236,6 +237,26 @@ class IndependentMarketSafety(unittest.TestCase):
             self.assertEqual(sum(x["settlement"]=="PUSH"
                                  for x in report["market_rows"]),2)
             self.assertEqual(report["official_fit_increment"],0)
+
+    def test_no_github_bearer_header_on_redirected_signed_artifact(self):
+        req=urllib.request.Request(
+            "https://api.github.com/repos/owner/repo/actions/artifacts/123/zip",
+            headers={"Authorization":"Bearer SENSITIVE_TOKEN",
+                     "X-GitHub-Api-Version":"2022-11-28"})
+        handler=_StripAuthOnOffsiteRedirect()
+        cdn=handler.redirect_request(
+            req,None,302,"Found",{},
+            "https://results-receiver.actions.githubusercontent.com/signed_artifact.zip")
+        self.assertIsNotNone(cdn)
+        self.assertFalse(cdn.has_header("Authorization"))
+        self.assertFalse(cdn.has_header("X-GitHub-Api-Version"))
+        self.assertFalse(any("SENSITIVE_TOKEN" in str(v)
+                             for v in cdn.headers.values()))
+        # API-internal redirects can retain an authenticated identity.
+        same=handler.redirect_request(
+            req,None,302,"Found",{},
+            "https://api.github.com/repos/owner/repo/actions/artifacts/124/zip")
+        self.assertEqual(same.get_header("Authorization"),"Bearer SENSITIVE_TOKEN")
 
     def test_reject_github_late_or_mismatched_original_archive(self):
         for late,mutate in ((True,False),(False,True)):
