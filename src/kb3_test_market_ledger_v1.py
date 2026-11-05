@@ -142,7 +142,7 @@ def market_label(row, gh, ga, *, confirmed_void=False):
                  "FT_TEAM_GOALS_OU"):
         total = gh+ga if fam != "FT_TEAM_GOALS_OU" else (
             gh if side == "home" else ga)
-        require(isinstance(line, str), "NUMERIC_LINE_REQUIRED")
+        need(isinstance(line, str), "NUMERIC_LINE_REQUIRED")
         threshold = float(line)
         if total == threshold:
             need(fam == "FT_TOTAL_GOALS_INTEGER_OU" and threshold == 2.0,
