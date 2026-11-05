@@ -9,7 +9,8 @@ def game(mid,day,home,away,season="2025/2026"):
     return {"scope":"ESP","season":season,"match_id":mid,
         "kickoff_utc":(datetime(2025,9,1,tzinfo=timezone.utc)+
                        timedelta(days=day)).isoformat().replace("+00:00","Z"),
-        "home_team_id":home,"away_team_id":away}
+        "home_team_id":home,"away_team_id":away,
+        "goals_home_90":2,"goals_away_90":1}
 
 def observation(season="2025/2026", cards=True, xg=True):
     fields=("total_shots","fouls","corners")+(
