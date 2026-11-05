@@ -33,6 +33,18 @@ jobs:
           python -m scripts.kb3_test_readonly_market_preview \
             --db data/forward_m0_720_eight/kb3_forward_eight.sqlite \
             --as-of-utc '2026-11-05T15:00:00Z' --limit 100
+      - name: Freeze readable derived research preview in CI artifact (not market proof)
+        run: |
+          mkdir -p .tmp_kb3_test_preview
+          python -m scripts.kb3_test_readonly_market_preview \
+            --db data/forward_m0_720_eight/kb3_forward_eight.sqlite \
+            --limit 100 --output .tmp_kb3_test_preview/DERIVED_RESEARCH_ONLY.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: KB3_TEST_READONLY_DERIVED_MARKETS_NOT_NEW_FORECAST
+          path: .tmp_kb3_test_preview/DERIVED_RESEARCH_ONLY.json
+          retention-days: 14
+          if-no-files-found: error
       - name: Reject changed tracked source or archive
         run: |
           git diff --exit-code -- data/ models/ src/kb3_step16_m0_720_eight_forward.py
