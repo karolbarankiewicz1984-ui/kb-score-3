@@ -55,6 +55,43 @@ jobs:
           python -m unittest discover -s tests -p 'test_kb3_history_issue_recheck.py' -v
           python -m unittest discover -s tests -p 'test_kb3_historical_feature_quality.py' -v
           python -m unittest discover -s tests -p 'test_step14_pitchapi_xg_semantics.py' -v
+      - name: Read-only actual historical cohort gain preflight (offline, zero provider requests)
+        run: |
+          python - <<'PY'
+          from collections import defaultdict,Counter
+          import hashlib,json,sqlite3
+          from pathlib import Path
+          from scripts.kb3_history_gain_first import plan_missing_fixtures,issue_priority_scores
+          db=Path('data/research/historical_multistat/observations.sqlite')
+          issue=Path('data/research/historical_multistat/issue_rechecks.sqlite')
+          assert db.is_file(), 'HISTORICAL_OBSERVATIONS_REQUIRED'
+          sha=lambda: hashlib.sha256(db.read_bytes()).hexdigest()
+          before=sha();groups=defaultdict(list)
+          with sqlite3.connect(db.resolve().as_uri()+'?mode=ro',uri=True) as cn:
+              cn.execute('PRAGMA query_only=ON')
+              known=set(cn.execute('SELECT scope,match_id FROM observations'))
+              for scope,season,mid,ko,home,away in cn.execute(
+                  'SELECT scope,season,match_id,kickoff_utc,home_team_id,away_team_id '
+                  'FROM finished_fixture_index'):
+                  groups[(scope,season)].append({'id':mid,'time_utc':ko,
+                      'home_team':{'id':home},'away_team':{'id':away}})
+          rank,report=plan_missing_fixtures(groups,known,db,limit=36)
+          cards,xg=issue_priority_scores(db,issue)
+          assert before==sha(), 'HISTORICAL_GAIN_PRIORITY_MODIFIED_SOURCE'
+          assert len(rank)==len({(s,m['id']) for s,season,m in rank})<=36
+          assert all((s,m['id']) not in known for s,season,m in rank)
+          assert report['estimated_not_observed'] is True
+          assert report['formal_pit_eligible'] is False
+          assert report['model_or_test_modified'] is False
+          assert report['state']=='SOURCE_RANKED_NOT_FETCHED'
+          print('KB3_ACTUAL_HISTORY_GAIN_DRYRUN',json.dumps({
+              'baseline_observations':len(known),
+              'selected_by_scope':dict(Counter(s for s,season,m in rank)),
+              'card_issue_impact_scored':len(cards),
+              'xg_issue_impact_scored':len(xg),
+              'potential':report,
+              'unchanged_source_sha256':before},sort_keys=True))
+          PY
   live-observed-backfill:
     needs: offline-history-safety
     if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
