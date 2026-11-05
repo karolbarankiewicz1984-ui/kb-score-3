@@ -1,0 +1,39 @@
+{
+  "card_issues_selected": 45,
+  "cards_reviewed": 45,
+  "cards_selected_by_scope": {
+    "ESP": 4,
+    "NED": 12,
+    "POL": 21,
+    "TUR": 8
+  },
+  "cumulative_issue_rows": 721,
+  "error_types": {},
+  "observed_at_utc": "2026-11-05T18:05:11.863312Z",
+  "official_training_allowed": false,
+  "original_historical_pit_certified": false,
+  "original_rows_modified": false,
+  "production_approved": false,
+  "provider_requests": 105,
+  "schema": "kb3-historical-issue-recheck-v1-20261103",
+  "selection": "CORE5_AND_XG5_RESEARCH_TARGET_IMPACT_RANKED",
+  "source_chain_sha256": "d3e6987328d3df6dce12779d71c334192fce5bb19f4b0bac49a1e229330eafb4",
+  "source_cipher_sha256": "13ba21ead7a84f329f933732eb10a364b5f46183c8466facb3e1440be48547a7",
+  "source_receipts": 105,
+  "status": "OBSERVED_RECHECK",
+  "status_counts": {
+    "XG:XG_DISAGREEMENT_PERSISTS": 30,
+    "YELLOW_CARDS:EVENTS_TEAM_STATS_CONFLICT": 5,
+    "YELLOW_CARDS:EVENT_YELLOW_CONFIRMED": 40
+  },
+  "xg_issues_selected": 30,
+  "xg_reverified": 0,
+  "xg_reviewed": 30,
+  "xg_selected_by_scope": {
+    "ESP": 9,
+    "FRA": 2,
+    "NED": 2,
+    "POL": 17
+  },
+  "yellow_from_events": 40
+}
