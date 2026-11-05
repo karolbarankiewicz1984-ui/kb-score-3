@@ -258,7 +258,11 @@ def execute(outdir,db_path=SOURCE_DB,recheck_path=RECHECK_DB):
         "official_fit_increment":0,
         "gate16":"PENDING","gate17":"PENDING"}
     report["report_sha256"]=hash_json(report)
-    (outdir/"RETRO_CATBOOST_1007_376_REPORT.json").write_text(
+    # The original 1007/376 report and Shadow Six binary are immutable
+    # prior research. Name every new experiment by its actual cohort sizes.
+    report_file=(outdir/("RETRO_CATBOOST_%d_%d_REPORT.json" %
+                         (len(train),len(valid))))
+    report_file.write_text(
         json.dumps(report,indent=2,sort_keys=True,ensure_ascii=False)+"\n")
     print("KB3_RETRO_RESEARCH_TRAIN_RESULT",json.dumps({
         "train":len(train),"validation":len(valid),
