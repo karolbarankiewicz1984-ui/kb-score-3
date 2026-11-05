@@ -1,4 +1,6 @@
-"""Separate real retro CatBoost on 1007/376 historical fixture selectors.
+"""Separate real retro CatBoost on a versioned chronological research cohort.
+
+Historical reference was 1007/376; newer source captures may expand it.
 
 This is NOT original as-of, production M0, or 85-feature legacy M1-R.
 Archived postmatch source values may not have existed at each original kickoff.
@@ -78,8 +80,21 @@ def load_sets(db_path=SOURCE_DB,recheck_path=RECHECK_DB):
          gate["official_v2_validation_eligible"]==0 and
          gate["formal_catboost_85_retraining_authorized"] is False,
          "FALSE_ORIGINAL_PIT_CERTIFICATION")
-    need(len(train_sel)==1007 and len(val_sel)==376 and
-         a["embargo_discarded"]==56,"RESEARCH_SPLIT_DRIFT")
+    # The 1007 / 376 / 56 split belongs only to the prior source SHA
+    # pinned in the original research report. Fresh historical observations
+    # re-compute a new, separate research cohort; they MUST NOT be presented
+    # as a replay or re-training of the pinned Shadow Six binary.
+    need(gate["source_first_published_proven"] is False and
+         gate["independent_historical_target_prematch_host_receipt_available"] is False
+         and gate["official_fit_samples_added"]==0
+         and gate["research_reconstruction"]["research_only"] is True
+         and gate["research_reconstruction"]["historical_reconstruction_only"] is True
+         and a["split"]["status"]=="RESEARCH_SPLIT_ONLY_NOT_FIT"
+         and a["split"]["embargo_days"]==7
+         and len(train_sel)>0 and len(val_sel)>0
+         and len(train_sel)+len(val_sel)+a["embargo_discarded"]==
+             a["potential_historical_no_xg_history5"],
+         "RESEARCH_SPLIT_PROVENANCE_OR_ACCOUNTING_DRIFT")
     with read_only_conn(db_path) as db:
         fixt,obs,rechecks,buckets=_load_records(
             db,recheck_db_path=recheck_path)
@@ -117,7 +132,8 @@ def load_sets(db_path=SOURCE_DB,recheck_path=RECHECK_DB):
             counted[part+"_xg5"]+=int(fl["xg5"])
     tr=[r for r in rows if r["partition"]=="TRAIN"]
     va=[r for r in rows if r["partition"]=="VALIDATION"]
-    need(len(tr)==1007 and len(va)==376,"TRAIN_VALIDATION_COUNT_DRIFT")
+    need(len(tr)==len(train_sel) and len(va)==len(val_sel) and
+         len(tr)>0 and len(va)>0,"TRAIN_VALIDATION_COUNT_DRIFT")
     need(len({(r["league"],r["fixture_id"]) for r in rows})==len(rows),
          "DUPLICATE_FIXTURE_IN_PARTITIONS")
     need(max(utc(x["kickoff_utc"]) for x in tr)+timedelta(days=7)
@@ -129,6 +145,11 @@ def load_sets(db_path=SOURCE_DB,recheck_path=RECHECK_DB):
           "validation_selector_sha256":hash_json(val_sel),
           "feature_count_no_xg":len(BASE),
           "feature_count_with_xg":len(WITH_XG),
+          "cohort_train_n":len(tr),"cohort_validation_n":len(va),
+          "cohort_embargo_discarded":a["embargo_discarded"],
+          "original_shadow_six_reference_train_n":1007,
+          "original_shadow_six_reference_validation_n":376,
+          "original_shadow_six_immutable_binary_reused":False,
           "counts":dict(counted),
           "source_class":"HISTORICAL_RECONSTRUCTED_NOT_ORIGINAL_PIT",
           "formal_training_allowed":False}
@@ -214,6 +235,8 @@ def execute(outdir,db_path=SOURCE_DB,recheck_path=RECHECK_DB):
     report={
         "schema":SCHEMA,"status":"EXECUTED_REAL_RETROSPECTIVE_RESEARCH_ONLY",
         "train_n":len(train),"validation_n":len(valid),
+        "source_revision_class":"CURRENT_EXPANDING_HISTORICAL_RESEARCH_ONLY",
+        "old_pinned_shadow_six_unchanged":True,
         "last_train_utc":max(x["kickoff_utc"] for x in train),
         "first_validation_utc":min(x["kickoff_utc"] for x in valid),
         "embargo_days":7,"source_provenance":meta,
