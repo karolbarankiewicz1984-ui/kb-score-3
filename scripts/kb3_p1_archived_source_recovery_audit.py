@@ -81,12 +81,19 @@ def run(*, db_path=SOURCE_DB, old_public_path=PUBLIC_1140,
                 WHERE provider_original_pit_certified=1 OR research_only!=1"""),
         ):
             stats[name]=db.execute(sql).fetchone()[0]
-    require(stats["observed_stats_rows"]==1525 and
-            stats["native_eight_stats_rows"]==1520 and
+    # 1525 / 1520 describe the *archived* 04.11 experiment, not a
+    # maximum size of a continuously growing research SQLite. Never remove
+    # the independent first-publication and actual-time protection gates.
+    old_total, old_eight = 1525, 1520
+    require(stats["observed_stats_rows"]>=old_total and
+            stats["native_eight_stats_rows"]>=old_eight and
+            stats["observed_stats_rows"]>=stats["native_eight_stats_rows"] and
             stats["provider_first_published_present"]==0 and
             stats["fixture_first_published_present"]==0 and
+            stats["observed_stats_before_target_minus90min"]==0 and
+            stats["fixture_listed_before_target_minus90min"]==0 and
             stats["distinct_history_target_receipts"]==0,
-            "HISTORICAL_PIT_BASELINE_DRIFT")
+            "HISTORICAL_PIT_PROVENANCE_OR_INVENTORY_DRIFT")
     result={
         "schema":"kb3-existing-public-archive-vs-native-eight-pit-audit-v1",
         "audit_scope":"CHECKED_IN_HISTORICAL_SQLITE_AND_PREVIOUS_PUBLIC_AUDITS",
@@ -100,6 +107,13 @@ def run(*, db_path=SOURCE_DB, old_public_path=PUBLIC_1140,
         "do_not_sum_overlapping_public_snapshot_sets":True,
         "do_not_transfer_public_fpl_xg_to_native_pitchapi":True,
         "eight_league_source_observations":stats,
+        "archived_experiment_20261104_observations":old_total,
+        "archived_experiment_20261104_eight_league_observations":old_eight,
+        "current_inventory_delta_from_archived_experiment":
+            stats["observed_stats_rows"]-old_total,
+        "current_eight_league_delta_from_archived_experiment":
+            stats["native_eight_stats_rows"]-old_eight,
+        "original_experiment_replayed_on_current_source":False,
         "independent_old_eight_league_provider_publication_recovered_from_checked_sources":0,
         "verified_eight_league_historical_prematch_v2_training_targets":0,
         "new_external_sources_downloaded":0,
