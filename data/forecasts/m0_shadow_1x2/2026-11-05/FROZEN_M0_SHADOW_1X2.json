@@ -1,0 +1,280 @@
+{
+  "actual_derived_forecasts": 8,
+  "actual_generated_utc": "2026-11-05T14:39:23.969388Z",
+  "calibration_status": "NOT_STARTED",
+  "eligible_for_betting_claims": false,
+  "historic_provider_original_PIT_verified": false,
+  "individual_forecasts": [
+    {
+      "away": "Rayo Vallecano",
+      "calibrated": false,
+      "elo_pre_match": {
+        "away": 1501.79365,
+        "home": 1506.83177
+      },
+      "engine": "KB3_ELO_POISSON_M0_V0_1",
+      "evidence_state": "OBSERVED_BEFORE_KICKOFF_NOT_ORIGINAL_HISTORIC_PIT",
+      "expected_goals": {
+        "away": 1.1449415496644009,
+        "home": 1.4564062248319736
+      },
+      "feature_cutoff_utc": "2026-11-05T14:39:23.201291Z",
+      "feature_sha256": "b9ee42f7e6f4e9b8bec4c37bb70b1d3254e5dad24df933ad390b1d2c58f3e158",
+      "feature_snapshot_id": "0f298419e781e5a8852a9e2bd0e42758d61a6fcd153d9205fb4596f56c07dd6d",
+      "forecast_sha256": "e89f70f325682eca319ba2d9062a1d0acd896fe25fc8cff43ec8e8e01de179c3",
+      "generated_at_utc": "2026-11-05T14:39:23.969388Z",
+      "home": "Real Sociedad",
+      "kickoff_utc": "2026-11-08T15:15:00Z",
+      "league": "ESP",
+      "match_id": "m_3pLoZ3",
+      "p_1x2": {
+        "1": 0.44263546519766195,
+        "2": 0.297327390370719,
+        "X": 0.26003714443161907
+      },
+      "parameter_status": "ILLUSTRATIVE_UNFITTED_NOT_FOR_BETTING",
+      "params_sha256": "0535d6c0095815eb42937994d7392504ba9a43d588bd256bf8e0e4d029c8a9ff",
+      "phase": "EARLY",
+      "schema": "kb3-real-forward-M0-Elo-Poisson-shadow-1x2-v1",
+      "training_allowed": false
+    },
+    {
+      "away": "Union Berlin",
+      "calibrated": false,
+      "elo_pre_match": {
+        "away": 1458.49498,
+        "home": 1529.98073
+      },
+      "engine": "KB3_ELO_POISSON_M0_V0_1",
+      "evidence_state": "OBSERVED_BEFORE_KICKOFF_NOT_ORIGINAL_HISTORIC_PIT",
+      "expected_goals": {
+        "away": 1.0802709735763005,
+        "home": 1.5435941914459137
+      },
+      "feature_cutoff_utc": "2026-11-05T14:39:23.201291Z",
+      "feature_sha256": "0dec800f57bdabc67eba72f4ce736888af8261870efef149b94ae8e4fc99b56a",
+      "feature_snapshot_id": "14e0e94e6b0fb7d9e1913ab5706d463c5ebe43c47c17c86d69e41ad6bdbfce67",
+      "forecast_sha256": "c1ca96dc4310b841e300defeaa0bd99fadcb4451efd8f0261bc605e7a7bce45c",
+      "generated_at_utc": "2026-11-05T14:39:23.969388Z",
+      "home": "Freiburg",
+      "kickoff_utc": "2026-11-08T16:30:00Z",
+      "league": "GER",
+      "match_id": "m_3tJQt1",
+      "p_1x2": {
+        "1": 0.48001563591562796,
+        "2": 0.2657371459312935,
+        "X": 0.2542472181530785
+      },
+      "parameter_status": "ILLUSTRATIVE_UNFITTED_NOT_FOR_BETTING",
+      "params_sha256": "0535d6c0095815eb42937994d7392504ba9a43d588bd256bf8e0e4d029c8a9ff",
+      "phase": "EARLY",
+      "schema": "kb3-real-forward-M0-Elo-Poisson-shadow-1x2-v1",
+      "training_allowed": false
+    },
+    {
+      "away": "Como",
+      "calibrated": false,
+      "elo_pre_match": {
+        "away": 1612.62069,
+        "home": 1655.48646
+      },
+      "engine": "KB3_ELO_POISSON_M0_V0_1",
+      "evidence_state": "OBSERVED_BEFORE_KICKOFF_NOT_ORIGINAL_HISTORIC_PIT",
+      "expected_goals": {
+        "away": 1.1076652188595646,
+        "home": 1.5054187597556172
+      },
+      "feature_cutoff_utc": "2026-11-05T14:39:23.201291Z",
+      "feature_sha256": "e7833a82dd1041ec462257c203f06d0c381ab0b90cf68a658ac0eabb38e57ee6",
+      "feature_snapshot_id": "0675d6e5c7f295b6d45b51f819c3c753e7f6f783ff7b045c157f41ca367a9ba2",
+      "forecast_sha256": "8cad80726fd3d363b737bc81e594c7f5632aafcc5e10f0f5dc9a9bf7fb768f98",
+      "generated_at_utc": "2026-11-05T14:39:23.969388Z",
+      "home": "Inter",
+      "kickoff_utc": "2026-11-08T17:00:00Z",
+      "league": "ITA",
+      "match_id": "m_0XsEm1",
+      "p_1x2": {
+        "1": 0.4638595683438099,
+        "2": 0.2791372975230324,
+        "X": 0.2570031341331577
+      },
+      "parameter_status": "ILLUSTRATIVE_UNFITTED_NOT_FOR_BETTING",
+      "params_sha256": "0535d6c0095815eb42937994d7392504ba9a43d588bd256bf8e0e4d029c8a9ff",
+      "phase": "EARLY",
+      "schema": "kb3-real-forward-M0-Elo-Poisson-shadow-1x2-v1",
+      "training_allowed": false
+    },
+    {
+      "away": "Levante",
+      "calibrated": false,
+      "elo_pre_match": {
+        "away": 1463.97471,
+        "home": 1494.98363
+      },
+      "engine": "KB3_ELO_POISSON_M0_V0_1",
+      "evidence_state": "OBSERVED_BEFORE_KICKOFF_NOT_ORIGINAL_HISTORIC_PIT",
+      "expected_goals": {
+        "away": 1.1192167802981356,
+        "home": 1.4898811645370553
+      },
+      "feature_cutoff_utc": "2026-11-05T14:39:23.201291Z",
+      "feature_sha256": "b398d5c5c803ad4ef5eae02eca959e6c98f982fcf70de937dcb9dc7aa8ec0640",
+      "feature_snapshot_id": "e96a0f9f483bb577fd363c5c9089a5baf33202279f9e38417aaa892f02372929",
+      "forecast_sha256": "74f8c814a3638a8cb1f99b5ef00bd98096338b26465a5ad2a4da7cfd52e482c9",
+      "generated_at_utc": "2026-11-05T14:39:23.969388Z",
+      "home": "Celta Vigo",
+      "kickoff_utc": "2026-11-08T17:30:00Z",
+      "league": "ESP",
+      "match_id": "m_1wSi73",
+      "p_1x2": {
+        "1": 0.4571890279285003,
+        "2": 0.28478137035600154,
+        "X": 0.2580296017154982
+      },
+      "parameter_status": "ILLUSTRATIVE_UNFITTED_NOT_FOR_BETTING",
+      "params_sha256": "0535d6c0095815eb42937994d7392504ba9a43d588bd256bf8e0e4d029c8a9ff",
+      "phase": "EARLY",
+      "schema": "kb3-real-forward-M0-Elo-Poisson-shadow-1x2-v1",
+      "training_allowed": false
+    },
+    {
+      "away": "Getafe",
+      "calibrated": false,
+      "elo_pre_match": {
+        "away": 1479.42719,
+        "home": 1524.43464
+      },
+      "engine": "KB3_ELO_POISSON_M0_V0_1",
+      "evidence_state": "OBSERVED_BEFORE_KICKOFF_NOT_ORIGINAL_HISTORIC_PIT",
+      "expected_goals": {
+        "away": 1.1055914311842112,
+        "home": 1.5082425143381606
+      },
+      "feature_cutoff_utc": "2026-11-05T14:39:23.201291Z",
+      "feature_sha256": "69b27f2572627d56a21f91ac555184fa34c950ff4ce195dd39773e2496e4540f",
+      "feature_snapshot_id": "67b1e7d18c50fffdf0b632f78af61e56d7622842f741c6838b6932ef5763fed9",
+      "forecast_sha256": "7d2f9982017ddddecdc6fb4238187456ff6306c88dbc384d5ddc677eb79d49c3",
+      "generated_at_utc": "2026-11-05T14:39:23.969388Z",
+      "home": "Villarreal",
+      "kickoff_utc": "2026-11-08T17:30:00Z",
+      "league": "ESP",
+      "match_id": "m_4ChvE9",
+      "p_1x2": {
+        "1": 0.4650660059881649,
+        "2": 0.2781235314666286,
+        "X": 0.25681046254520656
+      },
+      "parameter_status": "ILLUSTRATIVE_UNFITTED_NOT_FOR_BETTING",
+      "params_sha256": "0535d6c0095815eb42937994d7392504ba9a43d588bd256bf8e0e4d029c8a9ff",
+      "phase": "EARLY",
+      "schema": "kb3-real-forward-M0-Elo-Poisson-shadow-1x2-v1",
+      "training_allowed": false
+    },
+    {
+      "away": "Schalke 04",
+      "calibrated": false,
+      "elo_pre_match": {
+        "away": 1474.89589,
+        "home": 1518.28328
+      },
+      "engine": "KB3_ELO_POISSON_M0_V0_1",
+      "evidence_state": "OBSERVED_BEFORE_KICKOFF_NOT_ORIGINAL_HISTORIC_PIT",
+      "expected_goals": {
+        "away": 1.1071597764246963,
+        "home": 1.5061060160483668
+      },
+      "feature_cutoff_utc": "2026-11-05T14:39:23.201291Z",
+      "feature_sha256": "a52151d9265051f470c76fc473a67a927df3f688d9df86b00d711c150aa903d6",
+      "feature_snapshot_id": "986fc3c5b2b55a66614c6d6148e929808723a39aa19f2cc07ddf9d99de314fef",
+      "forecast_sha256": "b28b63d4a1bb3ccb43f360fb9eb1c7ffbf8537b23fb441e17b82f981addcec2e",
+      "generated_at_utc": "2026-11-05T14:39:23.969388Z",
+      "home": "Hoffenheim",
+      "kickoff_utc": "2026-11-08T18:30:00Z",
+      "league": "GER",
+      "match_id": "m_1yCXSs",
+      "p_1x2": {
+        "1": 0.4641533620649478,
+        "2": 0.2788902262856715,
+        "X": 0.25695641164938066
+      },
+      "parameter_status": "ILLUSTRATIVE_UNFITTED_NOT_FOR_BETTING",
+      "params_sha256": "0535d6c0095815eb42937994d7392504ba9a43d588bd256bf8e0e4d029c8a9ff",
+      "phase": "EARLY",
+      "schema": "kb3-real-forward-M0-Elo-Poisson-shadow-1x2-v1",
+      "training_allowed": false
+    },
+    {
+      "away": "Juventus",
+      "calibrated": false,
+      "elo_pre_match": {
+        "away": 1564.93935,
+        "home": 1464.66616
+      },
+      "engine": "KB3_ELO_POISSON_M0_V0_1",
+      "evidence_state": "OBSERVED_BEFORE_KICKOFF_NOT_ORIGINAL_HISTORIC_PIT",
+      "expected_goals": {
+        "away": 1.2554586746542593,
+        "home": 1.3281998313956551
+      },
+      "feature_cutoff_utc": "2026-11-05T14:39:23.201291Z",
+      "feature_sha256": "3ec572048b9bcb6cf02558f36ca6bca27ac38d750a6502daa765f80a4d77fdd9",
+      "feature_snapshot_id": "8207967dfff70557f1a46d0731b7fb176ad6aea755f727b95e23e0279e56a3bd",
+      "forecast_sha256": "4a623f2c8c268e051f091c912580e6788844f04c02c511f74b34c5f7f6bbdc7f",
+      "generated_at_utc": "2026-11-05T14:39:23.969388Z",
+      "home": "Fiorentina",
+      "kickoff_utc": "2026-11-08T19:45:00Z",
+      "league": "ITA",
+      "match_id": "m_1TtlDk",
+      "p_1x2": {
+        "1": 0.3847461614396743,
+        "2": 0.35057590217945384,
+        "X": 0.26467793638087184
+      },
+      "parameter_status": "ILLUSTRATIVE_UNFITTED_NOT_FOR_BETTING",
+      "params_sha256": "0535d6c0095815eb42937994d7392504ba9a43d588bd256bf8e0e4d029c8a9ff",
+      "phase": "EARLY",
+      "schema": "kb3-real-forward-M0-Elo-Poisson-shadow-1x2-v1",
+      "training_allowed": false
+    },
+    {
+      "away": "Barcelona",
+      "calibrated": false,
+      "elo_pre_match": {
+        "away": 1676.83034,
+        "home": 1603.38879
+      },
+      "engine": "KB3_ELO_POISSON_M0_V0_1",
+      "evidence_state": "OBSERVED_BEFORE_KICKOFF_NOT_ORIGINAL_HISTORIC_PIT",
+      "expected_goals": {
+        "away": 1.2263267248500564,
+        "home": 1.3597518232377148
+      },
+      "feature_cutoff_utc": "2026-11-05T14:39:23.201291Z",
+      "feature_sha256": "c1227e24680a7e53518aed12b69b1fb2cbe1cfedd62500a5731178e1b8da022d",
+      "feature_snapshot_id": "a3d5242a1c73ab139e8942808a1f583f2e64134d8fba31aa7cf01bc864ba64c8",
+      "forecast_sha256": "1f9b34c25f2f252fe44401694908555032bac9f6f1e599e7c10238365cc97efc",
+      "generated_at_utc": "2026-11-05T14:39:23.969388Z",
+      "home": "Atlético Madrid",
+      "kickoff_utc": "2026-11-08T20:00:00Z",
+      "league": "ESP",
+      "match_id": "m_1FwCGv",
+      "p_1x2": {
+        "1": 0.39928970090830695,
+        "2": 0.33667212001137353,
+        "X": 0.2640381790803195
+      },
+      "parameter_status": "ILLUSTRATIVE_UNFITTED_NOT_FOR_BETTING",
+      "params_sha256": "0535d6c0095815eb42937994d7392504ba9a43d588bd256bf8e0e4d029c8a9ff",
+      "phase": "EARLY",
+      "schema": "kb3-real-forward-M0-Elo-Poisson-shadow-1x2-v1",
+      "training_allowed": false
+    }
+  ],
+  "mode": "M0_SHADOW_PROVISIONAL_UNFITTED",
+  "original_2026_27_Premier_League_TEST_touched": false,
+  "original_M1_training_or_calibration": false,
+  "report_sha256": "98218d16a39027525594346d621021d97ab0b83a1c2042348280c4fdfa685cd9",
+  "schema": "kb3-real-forward-M0-Elo-Poisson-shadow-1x2-v1",
+  "source": "REAL_PITCHAPI_OBSERVED_BEFORE_TARGET_FROM_SQLITE",
+  "total_immutable_forecasts": 50
+}
