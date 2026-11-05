@@ -2,6 +2,8 @@ name: KB3 historical PitchAPI multi-stat backfill (research, no model mutation)
 on:
   pull_request:
     paths:
+      - scripts/kb3_history_gain_first.py
+      - tests/test_kb3_history_gain_first.py
       - scripts/kb3_historical_pitchapi_backfill.py
       - scripts/kb3_history_accelerated.py
       - scripts/kb3_history_issue_recheck.py
@@ -14,6 +16,8 @@ on:
   push:
     branches: [main]
     paths:
+      - scripts/kb3_history_gain_first.py
+      - tests/test_kb3_history_gain_first.py
       - scripts/kb3_historical_pitchapi_backfill.py
       - scripts/kb3_history_accelerated.py
       - scripts/kb3_history_issue_recheck.py
@@ -44,9 +48,10 @@ jobs:
         run: python -m pip install --disable-pip-version-check 'cryptography>=42,<47'
       - name: Strict source identity, PIT/TEST exclusion, xG and SQLite regression
         run: |
-          python -m compileall -q scripts/kb3_historical_pitchapi_backfill.py scripts/kb3_history_accelerated.py scripts/kb3_history_issue_recheck.py src/kb3_historical_feature_quality.py tests/test_kb3_historical_pitchapi_backfill.py tests/test_kb3_historical_feature_quality.py tests/test_kb3_history_issue_recheck.py tests/test_kb3_history_accelerated.py
+          python -m compileall -q scripts/kb3_historical_pitchapi_backfill.py scripts/kb3_history_accelerated.py scripts/kb3_history_issue_recheck.py scripts/kb3_history_gain_first.py src/kb3_historical_feature_quality.py tests/test_kb3_historical_pitchapi_backfill.py tests/test_kb3_historical_feature_quality.py tests/test_kb3_history_issue_recheck.py tests/test_kb3_history_accelerated.py
           python -m unittest discover -s tests -p 'test_kb3_historical_pitchapi_backfill.py' -v
           python -m unittest discover -s tests -p 'test_kb3_history_accelerated.py' -v
+          python -m unittest discover -s tests -p 'test_kb3_history_gain_first.py' -v
           python -m unittest discover -s tests -p 'test_kb3_history_issue_recheck.py' -v
           python -m unittest discover -s tests -p 'test_kb3_historical_feature_quality.py' -v
           python -m unittest discover -s tests -p 'test_step14_pitchapi_xg_semantics.py' -v
