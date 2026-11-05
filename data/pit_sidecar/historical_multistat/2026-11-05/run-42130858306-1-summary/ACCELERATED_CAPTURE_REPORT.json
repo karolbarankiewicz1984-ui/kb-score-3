@@ -1,0 +1,111 @@
+{
+  "calibration_unchanged": true,
+  "completed_batches": 5,
+  "cumulative_match_stats": 2721,
+  "effective_core5_pair_complete": 1591,
+  "effective_xg10_pair_complete": 131,
+  "effective_xg15_pair_complete": 27,
+  "effective_xg5_pair_complete": 580,
+  "effective_xg_verified": 2406,
+  "gate16_17": "PENDING",
+  "history_batches": [
+    {
+      "batch": 1,
+      "cum": 2529,
+      "new": 48,
+      "requests": 131,
+      "sha256": "52f51bead424955a6b25b2610a6839915b4ee8c0b4ffce56ff46e7475e47238c",
+      "token": "42130858306-1-b1",
+      "verified_xg": 41
+    },
+    {
+      "batch": 2,
+      "cum": 2577,
+      "new": 48,
+      "requests": 131,
+      "sha256": "1925811eab3e75eb781aebf147a7377d1bcce754bf502a9a45f821b92aa826fc",
+      "token": "42130858306-1-b2",
+      "verified_xg": 42
+    },
+    {
+      "batch": 3,
+      "cum": 2625,
+      "new": 48,
+      "requests": 131,
+      "sha256": "0c5ddc3558a1d15fdc2190ceb251cb83ac23d30100c9ecb0f871e541f3f50867",
+      "token": "42130858306-1-b3",
+      "verified_xg": 39
+    },
+    {
+      "batch": 4,
+      "cum": 2673,
+      "new": 48,
+      "requests": 131,
+      "sha256": "1b26c845dfbc65b12cae2c5908ea58e15029107cedefb66fbdbcf41f2aeefd01",
+      "token": "42130858306-1-b4",
+      "verified_xg": 39
+    },
+    {
+      "batch": 5,
+      "cum": 2721,
+      "new": 48,
+      "requests": 131,
+      "sha256": "9c4095153a14bba1d9f077776d6d653a6fc8f189fa1674893e860b839c4ac8f6",
+      "token": "42130858306-1-b5",
+      "verified_xg": 41
+    }
+  ],
+  "issue_status": "OBSERVED_RECHECK",
+  "issues": {
+    "card_issues_selected": 45,
+    "cards_reviewed": 45,
+    "cards_selected_by_scope": {
+      "ESP": 1,
+      "FRA": 3,
+      "NED": 23,
+      "POL": 10,
+      "TUR": 8
+    },
+    "cumulative_issue_rows": 796,
+    "error_types": {},
+    "observed_at_utc": "2026-11-05T23:42:34.876390Z",
+    "official_training_allowed": false,
+    "original_historical_pit_certified": false,
+    "original_rows_modified": false,
+    "production_approved": false,
+    "provider_requests": 105,
+    "schema": "kb3-historical-issue-recheck-v1-20261103",
+    "selection": "CORE5_AND_XG5_RESEARCH_TARGET_IMPACT_RANKED",
+    "source_chain_sha256": "b667d5ad5b88dad8f0064d55a6fffbc62398d0c33a793f47b4f23d9d0c2cf386",
+    "source_cipher_sha256": "895647e6f360b89b25c13b2f2fdcb6b7a0161b3968988767eb76a5036608de58",
+    "source_receipts": 105,
+    "status": "OBSERVED_RECHECK",
+    "status_counts": {
+      "XG:XG_DISAGREEMENT_PERSISTS": 30,
+      "YELLOW_CARDS:EVENTS_TEAM_STATS_CONFLICT": 5,
+      "YELLOW_CARDS:EVENT_YELLOW_CONFIRMED": 40
+    },
+    "xg_issues_selected": 30,
+    "xg_reverified": 0,
+    "xg_reviewed": 30,
+    "xg_selected_by_scope": {
+      "ESP": 4,
+      "FRA": 7,
+      "GER": 1,
+      "ITA": 1,
+      "NED": 15,
+      "TUR": 2
+    },
+    "yellow_from_events": 40
+  },
+  "new_match_stats": 240,
+  "new_verified_xg": 202,
+  "original_m0_unchanged": true,
+  "production_approved": false,
+  "protected_english_test_untouched": true,
+  "provider_original_pit_certified": false,
+  "provider_requests_history": 655,
+  "research_only": true,
+  "run_token": "42130858306-1",
+  "schema": "kb3-accelerated-history-240-and-recheck-v1"
+}
