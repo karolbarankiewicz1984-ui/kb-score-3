@@ -89,6 +89,18 @@ def candidates(path, issue_db=ISSUE_DB):
             raw_stat(f,"yellow_cards","away") is None):
             if (scope,mid,"YELLOW_CARDS") not in attempted:
                 cards.append(f)
+    # Use actual strict last-five targets to prioritize still-untried issues.
+    # Missing prior fixture index in minimal legacy tests falls back to stable
+    # league/ID ordering; neither branch may fabricate card/xG values.
+    from scripts.kb3_history_gain_first import issue_priority_scores, UNDERSERVED
+    card_scores,xg_scores=issue_priority_scores(path,issue_db)
+    def key(row,scores):
+        ident=(row["scope"],row["id"])
+        return (-scores.get(ident,0.0),
+                0 if row["scope"] in UNDERSERVED else 1,
+                row["scope"],row["season"],row["id"])
+    xg.sort(key=lambda row:key(row,xg_scores))
+    cards.sort(key=lambda row:key(row,card_scores))
     return xg[:MAX_XG],cards[:MAX_CARDS]
 
 def xg_diagnostics(stats,shots,fixture):
@@ -253,6 +265,9 @@ def recheck(client, *, db_path=DB,issue_db=ISSUE_DB, root=ISSUE_ROOT,
                 "cards_reviewed":sum(r["issue_type"]=="YELLOW_CARDS" for r in records),
                 "xg_reverified":statuses["XG:XG_REVERIFIED"],
                 "yellow_from_events":statuses["YELLOW_CARDS:EVENT_YELLOW_CONFIRMED"],
+                "selection": "CORE5_AND_XG5_RESEARCH_TARGET_IMPACT_RANKED",
+                "cards_selected_by_scope":dict(Counter(f["scope"] for f in cards)),
+                "xg_selected_by_scope":dict(Counter(f["scope"] for f in xg)),
                 "status_counts":dict(statuses),"error_types":dict(errors),
                 "cumulative_issue_rows":count,
                 "observed_at_utc":receipts[-1]["completed_at_utc"],

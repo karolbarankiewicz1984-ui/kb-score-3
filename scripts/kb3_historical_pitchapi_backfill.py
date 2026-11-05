@@ -379,7 +379,19 @@ def capture(*, client, root=ARCHIVE, db_path=DB, public_key=PUBLIC_KEY,
         indexed.extend((scope, season, m, r["completed_at_utc"], r["payload_sha256"])
                        for m in rows)
     require(bool(groups), "NO_VALID_HISTORICAL_MATCHES")
-    selected = select_batch(groups, known, max_matches=max_matches)
+    # Research-only gain-first ranking: at most 75% of this 48-match batch.
+    # The remaining budget retains the original balanced safe selector.
+    from scripts.kb3_history_gain_first import plan_missing_fixtures
+    best, gain_plan = plan_missing_fixtures(
+        groups, known, db_path, limit=(max_matches*3)//4)
+    extra_known = set(known) | {(s,m["id"]) for s,season,m in best}
+    spare = max_matches - len(best)
+    selected = list(best)
+    if spare:
+        selected.extend(select_batch(groups,extra_known,max_matches=spare))
+    require(len(selected)<=max_matches and
+            len({(scope,m["id"]) for scope,season,m in selected})==len(selected),
+            "GAIN_PRIORITY_DUPLICATE_OR_OVER_LIMIT")
     samples = []
     stat_keys = set()
     missing_stats = 0
@@ -427,6 +439,9 @@ def capture(*, client, root=ARCHIVE, db_path=DB, public_key=PUBLIC_KEY,
             "ended_utc": receipts[-1]["completed_at_utc"],
             "run_token": run_token, "provider_requests": calls,
             "provider_call_cap": MAX_CALLS, "match_request_limit": max_matches,
+            "gain_first_preflight": gain_plan,
+            "gain_first_ranked_provider_choices": len(best),
+            "selection_is_not_a_pit_certification": True,
             "source_seasons": list(SEASONS),
             "scopes_catalogued": len(scopes), "scopes_observed": len(groups),
             "source_finished_counts": source_counts,
