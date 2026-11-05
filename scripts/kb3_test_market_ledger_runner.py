@@ -16,6 +16,7 @@ from pathlib import Path
 import sqlite3
 import time
 import urllib.request
+from urllib.parse import urlsplit
 import zipfile
 
 from src.kb3_pit_ledger import canonical
@@ -116,12 +117,27 @@ def _gh_json(url, token):
         return json.loads(response.read())
 
 
+class _StripAuthOnOffsiteRedirect(urllib.request.HTTPRedirectHandler):
+    """GitHub /artifact/zip redirects to signed storage: never send GH_TOKEN there."""
+    def redirect_request(self, req, fp, code, msg, headers, newurl):
+        target = super().redirect_request(req, fp, code, msg, headers, newurl)
+        if target is not None and (
+                urlsplit(newurl).hostname != urlsplit(req.full_url).hostname):
+            target.remove_header("Authorization")
+            target.remove_header("X-GitHub-Api-Version")
+        return target
+
+
 def _gh_zip(url,token):
     req=urllib.request.Request(
         url,headers={"Authorization":"Bearer "+token,
                      "Accept":"application/vnd.github+json",
                      "X-GitHub-Api-Version":"2022-11-28"})
-    with urllib.request.urlopen(req,timeout=50) as response:
+    # Request to api.github.com is authenticated; the signed artifact CDN URL
+    # MUST NOT receive that Authorization header. Standard urllib redirects
+    # would forward it and some CDN backends reject the request with 401.
+    opener=urllib.request.build_opener(_StripAuthOnOffsiteRedirect())
+    with opener.open(req,timeout=50) as response:
         return response.read()
 
 
