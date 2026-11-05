@@ -40,11 +40,23 @@ jobs:
           import json,pathlib,sys
           root=pathlib.Path(sys.argv[1])
           a=json.loads((root/"kb3_archive_audit.json").read_text())
-          p=root/"kb3_retro_catboost"/"RETRO_CATBOOST_1007_376_REPORT.json"
+          reports=list((root/"kb3_retro_catboost").glob("RETRO_CATBOOST_*_REPORT.json"))
+          assert len(reports)==1,"ONE_VERSIONED_CURRENT_RESEARCH_REPORT_REQUIRED"
+          p=reports[0]
           b=json.loads(p.read_text())
+          meta=b["source_provenance"]
+          assert p.name==f'RETRO_CATBOOST_{b["train_n"]}_{b["validation_n"]}_REPORT.json'
           assert a["verified_eight_league_historical_prematch_v2_training_targets"]==0
           assert a["formal_training_approved"] is False
-          assert b["train_n"]==1007 and b["validation_n"]==376
+          assert b["train_n"]==meta["cohort_train_n"] and b["validation_n"]==meta["cohort_validation_n"]
+          assert b["train_n"]>=1007 and b["validation_n"]>=376
+          assert b["source_revision_class"]=="CURRENT_EXPANDING_HISTORICAL_RESEARCH_ONLY"
+          assert b["old_pinned_shadow_six_unchanged"] is True
+          assert meta["formal_training_allowed"] is False
+          assert meta["original_shadow_six_immutable_binary_reused"] is False
+          assert meta["historical_source_sha256"]!=json.loads(
+            pathlib.Path("assets/research/kb3_shadow_six_v1/KB3_CATBOOST_SHADOW_SIX_MANIFEST.json").read_text()
+          )["retrospective_source_sha256"]
           assert b["original_historical_provider_first_published_certified"] is False
           assert b["asof_v2_formal_training_or_validation"] is False
           assert b["original_catboost_M1R_85_feature_weights_reused"] is False
