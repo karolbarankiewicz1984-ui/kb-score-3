@@ -15,8 +15,8 @@ on:
       - .github/workflows/kb3-test-market-freeze-settlement.yml
       - data/forward_m0_720_eight/kb3_forward_eight.sqlite
   schedule:
-    - cron: '53 7,10,13,16,19,22 * * *'
-    - cron: '41 8,14,23 * * *'
+    - cron: '53 7,13,20 * * *'
+    - cron: '41 23 * * *'
   workflow_dispatch:
 
 permissions:
