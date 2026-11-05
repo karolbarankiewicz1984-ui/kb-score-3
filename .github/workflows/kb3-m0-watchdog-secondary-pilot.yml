@@ -1,0 +1,99 @@
+name: KB3 native M0 schedule watchdog and licensed-source pilot (isolated)
+on:
+  pull_request:
+    paths:
+      - scripts/kb3_secondary_source_pilot.py
+      - scripts/kb3_step16_schedule_watchdog.py
+      - tests/test_kb3_secondary_pilot_watchdog.py
+      - .github/workflows/kb3-m0-watchdog-secondary-pilot.yml
+  push:
+    branches: [main]
+    paths:
+      - scripts/kb3_secondary_source_pilot.py
+      - scripts/kb3_step16_schedule_watchdog.py
+      - tests/test_kb3_secondary_pilot_watchdog.py
+      - .github/workflows/kb3-m0-watchdog-secondary-pilot.yml
+  schedule:
+    - cron: '41 6,9,12 * * *'
+    - cron: '41 8,14,22 * * *'
+  workflow_dispatch:
+    inputs:
+      mode:
+        type: choice
+        required: true
+        default: settle
+        options: [settle, forecast]
+permissions:
+  contents: read
+  actions: write
+concurrency:
+  group: kb3-isolated-source-pilot-and-native-schedule-watchdog
+  cancel-in-progress: false
+jobs:
+  offline-pilot-and-m0-native-watchdog:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Offline tests only - no sports provider or paid secrets
+        run: |
+          python -m compileall -q scripts/kb3_secondary_source_pilot.py scripts/kb3_step16_schedule_watchdog.py tests/test_kb3_secondary_pilot_watchdog.py
+          python -m unittest discover -s tests -p 'test_kb3_secondary_pilot_watchdog.py' -v
+      - name: Build 30-candidate NED POL research manifest using original read-only SQLite
+        run: |
+          python -m scripts.kb3_secondary_source_pilot --limit 30 --out research-results/SECONDARY_NED_POL_PILOT_CANDIDATES.json
+          python - <<'PY'
+          import hashlib,json
+          from pathlib import Path
+          src=Path('data/research/historical_multistat/observations.sqlite')
+          f=Path('research-results/SECONDARY_NED_POL_PILOT_CANDIDATES.json')
+          v=json.loads(f.read_text())
+          assert v['source_sha256']==hashlib.sha256(src.read_bytes()).hexdigest()
+          assert 0<v['pilot_n']<=30
+          assert v['cards_recovered']==v['core5_increment']==v['verified_crosswalk_count']==0
+          assert all(x['scope'] in ('NED','POL') and x['secondary_source_status']=='NOT_YET_OBSERVED' for x in v['samples'])
+          assert v['formal_historical_pit_certified'] is False
+          assert v['source_authorization_unverified'] is True
+          assert v['model_fit_or_calibration_performed'] is False
+          print('KB3_PILOT_CANDIDATES_VERIFIED',v['pilot_per_scope'],v['candidate_pool_n'])
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: KB3_NED_POL_RESEARCH_30_SOURCE_CANDIDATES_NO_INGEST
+          path: research-results/SECONDARY_NED_POL_PILOT_CANDIDATES.json
+          retention-days: 30
+          if-no-files-found: warn
+      - name: Select backup mode only on main, reuse original M0 guard
+        if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+        id: decide
+        env:
+          EVENT_KIND: ${{ github.event_name }}
+          CRON_VALUE: ${{ github.event.schedule }}
+          REQUESTED_MODE: ${{ inputs.mode }}
+        run: |
+          if [ "$EVENT_KIND" = "workflow_dispatch" ]; then
+            requested="$REQUESTED_MODE"
+          elif [ "$EVENT_KIND" = "push" ]; then
+            requested="settle"
+          elif [ "$CRON_VALUE" = "41 6,9,12 * * *" ]; then
+            requested="forecast"
+          else
+            requested="settle"
+          fi
+          python -m scripts.kb3_step16_schedule_watchdog --requested "$requested"
+      - name: Dispatch only existing original main-branch M0 workflow, when due
+        if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request' && steps.decide.outputs.dispatch == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          # Never queue a redundant manual run while the native workflow is active.
+          if gh run list --workflow kb3-step16-m0-720-eight-forward.yml --limit 20 --json status --jq '.[] | select(.status == "queued" or .status == "in_progress") | .status' | grep -q .; then
+            echo "KB3_WATCHDOG_SKIP_NATIVE_WORKFLOW_ALREADY_ACTIVE"
+            exit 0
+          fi
+          gh workflow run kb3-step16-m0-720-eight-forward.yml --ref main --field mode="${{ steps.decide.outputs.mode }}"
+          echo "KB3_WATCHDOG_NATIVE_WORKFLOW_DISPATCH_REQUEST_ACCEPTED"
