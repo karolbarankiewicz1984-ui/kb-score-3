@@ -1,0 +1,38 @@
+name: KB3 TEST derived-market read-only and P1 as-of contract (NO API)
+on:
+  pull_request:
+    paths:
+      - "src/kb3_test_readonly_markets.py"
+      - "scripts/kb3_test_readonly_market_preview.py"
+      - "tests/test_kb3_test_readonly_markets.py"
+      - "src/kb3_p1_shared_asof_features_v2.py"
+      - ".github/workflows/kb3-test-readonly-market-ci.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  pure-offline-market-and-source-audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: No-network no-mutating TEST market, Step15 and TRAIN/FORWARD as-of controls
+        run: |
+          python -m unittest discover -s tests -p 'test_kb3_test_readonly_markets.py' -v
+          python -m unittest discover -s tests -p 'test_step15_goal_markets.py' -v
+          python -m unittest discover -s tests -p 'test_kb3_p1_shared_asof_features_v2.py' -v
+      - name: Actual archived original SQLite is readable without network or writes
+        run: |
+          python -m scripts.kb3_test_readonly_market_preview \
+            --db data/forward_m0_720_eight/kb3_forward_eight.sqlite \
+            --as-of-utc '2026-11-05T15:00:00Z' --limit 100
+      - name: Reject changed tracked source or archive
+        run: |
+          git diff --exit-code -- data/ models/ src/kb3_step16_m0_720_eight_forward.py
