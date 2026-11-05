@@ -1,0 +1,66 @@
+name: KB3 isolated matched Core5 xG cards retrospective research
+on:
+  pull_request:
+    paths:
+      - scripts/kb3_core5_matched_experiment.py
+      - tests/test_kb3_core5_matched_experiment.py
+      - .github/workflows/kb3-core5-matched-retro-research.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  offline-matched-history-research:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install existing pinned CatBoost (no sports API)
+        run: python -m pip install --disable-pip-version-check 'catboost==1.2.8'
+      - name: Static and safety unit tests
+        run: |
+          python -m compileall -q scripts/kb3_core5_matched_experiment.py tests/test_kb3_core5_matched_experiment.py
+          python -m unittest discover -s tests -p 'test_kb3_core5_matched_experiment.py' -v
+      - name: Fit strictly research-only matched offline CatBoost and verify source not modified
+        run: |
+          python - <<'PY'
+          import hashlib,subprocess,sys
+          from pathlib import Path
+          p=Path('data/research/historical_multistat/observations.sqlite')
+          assert p.is_file(), 'ORIGINAL_HISTORY_DATABASE_REQUIRED'
+          before=hashlib.sha256(p.read_bytes()).hexdigest()
+          subprocess.run([sys.executable,'-m','scripts.kb3_core5_matched_experiment',
+              '--db',str(p),'--out','research-results/CORE5_MATCHED_XG_CARDS_REPORT.json'],check=True)
+          after=hashlib.sha256(p.read_bytes()).hexdigest()
+          assert before==after, 'IMMUTABLE_HISTORICAL_SOURCE_MODIFIED'
+          print('CORE5_RESEARCH_READ_ONLY_SOURCE_SHA256',before)
+          PY
+      - name: Audit strict research-only report gates
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          p=Path('research-results/CORE5_MATCHED_XG_CARDS_REPORT.json')
+          v=json.loads(p.read_text())
+          assert v['source_original_first_publication_proven'] is False
+          assert v['original_historical_pit_certified'] is False
+          assert v['formal_fit_increment']==0
+          assert v['production_approved'] is False
+          assert v['existing_m0_unchanged'] is True
+          assert v['pinned_shadow_six_unchanged'] is True
+          assert v['protected_english_test_untouched'] is True
+          assert v['core5_split']['train']+v['core5_split']['validation']+v['core5_split']['embargo_discarded']==v['core5_split']['total']
+          assert v['complete_core5_xg5_split']['train']+v['complete_core5_xg5_split']['validation']+v['complete_core5_xg5_split']['embargo_discarded']==v['complete_core5_xg5_split']['total']
+          assert v['core5_split']['validation']>=1
+          assert v['complete_core5_xg5_split']['validation']>=1
+          print('KB3_MATCHED_RESEARCH_VALIDATED',v['cohorts'])
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: KB3_CORE5_MATCHED_XG_CARDS_RESEARCH_ONLY
+          path: research-results/CORE5_MATCHED_XG_CARDS_REPORT.json
+          retention-days: 30
+          if-no-files-found: warn
