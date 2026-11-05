@@ -77,19 +77,22 @@ class Tests(unittest.TestCase):
                             meta["historical_source_sha256"],
                             "Growing source must not masquerade as frozen research snapshot")
 
-    def test_forged_original_publication_clock_still_fails_closed(self):
-        # Separate disposable SQLite copy: never change the checked-in source.
+    def test_immutable_historical_source_rejects_forged_publication_clock(self):
+        # The DB has immutable triggers; even a disposable copy MUST reject
+        # retroactive backdating instead of circumventing source protection.
         with tempfile.TemporaryDirectory() as td:
             copy_db=Path(td)/"observations.sqlite"
             shutil.copyfile(SOURCE_DB,copy_db)
             with sqlite3.connect(copy_db) as db:
-                db.execute("""UPDATE observations
-                    SET provider_first_published_at_utc=?
-                    WHERE rowid=(SELECT MIN(rowid) FROM observations)""",
-                    ("2024-01-01T00:00:00Z",))
-                db.commit()
-            with self.assertRaises(ArchiveSafety):
-                archive(db_path=copy_db)
+                with self.assertRaisesRegex(
+                        sqlite3.IntegrityError,"IMMUTABLE_HISTORICAL_SOURCE"):
+                    db.execute("""UPDATE observations
+                        SET provider_first_published_at_utc=?
+                        WHERE rowid=(SELECT MIN(rowid) FROM observations)""",
+                        ("2024-01-01T00:00:00Z",))
+            proof=archive(db_path=copy_db)
+            self.assertEqual(proof["eight_league_source_observations"][
+                "provider_first_published_present"],0)
 
     def test_no_label_leak_even_if_target_result_changes(self):
         fixtures=[historical_fixture(f"f{i}",f"2025-01-{i:02d}T18:00:00Z",
