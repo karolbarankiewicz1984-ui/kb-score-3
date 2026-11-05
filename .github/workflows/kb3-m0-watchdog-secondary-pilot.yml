@@ -90,5 +90,10 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
+          # Never queue a redundant manual run while the native workflow is active.
+          if gh run list --workflow kb3-step16-m0-720-eight-forward.yml --limit 20 --json status --jq '.[] | select(.status == "queued" or .status == "in_progress") | .status' | grep -q .; then
+            echo "KB3_WATCHDOG_SKIP_NATIVE_WORKFLOW_ALREADY_ACTIVE"
+            exit 0
+          fi
           gh workflow run kb3-step16-m0-720-eight-forward.yml --ref main --field mode="${{ steps.decide.outputs.mode }}"
           echo "KB3_WATCHDOG_NATIVE_WORKFLOW_DISPATCH_REQUEST_ACCEPTED"
