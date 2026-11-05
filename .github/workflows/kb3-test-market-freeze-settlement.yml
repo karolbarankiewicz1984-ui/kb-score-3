@@ -1,0 +1,120 @@
+name: KB3 TEST genuine market freeze + scored settlement (no sports API)
+on:
+  pull_request:
+    paths:
+      - src/kb3_test_market_ledger_v1.py
+      - scripts/kb3_test_market_ledger_runner.py
+      - tests/test_kb3_test_market_ledger_v1.py
+      - .github/workflows/kb3-test-market-freeze-settlement.yml
+  push:
+    branches: [main]
+    paths:
+      - src/kb3_test_market_ledger_v1.py
+      - scripts/kb3_test_market_ledger_runner.py
+      - tests/test_kb3_test_market_ledger_v1.py
+      - .github/workflows/kb3-test-market-freeze-settlement.yml
+      - data/forward_m0_720_eight/kb3_forward_eight.sqlite
+  schedule:
+    - cron: '53 7,10,13,16,19,22 * * *'
+    - cron: '41 8,14,23 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  actions: read
+
+concurrency:
+  group: kb3-test-separate-market-ledger-prospective-only
+  cancel-in-progress: false
+
+jobs:
+  offline-research-gates:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Strict no-network snapshot, integer push, source integrity and results
+        run: |
+          python -m unittest discover -s tests -p 'test_kb3_test_market_ledger_v1.py' -v
+          python -m unittest discover -s tests -p 'test_kb3_test_readonly_markets.py' -v
+          python -m unittest discover -s tests -p 'test_step15_goal_markets.py' -v
+      - name: Prove original eight-league parent SQLite is still read-only
+        run: |
+          python -m scripts.kb3_test_market_ledger_runner --mode preflight
+      - name: Research and original database stay unmodified
+        run: |
+          git diff --exit-code -- data/ models/ src/kb3_step16_m0_720_eight_forward.py
+
+  live-host-attested-market-research:
+    needs: offline-research-gates
+    if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Generate genuinely NEW market snapshots with >100min safety lead
+        id: market_capture
+        run: |
+          python -m scripts.kb3_test_market_ledger_runner \
+            --mode prepare \
+            --staging "${{ runner.temp }}/kb3_test_market_new"
+      - uses: actions/upload-artifact@v4
+        if: steps.market_capture.outputs.new_count != '0'
+        with:
+          name: KB3_TEST_NEW_MARKET_FREEZE_INDEPENDENT_HOST_TIME
+          path: ${{ runner.temp }}/kb3_test_market_new/*.json
+          retention-days: 30
+          if-no-files-found: error
+      - name: Read back ORIGINAL GitHub-hosted ZIP bytes and validate server timestamp
+        if: steps.market_capture.outputs.new_count != '0'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GITHUB_RUN_ID: ${{ github.run_id }}
+        run: |
+          python -m scripts.kb3_test_market_ledger_runner \
+            --mode attest \
+            --staging "${{ runner.temp }}/kb3_test_market_new"
+      - name: Score only authentic 90min final results previously frozen by M0
+        run: |
+          python -m scripts.kb3_test_market_ledger_runner --mode settle
+      - name: Append-only publish in separate test_market paths; never change M0
+        run: |
+          set -euo pipefail
+          git config user.name 'kb3-test-market-research-bot'
+          git config user.email 'kb3-test-market-research-bot@users.noreply.github.com'
+          if ! test -d data/test_markets; then
+            echo 'NO_NEW_MARKET_RECORDS_NO_PUBLISH'
+            exit 0
+          fi
+          git add -f data/test_markets/
+          if git diff --cached --quiet; then
+            echo 'NO_NEW_MARKET_RECORDS_NO_PUBLISH'
+            exit 0
+          fi
+          if git diff --cached --name-only | grep -v '^data/test_markets/'; then
+            echo '::error::CHANGED_OUTSIDE_ISOLATED_MARKET_LEDGER'
+            exit 1
+          fi
+          git commit -m 'kb3 TEST research: original host-attested independent market freeze/settlement'
+          git fetch origin main
+          if ! git rebase origin/main; then
+            echo '::error::MARKET_LEDGER_REBASE_CONFLICT_RECOVER_UNCHANGED_ARTIFACT'
+            git rebase --abort || true
+            exit 1
+          fi
+          if ! git push origin HEAD:main; then
+            echo '::error::MARKET_LEDGER_PUSH_CONFLICT_PRESERVE_GITHUB_ARTIFACT'
+            exit 1
+          fi
+          echo 'KB3_TEST_REAL_INDEPENDENT_MARKET_LEDGER_PUBLISHED'
