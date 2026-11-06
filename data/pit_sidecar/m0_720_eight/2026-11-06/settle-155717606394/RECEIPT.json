@@ -1,0 +1,1062 @@
+{
+  "100_fit_threshold_reached": false,
+  "50_future_after_fit_verified": false,
+  "attempt_started_utc": "2026-11-06T15:57:17.606394Z",
+  "calibration_fitted": false,
+  "calibration_readiness": {
+    "calibrator_exists": false,
+    "calibrator_first_fit_just_written": false,
+    "calibrator_temperature": null,
+    "eligible_per_league": {
+      "BEL": 10,
+      "ESP": 10,
+      "FRA": 9,
+      "GER": 9,
+      "ITA": 10,
+      "NED": 9,
+      "POL": 9,
+      "TUR": 9
+    },
+    "eligible_settled_unique": 75,
+    "fit_minimum": 100,
+    "gate16": "PENDING",
+    "git_server_push_verified_forecasts": 149,
+    "holdout_first_review_just_written": false,
+    "holdout_minimum": 50,
+    "holdout_review_exists": false,
+    "missing_post_fit_holdout": 50,
+    "missing_to_fit": 25,
+    "model": "M0_ELO_POISSON_RESEARCH_720TRAIN_V1",
+    "model_parameters_modified": false,
+    "original_premier_league_TEST_accessed": false,
+    "per_league_scores": {
+      "BEL": {
+        "brier_sum3": 0.5754371863462281,
+        "log_loss": 0.9635277230928885,
+        "n": 10,
+        "reliability_top1": [
+          {
+            "bin": 3,
+            "count": 2,
+            "mean_confidence": 0.3928739605362602,
+            "observed_top1_accuracy": 0.5
+          },
+          {
+            "bin": 4,
+            "count": 4,
+            "mean_confidence": 0.4346489247178659,
+            "observed_top1_accuracy": 0.25
+          },
+          {
+            "bin": 5,
+            "count": 4,
+            "mean_confidence": 0.5192767949659061,
+            "observed_top1_accuracy": 0.75
+          }
+        ],
+        "top1_accuracy": 0.5,
+        "top1_ece_10bins": 0.18757405979353192
+      },
+      "ESP": {
+        "brier_sum3": 0.5009374182689602,
+        "log_loss": 0.8578872451211147,
+        "n": 10,
+        "reliability_top1": [
+          {
+            "bin": 3,
+            "count": 1,
+            "mean_confidence": 0.3825447455781592,
+            "observed_top1_accuracy": 0.0
+          },
+          {
+            "bin": 4,
+            "count": 6,
+            "mean_confidence": 0.44791193289972114,
+            "observed_top1_accuracy": 0.8333333333333334
+          },
+          {
+            "bin": 5,
+            "count": 2,
+            "mean_confidence": 0.5395935288929683,
+            "observed_top1_accuracy": 0.5
+          },
+          {
+            "bin": 6,
+            "count": 1,
+            "mean_confidence": 0.643738028509805,
+            "observed_top1_accuracy": 1.0
+          }
+        ],
+        "top1_accuracy": 0.7,
+        "top1_ece_10bins": 0.3130522177455964
+      },
+      "FRA": {
+        "brier_sum3": 0.5090910320530333,
+        "log_loss": 0.8678388831779411,
+        "n": 9,
+        "reliability_top1": [
+          {
+            "bin": 4,
+            "count": 7,
+            "mean_confidence": 0.43753175806590533,
+            "observed_top1_accuracy": 0.7142857142857143
+          },
+          {
+            "bin": 5,
+            "count": 2,
+            "mean_confidence": 0.5434685310837867,
+            "observed_top1_accuracy": 1.0
+          }
+        ],
+        "top1_accuracy": 0.7777777777777778,
+        "top1_ece_10bins": 0.3167045145967877
+      },
+      "GER": {
+        "brier_sum3": 0.6820701508620809,
+        "log_loss": 1.1221995279999022,
+        "n": 9,
+        "reliability_top1": [
+          {
+            "bin": 3,
+            "count": 2,
+            "mean_confidence": 0.38842214917040163,
+            "observed_top1_accuracy": 0.0
+          },
+          {
+            "bin": 4,
+            "count": 7,
+            "mean_confidence": 0.4392884963779884,
+            "observed_top1_accuracy": 0.42857142857142855
+          }
+        ],
+        "top1_accuracy": 0.3333333333333333,
+        "top1_ece_10bins": 0.09465153033185801
+      },
+      "ITA": {
+        "brier_sum3": 0.520227548115547,
+        "log_loss": 0.8829186895233725,
+        "n": 10,
+        "reliability_top1": [
+          {
+            "bin": 4,
+            "count": 7,
+            "mean_confidence": 0.4472582555469754,
+            "observed_top1_accuracy": 0.42857142857142855
+          },
+          {
+            "bin": 5,
+            "count": 2,
+            "mean_confidence": 0.516702241261963,
+            "observed_top1_accuracy": 1.0
+          },
+          {
+            "bin": 6,
+            "count": 1,
+            "mean_confidence": 0.6005119197587316,
+            "observed_top1_accuracy": 1.0
+          }
+        ],
+        "top1_accuracy": 0.6,
+        "top1_ece_10bins": 0.14968913865461705
+      },
+      "NED": {
+        "brier_sum3": 0.5598312041418421,
+        "log_loss": 0.9397745117753877,
+        "n": 9,
+        "reliability_top1": [
+          {
+            "bin": 4,
+            "count": 7,
+            "mean_confidence": 0.4398772003722103,
+            "observed_top1_accuracy": 0.7142857142857143
+          },
+          {
+            "bin": 5,
+            "count": 1,
+            "mean_confidence": 0.5418239731488355,
+            "observed_top1_accuracy": 0.0
+          },
+          {
+            "bin": 6,
+            "count": 1,
+            "mean_confidence": 0.6382042302059197,
+            "observed_top1_accuracy": 1.0
+          }
+        ],
+        "top1_accuracy": 0.6666666666666666,
+        "top1_ece_10bins": 0.31383103781527155
+      },
+      "POL": {
+        "brier_sum3": 0.5985866306544194,
+        "log_loss": 1.0037552849049023,
+        "n": 9,
+        "reliability_top1": [
+          {
+            "bin": 4,
+            "count": 8,
+            "mean_confidence": 0.42656696952330153,
+            "observed_top1_accuracy": 0.5
+          },
+          {
+            "bin": 5,
+            "count": 1,
+            "mean_confidence": 0.5201637517283932,
+            "observed_top1_accuracy": 1.0
+          }
+        ],
+        "top1_accuracy": 0.5555555555555556,
+        "top1_ece_10bins": 0.1185889435650216
+      },
+      "TUR": {
+        "brier_sum3": 0.5667870291137697,
+        "log_loss": 0.9636705825056703,
+        "n": 9,
+        "reliability_top1": [
+          {
+            "bin": 3,
+            "count": 2,
+            "mean_confidence": 0.3926979182679309,
+            "observed_top1_accuracy": 0.5
+          },
+          {
+            "bin": 4,
+            "count": 3,
+            "mean_confidence": 0.4548324231824059,
+            "observed_top1_accuracy": 0.3333333333333333
+          },
+          {
+            "bin": 5,
+            "count": 3,
+            "mean_confidence": 0.5291422735404421,
+            "observed_top1_accuracy": 0.6666666666666666
+          },
+          {
+            "bin": 6,
+            "count": 1,
+            "mean_confidence": 0.6054783330690993,
+            "observed_top1_accuracy": 1.0
+          }
+        ],
+        "top1_accuracy": 0.5555555555555556,
+        "top1_ece_10bins": 0.15402180881343672
+      }
+    },
+    "pooled_scores": {
+      "brier_sum3": 0.562844212649782,
+      "log_loss": 0.9482464758753066,
+      "n": 75,
+      "reliability_top1": [
+        {
+          "bin": 3,
+          "count": 7,
+          "mean_confidence": 0.3900761145039064,
+          "observed_top1_accuracy": 0.2857142857142857
+        },
+        {
+          "bin": 4,
+          "count": 49,
+          "mean_confidence": 0.4398120468274485,
+          "observed_top1_accuracy": 0.5510204081632653
+        },
+        {
+          "bin": 5,
+          "count": 15,
+          "mean_confidence": 0.5284033551893076,
+          "observed_top1_accuracy": 0.7333333333333333
+        },
+        {
+          "bin": 6,
+          "count": 4,
+          "mean_confidence": 0.6219831278858889,
+          "observed_top1_accuracy": 1.0
+        }
+      ],
+      "top1_accuracy": 0.5866666666666667,
+      "top1_ece_10bins": 0.14354346223465594
+    },
+    "post_fit_newly_created_settled_verified": 0,
+    "production_approved": false,
+    "settled_total": 75
+  },
+  "calibrator_auto_fitted": false,
+  "catboost_shadow_six_host_audit": {
+    "artifact_checks": 0,
+    "errors": 0,
+    "new_host_proofs": 0,
+    "pending": 0,
+    "state": "NO_PENDING_ATTESTED_M0_PARENTS"
+  },
+  "catboost_shadow_six_paired_results": {
+    "official_fit_increment": 0,
+    "paired_settled_host_attested": 0,
+    "state": "NO_PAIRED_SETTLED_HOST_ATTESTED_MATCHES_YET"
+  },
+  "countries": [
+    "ESP",
+    "ITA",
+    "GER",
+    "FRA",
+    "NED",
+    "BEL",
+    "TUR",
+    "POL"
+  ],
+  "existing_three_league_shadow_database_modified": false,
+  "gate16": "PENDING",
+  "historic_native_PIT_proven": false,
+  "independent_first_repo_publication_before_kickoff_proven": false,
+  "league_count": 8,
+  "manifest_sha256": "add298d85ec2957f657bf6a6765cc093b284119bb2f45e001278bfd0c90da8bb",
+  "metrics": {
+    "brier_sum3": 0.562844212649782,
+    "log_loss": 0.9482464758753066,
+    "n": 75,
+    "reliability_top1": [
+      {
+        "bin": 3,
+        "count": 7,
+        "mean_confidence": 0.3900761145039064,
+        "observed_top1_accuracy": 0.2857142857142857
+      },
+      {
+        "bin": 4,
+        "count": 49,
+        "mean_confidence": 0.4398120468274485,
+        "observed_top1_accuracy": 0.5510204081632653
+      },
+      {
+        "bin": 5,
+        "count": 15,
+        "mean_confidence": 0.5284033551893076,
+        "observed_top1_accuracy": 0.7333333333333333
+      },
+      {
+        "bin": 6,
+        "count": 4,
+        "mean_confidence": 0.6219831278858889,
+        "observed_top1_accuracy": 1.0
+      }
+    ],
+    "top1_accuracy": 0.5866666666666667,
+    "top1_ece_10bins": 0.14354346223465594
+  },
+  "mode": "settle",
+  "model_version": "M0_ELO_POISSON_RESEARCH_720TRAIN_V1",
+  "network_calls": 9,
+  "new_settlements": 0,
+  "not_yet_settled": 74,
+  "original_2026_27_Premier_League_TEST_accessed": false,
+  "params_sha256": "55310f0e1dd3842e6d876069ef21b1380901b3a6cc6884cf6ec6ea351a5812d1",
+  "production_approved": false,
+  "publication_proof_audit": {
+    "actions_artifact_audit": {
+      "artifacts_examined": 0,
+      "runs_checked": 0,
+      "state": "NO_NEW_UNATTESTED_FORECASTS",
+      "verified": 0
+    },
+    "actions_artifact_verified_rows_added": 0,
+    "audited_push_event_count": 0,
+    "github_commit_author_date_used_as_proof": false,
+    "missing_host_evidence_never_assumed_pre_match": true,
+    "push_event_provider_state": "GITHUB_PUSH_EVENTS_RETRIEVED",
+    "push_source_revisions_verified": 0,
+    "push_verified_rows_added": 0,
+    "verified_forecast_rows_total": 149
+  },
+  "report_sha256": "3d3ba4ca04936fc705cbd0643e6b49d224d5ffc6102fbd44425b02a768454e64",
+  "run_utc": "2026-11-06T15:57:19.881032Z",
+  "schema": "kb3-step16-8league-M0-720-TRAIN-forward-v1",
+  "settlement_decisions": [
+    {
+      "forecast_id": "721a95bf34b87744523ce547d28511701450b144417eedd2ff0419271d28b819",
+      "league": "POL",
+      "native_match_id": "m_4euj53",
+      "reason": "RESULT_MATURITY_3H_NOT_REACHED"
+    },
+    {
+      "forecast_id": "e6e35bb4a151a6b6b0d5e0b4d2aaea99f23f4a66bf8d6d7b37a98f91a5f645fc",
+      "league": "TUR",
+      "native_match_id": "m_12G6QF",
+      "reason": "RESULT_MATURITY_3H_NOT_REACHED"
+    },
+    {
+      "forecast_id": "04eb6b571957f0fab72046e6ab2e0e3dd23a2f4d599c9f2325ee2890a2ddbd72",
+      "league": "NED",
+      "native_match_id": "m_1qdH6l",
+      "reason": "RESULT_MATURITY_3H_NOT_REACHED"
+    },
+    {
+      "forecast_id": "260cf73ba6670003824a72ae945d2ba304a0f09d71eda119bc847af993bb21a9",
+      "league": "POL",
+      "native_match_id": "m_1VgAIj",
+      "reason": "RESULT_MATURITY_3H_NOT_REACHED"
+    },
+    {
+      "forecast_id": "3047d7deb58665d70a4687e848a91b7acb91a703b5d427e776d7b90ba94a2d0c",
+      "league": "GER",
+      "native_match_id": "m_2DSeYr",
+      "reason": "RESULT_MATURITY_3H_NOT_REACHED"
+    },
+    {
+      "forecast_id": "8ec0d02f35cb60ea1bee97763a881006c99696ee8b49338b82222ed2671e74d7",
+      "league": "FRA",
+      "native_match_id": "m_2vsKSO",
+      "reason": "RESULT_MATURITY_3H_NOT_REACHED"
+    },
+    {
+      "forecast_id": "bd84be75faeda92626763e7dcc62212fee5979e4b821ba1f5e04163d74f16b55",
+      "league": "ITA",
+      "native_match_id": "m_3A4n8A",
+      "reason": "RESULT_MATURITY_3H_NOT_REACHED"
+    },
+    {
+      "forecast_id": "bea555b1cb135192c5ec3c2bacbe75ca32e1a3e4e19d373acdcbf3de34a201de",
+      "league": "BEL",
+      "native_match_id": "m_2AeM1n",
+      "reason": "RESULT_MATURITY_3H_NOT_REACHED"
+    },
+    {
+      "forecast_id": "f30caeb69cd26e63ccd2f6d1d239dd2bbba4f0598300ef1ab280ad23a899ba87",
+      "league": "ESP",
+      "native_match_id": "m_3apOTP",
+      "reason": "RESULT_MATURITY_3H_NOT_REACHED"
+    },
+    {
+      "forecast_id": "f6e9b048d093fa4bfadf3439ec361fb5ad2b2e55659a7b570d1bf4aaddf6f58d",
+      "league": "TUR",
+      "native_match_id": "m_1ZfVht",
+      "reason": "RESULT_MATURITY_3H_NOT_REACHED"
+    },
+    {
+      "forecast_id": "0c7a93f6448bb7168f5777415ff7c0f6955e88872320d0ba29dade761b37e2ac",
+      "league": "POL",
+      "native_match_id": "m_1qCH0w",
+      "reason": "RESULT_MATURITY_3H_NOT_REACHED"
+    },
+    {
+      "forecast_id": "43f5943db3a620e1dd4abc790fa5ae874387e730f66f0b1f36f84e1593228002",
+      "league": "ESP",
+      "native_match_id": "m_0cvasI",
+      "reason": "RESULT_MATURITY_3H_NOT_REACHED"
+    },
+    {
+      "forecast_id": "e67d1bd225508fee2973b68d6e98631dc1f898db6fce59858a3b88c709262a98",
+      "league": "TUR",
+      "native_match_id": "m_3PC9J0",
+      "reason": "RESULT_MATURITY_3H_NOT_REACHED"
+    },
+    {
+      "forecast_id": "fb1eff3d1015d12d88e558824a50f0eec9aa102cc7f9878f6fb52e9a7e0a3712",
+      "league": "POL",
+      "native_match_id": "m_1Cd8Es",
+      "reason": "RESULT_MATURITY_3H_NOT_REACHED"
+    },
+    {
+      "forecast_id": "d0f5a72794af8966ea0de6a997ee337c6fd097d230f422aaf7c1026af17eeb7e",
+      "league": "ITA",
+      "native_match_id": "m_4L3dqh",
+      "reason": "RESULT_MATURITY_3H_NOT_REACHED"
+    },
+    {
+      "forecast_id": "fe74e39ca5116931275bc7f6f2bf32914b459b4fb64f69e6ddb2de1f4437ed13",
+      "league": "ITA",
+      "native_match_id": "m_4Qe0mW",
+      "reason": "RESULT_MATURITY_3H_NOT_REACHED"
+    },
+    {
+      "forecast_id": "43c2f1b28e53b9ec4d18e01bc8e43e7e991bb9afcbf60c423c0a041aa4a4cc22",
+      "league": "GER",
+      "native_match_id": "m_2zGfLM",
+      "reason": "RESULT_MATURITY_3H_NOT_REACHED"
+    },
+    {
+      "forecast_id": "823fc21df290c4e1dd2ed585d8a6312642578d65875d26d73be2b627ed7976df",
+      "league": "GER",
+      "native_match_id": "m_4RiOkV",
+      "reason": "RESULT_MATURITY_3H_NOT_REACHED"
+    },
+    {
+      "forecast_id": "b2a71b05886d2dfc9efec42a0545922703f2ce3374f5bf48ce52c69b71028c0d",
+      "league": "GER",
+      "native_match_id": "m_0j8R2e",
+      "reason": "RESULT_MATURITY_3H_NOT_REACHED"
+    },
+    {
+      "forecast_id": "f46339a8c40634d0c7cc2ea9bd5dffdff7ad29484320dd0c8c558d295bd8a931",
+      "league": "GER",
+      "native_match_id": "m_2X8YYk",
+      "reason": "RESULT_MATURITY_3H_NOT_REACHED"
+    },
+    {
+      "forecast_id": "786d0067c8a14166829428c90db479f2e5ef586b672cb5ef1132b91f6a2a4d96",
+      "league": "BEL",
+      "native_match_id": "m_49BmX0",
+      "reason": "RESULT_MATURITY_3H_NOT_REACHED"
+    },
+    {
+      "forecast_id": "d9a72ea04222e6a7d822209075d545026d8fbdc6fc92aacef9b12f8f436f253c",
+      "league": "ESP",
+      "native_match_id": "m_30eKwT",
+      "reason": "RESULT_MATURITY_3H_NOT_REACHED"
+    },
+    {
+      "forecast_id": "2218a3949fcbfc6cbf3b1fa94c905c19af8a4a3b9051fdd28224a75796692dd9",
+      "league": "NED",
+      "native_match_id": "m_0gM11h",
+      "reason": "RESULT_MATURITY_3H_NOT_REACHED"
+    },
+    {
+      "forecast_id": "4564ee34777d16e690152ca8222b8d1d8d9238f938df7578249d424a484ea02e",
+      "league": "TUR",
+      "native_match_id": "m_2br6kp",
+      "reason": "RESULT_MATURITY_3H_NOT_REACHED"
+    },
+    {
+      "forecast_id": "fafd2f7e7b98bf1a781957994bb2909ff73fc8668bca939b5d5367fef39ac642",
+      "league": "TUR",
+      "native_match_id": "m_14mbeK",
+      "reason": "RESULT_MATURITY_3H_NOT_REACHED"
+    },
+    {
+      "forecast_id": "3d2517736cff87a8cf11350e5e6ac8b487baa0c360d485418d7d6d5e8b1cd4e5",
+      "league": "FRA",
+      "native_match_id": "m_1ronn6",
+      "reason": "RESULT_MATURITY_3H_NOT_REACHED"
+    },
+    {
+      "forecast_id": "0c302c569d75ff83182ec8006950dee3e833dc70cc5afd022de92e015d674311",
+      "league": "POL",
+      "native_match_id": "m_1gzaFl",
+      "reason": "RESULT_MATURITY_3H_NOT_REACHED"
+    },
+    {
+      "forecast_id": "b1347d860a22682acb3dda33ee712368f399f2433f301d44965c69bfb58752fa",
+      "league": "ITA",
+      "native_match_id": "m_3zuIzO",
+      "reason": "RESULT_MATURITY_3H_NOT_REACHED"
+    },
+    {
+      "forecast_id": "ba1940bcd24a6059ec8e54bbc1edb1b3bda85e7641ebe9c0119042f00c00ae1a",
+      "league": "BEL",
+      "native_match_id": "m_2mTlRY",
+      "reason": "RESULT_MATURITY_3H_NOT_REACHED"
+    },
+    {
+      "forecast_id": "731ad2603259fa417d8087cfd0d31d3112e1b2723dc235e1e682235c2db40f6b",
+      "league": "ESP",
+      "native_match_id": "m_2s2FJD",
+      "reason": "RESULT_MATURITY_3H_NOT_REACHED"
+    },
+    {
+      "forecast_id": "82d89c19b243509d49d1a4b2516acf56f69edd51152d972eacd8a3726e65ff80",
+      "league": "GER",
+      "native_match_id": "m_01qGwO",
+      "reason": "RESULT_MATURITY_3H_NOT_REACHED"
+    },
+    {
+      "forecast_id": "0aae1a819381fff0a3027ae300e5a871ab54c6d7875c623fbfad48c49d016e94",
+      "league": "NED",
+      "native_match_id": "m_3Emnav",
+      "reason": "RESULT_MATURITY_3H_NOT_REACHED"
+    },
+    {
+      "forecast_id": "9de0534af1fd8efd7a5ec066906574eebb9bb72be5626f3dc775f30cad5be07b",
+      "league": "POL",
+      "native_match_id": "m_3evwZJ",
+      "reason": "RESULT_MATURITY_3H_NOT_REACHED"
+    },
+    {
+      "forecast_id": "04e7aded7fa55999394165b154dd6bd176332274e5c1d6336071bb52270d7144",
+      "league": "ITA",
+      "native_match_id": "m_4eXnUR",
+      "reason": "RESULT_MATURITY_3H_NOT_REACHED"
+    },
+    {
+      "forecast_id": "7dcbd9a626e7fa73f39fa66775b0a5b94fae78907af77c87a1f378cde13ca40a",
+      "league": "BEL",
+      "native_match_id": "m_23nahk",
+      "reason": "RESULT_MATURITY_3H_NOT_REACHED"
+    },
+    {
+      "forecast_id": "a47df91441bd176275dddf31a76a39cd1049911dcd8479c36ef2ad113aee9152",
+      "league": "FRA",
+      "native_match_id": "m_264TKg",
+      "reason": "RESULT_MATURITY_3H_NOT_REACHED"
+    },
+    {
+      "forecast_id": "f378cf9df16ce9a146f05873e72ab289c9ff63bbd254ef320ee7fe7abe9b7176",
+      "league": "BEL",
+      "native_match_id": "m_15S8J5",
+      "reason": "RESULT_MATURITY_3H_NOT_REACHED"
+    },
+    {
+      "forecast_id": "dac3baa57759be8103f3919d67809969bec6b92649de8fa4cf1907ef1625f626",
+      "league": "ESP",
+      "native_match_id": "m_3s9Uyk",
+      "reason": "RESULT_MATURITY_3H_NOT_REACHED"
+    },
+    {
+      "forecast_id": "e6550cba3df0c0ef1147939bdbbceaba8dd810bd458d2f98806d2cc51d99afd9",
+      "league": "NED",
+      "native_match_id": "m_3sUZnn",
+      "reason": "RESULT_MATURITY_3H_NOT_REACHED"
+    },
+    {
+      "forecast_id": "9ecbf08e364c25ddb16e272833582c1efa8ae69191bd929db188def6377425ac",
+      "league": "TUR",
+      "native_match_id": "m_4eZj2n",
+      "reason": "RESULT_MATURITY_3H_NOT_REACHED"
+    },
+    {
+      "forecast_id": "24cdbecb17a15c74c52ab7a7022d0c4c47f871e4e243283530ec5b12e413f13e",
+      "league": "NED",
+      "native_match_id": "m_4Uu1Th",
+      "reason": "RESULT_MATURITY_3H_NOT_REACHED"
+    },
+    {
+      "forecast_id": "1b46abd3d5fffd6aaa0e097021d1f5094a0911e3bb8b06fce998e8c2ef734e5e",
+      "league": "ITA",
+      "native_match_id": "m_1dxYhp",
+      "reason": "RESULT_MATURITY_3H_NOT_REACHED"
+    },
+    {
+      "forecast_id": "2fc7d8cafc0fe288761262d7b3b64bfea57c7ae7483a886daab9cde2d00b1afa",
+      "league": "BEL",
+      "native_match_id": "m_3j0Gh6",
+      "reason": "RESULT_MATURITY_3H_NOT_REACHED"
+    },
+    {
+      "forecast_id": "74c16e412e8ae1545b53b0bde4054eace38bfe7911d239c755acb2c86915f1c2",
+      "league": "TUR",
+      "native_match_id": "m_2d7YyQ",
+      "reason": "RESULT_MATURITY_3H_NOT_REACHED"
+    },
+    {
+      "forecast_id": "bebea0ffb58809c85a1bb4668887fcd3dad75143263643194e26c169bcbabc43",
+      "league": "ESP",
+      "native_match_id": "m_47KsEj",
+      "reason": "RESULT_MATURITY_3H_NOT_REACHED"
+    },
+    {
+      "forecast_id": "ee86ab174e7f19ff81abb5df4fd14de04d374f329cfd634e5b321adc691046a6",
+      "league": "NED",
+      "native_match_id": "m_3BUB1s",
+      "reason": "RESULT_MATURITY_3H_NOT_REACHED"
+    },
+    {
+      "forecast_id": "296f144609daf92e880762e33be7c070fb2769c21c6c1c955f7b979a388552b7",
+      "league": "POL",
+      "native_match_id": "m_0Mra1r",
+      "reason": "RESULT_MATURITY_3H_NOT_REACHED"
+    },
+    {
+      "forecast_id": "556a36f83c00a49cd8feb15b64e2ff9a6b836c5e95be271d0bc6bb2bca9b3cf3",
+      "league": "ITA",
+      "native_match_id": "m_2CEago",
+      "reason": "RESULT_MATURITY_3H_NOT_REACHED"
+    },
+    {
+      "forecast_id": "7b70b00971f1264dd93637b99487992ce97d4e45bb7f50503eda18eba335b9dc",
+      "league": "ITA",
+      "native_match_id": "m_2Cwjmd",
+      "reason": "RESULT_MATURITY_3H_NOT_REACHED"
+    },
+    {
+      "forecast_id": "9713f04afc39d54eee28fd18076255771e524da4e79124e01f8bbec686143438",
+      "league": "FRA",
+      "native_match_id": "m_0mizTH",
+      "reason": "RESULT_MATURITY_3H_NOT_REACHED"
+    },
+    {
+      "forecast_id": "67bba60b167bb05a2f29181307981f9dd0e741d8feae99ce3990640d60e0b75c",
+      "league": "GER",
+      "native_match_id": "m_4Ksfe4",
+      "reason": "RESULT_MATURITY_3H_NOT_REACHED"
+    },
+    {
+      "forecast_id": "17fbe42c96afcaddd4186ccdffa1bd7aac655907db1bd022dce60ee6d7fabbdd",
+      "league": "BEL",
+      "native_match_id": "m_1IihxY",
+      "reason": "RESULT_MATURITY_3H_NOT_REACHED"
+    },
+    {
+      "forecast_id": "e014d02fc0014a2b180075448dff01693cb8e4573cd3554e5866e866a5271e7f",
+      "league": "ESP",
+      "native_match_id": "m_3pLoZ3",
+      "reason": "RESULT_MATURITY_3H_NOT_REACHED"
+    },
+    {
+      "forecast_id": "c93ff4f951c9e3a8006e04954eb12716794732a553104aa9cd942e85d1d78d87",
+      "league": "TUR",
+      "native_match_id": "m_4KgMsz",
+      "reason": "RESULT_MATURITY_3H_NOT_REACHED"
+    },
+    {
+      "forecast_id": "027b2835611bf73f803d6828b48137258a03f3af11a9d98bf94d784056cbdaee",
+      "league": "NED",
+      "native_match_id": "m_49zUS6",
+      "reason": "RESULT_MATURITY_3H_NOT_REACHED"
+    },
+    {
+      "forecast_id": "223b3c4a55c9440d04bfeeab92b8b8657cac71ae4bfa212395195eb5713dc27c",
+      "league": "NED",
+      "native_match_id": "m_4cJyXq",
+      "reason": "RESULT_MATURITY_3H_NOT_REACHED"
+    },
+    {
+      "forecast_id": "2dba1e817554b1064b4cfae390422a60a00111b3c6d1d732ebb1fe852df65e7c",
+      "league": "FRA",
+      "native_match_id": "m_3osflk",
+      "reason": "RESULT_MATURITY_3H_NOT_REACHED"
+    },
+    {
+      "forecast_id": "4895a187fb1ffc6173f0f5ad5b77090f31a1f234dab602bc514713a3683ff862",
+      "league": "FRA",
+      "native_match_id": "m_16ULxt",
+      "reason": "RESULT_MATURITY_3H_NOT_REACHED"
+    },
+    {
+      "forecast_id": "cfc38cfe097e1c8877de7ffdbf2e37f4b8fa7f930fefdfe369c8151e0d8bd09f",
+      "league": "FRA",
+      "native_match_id": "m_0BcQYa",
+      "reason": "RESULT_MATURITY_3H_NOT_REACHED"
+    },
+    {
+      "forecast_id": "d7881aebb4f5e6e911df1e6d5751b77151d43a126019f97ebd67ee5dd09294c5",
+      "league": "FRA",
+      "native_match_id": "m_1fpHlF",
+      "reason": "RESULT_MATURITY_3H_NOT_REACHED"
+    },
+    {
+      "forecast_id": "5d799740c1ab377873cfc1eab352b064b88e89cda19091b9e5123554b886188a",
+      "league": "GER",
+      "native_match_id": "m_3tJQt1",
+      "reason": "RESULT_MATURITY_3H_NOT_REACHED"
+    },
+    {
+      "forecast_id": "aff466eef09db9bf63bc923e7e0254bc0bb0e60101983e69ac387fccc468468f",
+      "league": "POL",
+      "native_match_id": "m_0QVmvs",
+      "reason": "RESULT_MATURITY_3H_NOT_REACHED"
+    },
+    {
+      "forecast_id": "869c75ac35f4047036f965550545ca9c2201114336f737d27766c561700e6850",
+      "league": "ITA",
+      "native_match_id": "m_0XsEm1",
+      "reason": "RESULT_MATURITY_3H_NOT_REACHED"
+    },
+    {
+      "forecast_id": "2af0c4a4d85a041c8a3a163757be26feaf740ba5b49bfb115d86db0fb9dd672c",
+      "league": "ESP",
+      "native_match_id": "m_1wSi73",
+      "reason": "RESULT_MATURITY_3H_NOT_REACHED"
+    },
+    {
+      "forecast_id": "983296e40c16fa32ff1e3018ee49f7cf6e9440d44229258fc2c8946788b682ba",
+      "league": "ESP",
+      "native_match_id": "m_4ChvE9",
+      "reason": "RESULT_MATURITY_3H_NOT_REACHED"
+    },
+    {
+      "forecast_id": "d09f61c01d58d45aec314899b6973a6f2e1496b567554a4c4960e16949c99423",
+      "league": "BEL",
+      "native_match_id": "m_4Avmz7",
+      "reason": "RESULT_MATURITY_3H_NOT_REACHED"
+    },
+    {
+      "forecast_id": "fc4afecbb598f750aff7ae785adb669992ddc5428913eed24220bc2c4613d01e",
+      "league": "TUR",
+      "native_match_id": "m_1m90jr",
+      "reason": "RESULT_MATURITY_3H_NOT_REACHED"
+    },
+    {
+      "forecast_id": "5fa3fa3b125ccd055e1320eb58f5d2274ab8a4e3e9a050070f50a2be15dc3de3",
+      "league": "BEL",
+      "native_match_id": "m_1SGX0x",
+      "reason": "RESULT_MATURITY_3H_NOT_REACHED"
+    },
+    {
+      "forecast_id": "bc4636f630cc181cf469b0ce20eed3d8f272498730ae3bba190be7ae6c640446",
+      "league": "GER",
+      "native_match_id": "m_1yCXSs",
+      "reason": "RESULT_MATURITY_3H_NOT_REACHED"
+    },
+    {
+      "forecast_id": "0eb71c8bd9d62810b966208f79053df954ffa34cf97298c822715559f7ff2c42",
+      "league": "NED",
+      "native_match_id": "m_1coZrO",
+      "reason": "RESULT_MATURITY_3H_NOT_REACHED"
+    },
+    {
+      "forecast_id": "c44c39b6b46e35fce8191e95abcbd66702635ba6df5a77ede6a1da0acc44c564",
+      "league": "POL",
+      "native_match_id": "m_1GIbl2",
+      "reason": "RESULT_MATURITY_3H_NOT_REACHED"
+    },
+    {
+      "forecast_id": "4f6cd59965fafc1f2a01579b96da1c64d870bbac44bf952bf36acef46602f432",
+      "league": "ITA",
+      "native_match_id": "m_1TtlDk",
+      "reason": "RESULT_MATURITY_3H_NOT_REACHED"
+    },
+    {
+      "forecast_id": "857e02e01c0212b75695b16faa0dfb9908c5d2e4adcea880fb14e54c2157eaa7",
+      "league": "FRA",
+      "native_match_id": "m_3xBldf",
+      "reason": "RESULT_MATURITY_3H_NOT_REACHED"
+    },
+    {
+      "forecast_id": "f79be42bbfdcaa0edbb4a78845de5d48e6a632bfd76de05c6d070d441c8f331c",
+      "league": "ESP",
+      "native_match_id": "m_1FwCGv",
+      "reason": "RESULT_MATURITY_3H_NOT_REACHED"
+    }
+  ],
+  "settlement_reason_counts": {
+    "RESULT_MATURITY_3H_NOT_REACHED": 74
+  },
+  "source_chain_sha256": "94d3ea672af66c843a5f90ec5c6f747211c41f07352eb36fcc812827b88ada3c",
+  "source_cipher_sha256": "afd1d7a17fc37545bfcfb1498f71253728c625b6f33f5d3e6f18e5220f17fa47",
+  "source_first_published_by_provider_proven": false,
+  "step17_challenger_proof_audit": {
+    "errors": 0,
+    "new_github_proofs": 0,
+    "state": "NO_PENDING_ATTESTED_M0_PARENTS",
+    "unattested_challengers_with_qualified_m0_parent": 0
+  },
+  "step17_paired_same_fixture_readiness": {
+    "all_five_common_scores": {
+      "CATBOOST_NO_XG": null,
+      "CATBOOST_WITH_XG": null,
+      "ELO_ONLY": null,
+      "ENSEMBLE": null,
+      "M0_ELO_POISSON_720TRAIN": null
+    },
+    "candidate_versions": {
+      "CATBOOST_NO_XG": "KB3_STEP17_CATBOOST_M1R_BASE_TRAIN720_NOXG_V1",
+      "CATBOOST_WITH_XG": null,
+      "ELO_ONLY": "KB3_STEP17_ELO_ONLY_TRAIN720_DRAW_V1",
+      "ENSEMBLE": null,
+      "M0_ELO_POISSON_720TRAIN": "M0_ELO_POISSON_RESEARCH_720TRAIN_V1"
+    },
+    "enough_for_formal_step17": false,
+    "evaluation_domain": "FORWARD_GITHUB_HOST_ATTESTED",
+    "fair_same_game_pairwise": {
+      "CATBOOST_NO_XG__vs__CATBOOST_WITH_XG": {
+        "common_n": 0,
+        "deltas": {},
+        "left": null,
+        "right": null
+      },
+      "CATBOOST_NO_XG__vs__ENSEMBLE": {
+        "common_n": 0,
+        "deltas": {},
+        "left": null,
+        "right": null
+      },
+      "CATBOOST_WITH_XG__vs__ENSEMBLE": {
+        "common_n": 0,
+        "deltas": {},
+        "left": null,
+        "right": null
+      },
+      "ELO_ONLY__vs__CATBOOST_NO_XG": {
+        "common_n": 2,
+        "deltas": {
+          "brier_sum3": {
+            "ci95": null,
+            "n": 2,
+            "status": "INSUFFICIENT_INDEPENDENT_WEEKS",
+            "week_blocks": 1
+          },
+          "log_loss": {
+            "ci95": null,
+            "n": 2,
+            "status": "INSUFFICIENT_INDEPENDENT_WEEKS",
+            "week_blocks": 1
+          },
+          "top1_accuracy": {
+            "ci95": null,
+            "n": 2,
+            "status": "INSUFFICIENT_INDEPENDENT_WEEKS",
+            "week_blocks": 1
+          }
+        },
+        "left": {
+          "brier_sum3": 0.5227000920379168,
+          "log_loss": 0.8857571455609292,
+          "n": 2,
+          "top1_accuracy": 0.5,
+          "top1_ece_5_bins": 0.0074624960670308105
+        },
+        "right": {
+          "brier_sum3": 0.5463331399400095,
+          "log_loss": 0.913063022715747,
+          "n": 2,
+          "top1_accuracy": 1.0,
+          "top1_ece_5_bins": 0.5986930113703121
+        }
+      },
+      "ELO_ONLY__vs__CATBOOST_WITH_XG": {
+        "common_n": 0,
+        "deltas": {},
+        "left": null,
+        "right": null
+      },
+      "ELO_ONLY__vs__ENSEMBLE": {
+        "common_n": 0,
+        "deltas": {},
+        "left": null,
+        "right": null
+      },
+      "ELO_ONLY__vs__M0_ELO_POISSON_720TRAIN": {
+        "common_n": 2,
+        "deltas": {
+          "brier_sum3": {
+            "ci95": null,
+            "n": 2,
+            "status": "INSUFFICIENT_INDEPENDENT_WEEKS",
+            "week_blocks": 1
+          },
+          "log_loss": {
+            "ci95": null,
+            "n": 2,
+            "status": "INSUFFICIENT_INDEPENDENT_WEEKS",
+            "week_blocks": 1
+          },
+          "top1_accuracy": {
+            "ci95": null,
+            "n": 2,
+            "status": "INSUFFICIENT_INDEPENDENT_WEEKS",
+            "week_blocks": 1
+          }
+        },
+        "left": {
+          "brier_sum3": 0.5227000920379168,
+          "log_loss": 0.8857571455609292,
+          "n": 2,
+          "top1_accuracy": 0.5,
+          "top1_ece_5_bins": 0.0074624960670308105
+        },
+        "right": {
+          "brier_sum3": 0.5292140022569466,
+          "log_loss": 0.8934600864779885,
+          "n": 2,
+          "top1_accuracy": 0.5,
+          "top1_ece_5_bins": 0.06067706498315728
+        }
+      },
+      "M0_ELO_POISSON_720TRAIN__vs__CATBOOST_NO_XG": {
+        "common_n": 2,
+        "deltas": {
+          "brier_sum3": {
+            "ci95": null,
+            "n": 2,
+            "status": "INSUFFICIENT_INDEPENDENT_WEEKS",
+            "week_blocks": 1
+          },
+          "log_loss": {
+            "ci95": null,
+            "n": 2,
+            "status": "INSUFFICIENT_INDEPENDENT_WEEKS",
+            "week_blocks": 1
+          },
+          "top1_accuracy": {
+            "ci95": null,
+            "n": 2,
+            "status": "INSUFFICIENT_INDEPENDENT_WEEKS",
+            "week_blocks": 1
+          }
+        },
+        "left": {
+          "brier_sum3": 0.5292140022569466,
+          "log_loss": 0.8934600864779885,
+          "n": 2,
+          "top1_accuracy": 0.5,
+          "top1_ece_5_bins": 0.06067706498315728
+        },
+        "right": {
+          "brier_sum3": 0.5463331399400095,
+          "log_loss": 0.913063022715747,
+          "n": 2,
+          "top1_accuracy": 1.0,
+          "top1_ece_5_bins": 0.5986930113703121
+        }
+      },
+      "M0_ELO_POISSON_720TRAIN__vs__CATBOOST_WITH_XG": {
+        "common_n": 0,
+        "deltas": {},
+        "left": null,
+        "right": null
+      },
+      "M0_ELO_POISSON_720TRAIN__vs__ENSEMBLE": {
+        "common_n": 0,
+        "deltas": {},
+        "left": null,
+        "right": null
+      }
+    },
+    "full_five_common_fixtures": 0,
+    "gate16_completed_evidence_supplied": false,
+    "gate17": "PENDING_STEP16_AND_FULL_FAIR_BENCHMARK",
+    "horizon": "EARLY_90MIN_OR_MORE",
+    "input_sha256": "ad858ef8c2c2b48fa456cfc214972e0ab3b3af7b0c333272b30a9f17504d97e7",
+    "market": "1X2_90MIN",
+    "missing_data_cost": {
+      "CATBOOST_NO_XG": {
+        "available_unique": 2,
+        "coverage": 1.0,
+        "missing_unique": 0,
+        "per_league": {
+          "BEL": 1,
+          "ESP": 1
+        },
+        "why_unavailable": null
+      },
+      "CATBOOST_WITH_XG": {
+        "available_unique": 0,
+        "coverage": 0.0,
+        "missing_unique": 2,
+        "per_league": {},
+        "why_unavailable": "NO_FROZEN_PREDICTIONS"
+      },
+      "ELO_ONLY": {
+        "available_unique": 2,
+        "coverage": 1.0,
+        "missing_unique": 0,
+        "per_league": {
+          "BEL": 1,
+          "ESP": 1
+        },
+        "why_unavailable": null
+      },
+      "ENSEMBLE": {
+        "available_unique": 0,
+        "coverage": 0.0,
+        "missing_unique": 2,
+        "per_league": {},
+        "why_unavailable": "NO_FROZEN_PREDICTIONS"
+      },
+      "M0_ELO_POISSON_720TRAIN": {
+        "available_unique": 2,
+        "coverage": 1.0,
+        "missing_unique": 0,
+        "per_league": {
+          "BEL": 1,
+          "ESP": 1
+        },
+        "why_unavailable": null
+      }
+    },
+    "production_approved": false,
+    "production_model_changed": false,
+    "research_historical_not_forward_certified": false,
+    "schema": "kb3-step17-engine-comparison-readiness-v1",
+    "scope_note": "ONLY_PAIRS_WITH_BOTH_ORIGINAL_FORECAST_AND_REAL_GITHUB_ARTIFACT_PROOFS_AND_RESULTS",
+    "sealed_test_accessed": false,
+    "unique_fixtures": 2,
+    "winner_auto_selected": false
+  },
+  "total_settlements": 75
+}
