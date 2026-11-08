@@ -33,3 +33,11 @@ Dla publicznego `vaastav/Fantasy-Premier-League` niezależnie ponownie pobrano m
 4. PASS testów kontroli *blokady* nie jest PASS bramki dopuszczenia danych. Bez nowych autentycznych dowodów brak podstaw do fit oryginalnego M1 i oceny oryginalnego TEST.
 
 **Decyzja:** pozostawić `GATE14_ORIGINAL_STRICT_NATIVE_PIT=PENDING`, `TRAIN=0/760`, `VALIDATION=0/380`; oryginalny M1 bez treningu, TEST nietknięty. Nowe potwierdzenie Git DAG i blobów jest wąskim, audytowalnym dowodem zewnętrznym, nie dowodem spełnienia całości.
+
+## 2026-11-08 — ponowna niezależna kontrola stanu oryginalnego PIT
+
+Odczytano ponownie źródłowy `STEP14_COMPREHENSIVE_HISTORIC_PREMATCH_RECONSTRUCTION_2026-10-28.md`, niniejszy audyt oraz dokument oryginalnej pierwszej publikacji PitchAPI xG. Brak nowego autentycznego `first_available_at_utc` dla oryginalnego PitchAPI `match_id + team_id + period=All + expected_goals`; historyczny FPL player-xG i dzisiejszy PitchAPI team-xG nie stanowią równoważnego dowodu.
+
+W rzeczywistym Actions [#42501013612](https://github.com/karolbarankiewicz1984-ui/kb-score-3/actions/runs/42501013612) etap `offline-history-safety` przeszedł, a `live-observed-backfill` pobrał **240 nowych historycznych statystyk**, **205 zweryfikowanych xG** i zgłosił **4161 łącznie obserwacji**, lecz krok `Commit immutable private research data only` zakończył się `TypeError: 'int' object is not callable` w `target.stat().st_size()`. Dane z nieudanego przebiegu **nie są uznane za trwale zapisane**. Poprawka `324aa6d` zamienia `st_size()` na właściwość `st_size`; jej pełny wynik CI musi zostać potwierdzony oddzielnie. Ani pozytywny backfill, ani bieżące xG nie dowodzą oryginalnego PIT 2023–2025.
+
+**Formalna decyzja bez zmian:** `GATE14_ORIGINAL_STRICT_NATIVE_PIT=PENDING`, certyfikowane oryginalne wiersze `TRAIN=0/760`, `VALIDATION=0/380`; 121 oryginalnych cech + 38 flag nie są niezależnie poświadczone przed kickoff. Oryginalny M1 nie trenowany, TEST nietknięty. Nie utożsamiać z wariantem badawczym B, ani z sukcesem testów zabezpieczeń.
