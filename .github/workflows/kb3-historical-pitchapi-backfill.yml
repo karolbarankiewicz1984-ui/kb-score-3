@@ -188,7 +188,30 @@ jobs:
         run: |
           git config user.name kb3-history-research-bot
           git config user.email kb3-history-research-bot@users.noreply.github.com
+          # GitHub rejects single blobs >100 MiB. Persist an immutable compressed
+          # SQLite snapshot separately; never silently commit a stale database.
+          python - <<'PY'
+          import gzip,hashlib,json,os,sqlite3
+          from pathlib import Path
+          source=Path('data/research/historical_multistat/observations.sqlite')
+          if source.exists():
+              with sqlite3.connect(source) as db:
+                  assert db.execute('PRAGMA integrity_check').fetchone()[0]=='ok'
+              raw=source.read_bytes()
+              if len(raw)>=95_000_000:
+                  target=source.with_suffix('.sqlite.gz')
+                  with gzip.open(target,'wb',compresslevel=6) as out: out.write(raw)
+                  assert gzip.decompress(target.read_bytes())==raw
+                  assert target.stat().st_size()<95_000_000,'COMPRESSED_SQLITE_TOO_LARGE_NEEDS_CHUNKING'
+                  manifest={'schema':'kb3-history-compressed-sqlite-v1','raw_sha256':hashlib.sha256(raw).hexdigest(),'raw_bytes':len(raw),'compressed_sha256':hashlib.sha256(target.read_bytes()).hexdigest(),'compressed_bytes':target.stat().st_size()}
+                  target.with_suffix('.sqlite.gz.manifest.json').write_text(json.dumps(manifest,sort_keys=True)+'\\n')
+                  print('SQLITE_SNAPSHOT_COMPRESSED',manifest)
+          PY
           git add -f data/research/historical_multistat/ data/pit_sidecar/historical_multistat/
+          if test -f data/research/historical_multistat/observations.sqlite.gz; then
+            git rm --cached --ignore-unmatch data/research/historical_multistat/observations.sqlite
+            git add -f data/research/historical_multistat/observations.sqlite.gz data/research/historical_multistat/observations.sqlite.gz.manifest.json
+          fi
           if test -d data/pit_sidecar/historical_issue_rechecks; then git add -f data/pit_sidecar/historical_issue_rechecks/; fi
           if git diff --cached --quiet; then
             echo 'No new independent PitchAPI source records'
