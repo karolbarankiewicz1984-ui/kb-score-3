@@ -341,3 +341,27 @@ def candidate_m1r_85_schema_bridge(view, frozen_audit):
                "training_allowed": False, "production_approved": False}
     columns["sha256"] = digest(columns)
     return columns
+
+
+def require_paired_catboost_85_contract(train_view, forward_view, frozen_audit):
+    """Research-only strict 85-column TRAIN/FORWARD parity gate.
+
+    Rejects mixed historical 48h M1-R and forward 3h semantics: both views
+    must come from this same as-of v2 builder at an identical cutoff.
+    Shape parity is NOT permission to reuse original fitted M1-R weights.
+    """
+    parity = compare_same_asof(train_view, forward_view)
+    train = candidate_m1r_85_schema_bridge(train_view, frozen_audit)
+    forward = candidate_m1r_85_schema_bridge(forward_view, frozen_audit)
+    need(train["feature_names"] == forward["feature_names"],
+         "CATBOOST_FEATURE_ORDER_DRIFT")
+    need(train["candidate_values"] == forward["candidate_values"],
+         "CATBOOST_TRAIN_FORWARD_VALUES_DRIFT")
+    need(train["contract_sha256"] == forward["contract_sha256"] ==
+         parity["canonical_features_sha256"], "CATBOOST_ASOF_HASH_DRIFT")
+    return {"schema":"kb3-catboost-asof-v2-85-parity-gate-v1",
+            "feature_count":85,"contract_sha256":parity["canonical_features_sha256"],
+            "same_asof_train_forward":True,"feature_names_and_order_equal":True,
+            "feature_values_equal":True,"original_m1r_48h_weights_reusable":False,
+            "new_model_retrain_required":True,"training_allowed":False,
+            "production_approved":False}
