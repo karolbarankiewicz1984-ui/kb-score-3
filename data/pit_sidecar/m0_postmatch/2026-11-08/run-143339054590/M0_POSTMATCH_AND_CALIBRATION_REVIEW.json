@@ -1,0 +1,98 @@
+{
+  "M1_training_or_original_gate14_pass": false,
+  "calibration_auto_activated": false,
+  "captured_at_utc": "2026-11-08T14:33:40.064306Z",
+  "evaluation": {
+    "P1_02_status": "BLOCKED_UNTIL_INDEPENDENT_PUBLICATION_PROOF",
+    "aggregate_score": {
+      "brier_sum3": 0.6071410625687744,
+      "log_loss": 1.0148693817463492,
+      "n": 38,
+      "reliability_top1": [
+        {
+          "bin": 3,
+          "count": 6,
+          "mean_confidence": 0.38724742228300646,
+          "observed_top1_accuracy": 0.6666666666666666
+        },
+        {
+          "bin": 4,
+          "count": 29,
+          "mean_confidence": 0.44190690081320516,
+          "observed_top1_accuracy": 0.4827586206896552
+        },
+        {
+          "bin": 5,
+          "count": 3,
+          "mean_confidence": 0.5121757285162712,
+          "observed_top1_accuracy": 1.0
+        }
+      ],
+      "top1_accuracy": 0.5526315789473685,
+      "top1_ece_10bins": 0.11380758308342627
+    },
+    "as_of_utc": "2026-11-08T14:33:40.129462Z",
+    "candidate": null,
+    "diagnostics_available": true,
+    "future_holdout_minimum": 50,
+    "historic_M1_gate14_pass": false,
+    "legacy_host_proof_fit_eligible": false,
+    "new_calibration_candidate": null,
+    "new_holdout_review": null,
+    "original_TEST_leak": false,
+    "production_calibration_activated": false,
+    "schema": "kb3-real-PitchAPI-M0-1X2-settle-logloss-brier-sum3-and-forward-calibration-v1",
+    "scored_independent_matches": 38,
+    "temperature_fit_minimum": 100
+  },
+  "forecast_existing_preflight": {
+    "independently_existing_repo_forecast_hashes": 50,
+    "match_hash_identical": true,
+    "server_first_publication_utc_independently_proven": false
+  },
+  "network_call_count": 4,
+  "no_new_provider_subscription": true,
+  "original_Premier_League_TEST_accessed": false,
+  "original_source_chain_sha256": "7b9499f435c09eda2f9de6506674990ca30cf563184cb884c317713f6bf40407",
+  "original_source_cipher_sha256": "eabbfdf471cac2d4e3a772ecf68892c2ed2d434d9ae5b5e1e9b5adb5ee50691f",
+  "original_source_encrypted": true,
+  "persistent_sqlite_after_sha256": "58b6c95045db1abba66ba90653b0de5a4412e027de62ca8f03aa16538a731bca",
+  "processed_leagues": [
+    "ESP",
+    "ITA",
+    "GER"
+  ],
+  "receipt_sha256": "befa7f8513c937452624d9161bc94c7f48b734a8a651401fe84487fdc5a2f58c",
+  "schema": "kb3-step14-real-network-postmatch-3league-M0-1x2-scoring-v1",
+  "settlement": {
+    "actual_server_check_at_utc": "2026-11-08T14:33:40.105842Z",
+    "new_settlements": [
+      {
+        "brier_sum3": 0.8231742332302476,
+        "forecast_id": "7e339a66e65abcc44de696f6965149aa60c9e7f10a6c45978acf2f8adc45864a",
+        "forecast_sha256": "7e339a66e65abcc44de696f6965149aa60c9e7f10a6c45978acf2f8adc45864a",
+        "frozen_kickoff_utc": "2026-11-08T11:30:00Z",
+        "label_1x2": "X",
+        "league_country": "ITA",
+        "log_loss": 1.3392932468480254,
+        "observed_at_utc": "2026-11-08T14:33:39.870880Z",
+        "provider_match_id": "m_1dxYhp",
+        "schema": "kb3-real-PitchAPI-M0-1X2-settle-logloss-brier-sum3-and-forward-calibration-v1",
+        "score_away": 1,
+        "score_home": 1,
+        "settlement_sha256": "c2a21c097b863f81f802d98b9f230fbb7772e216d39fad9f5d9cffdd740cf63c",
+        "source_sha256": "354f814e385a544f1a647dabf0f5041ec7af35680ce1def1fb776747c1c16ec0"
+      }
+    ],
+    "newly_settled": 1,
+    "original_M1_gate14_pass": false,
+    "original_PL_2026_27_TEST_used": false,
+    "pending_unsettled": 12,
+    "review_needed": [],
+    "schema": "kb3-real-PitchAPI-M0-1X2-settle-logloss-brier-sum3-and-forward-calibration-v1",
+    "skipped_reason_counts": {
+      "TOO_EARLY": 12
+    },
+    "total_settled": 38
+  }
+}
