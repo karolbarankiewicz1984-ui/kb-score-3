@@ -44,6 +44,22 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
+      - name: Restore verified compressed historical SQLite snapshot when present
+        run: |
+          python - <<'PY'
+          import gzip,hashlib,json
+          from pathlib import Path
+          source=Path('data/research/historical_multistat/observations.sqlite.gz')
+          db=Path('data/research/historical_multistat/observations.sqlite')
+          manifest=Path('data/research/historical_multistat/observations.sqlite.gz.manifest.json')
+          if source.exists():
+              m=json.loads(manifest.read_text())
+              raw=gzip.decompress(source.read_bytes())
+              assert hashlib.sha256(raw).hexdigest()==m['raw_sha256']
+              db.parent.mkdir(parents=True,exist_ok=True)
+              db.write_bytes(raw)
+              print('RESTORED_VERIFIED_HISTORICAL_SQLITE',len(raw))
+          PY
       - name: Install crypto, no provider secret in PR job
         run: python -m pip install --disable-pip-version-check 'cryptography>=42,<47'
       - name: Strict source identity, PIT/TEST exclusion, xG and SQLite regression
@@ -104,6 +120,22 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
+      - name: Restore verified compressed historical SQLite snapshot when present
+        run: |
+          python - <<'PY'
+          import gzip,hashlib,json
+          from pathlib import Path
+          source=Path('data/research/historical_multistat/observations.sqlite.gz')
+          db=Path('data/research/historical_multistat/observations.sqlite')
+          manifest=Path('data/research/historical_multistat/observations.sqlite.gz.manifest.json')
+          if source.exists():
+              m=json.loads(manifest.read_text())
+              raw=gzip.decompress(source.read_bytes())
+              assert hashlib.sha256(raw).hexdigest()==m['raw_sha256']
+              db.parent.mkdir(parents=True,exist_ok=True)
+              db.write_bytes(raw)
+              print('RESTORED_VERIFIED_HISTORICAL_SQLITE',len(raw))
+          PY
       - name: Install existing PitchAPI provider and encryption libraries
         run: python -m pip install --disable-pip-version-check 'pitchapi==0.1.6' 'cryptography>=42,<47'
       - name: Capture five independently sealed source batches (max 240 matches), recheck xG and missing yellow cards
