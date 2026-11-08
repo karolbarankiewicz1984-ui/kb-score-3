@@ -38,3 +38,13 @@
 
 ### CI correction
 - Commit 34b1134 fixes malformed literal newline escapes in the workflow audit step introduced in 72845b2. The preceding runs 42479993279 and 42480010827 failed workflow parsing (no jobs). New run 42480029331 is queued; end-to-end backfill remains UNVERIFIED.
+
+## Owner direction — continue immediately without waiting for 150 samples (2026-11-08)
+
+- Owner authorizes immediate research development, prospective data collection and same-fixture shadow comparisons; **not** relaxation of FIT/HOLDOUT independence, 90-minute freeze, leakage controls, protected TEST or Champion promotion gates.
+- Existing `scripts/kb3_p1_prospective_six_train.py` already trains separate six-feature CatBoost on 1007 retrospective reconstructed TRAIN and 376 VALIDATION rows. This model is **not** formally trained on independently attested as-of v2 sources. It must not be represented as a newly verified 85-feature retrain.
+- Existing `config/kb3_shadow_six_forward_activation.json` already has `enabled=true`, research-only, no retroactive forecasts, no Champion promotion; `.github/workflows/kb3-step16-m0-720-eight-forward.yml` has six daily scheduled slots for M0 and optional CatBoost Shadow Six, with Step17 Elo-only and original 85-feature CatBoost challengers separately. Avoid duplicate pipelines and unnecessary API usage.
+- Continue using existing scheduled forecasts immediately; collect genuine host-attested future freezes and independently verified postmatch outcomes. Report separate exact triplet cohorts: (M0, Elo-only, original 85-feature CatBoost) vs (M0, Elo-only, six-feature research CatBoost) and never mix feature contracts/model versions.
+- Formal Champion selection (step 8) is explicitly **DEFERRED** until enough paired independent future fixtures and weeks, proper uncertainty analysis and owner approval. A readiness report may be prepared immediately, but must state NO_PROMOTION.
+- Backfill validation run 42480029331 was still in progress at last check; unresolved failures must be fixed before declaring step 1 complete.
+- This entry is an operational decision and inventory of existing functionality, not proof of successful new prospective Shadow forecasts or retraining in this turn.
