@@ -48,3 +48,11 @@
 - Formal Champion selection (step 8) is explicitly **DEFERRED** until enough paired independent future fixtures and weeks, proper uncertainty analysis and owner approval. A readiness report may be prepared immediately, but must state NO_PROMOTION.
 - Backfill validation run 42480029331 was still in progress at last check; unresolved failures must be fixed before declaring step 1 complete.
 - This entry is an operational decision and inventory of existing functionality, not proof of successful new prospective Shadow forecasts or retraining in this turn.
+
+## Manifest bug fix and failure triage — 2026-11-08
+
+- Commit `ccf6f8b8bb98b1e06b32325c0a30135e634d637f` fixes compressed snapshot manifest filename: `target.with_name(target.name+'.manifest.json')`, exactly matching restore and `git add` path `observations.sqlite.gz.manifest.json`.
+- Run 42512371550 confirmed gzip compression of 110,510,080 raw bytes to 7,857,635 compressed bytes, then failed because the expected manifest path did not exist. This fix targets that demonstrated failure. **Re-run after this commit still required to verify persistence.**
+- Run 42501013612 previously failed in the same commit step with `TypeError: 'int' object is not callable`; its prior revision is superseded, not evidence of a successful new run.
+- Latest checked M0 settle run 42493640304: 3 new M0 settlements, 115 total; 23 Shadow Six rows, zero host-attested settled M0/Shadow Six pairs. Do not misreport M0 settlements as CatBoost paired evaluation.
+- Next audit: inspect next history workflow conclusion and first genuine host-attested Shadow Six settled pairs; no promotion, no backdated forecasts.
