@@ -236,9 +236,9 @@ jobs:
                   target=source.with_suffix('.sqlite.gz')
                   with gzip.open(target,'wb',compresslevel=6) as out: out.write(raw)
                   assert gzip.decompress(target.read_bytes())==raw
-                  assert target.stat().st_size()<95_000_000,'COMPRESSED_SQLITE_TOO_LARGE_NEEDS_CHUNKING'
-                  manifest={'schema':'kb3-history-compressed-sqlite-v1','raw_sha256':hashlib.sha256(raw).hexdigest(),'raw_bytes':len(raw),'compressed_sha256':hashlib.sha256(target.read_bytes()).hexdigest(),'compressed_bytes':target.stat().st_size()}
-                  target.with_suffix('.sqlite.gz.manifest.json').write_text(json.dumps(manifest,sort_keys=True)+'\\n')
+                  assert target.stat().st_size<95_000_000,'COMPRESSED_SQLITE_TOO_LARGE_NEEDS_CHUNKING'
+                  manifest={'schema':'kb3-history-compressed-sqlite-v1','raw_sha256':hashlib.sha256(raw).hexdigest(),'raw_bytes':len(raw),'compressed_sha256':hashlib.sha256(target.read_bytes()).hexdigest(),'compressed_bytes':target.stat().st_size}
+                  target.with_suffix('.sqlite.gz.manifest.json').write_text(json.dumps(manifest,sort_keys=True)+'\n')
                   print('SQLITE_SNAPSHOT_COMPRESSED',manifest)
           PY
           git add -f data/research/historical_multistat/ data/pit_sidecar/historical_multistat/
