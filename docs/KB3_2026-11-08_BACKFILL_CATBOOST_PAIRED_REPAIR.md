@@ -35,3 +35,6 @@
 6. **Parallel SHADOW:** freeze M0, Elo-only, new CatBoost predictions on identical future fixture keys with real GitHub host evidence at least 90 minutes before kickoff. Append-only storage; no retroactive forecasts.
 7. **M0 calibration:** continue prospective real settled sample collection toward 100 FIT and separate 50 HOLDOUT; no automatic activation before gates. Last verified actual M0 postmatch total 37 on 2026-11-08.
 8. **Champion selection:** after sufficient independent matches/weeks and paired improvement with uncertainty intervals, audit feature leakage and request owner approval. Until then M0 unchanged; no automatic Champion promotion.
+
+### CI correction
+- Commit 34b1134 fixes malformed literal newline escapes in the workflow audit step introduced in 72845b2. The preceding runs 42479993279 and 42480010827 failed workflow parsing (no jobs). New run 42480029331 is queued; end-to-end backfill remains UNVERIFIED.
