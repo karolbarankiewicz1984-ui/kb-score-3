@@ -71,7 +71,7 @@ jobs:
           python -m unittest discover -s tests -p 'test_kb3_history_issue_recheck.py' -v
           python -m unittest discover -s tests -p 'test_kb3_historical_feature_quality.py' -v
           python -m unittest discover -s tests -p 'test_step14_pitchapi_xg_semantics.py' -v
-      - name: Read-only actual historical cohort gain preflight (offline, zero provider requests)
+      - name: Audit immutable historical coverage and publication evidence (read-only)\n        run: python -m scripts.kb3_history_readonly_quality_gate\n      - name: Read-only actual historical cohort gain preflight (offline, zero provider requests)
         run: |
           python - <<'PY'
           from collections import defaultdict,Counter
