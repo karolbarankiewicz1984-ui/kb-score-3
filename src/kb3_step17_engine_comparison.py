@@ -189,11 +189,34 @@ def compare(payload,*,replicates=1200):
                            replicates=replicates)
                            for metric_name in ("log_loss","brier_sum3","top1_accuracy")}
                            if pair else {}}
+    # Exact three-engine intersection, never marginal pairwise counts.
+    trio=("ELO_ONLY","M0_ELO_POISSON_720TRAIN","CATBOOST_NO_XG")
+    triplets=[g for g in games if all(e in g["predictions"] for e in trio)]
+    triplet_leagues={}
+    for league in sorted({g["league"] for g in triplets}):
+        group=[g for g in triplets if g["league"]==league]
+        triplet_leagues[league]={"common_n":len(group),
+            "scores":{e:metric(group,e) for e in trio}}
+    triplet_pairs={}
+    for i,left in enumerate(trio):
+        for right in trio[i+1:]:
+            triplet_pairs[left+"__vs__"+right]={
+                "common_n":len(triplets),
+                "deltas":{m:paired_ci(triplets,left,right,m,replicates=replicates)
+                          for m in ("log_loss","brier_sum3","top1_accuracy")}
+                          if triplets else {}}
+    triplet_summary={"common_n":len(triplets),
+        "scores":{e:metric(triplets,e) for e in trio},
+        "per_league":triplet_leagues,
+        "paired_deltas":triplet_pairs,
+        "scope":"SAME_EXACT_THREE_ENGINE_FIXTURES_ONLY",
+        "research_only":True,"winner_auto_selected":False}
     return {"schema":"kb3-step17-engine-comparison-readiness-v1",
             "evaluation_domain":payload["evaluation_domain"],
             "market":payload["market"],"horizon":payload["horizon"],
             "candidate_versions":payload["candidate_versions"],
             "unique_fixtures":count,"full_five_common_fixtures":len(complete_five),
+            "exact_three_engine_comparison":triplet_summary,
             "missing_data_cost":missing,
             "fair_same_game_pairwise":pairwise,
             "all_five_common_scores":{e:metric(complete_five,e) for e in ENGINES},
