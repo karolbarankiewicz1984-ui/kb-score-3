@@ -19,3 +19,19 @@
 - Backfill: code fix committed, validation running.
 - CatBoost: feature-parity defect identified; NOT FIXED in model code yet.
 - Three-way comparisons: existing strict audit verified in source; extension NOT IMPLEMENTED yet.
+
+## Implementation update — 2026-11-08
+
+### Steps 1–4
+1. **Backfill oversized SQLite**: workflow changes f266df3, c2f7b8d. Gzip+SHA-256 persistence and restore; pending full end-to-end verification. Watch for compressed blob size and next-run reconstruction; do not mark CLOSED until verified.
+2. **CatBoost feature parity**: 44c978c adds `require_paired_catboost_85_contract` on existing `src/kb3_p1_shared_asof_features_v2.py`. Enforces same as-of, 85 feature names/order/values/hash in research only. Old frozen 48h M1-R weights remain NOT approved for 3h forward semantics. New fitted model requires later training; no Champion change.
+3. **Exact same-game model comparison**: 30a2cf4 extends `src/kb3_step17_engine_comparison.py` with `exact_three_engine_comparison`, per-league same-triplet metrics, Brier/log loss/accuracy and ISO-week paired uncertainty. Existing strict host-attested comparison remains intact; missing triplets must not be invented.
+4. **Historical quality**: f6bd626 adds `scripts/kb3_history_readonly_quality_gate.py` (scope coverage, missing stats, publication proof counts, DB SHA/integrity); 72845b2 adds it to offline workflow. Historical data remain research-only, not retrospective certified PIT.
+
+**Validation:** new GitHub Actions runs triggered; pending confirmation of successful job conclusion and artifact contents. Do not claim steps production-verified before that.
+
+### Steps 5–8 — registered backlog, NOT executed
+5. **Research CatBoost retraining:** fit a NEW version on shared as-of v2 features only after strict independent source/feature parity review. Freeze train/validation splits and keep historical protected TEST sealed; record feature contract SHA, calibration, Brier and log loss against M0.
+6. **Parallel SHADOW:** freeze M0, Elo-only, new CatBoost predictions on identical future fixture keys with real GitHub host evidence at least 90 minutes before kickoff. Append-only storage; no retroactive forecasts.
+7. **M0 calibration:** continue prospective real settled sample collection toward 100 FIT and separate 50 HOLDOUT; no automatic activation before gates. Last verified actual M0 postmatch total 37 on 2026-11-08.
+8. **Champion selection:** after sufficient independent matches/weeks and paired improvement with uncertainty intervals, audit feature leakage and request owner approval. Until then M0 unchanged; no automatic Champion promotion.
