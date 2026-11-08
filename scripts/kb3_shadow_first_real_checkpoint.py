@@ -90,6 +90,38 @@ def audit(db_path=DB,activation_utc=ACTIVATION_UTC):
              db,"kb3_p1_shadow_six_new_only",
              "WHERE shadow_generated_at_utc >= ?",(activation_utc,))
         result["settlement_total"]=_count(db,"settlements")
+        # Classify every real Shadow Six fixture by kickoff and settlement.
+        # This is a read-only snapshot, not proof that PitchAPI has a result.
+        now=datetime.now(timezone.utc)
+        diagnostic={"checked_at_utc":now.isoformat(),
+                    "shadow_fixture_count":0,"settled":0,
+                    "kickoff_future":0,"kickoff_less_than_3h_ago":0,
+                    "mature_over_3h_unsettled":0,
+                    "mature_unsettled_fixtures":[]}
+        if _has_table(db,"kb3_p1_shadow_six_new_only"):
+            for fid,league,mid,kick,settled in db.execute("""
+                SELECT f.id,f.league,f.native_match_id,f.kickoff_utc,
+                       EXISTS(SELECT 1 FROM settlements t WHERE t.forecast_id=f.id)
+                FROM kb3_p1_shadow_six_new_only s
+                JOIN forecasts f ON f.id=s.source_m0_forecast_sha256
+                WHERE s.shadow_generated_at_utc >= ?
+                ORDER BY f.kickoff_utc,f.id
+            """,(activation_utc,)):
+                diagnostic["shadow_fixture_count"]+=1
+                kickoff=as_utc(kick)
+                if settled:
+                    diagnostic["settled"]+=1
+                elif now<kickoff:
+                    diagnostic["kickoff_future"]+=1
+                elif now<kickoff+timedelta(hours=3):
+                    diagnostic["kickoff_less_than_3h_ago"]+=1
+                else:
+                    diagnostic["mature_over_3h_unsettled"]+=1
+                    diagnostic["mature_unsettled_fixtures"].append({
+                        "league":league,"native_match_id":mid,
+                        "kickoff_utc":kick,"forecast_id":fid,
+                        "cause":"NEEDS_PROVIDER_SETTLEMENT_REASON_AUDIT"})
+        result["shadow_settlement_diagnostic"]=diagnostic
         result["existing_m0_host_proofs"]=_count(db,"m0720_github_push_proofs")
         result["existing_shadow_host_proofs"]=_count(
             db,"kb3_p1_shadow_six_host_proofs")
