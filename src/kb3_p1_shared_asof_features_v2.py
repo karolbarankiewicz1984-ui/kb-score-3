@@ -34,7 +34,8 @@ def need(ok, reason):
 
 
 def when(value):
-    need(type(value) is str and value.endswith("Z"),
+    need(type(value) is str and bool(re.fullmatch(
+        r"\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d{1,6})?Z", value)),
          "CANONICAL_UTC_Z_REQUIRED")
     try:
         dt = utc_dt(value)
@@ -62,12 +63,16 @@ def _target(target, cutoff):
     need(target.get("league") in LEAGUES, "PROTECTED_OR_UNKNOWN_LEAGUE")
     need(type(target.get("fixture_id")) in (str, int) and
          str(target["fixture_id"]) != "", "TARGET_ID_REQUIRED")
-    need(target.get("home_team_id") != target.get("away_team_id"),
+    for key in ("home_team_id", "away_team_id"):
+        need(type(target.get(key)) in (str, int) and str(target[key]),
+             "TARGET_TEAM_ID_REQUIRED")
+    need(str(target.get("home_team_id")) != str(target.get("away_team_id")),
          "TARGET_TEAMS_IDENTICAL")
     need(type(target.get("season_start_year")) is int and
          1900 <= target["season_start_year"] <= 2200,
          "TARGET_SEASON_INVALID")
-    for key in ("goals_home_90", "goals_away_90", "score_home", "score_away"):
+    for key in ("goals_home_90", "goals_away_90", "score_home", "score_away",
+                "outcome_1x2", "label", "result_1x2"):
         need(target.get(key) is None, "TARGET_LABEL_IN_FEATURE_SOURCE")
     ko = when(target.get("kickoff_utc"))
     need(cutoff <= ko - MIN_LEAD, "TARGET_EARLY_90MIN_REQUIRED")
@@ -80,10 +85,17 @@ def _target_receipt(receipt, cutoff):
          "TARGET_RECONSTRUCTED_OR_UNOBSERVED")
     stamp = clock_of(receipt, "observed_completed_at_utc")
     need(stamp <= cutoff, "TARGET_CAPTURE_AFTER_CUTOFF")
+    if receipt.get("captured_at_utc") is not None:
+        need(stamp <= when(receipt["captured_at_utc"]) <= cutoff,
+             "TARGET_CAPTURE_AFTER_CUTOFF")
+    if receipt.get("published_at_utc") is not None:
+        need(when(receipt["published_at_utc"]) <= stamp,
+             "TARGET_PUBLICATION_AFTER_OBSERVATION")
     digest_required(receipt.get("source_sha256"))
     # A declared hash and clock DO NOT demonstrate independent GitHub receipt
     # or the provider's first historical publication time.
-    return {"source_observed_at_utc": utc_str(stamp),
+    completed = when(receipt.get("captured_at_utc", receipt["observed_completed_at_utc"]))
+    return {"source_observed_at_utc": utc_str(completed),
             "source_sha256": receipt["source_sha256"],
             "source_class": "NETWORK_OBSERVED"}
 
@@ -116,16 +128,19 @@ def _xg_side(value, proof, predecessor_ko, cutoff, reasons):
     # The shared Step11 aggregation takes the real observed clock; it does
     # NOT certify first provider publication, even if a timestamp is present.
     return float(value), {
-        "observed_at_utc": utc_str(observed),
+        "observed_at_utc": utc_str(captured),
         "source_sha256": proof["source_sha256"]}
 
 
 def _predecessor(row, target, cutoff, target_ko, reasons):
     need(isinstance(row, dict), "PREDECESSOR_ROW_REQUIRED")
     need(row.get("league") == target["league"], "CROSS_LEAGUE_HISTORY")
-    need(row.get("fixture_id") != target["fixture_id"],
+    need(str(row.get("fixture_id")) != str(target["fixture_id"]),
          "TARGET_RESULT_LEAK")
-    need(row.get("home_team_id") != row.get("away_team_id"),
+    for key in ("home_team_id", "away_team_id"):
+        need(type(row.get(key)) in (str, int) and str(row[key]),
+             "PREDECESSOR_TEAM_ID_REQUIRED")
+    need(str(row.get("home_team_id")) != str(row.get("away_team_id")),
          "PREDECESSOR_TEAMS_IDENTICAL")
     need(type(row.get("season_start_year")) is int and
          row["season_start_year"] <= target["season_start_year"],
@@ -160,7 +175,7 @@ def _predecessor(row, target, cutoff, target_ko, reasons):
     # contain the actual result payload; separate byte audit still required.
     update = receipt.get("result_record_updated_at_utc")
     if update is not None:
-        need(when(update) <= captured, "RESULT_ROW_MUTATED_AFTER_CAPTURE")
+        need(when(update) <= observed, "RESULT_ROW_MUTATED_AFTER_CAPTURE")
     if (ko + RESULT_MIN_LAG > observed or captured > cutoff or
         (pub is not None and pub > cutoff)):
         reasons["RESULT_NOT_AVAILABLE_AT_CUTOFF"] += 1
@@ -206,6 +221,10 @@ def build_shared_features(*, purpose, target, cutoff_utc,
     cutoff = when(cutoff_utc)
     target_ko = _target(target, cutoff)
     source = _target_receipt(target_receipt, cutoff)
+    # Provider IDs have one canonical representation inside aggregation. In
+    # particular team 123 and team "123" cannot silently become two ratings.
+    target = {**target, **{key:str(target[key]) for key in
+              ("fixture_id", "home_team_id", "away_team_id")}}
     need(isinstance(predecessor_rows, list), "PREDECESSORS_LIST_REQUIRED")
     params = EloParameters() if elo_params is None else elo_params
     need(isinstance(params, EloParameters), "ELO_PARAMETER_TYPE_INVALID")
@@ -216,10 +235,12 @@ def build_shared_features(*, purpose, target, cutoff_utc,
         need(isinstance(row, dict), "PREDECESSOR_OBJECT_REQUIRED")
         ident = row.get("fixture_id")
         need(type(ident) in (int, str) and str(ident), "BAD_PREDECESSOR_ID")
-        need(ident not in seen, "DUPLICATE_PREDECESSOR_ID")
-        seen.add(ident)
+        need(str(ident) not in seen, "DUPLICATE_PREDECESSOR_ID")
+        seen.add(str(ident))
         accepted = _predecessor(row, target, cutoff, target_ko, reasons)
         if accepted is not None:
+            for key in ("fixture_id", "home_team_id", "away_team_id"):
+                accepted[key] = str(accepted[key])
             history.append(accepted)
     view = _compose_features(
         {"home_team_id": target["home_team_id"],
@@ -229,6 +250,25 @@ def build_shared_features(*, purpose, target, cutoff_utc,
         target_id=target["fixture_id"], mode="observed",
         params=params, excluded=reasons,
         source_evidence=source)
+    # Elo has transitive opponent dependencies. A team's earlier rating can
+    # depend on games it never played itself. Conservatively bind Elo fields
+    # to ALL accepted result receipts, without changing the M0 clock mapper.
+    if history:
+        latest = max(when(r["captured_at_utc"]) for r in history)
+        ids_sha = digest(sorted(str(r["fixture_id"]) for r in history))
+        for key, clock in view["feature_availability"].items():
+            if "elo" in key:
+                clock["latest_required_observed_at_utc"] = utc_str(max(
+                    when(clock["latest_required_observed_at_utc"]), latest))
+                clock["fixtures_sha256"] = ids_sha
+                clock["included_games"] = len(history)
+                clock["kind"] = "ELO_TRANSITIVE_ALL_ACCEPTED_RESULTS"
+    for key in view["missing_flags"]:
+        if key.endswith(("_xg", "_xga")):
+            value_clock = view["feature_availability"][key+"_avg"]
+            view["feature_availability"]["missing:"+key][
+                "latest_required_observed_at_utc"] = value_clock[
+                    "latest_required_observed_at_utc"]
     # Purpose not in the feature hash: changing only TRAIN <-> FORWARD must
     # never create a different prediction feature vector at an identical as-of.
     canonical = {
