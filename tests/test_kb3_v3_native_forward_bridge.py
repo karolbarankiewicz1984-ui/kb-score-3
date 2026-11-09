@@ -1,5 +1,9 @@
 """Synthetic-only end-to-end bridge fixtures. Never hit provider APIs."""
 import json
+import hashlib
+import io
+import zipfile
+from unittest.mock import patch
 import tempfile
 import unittest
 from datetime import datetime, timedelta, timezone
@@ -7,6 +11,7 @@ from pathlib import Path
 
 from scripts.step14_three_league_pitchapi_actual_audit import CURRENT, PREVIOUS
 from src.kb3_v3_native_forward_bridge import produce, BridgeError
+from scripts.kb3_v3_verify_hosted_native_bridge import validate
 from src.kb3_catboost_research_v3 import verified_view, vector
 
 
@@ -64,6 +69,38 @@ class NativeV3Bridge(unittest.TestCase):
                 self.assertEqual(len(vector(v)),87)
                 self.assertEqual(v["accepted_predecessor_count"],2)
                 self.assertFalse(v["training_allowed"])
+
+
+    def test_real_github_host_adapter_uses_original_v3_verified_view(self):
+        with tempfile.TemporaryDirectory() as d:
+            root=Path(d)/"native"
+            produce(receipts(),root,created_now=NOW)
+            buf=io.BytesIO()
+            with zipfile.ZipFile(buf,"w",zipfile.ZIP_DEFLATED) as z:
+                for path in root.rglob("*"):
+                    if path.is_file():
+                        z.write(path,arcname="2026-11-09/"+str(path.relative_to(root)))
+            raw=buf.getvalue()
+            aid=999
+            url="https://api.github.com/repos/karolbarankiewicz1984-ui/kb-score-3/actions/artifacts/999"
+            meta=dict(id=aid,expired=False,
+                      name="KB3_V3_NATIVE_87_FORWARD_SOURCE_UNENCRYPTED_PRIVATE",
+                      created_at=stamp(NOW+timedelta(minutes=5)),
+                      archive_download_url=url+"/zip",
+                      digest="sha256:"+hashlib.sha256(raw).hexdigest())
+            with patch("scripts.kb3_v3_verify_hosted_native_bridge._gh_json",
+                       return_value=meta), patch(
+                       "scripts.kb3_v3_verify_hosted_native_bridge._gh_artifact_zip",
+                       return_value=raw), patch(
+                       "src.kb3_step16_m0_720_calibration._gh_json",
+                       return_value=meta), patch(
+                       "src.kb3_step16_m0_720_calibration._gh_artifact_zip",
+                       return_value=raw):
+                report=validate(aid,"synthetic-test-token")
+            self.assertEqual(report["original_87_vector_verified"],3)
+            self.assertTrue(report["hosted_before_exact_feature_cutoff"])
+            self.assertFalse(report["eligible_for_training"])
+            self.assertFalse(report["production_approved"])
 
     def test_missing_native_source_rejected(self):
         rows=receipts()[:-1]
