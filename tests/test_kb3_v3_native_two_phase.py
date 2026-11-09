@@ -119,6 +119,24 @@ class TwoPhaseNativeSourceArchive(unittest.TestCase):
         with self.assertRaisesRegex(Exception, "FREEZE_OUTSIDE_REAL_CUTOFF_WINDOW"):
             verify(blob, now="2026-11-09T08:05:00Z")
 
+    def test_no_targets_preserves_real_source_bytes_without_fake_87_input(self):
+        data = sources()
+        for country in LEAGUES:
+            future = data[(country, 2026)]["payload"]["matches"][-1]
+            future["time_utc"] = "2026-12-30T18:00:00Z"
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / "archive"
+            summary = build_bundle(data, captured_at=CAPTURE,
+                                   cutoff_at=CUTOFF, outdir=path)
+            self.assertEqual(summary["sources_written"], 6)
+            self.assertEqual(summary["inputs_written"], 0)
+            blob = zip_dir(path)
+        report = verify(blob)
+        self.assertEqual(report["verified_v3_input_vectors"], 0)
+        self.assertEqual(report["candidate_status"], "NO_FUTURE_TARGETS_IN_WINDOW")
+        self.assertEqual(report["native_sources_verified"], 6)
+        self.assertEqual(report["formal_v3_training_admitted"], 0)
+
     def test_betting_or_champion_never_touched(self):
         blob, _ = make_zip()
         report = verify(blob)
