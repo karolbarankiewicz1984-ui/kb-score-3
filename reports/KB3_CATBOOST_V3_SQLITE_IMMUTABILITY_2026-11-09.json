@@ -1,0 +1,21 @@
+{
+  "all_14_mutations_refused_on_disposable_copy": true,
+  "original_unchanged": true,
+  "results": {
+    "forecasts:delete": "RESEARCH_FORECAST_IMMUTABLE",
+    "forecasts:update": "RESEARCH_FORECAST_IMMUTABLE",
+    "kb3_p1_shadow_six_host_proofs:delete": "SHADOW_HOST_PROOF_IMMUTABLE",
+    "kb3_p1_shadow_six_host_proofs:update": "SHADOW_HOST_PROOF_IMMUTABLE",
+    "kb3_p1_shadow_six_new_only:delete": "KB3_SHADOW_SIX_IMMUTABLE_DELETE",
+    "kb3_p1_shadow_six_new_only:update": "KB3_SHADOW_SIX_IMMUTABLE_UPDATE",
+    "m0720_github_push_proofs:delete": "PUSH_PROOF_IMMUTABLE",
+    "m0720_github_push_proofs:update": "PUSH_PROOF_IMMUTABLE",
+    "settlements:delete": "RESEARCH_SETTLEMENT_IMMUTABLE",
+    "settlements:update": "RESEARCH_SETTLEMENT_IMMUTABLE",
+    "step17_challenger_host_proofs:delete": "STEP17_CHALLENGER_PROOF_IMMUTABLE",
+    "step17_challenger_host_proofs:update": "STEP17_CHALLENGER_PROOF_IMMUTABLE",
+    "step17_frozen_challengers:delete": "STEP17_FROZEN_CHALLENGER_IMMUTABLE",
+    "step17_frozen_challengers:update": "STEP17_FROZEN_CHALLENGER_IMMUTABLE"
+  },
+  "sqlite_sha256": "cd0a203ff1bf1ea39b035c18c4dc94b86ef436154d93c66d67bd73061583e447"
+}
