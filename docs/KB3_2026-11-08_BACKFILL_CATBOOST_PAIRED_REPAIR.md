@@ -56,3 +56,26 @@
 - Run 42501013612 previously failed in the same commit step with `TypeError: 'int' object is not callable`; its prior revision is superseded, not evidence of a successful new run.
 - Latest checked M0 settle run 42493640304: 3 new M0 settlements, 115 total; 23 Shadow Six rows, zero host-attested settled M0/Shadow Six pairs. Do not misreport M0 settlements as CatBoost paired evaluation.
 - Next audit: inspect next history workflow conclusion and first genuine host-attested Shadow Six settled pairs; no promotion, no backdated forecasts.
+
+
+## 2026-11-09 — 23 genuine paired settlements and controlled parity gate
+
+**Verified on GitHub Actions run 42547104765**: 147 M0 eight-league settlements, including 23/23 original host-attested paired M0 / prospective CatBoost Shadow Six. Same-fixture 1X2 (n=23):
+- M0: top1 14/23 (60.87%), Brier sum3 0.5621912012, log loss 0.9516386707, top1 ECE 0.1755385582.
+- Six-feature CatBoost Shadow: top1 15/23 (65.22%), Brier sum3 0.5599529955, log loss 0.9449020152, top1 ECE 0.1976834490.
+- Differences are descriptive only. The original 85-feature CatBoost M1-R is a **different model/cohort**; do not attribute these 23 results to it.
+
+**Calibration**: M0 8-league 147 settled; first-fit calibrator exists (temperature 0.7), but 0 independently verified post-fit holdout, 50 still needed. No automatic production activation. Step18 run 42553835471 remains PENDING for paired sample/week evidence and P1-01 feature semantics.
+
+**Applied code (research only)**:
+- Commit ee3f5df adds `scripts/kb3_catboost_feature_semantics_gate.py`, a fail-closed diagnostic documenting original 85-feature CatBoost 48h historical vs 3h forward source-lag mismatch. It requires matching lag, shared contract SHA and independently certified PIT before reporting parity. It cannot authorize Champion.
+- Commit 29b44e9 adds three unit tests covering 48h/3h mismatch, missing proofs despite matching lag, and no Champion promotion even with matching contract.
+- Existing shared as-of v2 implementation remains separate; no refit or replacement of the frozen original 85-feature model, no modification of M0, no retrospective forecast generation, no TEST unsealing.
+- CI execution of new tests **not yet confirmed**. Run `python -m unittest tests.test_kb3_catboost_feature_semantics_gate -v` or `python -m unittest discover -s tests -p 'test_kb3_catboost_feature_semantics_gate.py' -v`.
+
+**Next controlled tasks, not falsely marked complete**:
+1. Verify CI tests and integrate the fail-closed parity status into Step18 reporting (without changing production scoring).
+2. Build genuinely shared 3h as-of v2 train/forward fixture features with identical source, cutoff, missingness, feature order and independent source receipts; run paired parity tests.
+3. Train a **new version** of 85-feature CatBoost only when verified training eligibility and independent PIT allow it. Keep the old 48h model diagnostic-only.
+4. Continue append-only prospective M0 / six-feature CatBoost paired settlement collection and independent 50-game post-fit M0 holdout; re-evaluate on 50 then 100–150 paired fixtures across independent weeks.
+5. No Champion promotion without Step16/17/18 gates and explicit owner approval.
