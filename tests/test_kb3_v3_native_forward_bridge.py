@@ -102,6 +102,21 @@ class NativeV3Bridge(unittest.TestCase):
             self.assertFalse(report["eligible_for_training"])
             self.assertFalse(report["production_approved"])
 
+    def test_real_pit_utc_z_string_can_drive_native_87_bridge(self):
+        # Regression: utc_now() is a string. Earlier code called .utcoffset()
+        # directly on that string, failing real scheduled capture at runtime.
+        with tempfile.TemporaryDirectory() as d:
+            m = produce(receipts(), Path(d)/"native", created_now=stamp(NOW))
+            self.assertEqual(m["source_count"], 6)
+            self.assertEqual(m["target_count"], 3)
+            self.assertFalse(m["training_allowed"])
+
+    def test_invalid_native_clock_type_fails_closed(self):
+        with tempfile.TemporaryDirectory() as d:
+            with self.assertRaisesRegex(BridgeError, "UTC_REQUIRED"):
+                produce(receipts(), Path(d)/"native", created_now=123)
+            self.assertFalse((Path(d)/"native").exists())
+
     def test_missing_native_source_rejected(self):
         rows=receipts()[:-1]
         with tempfile.TemporaryDirectory() as d:
