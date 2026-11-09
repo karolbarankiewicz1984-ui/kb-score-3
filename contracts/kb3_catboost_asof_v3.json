@@ -1,0 +1,560 @@
+{
+  "builder": "kb3-p1-shared-train-forward-asof-v2",
+  "elo_parameters": {
+    "home_advantage": 65.0,
+    "initial": 1500.0,
+    "k": 20.0,
+    "scale": 400.0,
+    "season_retention": 0.85
+  },
+  "feature_clock": "actual UTC cutoff, never target kickoff",
+  "feature_count": 87,
+  "feature_order": "lexicographic exact names in features; fixed before TRAIN, no variance selection",
+  "features": [
+    {
+      "definition": "1 iff fewer than N eligible previous matches in this window",
+      "name": "miss:away_all_10_history",
+      "nullable": false,
+      "unit": "boolean_0_1"
+    },
+    {
+      "definition": "1 iff fewer than N eligible previous matches in this window",
+      "name": "miss:away_all_15_history",
+      "nullable": false,
+      "unit": "boolean_0_1"
+    },
+    {
+      "definition": "1 iff fewer than N eligible previous matches in this window",
+      "name": "miss:away_all_5_history",
+      "nullable": false,
+      "unit": "boolean_0_1"
+    },
+    {
+      "definition": "1 iff no previous match",
+      "name": "miss:away_days_since_last_kickoff",
+      "nullable": false,
+      "unit": "boolean_0_1"
+    },
+    {
+      "definition": "1 iff fewer than N eligible previous matches in this window",
+      "name": "miss:away_venue_10_history",
+      "nullable": false,
+      "unit": "boolean_0_1"
+    },
+    {
+      "definition": "1 iff fewer than N eligible previous matches in this window",
+      "name": "miss:away_venue_15_history",
+      "nullable": false,
+      "unit": "boolean_0_1"
+    },
+    {
+      "definition": "1 iff fewer than N eligible previous matches in this window",
+      "name": "miss:away_venue_5_history",
+      "nullable": false,
+      "unit": "boolean_0_1"
+    },
+    {
+      "definition": "1 iff fewer than N eligible previous matches in this window",
+      "name": "miss:home_all_10_history",
+      "nullable": false,
+      "unit": "boolean_0_1"
+    },
+    {
+      "definition": "1 iff fewer than N eligible previous matches in this window",
+      "name": "miss:home_all_15_history",
+      "nullable": false,
+      "unit": "boolean_0_1"
+    },
+    {
+      "definition": "1 iff fewer than N eligible previous matches in this window",
+      "name": "miss:home_all_5_history",
+      "nullable": false,
+      "unit": "boolean_0_1"
+    },
+    {
+      "definition": "1 iff no previous match",
+      "name": "miss:home_days_since_last_kickoff",
+      "nullable": false,
+      "unit": "boolean_0_1"
+    },
+    {
+      "definition": "1 iff fewer than N eligible previous matches in this window",
+      "name": "miss:home_venue_10_history",
+      "nullable": false,
+      "unit": "boolean_0_1"
+    },
+    {
+      "definition": "1 iff fewer than N eligible previous matches in this window",
+      "name": "miss:home_venue_15_history",
+      "nullable": false,
+      "unit": "boolean_0_1"
+    },
+    {
+      "definition": "1 iff fewer than N eligible previous matches in this window",
+      "name": "miss:home_venue_5_history",
+      "nullable": false,
+      "unit": "boolean_0_1"
+    },
+    {
+      "definition": "mean 90-minute goals for/against from team perspective, last N eligible games; round 6",
+      "name": "num:away_all_10_ga_avg",
+      "nullable": true,
+      "unit": "goals_per_match"
+    },
+    {
+      "definition": "mean 90-minute goals for/against from team perspective, last N eligible games; round 6",
+      "name": "num:away_all_10_gf_avg",
+      "nullable": true,
+      "unit": "goals_per_match"
+    },
+    {
+      "definition": "min(N, eligible matches in all/venue window); zero if none",
+      "name": "num:away_all_10_n",
+      "nullable": false,
+      "unit": "matches"
+    },
+    {
+      "definition": "mean pre-match opponent Elo over last N eligible games; round 6",
+      "name": "num:away_all_10_opponent_elo_avg",
+      "nullable": true,
+      "unit": "elo_points"
+    },
+    {
+      "definition": "mean of 3 win / 1 draw / 0 loss, last N eligible games; round 6",
+      "name": "num:away_all_10_points_avg",
+      "nullable": true,
+      "unit": "points_per_match"
+    },
+    {
+      "definition": "mean 90-minute goals for/against from team perspective, last N eligible games; round 6",
+      "name": "num:away_all_15_ga_avg",
+      "nullable": true,
+      "unit": "goals_per_match"
+    },
+    {
+      "definition": "mean 90-minute goals for/against from team perspective, last N eligible games; round 6",
+      "name": "num:away_all_15_gf_avg",
+      "nullable": true,
+      "unit": "goals_per_match"
+    },
+    {
+      "definition": "min(N, eligible matches in all/venue window); zero if none",
+      "name": "num:away_all_15_n",
+      "nullable": false,
+      "unit": "matches"
+    },
+    {
+      "definition": "mean pre-match opponent Elo over last N eligible games; round 6",
+      "name": "num:away_all_15_opponent_elo_avg",
+      "nullable": true,
+      "unit": "elo_points"
+    },
+    {
+      "definition": "mean of 3 win / 1 draw / 0 loss, last N eligible games; round 6",
+      "name": "num:away_all_15_points_avg",
+      "nullable": true,
+      "unit": "points_per_match"
+    },
+    {
+      "definition": "mean 90-minute goals for/against from team perspective, last N eligible games; round 6",
+      "name": "num:away_all_5_ga_avg",
+      "nullable": true,
+      "unit": "goals_per_match"
+    },
+    {
+      "definition": "mean 90-minute goals for/against from team perspective, last N eligible games; round 6",
+      "name": "num:away_all_5_gf_avg",
+      "nullable": true,
+      "unit": "goals_per_match"
+    },
+    {
+      "definition": "min(N, eligible matches in all/venue window); zero if none",
+      "name": "num:away_all_5_n",
+      "nullable": false,
+      "unit": "matches"
+    },
+    {
+      "definition": "mean pre-match opponent Elo over last N eligible games; round 6",
+      "name": "num:away_all_5_opponent_elo_avg",
+      "nullable": true,
+      "unit": "elo_points"
+    },
+    {
+      "definition": "mean of 3 win / 1 draw / 0 loss, last N eligible games; round 6",
+      "name": "num:away_all_5_points_avg",
+      "nullable": true,
+      "unit": "points_per_match"
+    },
+    {
+      "definition": "(cutoff - latest eligible kickoff).total_seconds / 86400, round 4; null iff no history",
+      "name": "num:away_days_since_last_kickoff",
+      "nullable": true,
+      "unit": "days"
+    },
+    {
+      "definition": "Step11 chronological Elo, simultaneous matches updated in one batch, season retention; round 5",
+      "name": "num:away_elo",
+      "nullable": false,
+      "unit": "elo_points"
+    },
+    {
+      "definition": "all eligible matches played by team across supplied seasons; zero if none",
+      "name": "num:away_elo_games_available",
+      "nullable": false,
+      "unit": "matches"
+    },
+    {
+      "definition": "all eligible matches played by team across supplied seasons; zero if none",
+      "name": "num:away_games_available",
+      "nullable": false,
+      "unit": "matches"
+    },
+    {
+      "definition": "eligible matches for team with season_start_year strictly below target season; zero with no prior seasons",
+      "name": "num:away_prior_seasons_games_available",
+      "nullable": false,
+      "unit": "matches"
+    },
+    {
+      "definition": "mean 90-minute goals for/against from team perspective, last N eligible games; round 6",
+      "name": "num:away_venue_10_ga_avg",
+      "nullable": true,
+      "unit": "goals_per_match"
+    },
+    {
+      "definition": "mean 90-minute goals for/against from team perspective, last N eligible games; round 6",
+      "name": "num:away_venue_10_gf_avg",
+      "nullable": true,
+      "unit": "goals_per_match"
+    },
+    {
+      "definition": "min(N, eligible matches in all/venue window); zero if none",
+      "name": "num:away_venue_10_n",
+      "nullable": false,
+      "unit": "matches"
+    },
+    {
+      "definition": "mean pre-match opponent Elo over last N eligible games; round 6",
+      "name": "num:away_venue_10_opponent_elo_avg",
+      "nullable": true,
+      "unit": "elo_points"
+    },
+    {
+      "definition": "mean of 3 win / 1 draw / 0 loss, last N eligible games; round 6",
+      "name": "num:away_venue_10_points_avg",
+      "nullable": true,
+      "unit": "points_per_match"
+    },
+    {
+      "definition": "mean 90-minute goals for/against from team perspective, last N eligible games; round 6",
+      "name": "num:away_venue_15_ga_avg",
+      "nullable": true,
+      "unit": "goals_per_match"
+    },
+    {
+      "definition": "mean 90-minute goals for/against from team perspective, last N eligible games; round 6",
+      "name": "num:away_venue_15_gf_avg",
+      "nullable": true,
+      "unit": "goals_per_match"
+    },
+    {
+      "definition": "min(N, eligible matches in all/venue window); zero if none",
+      "name": "num:away_venue_15_n",
+      "nullable": false,
+      "unit": "matches"
+    },
+    {
+      "definition": "mean pre-match opponent Elo over last N eligible games; round 6",
+      "name": "num:away_venue_15_opponent_elo_avg",
+      "nullable": true,
+      "unit": "elo_points"
+    },
+    {
+      "definition": "mean of 3 win / 1 draw / 0 loss, last N eligible games; round 6",
+      "name": "num:away_venue_15_points_avg",
+      "nullable": true,
+      "unit": "points_per_match"
+    },
+    {
+      "definition": "mean 90-minute goals for/against from team perspective, last N eligible games; round 6",
+      "name": "num:away_venue_5_ga_avg",
+      "nullable": true,
+      "unit": "goals_per_match"
+    },
+    {
+      "definition": "mean 90-minute goals for/against from team perspective, last N eligible games; round 6",
+      "name": "num:away_venue_5_gf_avg",
+      "nullable": true,
+      "unit": "goals_per_match"
+    },
+    {
+      "definition": "min(N, eligible matches in all/venue window); zero if none",
+      "name": "num:away_venue_5_n",
+      "nullable": false,
+      "unit": "matches"
+    },
+    {
+      "definition": "mean pre-match opponent Elo over last N eligible games; round 6",
+      "name": "num:away_venue_5_opponent_elo_avg",
+      "nullable": true,
+      "unit": "elo_points"
+    },
+    {
+      "definition": "mean of 3 win / 1 draw / 0 loss, last N eligible games; round 6",
+      "name": "num:away_venue_5_points_avg",
+      "nullable": true,
+      "unit": "points_per_match"
+    },
+    {
+      "definition": "all eligible home matches for target home team, all eligible away matches for target away team; zero if none",
+      "name": "num:away_venue_games_available",
+      "nullable": false,
+      "unit": "matches"
+    },
+    {
+      "definition": "Step11 chronological Elo, simultaneous matches updated in one batch, season retention; round 5",
+      "name": "num:elo_home_minus_away",
+      "nullable": false,
+      "unit": "elo_points"
+    },
+    {
+      "definition": "mean 90-minute goals for/against from team perspective, last N eligible games; round 6",
+      "name": "num:home_all_10_ga_avg",
+      "nullable": true,
+      "unit": "goals_per_match"
+    },
+    {
+      "definition": "mean 90-minute goals for/against from team perspective, last N eligible games; round 6",
+      "name": "num:home_all_10_gf_avg",
+      "nullable": true,
+      "unit": "goals_per_match"
+    },
+    {
+      "definition": "min(N, eligible matches in all/venue window); zero if none",
+      "name": "num:home_all_10_n",
+      "nullable": false,
+      "unit": "matches"
+    },
+    {
+      "definition": "mean pre-match opponent Elo over last N eligible games; round 6",
+      "name": "num:home_all_10_opponent_elo_avg",
+      "nullable": true,
+      "unit": "elo_points"
+    },
+    {
+      "definition": "mean of 3 win / 1 draw / 0 loss, last N eligible games; round 6",
+      "name": "num:home_all_10_points_avg",
+      "nullable": true,
+      "unit": "points_per_match"
+    },
+    {
+      "definition": "mean 90-minute goals for/against from team perspective, last N eligible games; round 6",
+      "name": "num:home_all_15_ga_avg",
+      "nullable": true,
+      "unit": "goals_per_match"
+    },
+    {
+      "definition": "mean 90-minute goals for/against from team perspective, last N eligible games; round 6",
+      "name": "num:home_all_15_gf_avg",
+      "nullable": true,
+      "unit": "goals_per_match"
+    },
+    {
+      "definition": "min(N, eligible matches in all/venue window); zero if none",
+      "name": "num:home_all_15_n",
+      "nullable": false,
+      "unit": "matches"
+    },
+    {
+      "definition": "mean pre-match opponent Elo over last N eligible games; round 6",
+      "name": "num:home_all_15_opponent_elo_avg",
+      "nullable": true,
+      "unit": "elo_points"
+    },
+    {
+      "definition": "mean of 3 win / 1 draw / 0 loss, last N eligible games; round 6",
+      "name": "num:home_all_15_points_avg",
+      "nullable": true,
+      "unit": "points_per_match"
+    },
+    {
+      "definition": "mean 90-minute goals for/against from team perspective, last N eligible games; round 6",
+      "name": "num:home_all_5_ga_avg",
+      "nullable": true,
+      "unit": "goals_per_match"
+    },
+    {
+      "definition": "mean 90-minute goals for/against from team perspective, last N eligible games; round 6",
+      "name": "num:home_all_5_gf_avg",
+      "nullable": true,
+      "unit": "goals_per_match"
+    },
+    {
+      "definition": "min(N, eligible matches in all/venue window); zero if none",
+      "name": "num:home_all_5_n",
+      "nullable": false,
+      "unit": "matches"
+    },
+    {
+      "definition": "mean pre-match opponent Elo over last N eligible games; round 6",
+      "name": "num:home_all_5_opponent_elo_avg",
+      "nullable": true,
+      "unit": "elo_points"
+    },
+    {
+      "definition": "mean of 3 win / 1 draw / 0 loss, last N eligible games; round 6",
+      "name": "num:home_all_5_points_avg",
+      "nullable": true,
+      "unit": "points_per_match"
+    },
+    {
+      "definition": "(cutoff - latest eligible kickoff).total_seconds / 86400, round 4; null iff no history",
+      "name": "num:home_days_since_last_kickoff",
+      "nullable": true,
+      "unit": "days"
+    },
+    {
+      "definition": "Step11 chronological Elo, simultaneous matches updated in one batch, season retention; round 5",
+      "name": "num:home_elo",
+      "nullable": false,
+      "unit": "elo_points"
+    },
+    {
+      "definition": "all eligible matches played by team across supplied seasons; zero if none",
+      "name": "num:home_elo_games_available",
+      "nullable": false,
+      "unit": "matches"
+    },
+    {
+      "definition": "all eligible matches played by team across supplied seasons; zero if none",
+      "name": "num:home_games_available",
+      "nullable": false,
+      "unit": "matches"
+    },
+    {
+      "definition": "eligible matches for team with season_start_year strictly below target season; zero with no prior seasons",
+      "name": "num:home_prior_seasons_games_available",
+      "nullable": false,
+      "unit": "matches"
+    },
+    {
+      "definition": "mean 90-minute goals for/against from team perspective, last N eligible games; round 6",
+      "name": "num:home_venue_10_ga_avg",
+      "nullable": true,
+      "unit": "goals_per_match"
+    },
+    {
+      "definition": "mean 90-minute goals for/against from team perspective, last N eligible games; round 6",
+      "name": "num:home_venue_10_gf_avg",
+      "nullable": true,
+      "unit": "goals_per_match"
+    },
+    {
+      "definition": "min(N, eligible matches in all/venue window); zero if none",
+      "name": "num:home_venue_10_n",
+      "nullable": false,
+      "unit": "matches"
+    },
+    {
+      "definition": "mean pre-match opponent Elo over last N eligible games; round 6",
+      "name": "num:home_venue_10_opponent_elo_avg",
+      "nullable": true,
+      "unit": "elo_points"
+    },
+    {
+      "definition": "mean of 3 win / 1 draw / 0 loss, last N eligible games; round 6",
+      "name": "num:home_venue_10_points_avg",
+      "nullable": true,
+      "unit": "points_per_match"
+    },
+    {
+      "definition": "mean 90-minute goals for/against from team perspective, last N eligible games; round 6",
+      "name": "num:home_venue_15_ga_avg",
+      "nullable": true,
+      "unit": "goals_per_match"
+    },
+    {
+      "definition": "mean 90-minute goals for/against from team perspective, last N eligible games; round 6",
+      "name": "num:home_venue_15_gf_avg",
+      "nullable": true,
+      "unit": "goals_per_match"
+    },
+    {
+      "definition": "min(N, eligible matches in all/venue window); zero if none",
+      "name": "num:home_venue_15_n",
+      "nullable": false,
+      "unit": "matches"
+    },
+    {
+      "definition": "mean pre-match opponent Elo over last N eligible games; round 6",
+      "name": "num:home_venue_15_opponent_elo_avg",
+      "nullable": true,
+      "unit": "elo_points"
+    },
+    {
+      "definition": "mean of 3 win / 1 draw / 0 loss, last N eligible games; round 6",
+      "name": "num:home_venue_15_points_avg",
+      "nullable": true,
+      "unit": "points_per_match"
+    },
+    {
+      "definition": "mean 90-minute goals for/against from team perspective, last N eligible games; round 6",
+      "name": "num:home_venue_5_ga_avg",
+      "nullable": true,
+      "unit": "goals_per_match"
+    },
+    {
+      "definition": "mean 90-minute goals for/against from team perspective, last N eligible games; round 6",
+      "name": "num:home_venue_5_gf_avg",
+      "nullable": true,
+      "unit": "goals_per_match"
+    },
+    {
+      "definition": "min(N, eligible matches in all/venue window); zero if none",
+      "name": "num:home_venue_5_n",
+      "nullable": false,
+      "unit": "matches"
+    },
+    {
+      "definition": "mean pre-match opponent Elo over last N eligible games; round 6",
+      "name": "num:home_venue_5_opponent_elo_avg",
+      "nullable": true,
+      "unit": "elo_points"
+    },
+    {
+      "definition": "mean of 3 win / 1 draw / 0 loss, last N eligible games; round 6",
+      "name": "num:home_venue_5_points_avg",
+      "nullable": true,
+      "unit": "points_per_match"
+    },
+    {
+      "definition": "all eligible home matches for target home team, all eligible away matches for target away team; zero if none",
+      "name": "num:home_venue_games_available",
+      "nullable": false,
+      "unit": "matches"
+    }
+  ],
+  "implementation_sha256": {
+    "src/kb3_features.py": "55021e6f54cdfc650a5ae488157f0ce7f71864601885974cbfce215fb315eee5",
+    "src/kb3_p1_shared_asof_features_v2.py": "7a862b9224a92421818615fdc101b38029fa8af0503523736c976583b1dcb108",
+    "src/kb3_step11_field_audit.py": "c6911cbfda899df60915df438c2f1695e54fb71e0e6e76ed1b800908d7463d63"
+  },
+  "leagues": [
+    "BEL",
+    "ESP",
+    "FRA",
+    "GER",
+    "ITA",
+    "NED",
+    "POL",
+    "TUR"
+  ],
+  "min_prematch_lead_minutes": 90,
+  "missing_encoding": "JSON null to CatBoost NaN (nan_mode=Min), explicit boolean flags to 0/1; partial windows average only available games and set history flag",
+  "optional_xg": "not used; xG values/receipts must be absent",
+  "production_approved": false,
+  "result_min_lag_hours": 3,
+  "schema": "kb3-catboost-shared-asof-v3",
+  "source_policy": "independent GitHub archive of exact input and native provider response bytes <= cutoff; reconstructed history is ineligible; original provider first publication remains unknown",
+  "window_selection": "last N eligible chronological matches across supplied prior seasons; all and venue windows N=5,10,15; no imputation"
+}
