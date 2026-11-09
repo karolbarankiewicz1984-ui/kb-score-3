@@ -1,0 +1,95 @@
+name: KB3 CatBoost v3 hosted native-data preflight - 3 leagues (NO provider API)
+
+on:
+  pull_request:
+    paths:
+      - scripts/kb3_catboost_v3_three_league_archive_preflight.py
+      - tests/test_kb3_catboost_v3_three_league_archive_preflight.py
+      - .github/workflows/kb3-catboost-v3-three-league-evidence.yml
+  workflow_dispatch:
+  schedule:
+    - cron: '10 8 * * *'
+
+permissions:
+  contents: read
+
+jobs:
+  verify-latest-actual-three-league-artifact:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    permissions:
+      contents: read
+      actions: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Offline safety tests - synthetic source fixtures
+        run: |
+          python -m unittest discover -s tests -p 'test_kb3_catboost_v3_three_league_archive_preflight.py' -v
+      - name: Select most recent independently hosted existing archive
+        id: source
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh api "repos/${GITHUB_REPOSITORY}/actions/artifacts?name=KB3_3_LEAGUE_DAILY_REAL_PIT_ENCRYPTED_OBSERVATION&per_page=25" > "$RUNNER_TEMP/artifacts.json"
+          python - "$RUNNER_TEMP/artifacts.json" "$GITHUB_OUTPUT" <<'PY'
+          import json,sys
+          artifacts=json.load(open(sys.argv[1]))['artifacts']
+          valid=[x for x in artifacts if
+                 x.get('name')=='KB3_3_LEAGUE_DAILY_REAL_PIT_ENCRYPTED_OBSERVATION'
+                 and x.get('expired') is False
+                 and isinstance(x.get('digest'),str)
+                 and x['digest'].startswith('sha256:')
+                 and x.get('workflow_run',{}).get('head_branch')=='main']
+          if not valid:
+              raise SystemExit('NO_UNEXPIRED_GITHUB_HOSTED_THREE_LEAGUE_EVIDENCE')
+          newest=max(valid,key=lambda x:(x['created_at'],x['id']))
+          with open(sys.argv[2],'a') as o:
+              for k,v in [('id',newest['id']),
+                          ('created',newest['created_at']),
+                          ('digest',newest['digest']),
+                          ('day',newest['created_at'][:10])]:
+                  print(k+'='+str(v),file=o)
+          print('SELECTED_EXISTING_ARCHIVE_ID',newest['id'],
+                'HOST_CREATED',newest['created_at'],
+                'NO_NEW_PROVIDER_API_CALLS')
+          PY
+      - name: Download exact artifact bytes, no provider connection
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh api "repos/${GITHUB_REPOSITORY}/actions/artifacts/${{ steps.source.outputs.id }}/zip" > "$RUNNER_TEMP/hosted.zip"
+          test -s "$RUNNER_TEMP/hosted.zip"
+      - name: Validate GitHub ZIP digest, encrypted raw bytes, original 87 clocks and exact cutoff
+        run: |
+          python -m scripts.kb3_catboost_v3_three_league_archive_preflight \
+            --zip "$RUNNER_TEMP/hosted.zip" \
+            --artifact-id "${{ steps.source.outputs.id }}" \
+            --github-created-at "${{ steps.source.outputs.created }}" \
+            --github-sha256 "${{ steps.source.outputs.digest }}" \
+            --day "${{ steps.source.outputs.day }}" \
+            --contract contracts/kb3_catboost_asof_v3.json \
+            --out "$RUNNER_TEMP/KB3_CATBOOST_V3_THREE_LEAGUE_PREFLIGHT.json"
+          python - "$RUNNER_TEMP/KB3_CATBOOST_V3_THREE_LEAGUE_PREFLIGHT.json" <<'PY'
+          import json,sys
+          d=json.load(open(sys.argv[1]))
+          assert d["official_v3_admitted_samples"]==0
+          assert d["production_approved"] is False
+          assert d["github_zip_sha256_verified"] is True
+          assert d["encrypted_source_sha256_verified"] is True
+          assert d["sqlite_ledger_sha256_verified"] is True
+          assert d["sample_payload_sha256_verified"]==d["contract_87_fields_and_clocks_verified"]
+          print('HOSTED_REAL_THREE_LEAGUE_RESEARCH_PREFLIGHT_ONLY',
+                '87_VECTOR_COUNT',d['contract_87_fields_and_clocks_verified'],
+                'EXACT_CUTOFF_HOSTED',d['hosted_before_existing_exact_feature_cutoff_count'],
+                'FORMAL_V3_ADMITTED',d['official_v3_admitted_samples'])
+          PY
+      - uses: actions/upload-artifact@v4
+        if: success()
+        with:
+          name: KB3_V3_THREE_LEAGUE_SOURCE_READINESS_NO_FIT
+          path: ${{ runner.temp }}/KB3_CATBOOST_V3_THREE_LEAGUE_PREFLIGHT.json
+          retention-days: 30
+          if-no-files-found: error
