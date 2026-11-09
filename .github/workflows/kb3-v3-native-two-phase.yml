@@ -1,0 +1,128 @@
+name: KB3 v3 independently hosted native pre-match sources then 87-vector gate
+on:
+  pull_request:
+    paths:
+      - .github/workflows/kb3-v3-native-two-phase.yml
+  push:
+    branches: [main]
+    paths:
+      - .github/workflows/kb3-v3-native-two-phase.yml
+  schedule:
+    - cron: '10 5 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  actions: read
+
+concurrency:
+  group: kb3-v3-native-two-phase-source
+  cancel-in-progress: false
+
+jobs:
+  no-api-integration-tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: 11c8403d1a031422c1efb575303a5c985f23ac4b
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Verify original 87-feature contract and fail-closed native archive tests
+        run: |
+          python -m unittest discover -s tests -p 'test_kb3_v3_native_two_phase.py' -v
+          python -m scripts.kb3_catboost_research_v3 readiness
+
+  source-archive:
+    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
+    needs: no-api-integration-tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    outputs:
+      artifact_id: ${{ steps.native_artifact.outputs.artifact-id }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: 11c8403d1a031422c1efb575303a5c985f23ac4b
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install existing provider SDK - no new subscriptions
+        run: python -m pip install --disable-pip-version-check 'pitchapi==0.1.6' 'cryptography>=42,<47'
+      - name: Seven original provider calls; six time-stamped season response files
+        env:
+          PITCHAPI_API_KEY: ${{ secrets.PITCHAPI_API_KEY }}
+        run: |
+          python -m scripts.kb3_v3_native_two_phase capture \
+            --output "$RUNNER_TEMP/kb3_v3_original_native_sources"
+      - name: Upload exact native source and inputs BEFORE the planned cutoff
+        id: native_artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: KB3_V3_NATIVE_PREMATCH_SOURCE_${{ github.run_id }}
+          path: ${{ runner.temp }}/kb3_v3_original_native_sources/
+          retention-days: 90
+          if-no-files-found: error
+
+  verified-v3-freeze:
+    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
+    needs: source-archive
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: 11c8403d1a031422c1efb575303a5c985f23ac4b
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Read GitHub-authored archive SHA and created_at
+        env:
+          GH_TOKEN: ${{ github.token }}
+          AID: ${{ needs.source-archive.outputs.artifact_id }}
+        run: |
+          test -n "$AID"
+          gh api "repos/$GITHUB_REPOSITORY/actions/artifacts/$AID" > "$RUNNER_TEMP/host.json"
+          python - "$RUNNER_TEMP/host.json" "$GITHUB_ENV" <<'PY'
+          import json,sys
+          m=json.load(open(sys.argv[1]))
+          assert m['expired'] is False and int(m['id'])>0
+          assert m['workflow_run']['head_branch']=='main'
+          assert m['name'].startswith('KB3_V3_NATIVE_PREMATCH_SOURCE_')
+          assert m.get('digest','').startswith('sha256:')
+          with open(sys.argv[2],'a') as f:
+              print('KB3_SOURCE_TIME='+m['created_at'],file=f)
+              print('KB3_SOURCE_DIGEST='+m['digest'],file=f)
+          print('INDEPENDENT_HOST_CREATED',m['created_at'])
+          PY
+      - name: Download unmodified GitHub archived ZIP bytes
+        env:
+          GH_TOKEN: ${{ github.token }}
+          AID: ${{ needs.source-archive.outputs.artifact_id }}
+        run: |
+          gh api "repos/$GITHUB_REPOSITORY/actions/artifacts/$AID/zip" > "$RUNNER_TEMP/source.zip"
+          test -s "$RUNNER_TEMP/source.zip"
+      - name: At real cutoff verify each archived raw fixture and all 87 builder values
+        env:
+          AID: ${{ needs.source-archive.outputs.artifact_id }}
+        run: |
+          python -m scripts.kb3_v3_native_two_phase verify \
+            --zip "$RUNNER_TEMP/source.zip" \
+            --artifact-id "$AID" \
+            --created-at "$KB3_SOURCE_TIME" \
+            --digest "$KB3_SOURCE_DIGEST" \
+            --wait-until-cutoff \
+            --output "$RUNNER_TEMP/KB3_V3_PREMATCH_87_NATIVE_INPUTS.json"
+      - name: Preserve verified frozen research candidates - no fit
+        uses: actions/upload-artifact@v4
+        if: success()
+        with:
+          name: KB3_V3_87_NATIVE_RESEARCH_CANDIDATES_${{ github.run_id }}
+          path: ${{ runner.temp }}/KB3_V3_PREMATCH_87_NATIVE_INPUTS.json
+          retention-days: 90
+          if-no-files-found: error
