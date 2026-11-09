@@ -1,0 +1,49 @@
+{
+  "admitted_real_training_rows": 0,
+  "catboost_version": "1.2.8",
+  "ci_fix_commit": "cff070729eb997ee690e052135aa6bf9fe85a2f0",
+  "code_commit": "d73ecb7c23ac4c13f84881d957fa089692416456",
+  "errors": 0,
+  "existing_file_hashes_checked": 1240,
+  "failures": 0,
+  "full_test_command": "KB3_SHADOW_SIX_MODEL_DIR=assets/research/kb3_shadow_six_v1 python -m unittest discover -s tests",
+  "full_tests": 1340,
+  "github_actions_runs": [
+    {
+      "conclusion": "success",
+      "head_sha": "cff070729eb997ee690e052135aa6bf9fe85a2f0",
+      "id": 42563988180
+    },
+    {
+      "conclusion": "success",
+      "head_sha": "cff070729eb997ee690e052135aa6bf9fe85a2f0",
+      "id": 42563988104
+    },
+    {
+      "conclusion": "success",
+      "head_sha": "cff070729eb997ee690e052135aa6bf9fe85a2f0",
+      "id": 42563988092
+    },
+    {
+      "conclusion": "success",
+      "head_sha": "cff070729eb997ee690e052135aa6bf9fe85a2f0",
+      "id": 42563988068
+    }
+  ],
+  "intentional_existing_offline_ci_fix": [
+    ".github/workflows/kb3-p1-historical-eligibility-v2-offline.yml"
+  ],
+  "model_status": "NOT_TRAINED",
+  "production_approved": false,
+  "protected_m0_schedule_data_models_unchanged": true,
+  "python_version": "Python 3.12.14",
+  "schema": "kb3-catboost-v3-validation-receipt",
+  "shadow_six_original_proofs": 23,
+  "shadow_six_original_rows": 23,
+  "skipped": 0,
+  "source_base_sha": "c09b01d286c209724119ab912fb2f2328998195b",
+  "sqlite_snapshot_sha256": "cd0a203ff1bf1ea39b035c18c4dc94b86ef436154d93c66d67bd73061583e447",
+  "test_log_sha256": "a3f33a4fd23b1e9aa372766ff4405645d370d54b6eb99d504f3bc89e4fd7b051",
+  "test_runtime_seconds": 72.633,
+  "unchanged_existing_files": 1239
+}
