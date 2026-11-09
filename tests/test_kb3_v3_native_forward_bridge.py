@@ -28,7 +28,7 @@ def receipts():
     rows = []
     for country in ("ESP", "ITA", "GER"):
         for season in (CURRENT, PREVIOUS):
-            games = [match(country + "_old_" + season, NOW-timedelta(days=7),
+            games = [match(country + "_old_" + season, NOW-timedelta(days=7 if season == CURRENT else 370),
                            "finished", country+"_H", country+"_C", (2, 1))]
             if season == CURRENT:
                 games += [match(country+"_future", NOW+timedelta(hours=9),
