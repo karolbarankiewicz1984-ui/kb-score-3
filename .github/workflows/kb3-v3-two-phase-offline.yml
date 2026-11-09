@@ -1,0 +1,32 @@
+name: KB3 v3 two-phase native-source archive and verified 87 vectors - offline CI
+on:
+  pull_request:
+    paths:
+      - scripts/kb3_v3_native_two_phase.py
+      - tests/test_kb3_v3_native_two_phase.py
+      - .github/workflows/kb3-v3-two-phase-offline.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  original-builder-parity:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ['3.11', '3.12']
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Enforce original V3 SHA and full six synthetic source archives
+        run: |
+          python -m compileall -q scripts/kb3_v3_native_two_phase.py tests/test_kb3_v3_native_two_phase.py
+          python -m unittest discover -s tests -p 'test_kb3_v3_native_two_phase.py' -v
+          python -m scripts.kb3_catboost_research_v3 readiness
+      - name: No production model or data writes
+        run: |
+          git diff --exit-code
+          test -z "$(git status --porcelain)"

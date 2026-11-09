@@ -4,6 +4,7 @@ on:
     paths:
       - src/kb3_p1_shared_asof_features_v2.py
       - tests/test_kb3_p1_shared_asof_features_v2.py
+      - tests/test_kb3_retro87_original_parity.py
       - docs/KB3_P1_SHARED_ASOF_V2_2026-11-04.md
       - .github/workflows/kb3-p1-shared-asof-v2-offline.yml
 
@@ -31,6 +32,9 @@ jobs:
       - name: Real v2 TRAIN FORWARD contract parity and anti-lookahead tests
         run: |
           python -m unittest discover -s tests -p 'test_kb3_p1_shared_asof_features_v2.py' -v
+      - name: Compare all 87 independent retro values with original builder
+        run: |
+          python -m unittest discover -s tests -p 'test_kb3_retro87_original_parity.py' -v
       - name: Regression for existing Step11 source features
         run: |
           python -m unittest discover -s tests -p 'test_step11_features.py' -v

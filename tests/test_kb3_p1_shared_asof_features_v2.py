@@ -88,6 +88,60 @@ def run(purpose="TRAIN", **updates):
 
 
 class SharedAsOfV2Safety(unittest.TestCase):
+    def test_noncanonical_timestamp_and_identifier_aliases_refused(self):
+        s=sample();s['cutoff_utc']='2026-11-04T18:00:00+01:00Z'
+        with self.assertRaisesRegex(SharedAsOfError,'CANONICAL_UTC'):
+            build_shared_features(purpose='TRAIN',**s)
+        s=sample();s['target']['fixture_id']=123
+        s['predecessor_rows'][0]['fixture_id']='123'
+        with self.assertRaisesRegex(SharedAsOfError,'TARGET_RESULT_LEAK'):
+            build_shared_features(purpose='TRAIN',**s)
+        s=sample();s['predecessor_rows'][0]['fixture_id']=123
+        s['predecessor_rows'][1]['fixture_id']='123'
+        with self.assertRaisesRegex(SharedAsOfError,'DUPLICATE_PREDECESSOR_ID'):
+            build_shared_features(purpose='TRAIN',**s)
+
+    def test_late_target_capture_and_publication_refused(self):
+        for key in ('captured_at_utc','published_at_utc'):
+            s=sample();s['target_receipt'][key]='2026-11-04T18:01:00Z'
+            with self.assertRaises(SharedAsOfError):
+                build_shared_features(purpose='TRAIN',**s)
+
+    def test_xg_availability_uses_completion_not_earlier_observation(self):
+        s=sample();s['target_receipt']=snapshot('2026-11-04T17:05:00Z')
+        view=build_shared_features(purpose='TRAIN',**s)
+        clock=view['feature_availability']['home_all_5_xga_avg']['latest_required_observed_at_utc']
+        self.assertEqual(clock,'2026-11-04T17:35:00Z')
+        self.assertEqual(view['feature_availability']['missing:home_all_5_xga'][
+            'latest_required_observed_at_utc'],clock)
+
+    def test_elo_lineage_includes_transitive_opponents_and_target_capture(self):
+        s=sample();other=copy.deepcopy(s['predecessor_rows'][0])
+        other.update(fixture_id='unrelated',home_team_id='E',away_team_id='F')
+        other['result_receipt'].update(observed_completed_at_utc='2026-11-04T17:45:00Z',
+                                      captured_at_utc='2026-11-04T17:50:00Z')
+        s['predecessor_rows'].append(other)
+        view=build_shared_features(purpose='TRAIN',**s)
+        self.assertEqual(view['feature_availability']['home_elo']['latest_required_observed_at_utc'],
+                         '2026-11-04T17:50:00Z')
+        s=sample();s['target_receipt']['captured_at_utc']='2026-11-04T17:55:00Z'
+        view=build_shared_features(purpose='TRAIN',**s)
+        self.assertEqual(view['feature_availability']['home_games_available']['latest_required_observed_at_utc'],
+                         '2026-11-04T17:55:00Z')
+
+    def test_missing_team_identity_refused(self):
+        s=sample();del s['target']['home_team_id']
+        with self.assertRaisesRegex(SharedAsOfError,'TARGET_TEAM_ID_REQUIRED'):
+            build_shared_features(purpose='TRAIN',**s)
+
+    def test_team_identifier_types_share_one_rating_and_history(self):
+        s=sample();s['target']['home_team_id']='123'
+        for row in s['predecessor_rows']:
+            for key in ('home_team_id','away_team_id'):
+                if row[key]=='A':row[key]=123
+        view=build_shared_features(purpose='TRAIN',**s)
+        self.assertEqual(view['features']['home_games_available'],2)
+
     def test_true_same_asof_train_forward_same_features_hash_lineage(self):
         a = run("TRAIN")
         b = run("FORWARD")

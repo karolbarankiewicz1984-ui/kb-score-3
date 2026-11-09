@@ -1,0 +1,65 @@
+{
+  "admitted_v3_training_rows": 0,
+  "columns": {
+    "finished_fixture_index": [
+      "scope",
+      "season",
+      "match_id",
+      "kickoff_utc",
+      "home_team_id",
+      "away_team_id",
+      "goals_home_90",
+      "goals_away_90",
+      "listing_observed_at_utc",
+      "source_listing_sha256",
+      "original_provider_first_published_utc"
+    ],
+    "observations": [
+      "scope",
+      "season",
+      "match_id",
+      "kickoff_utc",
+      "home_team_id",
+      "away_team_id",
+      "goals_home_90",
+      "goals_away_90",
+      "source_observed_at_utc",
+      "provider_first_published_at_utc",
+      "stat_items_json",
+      "stat_key_count",
+      "xg_status",
+      "xg_home",
+      "xg_away",
+      "shots_home",
+      "shots_away",
+      "stats_payload_sha256",
+      "shots_payload_sha256",
+      "source_chain_sha256",
+      "research_only"
+    ],
+    "rolling_feature_cache": [
+      "scope",
+      "target_match_id",
+      "target_kickoff_utc",
+      "feature_version",
+      "research_only",
+      "provider_original_pit_certified",
+      "feature_json",
+      "source_index_sha256"
+    ]
+  },
+  "fixture_listing_recorded_after_target_kickoff": 8710,
+  "integrity": "ok",
+  "model_status": "NOT_TRAINED",
+  "observations_recorded_after_target_kickoff": 4401,
+  "observations_with_provider_first_published": 0,
+  "reason": "Historical observations collected after target cutoff do not establish old prematch availability; no V3 archived-input/native-byte evidence bundle supplied",
+  "schema": "kb3-v3-source-inventory",
+  "source_unchanged": true,
+  "sqlite_sha256": "ccf7bce286323b0c4b6cd37b6c2547549b90750a5508ab9fea22cb9d99e22d69",
+  "table_counts": {
+    "finished_fixture_index": 8710,
+    "observations": 4401,
+    "rolling_feature_cache": 4401
+  }
+}

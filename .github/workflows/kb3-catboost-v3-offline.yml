@@ -1,0 +1,55 @@
+name: KB3 CatBoost v3 isolated contract and model audit
+on:
+  pull_request:
+    paths:
+      - 'src/kb3_catboost_research_v3.py'
+      - 'src/kb3_model_comparison_v3.py'
+      - 'src/kb3_p1_shared_asof_features_v2.py'
+      - 'scripts/kb3_catboost*.py'
+      - 'scripts/kb3_compare_frozen_models_v3.py'
+      - 'tests/test_kb3_catboost*.py'
+      - 'tests/test_kb3_model_comparison_v3.py'
+      - 'tests/test_kb3_p1_shared_asof_features_v2.py'
+      - 'contracts/kb3_catboost_asof_v3.json'
+      - '.github/workflows/kb3-catboost-v3-offline.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  offline:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      KB3_SHADOW_SIX_MODEL_DIR: ${{ github.workspace }}/assets/research/kb3_shadow_six_v1
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ['3.11', '3.12']
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - run: python -m pip install -r config/step16_ci_requirements.txt
+      - name: Contract, byte provenance, chronology, real synthetic fit and no backdating
+        run: |
+          python -m unittest discover -s tests -p 'test_kb3_catboost*.py' -v
+          python -m unittest discover -s tests -p 'test_kb3_p1_shared_asof_features_v2.py' -v
+          python -m unittest discover -s tests -p 'test_kb3_model_comparison_v3.py' -v
+          python -m unittest discover -s tests -p 'test_kb3_history_snapshot_restore.py' -v
+          python -m unittest discover -s tests -p 'test_step11_features.py' -v
+          python -m unittest discover -s tests -p 'test_step16_m0_720_eight_forward.py' -v
+          python -m unittest discover -s tests -p 'test_kb3_p1_prospective_shadow_six_v1.py' -v
+          python -m scripts.kb3_catboost_research_v3 readiness
+      - name: Preserve M0, its schedule, frozen data, existing models and configuration
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha || github.sha }}
+        run: |
+          git diff --exit-code "$BASE_SHA" HEAD -- data models assets config migrations \
+            src/kb3_features.py src/kb3_step11_field_audit.py \
+            src/kb3_step16_m0_720_eight_forward.py \
+            .github/workflows/kb3-step16-m0-720-eight-forward.yml \
+            .github/workflows/kb3-m0-shadow-daily-settlement.yml
+          git diff --check
