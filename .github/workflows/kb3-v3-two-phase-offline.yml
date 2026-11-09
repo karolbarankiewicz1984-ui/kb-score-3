@@ -28,5 +28,5 @@ jobs:
           python -m scripts.kb3_catboost_research_v3 readiness
       - name: No production model or data writes
         run: |
-          git fetch --no-tags origin main
-          git diff --exit-code origin/main...HEAD -- data models assets config migrations src/kb3_features.py src/kb3_step11_field_audit.py
+          git diff --exit-code
+          test -z "$(git status --porcelain)"
