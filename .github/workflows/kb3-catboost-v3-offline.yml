@@ -19,6 +19,8 @@ jobs:
   offline:
     runs-on: ubuntu-latest
     timeout-minutes: 15
+    env:
+      KB3_SHADOW_SIX_MODEL_DIR: ${{ github.workspace }}/assets/research/kb3_shadow_six_v1
     strategy:
       fail-fast: false
       matrix:
@@ -36,6 +38,7 @@ jobs:
           python -m unittest discover -s tests -p 'test_kb3_catboost*.py' -v
           python -m unittest discover -s tests -p 'test_kb3_p1_shared_asof_features_v2.py' -v
           python -m unittest discover -s tests -p 'test_kb3_model_comparison_v3.py' -v
+          python -m unittest discover -s tests -p 'test_kb3_history_snapshot_restore.py' -v
           python -m unittest discover -s tests -p 'test_step11_features.py' -v
           python -m unittest discover -s tests -p 'test_step16_m0_720_eight_forward.py' -v
           python -m unittest discover -s tests -p 'test_kb3_p1_prospective_shadow_six_v1.py' -v

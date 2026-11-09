@@ -7,6 +7,8 @@ on:
       - src/kb3_p1_shared_asof_features_v2.py
       - docs/KB3_P1_HISTORICAL_ELIGIBILITY_SPLIT_2026-11-04.md
       - .github/workflows/kb3-p1-historical-eligibility-v2-offline.yml
+      - scripts/kb3_restore_history_snapshot.py
+      - tests/test_kb3_history_snapshot_restore.py
 
 permissions:
   contents: read
@@ -26,8 +28,11 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
+      - name: Restore the existing SHA-verified compressed offline history fixture
+        run: python -m scripts.kb3_restore_history_snapshot --source data/research/historical_multistat/observations.sqlite.gz
       - name: Real source and chronological safety tests
         run: |
+          python -m unittest discover -s tests -p 'test_kb3_history_snapshot_restore.py' -v
           python -m unittest discover -s tests -p 'test_kb3_p1_historical_eligibility_split.py' -v
           python -m unittest discover -s tests -p 'test_kb3_p1_shared_asof_features_v2.py' -v
       - name: Build actual source evidence gate and isolated research TRAIN/VALIDATION selectors
