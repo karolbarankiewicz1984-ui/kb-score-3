@@ -134,3 +134,8 @@ Na prawdziwym historycznym SQLite z artifact13635728620 lokalnie wykonano `CatBo
 ## Eksperymentalny retrospektywny fit 87 cech (2026-11-09)
 
 Wykonano lokalny rzeczywisty fit CatBoost z 87 nazwami/oknami/semantyką kontraktu na 2845 TRAIN i 747 VAL. Sprawdzono **identyczność identyfikatorów** wszystkich spotkań względem poprzedniego modelu 20 cech: 2845/2845 TRAIN i 747/747 VAL, zero różnic. Wynik 87: top1 **48.8621%**, Brier **0.620123**, log loss **1.030482**; 20: 44.8461%, 0.637183, 1.055696. Uwaga: cechy 87 zostały odtworzone osobnym kodem retrospektywnym, **nie jest to oryginalny builder verified v3**, dane nie mają certyfikacji PIT, brak prospektywnych prognoz 87. Model CBM istnieje lokalnie, nie jest w produkcji. [Raport](../reports/KB3_CATBOOST_RETRO_87_REAL_FIT_2026-11-09.md), commit `c90030e`.
+
+
+## Końcowy parowany audyt eksperymentu 20 vs 87 (09.11)
+
+Rzeczywiście ponownie uruchomiono oba skrypty i zapisano prognozy na **747 identycznych** fixture+kickoff+league. Bootstrap 5000 losowań w 12 klastrach tygodniowych: poprawa 87 accuracy **+4.016 pp** (95% [2.351,5.452]), Brier reduction **0.01706** ([0.00343,0.02946]), log loss reduction **0.02521** ([0.00556,0.04301]). [Pełny raport](../reports/KB3_CATBOOST_RETRO_87_PAIRED_BOOTSTRAP_AUDIT_2026-11-09.md), commit `0947d84`. **Zamknięto etap retrospektywnego porównania**, nie formalny model v3. Wymagana jeszcze kontrola parity z oryginalnym builderem i rzeczywiste przyszłe zamrożone prognozy; Shadow nie jest uruchomiony. M0/Champion/TEST bez zmian.
