@@ -52,10 +52,10 @@ def json_digest(obj):
                              ensure_ascii=False, allow_nan=False).encode("utf-8"))
 
 
-def read_member(archive, name):
+def read_member(archive, name, *, max_size=25_000_000):
     require(name in archive.namelist(), "MISSING_ARCHIVE_MEMBER:" + name)
     info = archive.getinfo(name)
-    require(0 < info.file_size <= 25_000_000, "BAD_MEMBER_SIZE:" + name)
+    require(0 < info.file_size <= max_size, "BAD_MEMBER_SIZE:" + name)
     return archive.read(info)
 
 
@@ -128,7 +128,7 @@ def inspect_archive(raw_zip, *, artifact_id, artifact_created_at_utc,
         receipt = json.loads(read_member(z, base + "THREE_LEAGUE_DAILY_RECEIPT.json"))
         manifest = json.loads(read_member(z, base + "THREE_LEAGUE_DAILY_SOURCE.manifest.json"))
         encrypted = read_member(z, base + "THREE_LEAGUE_DAILY_SOURCE.enc")
-        db_bytes = read_member(z, SQLITE_MEMBER)
+        db_bytes = read_member(z, SQLITE_MEMBER, max_size=256_000_000)
     require(receipt.get("utc_day") == day, "RECEIPT_DAY_MISMATCH")
     require(digest(encrypted) == manifest.get("ciphertext_sha256") ==
             receipt.get("source_ciphertext_sha256"), "ENCRYPTED_PAYLOAD_SHA_MISMATCH")
