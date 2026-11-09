@@ -68,8 +68,11 @@ def produce(receipts, destination, *, created_now=None):
     <= frozen cutoff, then calls verified_view on the original bytes.
     """
     from scripts.step14_three_league_pitchapi_actual_audit import CURRENT, PREVIOUS
-    now = created_now or datetime.now(timezone.utc)
-    if now.utcoffset() != timedelta(0):
+    # The existing PIT ledger's utc_now() is a canonical UTC-Z string.
+    # Accept that actual collector contract, not just synthetic datetime tests.
+    now = clock(created_now) if isinstance(created_now, str) else (
+        created_now if created_now is not None else datetime.now(timezone.utc))
+    if not isinstance(now, datetime) or now.utcoffset() != timedelta(0):
         raise BridgeError("UTC_REQUIRED")
     cutoff = now + BUFFER
     target_limit = now + timedelta(hours=96)
