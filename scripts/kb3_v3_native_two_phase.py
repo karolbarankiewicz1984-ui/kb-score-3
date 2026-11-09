@@ -331,7 +331,7 @@ def verify_artifact(raw_zip, *, artifact_id, created_at, digest_sha256,
             "feature_sha256": view["canonical_features_sha256"],
             "feature_count": len(ordered),
             "values": ordered,
-            "availability_class": view["availability_class"],
+            "original_provider_first_publication_certified": view["original_provider_first_published_at_certified"],
             "formal_training_allowed": False,
             "research_only": True,
         })
