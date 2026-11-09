@@ -42,7 +42,11 @@ def validate(artifact_id, token):
             need(0 < info.file_size <= 16 * 1024 * 1024,
                  "NATIVE_MEMBER_TOO_LARGE")
             return z.read(name)
-        manifest = json.loads(get("bridge_manifest.json"))
+        manifest_candidates = [n for n in names if n == "bridge_manifest.json"
+                               or n.endswith("/bridge_manifest.json")]
+        need(len(manifest_candidates) == 1, "NATIVE_MANIFEST_NOT_UNIQUE")
+        prefix = manifest_candidates[0][:-len("bridge_manifest.json")]
+        manifest = json.loads(get(manifest_candidates[0]))
         need(manifest["schema"] == "kb3-v3-native-github-forward-bridge-v1",
              "WRONG_NATIVE_BRIDGE_SCHEMA")
         need(manifest["source_count"] == 6 and
@@ -54,10 +58,10 @@ def validate(artifact_id, token):
         need(host_created <= cutoff, "HOSTED_AFTER_EXACT_FEATURE_CUTOFF")
         source_index = {}
         for src in manifest["source_index"]:
-            member, sha = src["member"], src["sha256"]
+            member, sha = prefix + src["member"], src["sha256"]
             need(hashlib.sha256(get(member)).hexdigest() == sha,
                  "NATIVE_SOURCE_MEMBER_HASH_DRIFT")
-            source_index[member] = dict(artifact_id=str(artifact_id),
+            source_index[src["member"]] = dict(artifact_id=str(artifact_id),
                                         member=member, sha256=sha)
         need(len(source_index) == 6, "DUPLICATE_SOURCE_MEMBERS")
         store = GithubArchives(token)
@@ -66,7 +70,7 @@ def validate(artifact_id, token):
             need(target["feature_count"] == 87 and
                  target["cutoff_utc"] == manifest["cutoff_utc"],
                  "FEATURE_CUTOFF_OR_COUNT_DRIFT")
-            member = target["input_member"]
+            member = prefix + target["input_member"]
             input_bytes = get(member)
             need(hashlib.sha256(input_bytes).hexdigest() == target["input_sha256"],
                  "INPUT_MEMBER_HASH_DRIFT")
