@@ -36,7 +36,7 @@ MIN_LEAD = timedelta(minutes=90)
 MAX_CALLS = 7
 CUTOFF_BUFFER = timedelta(minutes=6)
 MAX_TARGETS_PER_LEAGUE = 3
-MAX_HORIZON = timedelta(days=4)
+MAX_HORIZON = timedelta(days=10)
 UTC = timezone.utc
 
 
@@ -149,7 +149,7 @@ def build_bundle(source_payloads, *, captured_at, cutoff_at, outdir):
             home, away, ko = native_identity(m)
             if m.get("status") not in ("upcoming", "scheduled", "not_started"):
                 continue
-            if ko < cutoff + MIN_LEAD or ko > cutoff + MAX_HORIZON:
+            if ko < cutoff + MIN_LEAD + timedelta(minutes=20) or ko > cutoff + MAX_HORIZON:
                 continue
             need(m.get("score_home") is None and
                  m.get("score_away") is None, "TARGET_LABEL_ALREADY_AVAILABLE")
