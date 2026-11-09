@@ -119,3 +119,8 @@ Pobrano rzeczywiste ZIP `13635728620` (historyczny) i `13643613735` (M0) i odczy
 ## Weryfikacja starszych archiwów 2–5 listopada
 
 Odnaleziono sześć konkretnych starszych hostowanych artefaktów GitHub; rzeczywiście pobrano ZIP `13238225342` utworzony 2026-11-03T14:13:32Z. Potwierdzono SHA-256 **3/3** zaszyfrowanych źródeł 29.10, 01.11, 03.11 wobec ich manifestów. Archiwum zawiera także forward M0 SQLite i zamrożone JSON. Manifesty wprost stwierdzają `training_allowed=false`, `provider_publication_proven=false`, `offsite_restore_verified=false`; bez odszyfrowania i host-timing konkretnego cutoff nie certyfikować PIT. **0 nowych admitted v3**. Pełne IDs, SHA i blokady: [raport](../reports/KB3_CATBOOST_V3_EARLY_GITHUB_ARCHIVES_2026-11-09.md), commit `9e2aa97`. Żadnych zmian M0/Champion/TEST.
+
+
+## Zamknięcie audytu starszego SQLite (2026-11-09)
+
+Zakończono rzeczywisty odczyt `forward_m0/kb3_forward_m0.sqlite` z ZIP artifact13238225342, SHA ZIP i SQLite zweryfikowane, integralność OK. **27** prognoz ESP10/GER6/ITA11, **21** rozliczeń, **18/18** źródeł bez czasu pierwszej publikacji, **0/27** cech eligible for original M1, **18/18** snapshotów `NOT_VERIFIED`. Wszystkie 3 szyfrogramy SHA zgodne, ale manifesty `training_allowed=false`. Wobec braku natywnych odszyfrowanych danych i niezależnego PIT **0** nowych v3 TRAIN, `NOT_TRAINED`. [Końcowy audyt](../reports/KB3_CATBOOST_V3_EARLY_SQLITE_FINAL_AUDIT_2026-11-09.md), commit `e4f3948`. Dalsze przeliczanie tej samej niecertyfikowanej historii nie odblokuje formalnego treningu; kontynuować prospektywne archiwizowanie albo osobny jawnie retrospektywny eksperyment.
