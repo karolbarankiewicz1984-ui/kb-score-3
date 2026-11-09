@@ -26,10 +26,8 @@ import zipfile
 from src.kb3_features import utc_dt, utc_str, digest
 from src.kb3_p1_shared_asof_features_v2 import when, need
 from src.kb3_catboost_research_v3 import verified_view, vector, contract
-from scripts.step14_three_league_pitchapi_actual_audit import (
-    CURRENT, PREVIOUS, select_three,
-)
-from scripts.pitchapi_step06_audit import to_plain
+CURRENT = "2026/2027"
+PREVIOUS = "2025/2026"
 
 SCHEMA = "kb3-v3-raw-native-two-phase-v1"
 LEAGUES = ("ESP", "ITA", "GER")
@@ -202,6 +200,8 @@ def build_bundle(source_payloads, *, captured_at, cutoff_at, outdir):
 
 
 def collect(outdir, key, *, client_factory=None, clock=None):
+    from scripts.step14_three_league_pitchapi_actual_audit import select_three
+    from scripts.pitchapi_step06_audit import to_plain
     need(type(key) is str and bool(key.strip()), "EXISTING_PITCHAPI_KEY_REQUIRED")
     if client_factory is None:
         from pitchapi import PitchAPI
