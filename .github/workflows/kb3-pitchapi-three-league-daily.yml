@@ -12,6 +12,9 @@ on:
       - tests/test_step14_three_league_sqlite_forward_features.py
       - tests/test_step14_three_league_pitchapi_daily.py
       - .github/workflows/kb3-pitchapi-three-league-daily.yml
+      - src/kb3_v3_native_forward_bridge.py
+      - scripts/kb3_v3_verify_hosted_native_bridge.py
+      - tests/test_kb3_v3_native_forward_bridge.py
   pull_request:
     paths:
       - scripts/step14_three_league_pitchapi_daily_asof.py
@@ -19,11 +22,15 @@ on:
       - tests/test_step14_m0_shadow_1x2_live_freeze.py
       - tests/test_step14_three_league_pitchapi_daily.py
       - .github/workflows/kb3-pitchapi-three-league-daily.yml
+      - src/kb3_v3_native_forward_bridge.py
+      - scripts/kb3_v3_verify_hosted_native_bridge.py
+      - tests/test_kb3_v3_native_forward_bridge.py
   schedule:
     - cron: '17 6 * * *'
   workflow_dispatch:
 permissions:
   contents: write
+  actions: read
 concurrency:
   group: kb3-three-league-daily-pit-capture
   cancel-in-progress: false
@@ -47,6 +54,7 @@ jobs:
           python -m unittest discover -s tests -p 'test_step14_three_league_pitchapi_daily.py' -v
           python -m unittest discover -s tests -p 'test_step14_three_league_sqlite_forward_features.py' -v
           python -m unittest discover -s tests -p 'test_step14_m0_shadow_1x2_live_freeze.py' -v
+          python -m unittest discover -s tests -p 'test_kb3_v3_native_forward_bridge.py' -v
       - name: Real 3-league fixtures plus unique earlier matches shots and team-xG
         id: true_source_capture
         if: github.ref == 'refs/heads/main' && (github.event_name == 'schedule' || github.event_name == 'workflow_dispatch')
@@ -60,7 +68,8 @@ jobs:
           fi
           python -m scripts.step14_three_league_pitchapi_daily_asof \
             --base data/pit_sidecar/pitchapi_three_league_daily \
-            --public-key config/step11_archive_recipient_public.pem
+            --public-key config/step11_archive_recipient_public.pem \
+            --v3-bridge-root data/forward_v3_native
       - name: Verify original raw SHA, TRUE UTC, exactly 3 league names and withheld TEST
         if: github.ref == 'refs/heads/main' && (github.event_name == 'schedule' || github.event_name == 'workflow_dispatch')
         env:
@@ -140,6 +149,45 @@ jobs:
           else:
               print('NO_NEW_M0_SHADOW_FORECASTS_FOR_DATE',day)
           PY
+      - name: Confirm new native input bundle never includes protected TEST or trained model
+        if: github.ref == 'refs/heads/main' && contains(fromJSON('["schedule","workflow_dispatch"]'), github.event_name)
+        run: |
+          python - <<'PY'
+          import json,datetime
+          from pathlib import Path
+          p=Path('data/forward_v3_native')/datetime.datetime.now(datetime.timezone.utc).date().isoformat()
+          d=json.loads((p/'bridge_manifest.json').read_text())
+          assert d['source_count']==6
+          assert all(x['league'] in ('ESP','ITA','GER') for x in d['targets'])
+          assert d['original_builder_v2_used'] and d['original_vector_v3_87_used']
+          assert not d['training_allowed'] and not d['production_approved']
+          print('NATIVE_V3_87_SOURCE_AND_INPUT_READY_FOR_INDEPENDENT_HOST_ATTESTATION',
+                d['target_count'])
+          PY
+      - name: Archive ORIGINAL raw PitchAPI league.matches bytes and v3 input in PRIVATE GitHub artifact
+        id: native_v3_archive
+        if: github.ref == 'refs/heads/main' && contains(fromJSON('["schedule","workflow_dispatch"]'), github.event_name)
+        uses: actions/upload-artifact@v4
+        with:
+          name: KB3_V3_NATIVE_87_FORWARD_SOURCE_UNENCRYPTED_PRIVATE
+          path: data/forward_v3_native/*/
+          retention-days: 30
+          if-no-files-found: error
+      - name: Verify independently hosted native bytes with ORIGINAL v3 verified_view
+        if: github.ref == 'refs/heads/main' && contains(fromJSON('["schedule","workflow_dispatch"]'), github.event_name)
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          python -m scripts.kb3_v3_verify_hosted_native_bridge \
+            --artifact-id "${{ steps.native_v3_archive.outputs.artifact-id }}" \
+            --out "$RUNNER_TEMP/KB3_V3_ORIGINAL_BUILDER_87_HOST_VERIFIED.json"
+      - uses: actions/upload-artifact@v4
+        if: success() && github.ref == 'refs/heads/main' && (github.event_name == 'schedule' || github.event_name == 'workflow_dispatch')
+        with:
+          name: KB3_V3_ORIGINAL_BUILDER_87_HOST_ATTESTED_REPORT
+          path: ${{ runner.temp }}/KB3_V3_ORIGINAL_BUILDER_87_HOST_VERIFIED.json
+          retention-days: 30
+          if-no-files-found: error
       - uses: actions/upload-artifact@v4
         if: always()
         with:
