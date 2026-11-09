@@ -124,3 +124,8 @@ Odnaleziono sześć konkretnych starszych hostowanych artefaktów GitHub; rzeczy
 ## Zamknięcie audytu starszego SQLite (2026-11-09)
 
 Zakończono rzeczywisty odczyt `forward_m0/kb3_forward_m0.sqlite` z ZIP artifact13238225342, SHA ZIP i SQLite zweryfikowane, integralność OK. **27** prognoz ESP10/GER6/ITA11, **21** rozliczeń, **18/18** źródeł bez czasu pierwszej publikacji, **0/27** cech eligible for original M1, **18/18** snapshotów `NOT_VERIFIED`. Wszystkie 3 szyfrogramy SHA zgodne, ale manifesty `training_allowed=false`. Wobec braku natywnych odszyfrowanych danych i niezależnego PIT **0** nowych v3 TRAIN, `NOT_TRAINED`. [Końcowy audyt](../reports/KB3_CATBOOST_V3_EARLY_SQLITE_FINAL_AUDIT_2026-11-09.md), commit `e4f3948`. Dalsze przeliczanie tej samej niecertyfikowanej historii nie odblokuje formalnego treningu; kontynuować prospektywne archiwizowanie albo osobny jawnie retrospektywny eksperyment.
+
+
+## Rzeczywisty trening eksperymentalny — 20 cech, NIE v3 87 (09.11)
+
+Na prawdziwym historycznym SQLite z artifact13635728620 lokalnie wykonano `CatBoostClassifier.fit`: 2845 TRAIN / 747 chronologicznie odseparowanych VAL, embargo 7 dni, 20 cech last5, bez xG. Wynik: accuracy 0.4484605, Brier 0.6371830, log loss 1.0556964; baseline TRAIN-frequency odpowiednio 0.4457831 / 0.6466204 / 1.0694436. Faktyczny model CBM SHA256 `c0c85b5d19b0026ff65b341123c0b687a7f4737ee8ebbf36f01d1e35e5e3b64d` w lokalnym eksperymencie, bez wdrożenia i bez uploadu CBM do repo. **Nie jest to model kontraktu 87 cech, ani PIT; nie używać tych metryk do promocji Championa.** Szczegóły: [raport](../reports/KB3_CATBOOST_RETRO_20_REAL_FIT_2026-11-09.md), commit `6cce975`.
