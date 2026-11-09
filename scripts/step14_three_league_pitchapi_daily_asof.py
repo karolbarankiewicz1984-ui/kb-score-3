@@ -75,7 +75,7 @@ def candidate_predecessors(current,old,now,seen,country,*,target_limit=4,horizon
     return future,candidates[:MAX_PRIORS_PER_LEAGUE],len(wanted),len(candidates)
 
 def capture(*,root,key,public_pem,client_factory=None,now=None,
-            sleep_between_calls=0.15):
+            sleep_between_calls=0.15,v3_bridge_root=None):
     if not isinstance(key,str) or not key.strip():
         raise DailyLeagueError("PITCHAPI_EXISTING_SECRET_MISSING")
     if client_factory is None:
@@ -88,6 +88,7 @@ def capture(*,root,key,public_pem,client_factory=None,now=None,
     if dest.exists():raise DailyLeagueError("IMMUTABLE_UTC_DAY_ALREADY_SAVED")
     previous_seen=already_sampled(base)
     dest.mkdir(parents=True,exist_ok=False)
+    bridge_dest=(Path(v3_bridge_root)/day) if v3_bridge_root is not None else None
     try:
         client=client_factory(api_key=key)
         receipts=[];calls=0;failures=Counter()
@@ -198,6 +199,14 @@ def capture(*,root,key,public_pem,client_factory=None,now=None,
             "model_fit_or_calibration_performed":False,
             "original_pitchapi_published_at_2023_25_proven":False,
             "gate14_pass":False}
+        if bridge_dest is not None:
+            from src.kb3_v3_native_forward_bridge import produce
+            v3_report=produce(receipts,bridge_dest,created_now=utc_now())
+            report["v3_native_forward_bridge"]={
+                "source_count":v3_report["source_count"],
+                "target_count":v3_report["target_count"],
+                "input_and_raw_native_artifact_pending_host_attestation":True,
+                "provider_calls_added":0,"training_allowed":False}
         (dest/"THREE_LEAGUE_DAILY_RECEIPT.json").write_text(
             json.dumps(report,sort_keys=True,ensure_ascii=False,indent=2)+"\n",
             encoding="utf8")
@@ -206,6 +215,7 @@ def capture(*,root,key,public_pem,client_factory=None,now=None,
         return report
     except BaseException:
         shutil.rmtree(dest,ignore_errors=True)
+        if bridge_dest is not None:shutil.rmtree(bridge_dest,ignore_errors=True)
         raise
 
 def main():
@@ -213,6 +223,7 @@ def main():
     p.add_argument("--base",default="data/pit_sidecar/pitchapi_three_league_daily")
     p.add_argument("--public-key",
         default="config/step11_archive_recipient_public.pem")
+    p.add_argument("--v3-bridge-root",default=None)
     a=p.parse_args()
     now=datetime.now(timezone.utc)
     d=Path(a.base)/now.date().isoformat()
@@ -221,7 +232,7 @@ def main():
         return
     try:
         report=capture(root=a.base,key=os.environ.get("PITCHAPI_API_KEY",""),
-            public_pem=a.public_key,now=now)
+            public_pem=a.public_key,now=now,v3_bridge_root=a.v3_bridge_root)
         print(json.dumps({"state":"THREE_LEAGUE_REAL_ASOF_SOURCE_ARCHIVED",
             "leagues":[{"league":x["league"],
                         "new_samples":x["new_prior_matches_selected_today"],
