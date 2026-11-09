@@ -150,7 +150,7 @@ jobs:
               print('NO_NEW_M0_SHADOW_FORECASTS_FOR_DATE',day)
           PY
       - name: Confirm new native input bundle never includes protected TEST or trained model
-        if: github.ref == 'refs/heads/main' && github.event_name != 'push' && github.event_name != 'pull_request'
+        if: github.ref == 'refs/heads/main' && contains(fromJSON('["schedule","workflow_dispatch"]'), github.event_name)
         run: |
           python - <<'PY'
           import json,datetime
@@ -166,7 +166,7 @@ jobs:
           PY
       - name: Archive ORIGINAL raw PitchAPI league.matches bytes and v3 input in PRIVATE GitHub artifact
         id: native_v3_archive
-        if: github.ref == 'refs/heads/main' && github.event_name != 'push' && github.event_name != 'pull_request'
+        if: github.ref == 'refs/heads/main' && contains(fromJSON('["schedule","workflow_dispatch"]'), github.event_name)
         uses: actions/upload-artifact@v4
         with:
           name: KB3_V3_NATIVE_87_FORWARD_SOURCE_UNENCRYPTED_PRIVATE
@@ -174,7 +174,7 @@ jobs:
           retention-days: 30
           if-no-files-found: error
       - name: Verify independently hosted native bytes with ORIGINAL v3 verified_view
-        if: github.ref == 'refs/heads/main' && github.event_name != 'push' && github.event_name != 'pull_request'
+        if: github.ref == 'refs/heads/main' && contains(fromJSON('["schedule","workflow_dispatch"]'), github.event_name)
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
