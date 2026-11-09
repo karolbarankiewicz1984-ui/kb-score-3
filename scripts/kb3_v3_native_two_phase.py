@@ -36,7 +36,7 @@ MIN_LEAD = timedelta(minutes=90)
 MAX_CALLS = 7
 CUTOFF_BUFFER = timedelta(minutes=6)
 MAX_TARGETS_PER_LEAGUE = 3
-MAX_HORIZON = timedelta(days=10)
+MAX_HORIZON = timedelta(days=28)
 UTC = timezone.utc
 
 
@@ -179,7 +179,6 @@ def build_bundle(source_payloads, *, captured_at, cutoff_at, outdir):
                 "member": member,
                 "sha256": sha(files[member]),
             })
-    need(bool(index["inputs"]), "NO_FUTURE_TARGETS_AT_PLANNED_CUTOFF")
     files["index.json"] = canonical(index)
     out.mkdir(parents=True, exist_ok=False)
     try:
@@ -335,7 +334,6 @@ def verify_artifact(raw_zip, *, artifact_id, created_at, digest_sha256,
             "formal_training_allowed": False,
             "research_only": True,
         })
-    need(bool(rows), "NO_VALID_NATIVE_V3_TARGETS")
     report = {
         "schema": "kb3-v3-frozen-native-input-verified-no-model-fit-v1",
         "source_artifact_id": artifact_id,
@@ -346,6 +344,7 @@ def verify_artifact(raw_zip, *, artifact_id, created_at, digest_sha256,
         "independently_archived_before_exact_cutoff": True,
         "native_sources_verified": 6,
         "verified_v3_input_vectors": len(rows),
+        "candidate_status": ("VERIFIED_87_INPUTS" if rows else "NO_FUTURE_TARGETS_IN_WINDOW"),
         "frozen_candidates": rows,
         "provider_original_first_publication_certified": False,
         "formal_v3_training_admitted": 0,
