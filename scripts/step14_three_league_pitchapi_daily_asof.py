@@ -218,6 +218,18 @@ def capture(*,root,key,public_pem,client_factory=None,now=None,
         if bridge_dest is not None:shutil.rmtree(bridge_dest,ignore_errors=True)
         raise
 
+def safe_failure_locator(exc):
+    """Reveal only project-relative source location and exception class, never payloads/keys."""
+    import traceback
+    for frame in reversed(traceback.extract_tb(exc.__traceback__)):
+        try:
+            rel=Path(frame.filename).resolve().relative_to(ROOT.resolve())
+        except ValueError:
+            continue
+        if rel.parts and rel.parts[0] in ("scripts", "src"):
+            return str(rel), frame.lineno
+    return "NO_PROJECT_FRAME", 0
+
 def main():
     p=argparse.ArgumentParser()
     p.add_argument("--base",default="data/pit_sidecar/pitchapi_three_league_daily")
@@ -242,7 +254,10 @@ def main():
             "frozen_M0_feature_snapshots":report["frozen_M0_feature_snapshots"],
             "M0_not_yet_enabled":True,"gate14_pass":False},sort_keys=True))
     except Exception as e:
-        print("THREE_LEAGUE_DAILY_SOURCE_BLOCKED",type(e).__name__,
-              str(e) if isinstance(e,DailyLeagueError) else "OPAQUE")
+        location, line = safe_failure_locator(e)
+        print("THREE_LEAGUE_DAILY_SOURCE_BLOCKED", type(e).__name__,
+              str(e) if isinstance(e, DailyLeagueError) else "NO_RAW_EXCEPTION_TEXT",
+              "PROJECT_LOCATION", location, "LINE", line)
+
         raise SystemExit(3)
 if __name__=="__main__":main()
