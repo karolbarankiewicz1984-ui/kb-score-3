@@ -26,7 +26,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: 11c8403d1a031422c1efb575303a5c985f23ac4b
+          ref: 0310159b2c37760039ac69c0b2b96ad92af2e45b
           persist-credentials: false
       - uses: actions/setup-python@v5
         with:
@@ -46,7 +46,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: 11c8403d1a031422c1efb575303a5c985f23ac4b
+          ref: 0310159b2c37760039ac69c0b2b96ad92af2e45b
           persist-credentials: false
       - uses: actions/setup-python@v5
         with:
@@ -76,7 +76,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: 11c8403d1a031422c1efb575303a5c985f23ac4b
+          ref: 0310159b2c37760039ac69c0b2b96ad92af2e45b
           persist-credentials: false
       - uses: actions/setup-python@v5
         with:
