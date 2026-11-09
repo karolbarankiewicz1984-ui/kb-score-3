@@ -129,3 +129,8 @@ Zakończono rzeczywisty odczyt `forward_m0/kb3_forward_m0.sqlite` z ZIP artifact
 ## Rzeczywisty trening eksperymentalny — 20 cech, NIE v3 87 (09.11)
 
 Na prawdziwym historycznym SQLite z artifact13635728620 lokalnie wykonano `CatBoostClassifier.fit`: 2845 TRAIN / 747 chronologicznie odseparowanych VAL, embargo 7 dni, 20 cech last5, bez xG. Wynik: accuracy 0.4484605, Brier 0.6371830, log loss 1.0556964; baseline TRAIN-frequency odpowiednio 0.4457831 / 0.6466204 / 1.0694436. Faktyczny model CBM SHA256 `c0c85b5d19b0026ff65b341123c0b687a7f4737ee8ebbf36f01d1e35e5e3b64d` w lokalnym eksperymencie, bez wdrożenia i bez uploadu CBM do repo. **Nie jest to model kontraktu 87 cech, ani PIT; nie używać tych metryk do promocji Championa.** Szczegóły: [raport](../reports/KB3_CATBOOST_RETRO_20_REAL_FIT_2026-11-09.md), commit `6cce975`.
+
+
+## Eksperymentalny retrospektywny fit 87 cech (2026-11-09)
+
+Wykonano lokalny rzeczywisty fit CatBoost z 87 nazwami/oknami/semantyką kontraktu na 2845 TRAIN i 747 VAL. Sprawdzono **identyczność identyfikatorów** wszystkich spotkań względem poprzedniego modelu 20 cech: 2845/2845 TRAIN i 747/747 VAL, zero różnic. Wynik 87: top1 **48.8621%**, Brier **0.620123**, log loss **1.030482**; 20: 44.8461%, 0.637183, 1.055696. Uwaga: cechy 87 zostały odtworzone osobnym kodem retrospektywnym, **nie jest to oryginalny builder verified v3**, dane nie mają certyfikacji PIT, brak prospektywnych prognoz 87. Model CBM istnieje lokalnie, nie jest w produkcji. [Raport](../reports/KB3_CATBOOST_RETRO_87_REAL_FIT_2026-11-09.md), commit `c90030e`.
