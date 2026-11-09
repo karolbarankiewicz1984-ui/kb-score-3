@@ -114,3 +114,8 @@ Nowy read-only `scripts/kb3_catboost_v3_archive_cutoff_audit.py` (commit e8d3aaf
 ## Weryfikacja oryginalnych ZIP i SQLite — 2026-11-09
 
 Pobrano rzeczywiste ZIP `13635728620` (historyczny) i `13643613735` (M0) i odczytano źródłowe SQLite. Wynik: **4401** historycznych obserwacji, **149** zamrożonych prognoz, **74** prognozy z co najmniej jednym poprzednikiem tej samej ligi zaobserwowanym przed cutoff i dojrzałym +3h; **10858** potencjalnych par (nie 10858 próbek TRAIN). ZIP historyczny utworzono dopiero po wszystkich badanych cutoff, dlatego **0** nowych formalnie dopuszczonych rekordów v3. Dokładne SHA, zakresy i przykłady: [raport rzeczywistych archiwów](../reports/KB3_CATBOOST_V3_REAL_ARCHIVE_OBSERVATION_AUDIT_2026-11-09.md), commit `4975323`. Następny krok: starsze niezależnie datowane ZIP/native response, team-specific last5 i pełna walidacja źródła. Bez treningu i zmian M0.
+
+
+## Weryfikacja starszych archiwów 2–5 listopada
+
+Odnaleziono sześć konkretnych starszych hostowanych artefaktów GitHub; rzeczywiście pobrano ZIP `13238225342` utworzony 2026-11-03T14:13:32Z. Potwierdzono SHA-256 **3/3** zaszyfrowanych źródeł 29.10, 01.11, 03.11 wobec ich manifestów. Archiwum zawiera także forward M0 SQLite i zamrożone JSON. Manifesty wprost stwierdzają `training_allowed=false`, `provider_publication_proven=false`, `offsite_restore_verified=false`; bez odszyfrowania i host-timing konkretnego cutoff nie certyfikować PIT. **0 nowych admitted v3**. Pełne IDs, SHA i blokady: [raport](../reports/KB3_CATBOOST_V3_EARLY_GITHUB_ARCHIVES_2026-11-09.md), commit `9e2aa97`. Żadnych zmian M0/Champion/TEST.
