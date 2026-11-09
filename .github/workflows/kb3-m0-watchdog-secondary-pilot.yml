@@ -42,6 +42,32 @@ jobs:
         run: |
           python -m compileall -q scripts/kb3_secondary_source_pilot.py scripts/kb3_step16_schedule_watchdog.py tests/test_kb3_secondary_pilot_watchdog.py
           python -m unittest discover -s tests -p 'test_kb3_secondary_pilot_watchdog.py' -v
+      - name: Restore and verify original immutable historical SQLite from committed gzip
+        shell: bash
+        run: |
+          python - <<'PY'
+          import gzip, hashlib, json, shutil, sqlite3
+          from pathlib import Path
+          root=Path("data/research/historical_multistat")
+          source=root/"observations.sqlite.gz"
+          target=root/"observations.sqlite"
+          manifest=json.loads((root/"observations.sqlite.gz.manifest.json").read_text())
+          def sha256(path):
+              h=hashlib.sha256()
+              with path.open("rb") as handle:
+                  for chunk in iter(lambda: handle.read(1<<20), b""):
+                      h.update(chunk)
+              return h.hexdigest()
+          assert source.stat().st_size==manifest["compressed_bytes"], "HISTORICAL_GZIP_SIZE_MISMATCH"
+          assert sha256(source)==manifest["compressed_sha256"], "HISTORICAL_GZIP_HASH_MISMATCH"
+          with gzip.open(source, "rb") as zipped, target.open("wb") as plain:
+              shutil.copyfileobj(zipped, plain)
+          assert target.stat().st_size==manifest["raw_bytes"], "HISTORICAL_RAW_SIZE_MISMATCH"
+          assert sha256(target)==manifest["raw_sha256"], "HISTORICAL_RAW_HASH_MISMATCH"
+          with sqlite3.connect(target.resolve().as_uri()+"?mode=ro", uri=True) as db:
+              assert db.execute("PRAGMA integrity_check").fetchone()[0]=="ok", "HISTORICAL_SQLITE_CORRUPT"
+          print("VERIFIED_ORIGINAL_HISTORICAL_SQLITE_MATERIALIZED")
+          PY
       - name: Build 30-candidate NED POL research manifest using original read-only SQLite
         run: |
           python -m scripts.kb3_secondary_source_pilot --limit 30 --out research-results/SECONDARY_NED_POL_PILOT_CANDIDATES.json
