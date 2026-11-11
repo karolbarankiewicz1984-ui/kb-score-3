@@ -1,0 +1,72 @@
+{
+  "auto_promotion": false,
+  "cumulative_verified_xg_matches": 60,
+  "current_2026_capture_is_NOT_historic_2023_25_PIT": true,
+  "encrypted_source_sha256": "f6ddbe37c8b52692527ab31f934332efe11b58b7a31650e462427215a7f4bf73",
+  "future_form5_coverage": {
+    "complete_last5_both_team_xg": 0,
+    "future_targets_scanned": 0,
+    "missing_by_country": {},
+    "research_only_no_fitted_xg_model": true
+  },
+  "gate17": "PENDING",
+  "hard_limit_calls": 33,
+  "last5_priority_shadow_comparison": {
+    "additional_api_calls": 0,
+    "baseline_selected_count": 0,
+    "observed_baseline_complete_last5_after_real_capture": 0,
+    "overlap_exact_native_pairs": 0,
+    "priority_different_native_pairs": 0,
+    "priority_live_activated": false,
+    "priority_meta": {
+      "activated_in_live": false,
+      "candidates": 0,
+      "max_provider_calls": 33,
+      "no_network": true,
+      "score_missing_last5": 0,
+      "selected_pairs": 0,
+      "training_allowed": false
+    },
+    "priority_real_outcome_verified": false,
+    "priority_selected_count": 0,
+    "research_not_training": true,
+    "source": "IDENTICAL_REAL_FIXTURES_SAME_OBSERVATION_CUTOFF",
+    "theoretical_if_all_success": {
+      "additional_provider_calls": 0,
+      "baseline_if_all_selected_xg_pairs_validate": 0,
+      "counterfactual_gain_if_all_valid": 0,
+      "current_verified_last5": 0,
+      "experimental_if_all_selected_xg_pairs_validate": 0,
+      "model_fit_or_promotion": false,
+      "only_a_theoretical_ceiling_not_observed_gain": true,
+      "targets": 0
+    }
+  },
+  "leagues": [
+    "ESP",
+    "ITA",
+    "GER",
+    "FRA",
+    "NED",
+    "BEL",
+    "TUR",
+    "POL"
+  ],
+  "missing_id_inventory_source": "SAME_AUTHENTIC_FIXTURE_GROUPS_NO_EXTRA_API",
+  "network_calls": 17,
+  "new_shots_stats_xg_verified": 0,
+  "observed_at_utc": "2026-11-11T14:41:10.752226Z",
+  "original_catboost_noxg_modified": false,
+  "original_m0_modified": false,
+  "original_provider_published_at_not_known": true,
+  "prior_matches_selected": 0,
+  "protected_premier_league_TEST_2026_27_requested": false,
+  "provider_error_types": {},
+  "real_missing_last5_predecessor_ids": [],
+  "report_sha256": "df09de052237accd5178a37e8425b6cd0a2a1ca858d80eb4d15ae44dfdafb19d",
+  "schema": "kb3-step17-native-xg-eight-asof-shadow-v1",
+  "source_chain_sha256": "eb37543a8b9793df4c40b45388e67bd5a19cd3ef5716c9671267b17025698a2b",
+  "trained_xg_catboost_exists": false,
+  "training_ready": false,
+  "xg_semantic_errors": {}
+}
