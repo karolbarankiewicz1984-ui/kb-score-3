@@ -1,0 +1,42 @@
+{
+  "card_issues_selected": 45,
+  "cards_reviewed": 45,
+  "cards_selected_by_scope": {
+    "BEL": 6,
+    "ESP": 8,
+    "FRA": 3,
+    "GER": 2,
+    "ITA": 8,
+    "NED": 14,
+    "POL": 1,
+    "TUR": 3
+  },
+  "cumulative_issue_rows": 1762,
+  "error_types": {},
+  "observed_at_utc": "2026-11-11T09:30:21.937719Z",
+  "official_training_allowed": false,
+  "original_historical_pit_certified": false,
+  "original_rows_modified": false,
+  "production_approved": false,
+  "provider_requests": 105,
+  "schema": "kb3-historical-issue-recheck-v1-20261103",
+  "selection": "CORE5_AND_XG5_RESEARCH_TARGET_IMPACT_RANKED",
+  "source_chain_sha256": "2935dc843e10d5ed8d99c5b62649c9c161d54ad8d6fe67b5fc22c1a13221fcc3",
+  "source_cipher_sha256": "808de489de5f3553ffb3dae4e173f5b8d7bbc22c371f373673c2a3f2b83f2e4a",
+  "source_receipts": 105,
+  "status": "OBSERVED_RECHECK",
+  "status_counts": {
+    "XG:XG_DISAGREEMENT_PERSISTS": 30,
+    "YELLOW_CARDS:EVENTS_TEAM_STATS_CONFLICT": 1,
+    "YELLOW_CARDS:EVENT_YELLOW_CONFIRMED": 44
+  },
+  "xg_issues_selected": 30,
+  "xg_reverified": 0,
+  "xg_reviewed": 30,
+  "xg_selected_by_scope": {
+    "BEL": 10,
+    "ESP": 19,
+    "ITA": 1
+  },
+  "yellow_from_events": 44
+}
