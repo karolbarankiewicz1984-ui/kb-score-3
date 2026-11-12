@@ -1,0 +1,66 @@
+{
+  "schema": "kb3-step14-independent-recheck-2026-11-12-v1",
+  "checked_at_utc": "2026-11-12T18:32:35Z",
+  "mode": "READ_ONLY_EVIDENCE_RECHECK_APPEND_ONLY_NO_MODEL_FIT_NO_TEST",
+  "original_contract": {
+    "numeric_fields": 121,
+    "missing_flags": 38,
+    "train_required": 760,
+    "validation_required": 380
+  },
+  "verified_repo_sources": [
+    "docs/STEP14_COMPREHENSIVE_HISTORIC_PREMATCH_RECONSTRUCTION_2026-10-28.md",
+    "docs/STEP14_FINAL_CORRECTED_54_TRAIN_109_VALIDATION_ORIGINAL_M1_GATE_2026-10-29.md",
+    "data/audits/STEP14_FINAL_1140x159_PIT_GATE_2026-10-29.json",
+    "data/audits/STEP14_PITCHAPI_ORIGINAL_XG_FIRST_PUBLICATION_AND_SEMANTICS_STATUS_2026-10-28.json",
+    "data/audits/STEP14_INDEPENDENT_PUBLIC_WITNESS_RECHECK_AND_REAL_ACTIONS_2026-11-02.json"
+  ],
+  "confirmed_from_existing_audits": {
+    "native_fixture_identity_joins": 1140,
+    "partial_public_FORM5_train": 54,
+    "partial_public_FORM5_validation": 109,
+    "full_original_native_pit_train": 0,
+    "full_original_native_pit_validation": 0,
+    "original_pitchapi_team_xg_first_publication_proven": false,
+    "alternative_FPL_xg_equivalence_proven": false
+  },
+  "actions_verified": [
+    {
+      "run_id": 43194856269,
+      "created_at": "2026-11-12T09:49:22Z",
+      "conclusion": "success",
+      "note": "historical PitchAPI multi-stat backfill research; does not establish original historical PIT"
+    },
+    {
+      "run_id": 43278547179,
+      "created_at": "2026-11-12T18:19:02Z",
+      "conclusion": "failure",
+      "job": "offline-history-safety",
+      "live_job": "skipped"
+    },
+    {
+      "run_id": 43245495744,
+      "created_at": "2026-11-12T15:13:42Z",
+      "conclusion": "failure",
+      "job": "actual-three-league-source-capture"
+    },
+    {
+      "run_id": 43225678588,
+      "created_at": "2026-11-12T13:16:09Z",
+      "conclusion": "failure"
+    },
+    {
+      "run_id": 43153875733,
+      "created_at": "2026-11-12T04:17:58Z",
+      "conclusion": "success",
+      "note": "Step16-18 research, not original Step14 proof"
+    }
+  ],
+  "interpretation": "Recent workflow successes do not certify original 121+38 historical PIT; later workflow failures require separate operational debugging. Job-level metadata alone does not establish root cause.",
+  "gate14": "PENDING",
+  "original_M1_fit_allowed": false,
+  "original_M1_fit_performed_in_this_recheck": false,
+  "original_TEST_accessed_in_this_recheck": false,
+  "additional_keys_requested": false,
+  "independent_full_audit_pass": false
+}
