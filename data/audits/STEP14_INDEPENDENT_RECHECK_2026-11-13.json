@@ -1,0 +1,65 @@
+{
+  "schema": "kb3-step14-independent-recheck-2026-11-13-v1",
+  "checked_at_utc": "2026-11-13T18:22:27Z",
+  "mode": "READ_ONLY_RECHECK_APPEND_ONLY_NO_MODEL_FIT_NO_TEST",
+  "original_contract": {
+    "features": 121,
+    "flags": 38,
+    "train": 760,
+    "validation": 380
+  },
+  "sources": [
+    "docs/STEP14_COMPREHENSIVE_HISTORIC_PREMATCH_RECONSTRUCTION_2026-10-28.md",
+    "docs/KB3_V3_PIT_TECHNICAL_BLOCKER_2026-11-12.md",
+    "data/audits/STEP14_INDEPENDENT_RECHECK_2026-11-12.json"
+  ],
+  "confirmed_from_prior_audits": {
+    "fixture_identity_matches": 1140,
+    "full_original_pit_train": 0,
+    "full_original_pit_validation": 0,
+    "original_pitchapi_team_xg_first_publication_proven": false,
+    "independent_159_field_audit_pass": false
+  },
+  "new_actions_checked": [
+    {
+      "id": 43475636779,
+      "created_at": "2026-11-13T17:43:42Z",
+      "name": "historical PitchAPI multi-stat backfill",
+      "conclusion": "failure",
+      "jobs": [
+        {
+          "name": "offline-history-safety",
+          "conclusion": "failure"
+        },
+        {
+          "name": "live-observed-backfill",
+          "conclusion": "skipped"
+        }
+      ]
+    },
+    {
+      "id": 43443908080,
+      "created_at": "2026-11-13T14:33:55Z",
+      "name": "3 league daily PitchAPI capture",
+      "conclusion": "failure"
+    },
+    {
+      "id": 43426864178,
+      "created_at": "2026-11-13T12:38:16Z",
+      "name": "Step14 C native observed-at xG archive",
+      "conclusion": "failure"
+    },
+    {
+      "id": 43433095426,
+      "created_at": "2026-11-13T13:22:35Z",
+      "name": "Step14 C public PIT sidecar",
+      "conclusion": "failure"
+    }
+  ],
+  "interpretation": "New failures do not establish historical source publication, 121+38 original PIT completeness or leakage-free TRAIN/VALIDATION. Job metadata insufficient to identify failure cause. Prior 1140 identity joins are not full PIT records.",
+  "gate14": "PENDING",
+  "original_m1_fit_performed": false,
+  "test_accessed": false,
+  "additional_keys_requested": false,
+  "full_independent_audit_pass": false
+}
