@@ -1,0 +1,46 @@
+{
+  "schema": "kb3-step14-independent-recheck-2026-11-14-v1",
+  "checked_at_utc": "2026-11-14T19:03:38Z",
+  "mode": "READ_ONLY_APPEND_ONLY_NO_MODEL_FIT_NO_TEST",
+  "contract": {
+    "numeric_features": 121,
+    "flags": 38,
+    "train": 760,
+    "validation": 380
+  },
+  "source_paths": [
+    "docs/STEP14_COMPREHENSIVE_HISTORIC_PREMATCH_RECONSTRUCTION_2026-10-28.md",
+    "data/audits/STEP14_FINAL_1140x159_PIT_GATE_2026-10-29.json",
+    "data/audits/STEP14_PITCHAPI_ORIGINAL_XG_FIRST_PUBLICATION_AND_SEMANTICS_STATUS_2026-10-28.json",
+    "data/audits/STEP14_INDEPENDENT_RECHECK_2026-11-13.json"
+  ],
+  "previously_verified_identity_matches": 1140,
+  "full_original_pit_train_verified": 0,
+  "full_original_pit_validation_verified": 0,
+  "original_pitchapi_team_xg_first_publication_proven": false,
+  "independent_159_field_audit_pass": false,
+  "new_action_evidence": {
+    "run_id": 43616480333,
+    "created_at": "2026-11-14T16:35:55Z",
+    "conclusion": "failure",
+    "offline_history_safety": "failure",
+    "live_observed_backfill": "skipped",
+    "runner_id": 0,
+    "steps": [],
+    "root_cause": "not established from job metadata"
+  },
+  "other_recent_action_failures": [
+    43609491741,
+    43608264222,
+    43607866277,
+    43600032545,
+    43591520222
+  ],
+  "interpretation": "No new independently admissible historical PIT source receipts; no promotion of current observations into 2023-2025 historical availability. Failures do not prove absence of sources; job metadata alone cannot diagnose root cause.",
+  "gate14": "PENDING",
+  "original_m1_fit_allowed": false,
+  "original_m1_fit_performed": false,
+  "test_accessed": false,
+  "additional_keys_requested": false,
+  "notification_condition_met": false
+}
