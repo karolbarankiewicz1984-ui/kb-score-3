@@ -6,7 +6,7 @@ from unittest.mock import patch
 from src.kb3_step16_m0_720_eight_forward import (
     MODEL,EIGHT,EIGHT_COUNTRIES,select_eight,trained_params,validate_season,
     make_forecasts,freeze_sqlite,settle_sqlite,Research720Error,hashobj,stamp,
-    CALL_CAP_CAPTURE,CALL_CAP_SETTLE,historical_phase_id_inventory)
+    CALL_CAP_CAPTURE,CALL_CAP_SETTLE,HORIZON,LEAD,historical_phase_id_inventory)
 NOW=datetime.now(timezone.utc)
 def season(country,year):
     idx=list(EIGHT_COUNTRIES).index(country)+1
@@ -71,6 +71,33 @@ class EightForwardTests(unittest.TestCase):
  def test_313_309_playoff_previous_are_accepted(self):
     self.assertEqual(validate_season(season("BEL",2025),current=False)["all"],313)
     self.assertEqual(validate_season(season("NED",2025),current=False)["all"],309)
+ def test_seven_day_horizon_admits_next_weekend_without_relaxing_source_or_lead(self):
+    # International-break calendar: first league matches can be five days out.
+    # Tests operate only on synthetic network-shaped fixtures, no provider calls.
+    self.assertEqual(HORIZON,timedelta(days=7))
+    self.assertEqual(LEAD,timedelta(minutes=90))
+    self.assertEqual(CALL_CAP_CAPTURE,17)
+    data=fake_receipts()
+    current=next(r["payload"]["matches"] for r in data
+        if r["resource"]=="pitchapi:m0720:fixtures:ESP:2026/2027")
+    inside_id=current[250]["id"]
+    outside_id=current[251]["id"]
+    current[250]["time_utc"]=stamp(NOW+timedelta(days=5))
+    current[251]["time_utc"]=stamp(NOW+timedelta(days=8))
+    p,sha,manifest=trained_params()
+    diag={}
+    items,coverage,_=make_forecasts(data,cutoff=NOW,params=p,
+        param_sha=sha,manifest_sha=manifest,diagnostics=diag)
+    actual={(x["league_country"],x["provider_match_id"]) for x in items}
+    self.assertIn(("ESP",inside_id),actual)
+    self.assertNotIn(("ESP",outside_id),actual)
+    self.assertEqual(diag["forecast_horizon_hours"],168)
+    self.assertGreaterEqual(diag["reason_counts"]["ESP"].get("OUTSIDE_7D",0),1)
+    self.assertEqual(len(actual),len(items))
+    self.assertTrue(all(x["training_allowed"] is False and
+        x["production_approved"] is False for x in items))
+    self.assertEqual(set(coverage),set(EIGHT_COUNTRIES))
+
  def test_80_immutable_prospective_real_shape(self):
     p,sha,manifest=trained_params()
     items,per,shapes=make_forecasts(fake_receipts(),
