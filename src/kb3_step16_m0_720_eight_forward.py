@@ -33,7 +33,7 @@ EIGHT=(("ESP","LaLiga",LEAGUES[0][1]),("ITA","Serie A",LEAGUES[1][1]),
        if country in ("FRA","NED","BEL","TUR","POL"))
 EIGHT_COUNTRIES=frozenset(x[0] for x in EIGHT)
 LEAD=timedelta(minutes=90)
-HORIZON=timedelta(hours=96)
+HORIZON=timedelta(days=7)  # include next league weekend through national-team breaks
 FORECAST_LIMIT=10
 CALL_CAP_CAPTURE=17  # one catalogue + 2 seasons per each of eight
 CALL_CAP_SETTLE=9    # one catalogue + current season per each of eight
@@ -184,12 +184,12 @@ def make_forecasts(receipts,*,cutoff,params,param_sha,manifest_sha,challenger_en
             if m['status'] not in ('scheduled','not_started','upcoming'):
                 decision(country,m,'STATUS_NOT_UPCOMING')
             elif as_utc(m['time_utc'])<=cutoff+LEAD:decision(country,m,'INSIDE_90MIN_OR_PAST')
-            elif as_utc(m['time_utc'])>cutoff+HORIZON:decision(country,m,'OUTSIDE_96H')
+            elif as_utc(m['time_utc'])>cutoff+HORIZON:decision(country,m,'OUTSIDE_7D')
             elif (country,m['id']) in known_fixtures:decision(country,m,'ALREADY_FROZEN')
             else:future.append(m)
         future.sort(key=lambda m:(m['time_utc'],m['id']))
         # Apply quota AFTER minimum historical completeness, so unavailable teams
-        # do not starve subsequent valid upcoming fixtures in the 96h window.
+        # do not starve subsequent valid upcoming fixtures in the 7-day window.
         history=[]
         for season,seq,source in ((PREVIOUS,old,src_old),(CURRENT,current,src_now)):
             for m in seq:
@@ -285,7 +285,7 @@ def make_forecasts(receipts,*,cutoff,params,param_sha,manifest_sha,challenger_en
             'upcoming_decisions':decisions,
             **({'optional_shadow_unavailable':shadow_unavailable} if shadow_engine is not None else {}),
             'known_fixtures_excluded_before_quota':True,
-            'max_new_forecasts_per_league':FORECAST_LIMIT,'source_cutoff_utc':stamp(cutoff)})
+            'max_new_forecasts_per_league':FORECAST_LIMIT,'forecast_horizon_hours':int(HORIZON.total_seconds()//3600),'source_cutoff_utc':stamp(cutoff)})
     return rows,dict(by_league),{f"{a}/{b}":v for (a,b),v in verified.items()}
 
 def known_forecast_fixtures(path):
