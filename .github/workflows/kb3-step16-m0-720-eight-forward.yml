@@ -231,6 +231,12 @@ jobs:
             # without changing its bytes or rerunning the provider API.
             if ! git push origin HEAD:main; then
               git fetch origin main
+              # Only entirely NEW files are safe. Reject any overwrite,
+              # deletion or rename even when it lives under the ledger path.
+              if git diff-tree --no-commit-id --name-status -r HEAD | grep -v '^A[[:space:]]'; then
+                echo "::error::M0_RESEARCH_NOT_APPEND_ONLY_NO_REBASE"
+                exit 1
+              fi
               mapfile -t changed < <(git diff-tree --no-commit-id --name-only -r HEAD)
               if test "${#changed[@]}" -eq 0; then
                 echo "::error::M0_RESEARCH_EMPTY_COMMIT_ON_PUSH_REJECT"
