@@ -1,0 +1,58 @@
+{
+  "schema": "kb3-step14-independent-recheck-2026-11-15-v1",
+  "checked_at_utc": "2026-11-15T19:04:05Z",
+  "mode": "READ_ONLY_EVIDENCE_APPEND_ONLY_NO_ORIGINAL_M1_FIT_NO_TEST",
+  "original_contract": {
+    "numeric_features": 121,
+    "missing_flags": 38,
+    "train": 760,
+    "validation": 380
+  },
+  "source_documents": [
+    "docs/STEP14_COMPREHENSIVE_HISTORIC_PREMATCH_RECONSTRUCTION_2026-10-28.md",
+    "data/audits/STEP14_FINAL_1140x159_PIT_GATE_2026-10-29.json",
+    "data/audits/STEP14_INDEPENDENT_RECHECK_2026-11-14.json"
+  ],
+  "historically_verified_identity_matches": 1140,
+  "full_original_historic_pit_train_verified": 0,
+  "full_original_historic_pit_validation_verified": 0,
+  "pitchapi_team_xg_original_first_publication_proven": false,
+  "independent_original_159_field_audit_pass": false,
+  "new_actions_checked": [
+    {
+      "run_id": 43739366688,
+      "conclusion": "success",
+      "offline_history_safety": "success",
+      "live_observed_backfill": "success",
+      "artifact_id": 14172102514,
+      "limitation": "2026 capture and sealed historical research cannot establish 2023-2025 first publication timestamps"
+    },
+    {
+      "run_id": 43721536271,
+      "conclusion": "success",
+      "original_v3_87_host_attestation_artifact_id": 14163963782,
+      "limitation": "forward 87-field builder validation is not original historical 121+38 reconstruction"
+    },
+    {
+      "run_id": 43716328672,
+      "conclusion": "success",
+      "limitation": "future fixtures only"
+    },
+    {
+      "run_id": 43712949460,
+      "conclusion": "success",
+      "limitation": "new observed-at xG not first publication for historical cohort"
+    }
+  ],
+  "gate14": "PENDING",
+  "original_m1_fit_allowed": false,
+  "original_m1_fit_performed": false,
+  "test_accessed": false,
+  "additional_keys_requested": false,
+  "notification_condition_met": false,
+  "unresolved": [
+    "native per-field historical PIT source receipts for 760 TRAIN and 380 VALIDATION",
+    "PitchAPI team xG first publication timestamps and semantic lineage",
+    "full 159-field no-leakage independent PASS audit"
+  ]
+}
