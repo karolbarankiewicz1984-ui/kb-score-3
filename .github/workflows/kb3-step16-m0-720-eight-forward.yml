@@ -225,10 +225,46 @@ jobs:
             echo 'No new independent M0-720 research files.'
           else
             git commit -m 'kb3 step16: 8 league fixed M0-720 real pregame and result samples'
-            # Binary SQLite cannot be rebased safely. Fail closed and recover
-            # the original encrypted artifact if main advanced meanwhile.
+            # A competing writer may advance main during a read-only settle.
+            # NEVER rebase a forecast, SQLite DB, updated proof or model change.
+            # A non-overlapping, newly added immutable receipt can be rebased
+            # without changing its bytes or rerunning the provider API.
             if ! git push origin HEAD:main; then
-              echo "::error::M0_RESEARCH_PUSH_REJECTED_RECOVER_ORIGINAL_ARTIFACT_NO_REFORECAST"
-              exit 1
+              git fetch origin main
+              # Only entirely NEW files are safe. Reject any overwrite,
+              # deletion or rename even when it lives under the ledger path.
+              if git diff-tree --no-commit-id --name-status -r HEAD | grep -v '^A[[:space:]]'; then
+                echo "::error::M0_RESEARCH_NOT_APPEND_ONLY_NO_REBASE"
+                exit 1
+              fi
+              mapfile -t changed < <(git diff-tree --no-commit-id --name-only -r HEAD)
+              if test "${#changed[@]}" -eq 0; then
+                echo "::error::M0_RESEARCH_EMPTY_COMMIT_ON_PUSH_REJECT"
+                exit 1
+              fi
+              for path in "${changed[@]}"; do
+                case "$path" in
+                  data/pit_sidecar/m0_720_eight/*) ;;
+                  *)
+                    echo "::error::M0_RESEARCH_BINARY_OR_FORECAST_CHANGED_NO_REBASE"
+                    exit 1
+                    ;;
+                esac
+                # An already published path cannot be overwritten by a retry.
+                if git cat-file -e "origin/main:$path" 2>/dev/null; then
+                  echo "::error::M0_RESEARCH_RECEIPT_PATH_ALREADY_EXISTS_NO_REBASE"
+                  exit 1
+                fi
+              done
+              if ! git rebase origin/main; then
+                git rebase --abort || true
+                echo "::error::M0_RESEARCH_RECEIPT_REBASE_CONFLICT_KEEP_ARTIFACT"
+                exit 1
+              fi
+              if ! git push origin HEAD:main; then
+                echo "::error::M0_RESEARCH_PUSH_REJECTED_KEEP_ORIGINAL_ARTIFACT"
+                exit 1
+              fi
+              echo 'M0_RESEARCH_ONLY_NEW_IMMUTABLE_RECEIPTS_REBASED'
             fi
           fi
