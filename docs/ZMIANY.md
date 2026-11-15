@@ -1556,3 +1556,11 @@ W tym samym wdrożeniu [Actions #41346411117](https://github.com/karolbarankiewi
 - **Naprawa wdrożona:** [PR #176](https://github.com/karolbarankiewicz1984-ui/kb-score-3/pull/176) MERGED `ef32a8539e7707c716bd246adade985d8402f9b0`; 5 końcowych CI PASS na SHA `51536905635c3ab965ed36fd03d7fa5bdca6511d`. Tylko *nowe, niekolizyjne immutable receipts* mogą być opublikowane po bezpiecznym rebase; SQLite/forecasts/istniejące dowody — FAIL-CLOSED. Pełna regresja automatycznie odtwarza zweryfikowane SHA historycznej gzip SQLite.
 - **Formalna decyzja:** oryginalny 121+38 historyczny PIT 0/760 TRAIN, 0/380 VALIDATION; GATE14/16/17 PENDING, bez automatycznej promocji lub retro źródeł. Kolejny realny forecast po first-fit wymagany do HOLDOUT, brak historycznie udowodnionych 87 V3 wektorów przed cutoff. Upublicznienie repo wymaga pełnego audytu sekretów także historii commitów.
 - **Kompletny rejestr dowodów, ograniczeń i dalszych kroków:** [KB3_OPERATIONS_RECOVERY_2026-11-15.md](KB3_OPERATIONS_RECOVERY_2026-11-15.md).
+
+
+### 15.11.2026 — KB3-V3-REAL-9x87-PRE-CUTOFF-RESEARCH-ONLY — pierwszy niezerowy oryginalny forward builder
+
+- [Host Actions #43714964813](https://github.com/karolbarankiewicz1984-ui/kb-score-3/actions/runs/43714964813) zakończony **SUCCESS**. Źródłowy, serwerowo datowany artifact **14162580126** (`created_at=2026-11-15T12:40:00Z`, SHA256 ZIP `63e43d87947db60be176e8e4d34e3ed5ca4423b7c251904ece99a7a09e0ecfb5`) — 6 rzeczywistych porcji źródła po 7 requestach. Kontrolny termin `2026-11-15T12:45:59.058701Z`.
+- Wynikowy artifact **14162955048**, `KB3_V3_PREMATCH_87_NATIVE_INPUTS.json`: `candidate_status=VERIFIED_87_INPUTS`, **9 rzeczywistych wektorów x 87 cech**, ESP=3, ITA=3, GER=3, przyszłe kickoff 20–21.11.2026; `independently_archived_before_exact_cutoff=true`. Wcześniejsze `target_count=0` nie jest już ostatnim zaobserwowanym stanem tego mechanizmu.
+- **Bramki bez zmian:** `provider_original_first_publication_certified=false`, `formal_v3_training_admitted=0`, `new_catboost_models_trained=0`, `production_approved=false`; 9 wektorów to badawczy forward, nie pełne archiwalne PIT TRAIN. Artefakty 90 dni; nie publikować surowych źródeł licencyjnych w publicznym repo bez sprawdzenia zezwolenia.
+- Szczegóły: [raport operacyjny z uzupełnieniem V3](KB3_OPERATIONS_RECOVERY_2026-11-15.md).
