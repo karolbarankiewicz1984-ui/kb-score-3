@@ -16,7 +16,9 @@ def need(ok,why):
     if not ok:raise ValueError(why)
 def sha(path):return hashlib.sha256(Path(path).read_bytes()).hexdigest()
 
-def audit(db_path,*,root=ROOT,at=None):
+def audit(db_path,*,root=ROOT,at=None,forecast_horizon=HORIZON):
+    # Only exact historical-report replay may inject its contemporaneous selection horizon.
+    need(isinstance(forecast_horizon,timedelta) and timedelta(hours=1)<=forecast_horizon<=timedelta(days=7),'AUDIT_HORIZON_INVALID')
     at=at or datetime.now(timezone.utc);root=Path(root);path=Path(db_path)
     need(at.tzinfo is not None and at.utcoffset()==timedelta(0),'UTC_REQUIRED')
     before=sha(path);params,param_sha,manifest_sha=trained_params()
@@ -87,8 +89,9 @@ def audit(db_path,*,root=ROOT,at=None):
         p,doc=inventory;details=[]
         for x in doc['real_missing_last5_predecessor_ids']:
             key=(x['country'],x['target_provider_match_id']);ko=as_utc(x['kickoff_utc'])
-            reason=('ALREADY_FROZEN' if key in seen else 'OUTSIDE_LAST_M0_96H_HORIZON'
-                    if ko>as_utc(last_forecast['run_utc'])+HORIZON else 'OBSERVED_UNFROZEN_NEEDS_ORIGINAL_M0_SOURCE_REVIEW')
+            hours=int(forecast_horizon.total_seconds()//3600)
+            reason=('ALREADY_FROZEN' if key in seen else f'OUTSIDE_LAST_M0_{hours}H_HORIZON'
+                    if ko>as_utc(last_forecast['run_utc'])+forecast_horizon else 'OBSERVED_UNFROZEN_NEEDS_ORIGINAL_M0_SOURCE_REVIEW')
             details.append({'league':key[0],'native_match_id':key[1],'kickoff_utc':x['kickoff_utc'],'reason':reason})
         opportunity.update({'separate_inventory_source':str(p.relative_to(root)),
             'separate_inventory_observed_at_utc':doc['observed_at_utc'],
@@ -136,12 +139,18 @@ def audit(db_path,*,root=ROOT,at=None):
 def main():
     p=argparse.ArgumentParser();p.add_argument('--db',type=Path,default=ROOT/'data/forward_m0_720_eight/kb3_forward_eight.sqlite')
     p.add_argument('--root',type=Path,default=ROOT,help='Exact immutable snapshot root for historical verification')
-    p.add_argument('--out',type=Path);p.add_argument('--verify-report',type=Path);a=p.parse_args()
+    p.add_argument('--out',type=Path);p.add_argument('--verify-report',type=Path)
+    p.add_argument('--historical-horizon-hours',type=int,default=None,
+        help='Only when re-verifying the immutable 04 Nov original report; never changes live selection')
+    a=p.parse_args()
+    need(a.historical_horizon_hours is None or (a.verify_report is not None and
+          a.historical_horizon_hours==96),'HISTORIC_HORIZON_OVERRIDE_NOT_PERMITTED')
     if a.verify_report:
         expected=json.loads(a.verify_report.read_text())
         need(expected['report_sha256']==hashobj({k:v for k,v in expected.items() if k!='report_sha256'}),'AUDIT_REPORT_SHA_CHANGED')
         need(sha(a.db)==expected['source_sqlite_sha256'],'AUDIT_HISTORICAL_SOURCE_SHA_MISMATCH')
-        actual=audit(a.db,root=a.root,at=as_utc(expected['checked_at_utc']))
+        historical=timedelta(hours=a.historical_horizon_hours) if a.historical_horizon_hours is not None else HORIZON
+        actual=audit(a.db,root=a.root,at=as_utc(expected['checked_at_utc']),forecast_horizon=historical)
         need(actual==expected,'AUDIT_SOURCE_OR_RESULTS_CHANGED')
         print('M0_720_READONLY_REPORT_VERIFIED',expected['report_sha256']);return
     need(a.out is not None,'OUT_OR_VERIFY_REQUIRED')
