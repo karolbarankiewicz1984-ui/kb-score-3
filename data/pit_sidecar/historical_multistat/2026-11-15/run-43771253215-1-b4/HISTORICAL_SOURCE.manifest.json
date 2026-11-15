@@ -1,0 +1,24 @@
+{
+  "algorithms": "AES-256-GCM+RSA-OAEP-SHA256+gzip",
+  "ciphertext_bytes": 380911,
+  "ciphertext_sha256": "9c4016383a62b8a79561b9f5b6d9c8663cd60f296c3adb2c0d28014599fa9128",
+  "historical_prematch_pit_certified": false,
+  "offsite_restore_verified": false,
+  "proof": {
+    "final_chain_sha256": "ef09c21d923c871996074130ed37a483f60992567028c8c3e54e59c2dec4b966",
+    "resource_types": {
+      "pitchapi:catalog": 1,
+      "pitchapi:shots:": 0,
+      "pitchapi:uefa:": 0
+    },
+    "sessions": 131,
+    "source_first_published_at_known": false,
+    "training_allowed": false
+  },
+  "provider_publication_proven": false,
+  "raw_bytes": 6513532,
+  "raw_sha256": "9e3d0c047e4cd2e0ec6815e0ff4548b1d2a8b0663666f11bbb4184f0fc2d7eef",
+  "recipient_fingerprint_sha256": "1471d68df79db86ea71af6fd53c68b6689abd85a8d1a57e39ee704b96be15276",
+  "schema": "kb3-step11-pitch-uefa-evidence-v1",
+  "training_allowed": false
+}
