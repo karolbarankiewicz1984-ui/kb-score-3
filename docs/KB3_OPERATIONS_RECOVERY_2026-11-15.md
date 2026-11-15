@@ -27,3 +27,12 @@
 6. Generatory PDF, rozbudowa rynków oraz finalny Champion dopiero po zweryfikowanym przepływie nowych danych i właściwych gate'ach.
 
 **Stan decyzji:** operacyjne Actions i kod M0 są uruchamialne, pierwsze badawcze audyty działają; regularny przyrost nowych przedmeczowych prognoz, formalny HOLDOUT i oryginalne PIT nie zostały jeszcze zaakceptowane. Zmiany nie ustanawiają nowej wersji modelu produkcyjnego.
+
+
+## Dopisany punkt kontrolny V3 — 15.11.2026 12:46 UTC
+
+- Po pierwotnym zapisie niniejszego raportu zakończył się [V3 native two-phase Actions #43714964813](https://github.com/karolbarankiewicz1984-ui/kb-score-3/actions/runs/43714964813) **SUCCESS** na oryginalnym workflow z kodem badawczym. Nie ma tu powtórnego treningu ani modelu produkcyjnego.
+- `source-archive` wykonał 7 zapytań istniejącego PitchAPI i zamroził 6 pierwotnych porcji źródłowych. Oryginalny GitHub artifact **14162580126**: created_at **2026-11-15T12:40:00Z**, serwerowy SHA-256 ZIP `63e43d87947db60be176e8e4d34e3ed5ca4423b7c251904ece99a7a09e0ecfb5`.
+- `verified-v3-freeze` potwierdził źródło i pierwotne wartości buildera przed niezależnie wybranym cutoff **2026-11-15T12:45:59.058701Z**. Oryginalny artifact **14162955048** (`KB3_V3_PREMATCH_87_NATIVE_INPUTS.json`) zawiera **9 `VERIFIED_87_INPUTS`** (każdy dokładnie 87 wartości): ESP=3, ITA=3, GER=3. Dotyczą przyszłych kickoffów **20–21.11.2026**; jest to pierwsze potwierdzenie niezerowej grupy takich wektorów w tym audycie.
+- Pola audytu: `independently_archived_before_exact_cutoff=true`, `native_sources_verified=6`, `verified_v3_input_vectors=9`, ale `provider_original_first_publication_certified=false`, `formal_v3_training_admitted=0`, `new_catboost_models_trained=0`, `production_approved=false`. Nie używać tych dziewięciu do retro-dopasowania ani do fałszywego zamknięcia oryginalnego `GATE14`.
+- Oba artifacts mają **retention-days=90** w workflow. Konieczny osobny plan legalnej, trwałej archiwizacji i deduplikacji źródeł przed wygaśnięciem; samo posiadanie ogólnego logu nie odtwarza historycznych bajtów dostawcy. Nie ujawniać surowych materiałów licencyjnych w publicznym repo bez zgody.
