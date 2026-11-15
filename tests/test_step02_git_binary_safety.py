@@ -16,7 +16,7 @@ class Step02PublicationSafety(unittest.TestCase):
         self.assertIn("M0_RESEARCH_BINARY_OR_FORECAST_CHANGED_NO_REBASE",text)
         self.assertIn("M0_RESEARCH_NOT_APPEND_ONLY_NO_REBASE",text)
         self.assertIn("M0_RESEARCH_RECEIPT_PATH_ALREADY_EXISTS_NO_REBASE",text)
-        self.assertIn("git cat-file -e \\"origin/main:$path\\"",text)
+        self.assertIn('git cat-file -e "origin/main:$path"',text)
         self.assertIn("git rebase origin/main",text)
         self.assertIn("M0_RESEARCH_PUSH_REJECTED_KEEP_ORIGINAL_ARTIFACT",text)
         self.assertIn("exit 1",text)
