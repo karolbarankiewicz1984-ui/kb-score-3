@@ -75,15 +75,16 @@ class SelectionTests(unittest.TestCase):
         for reason in ('HOME_HISTORY5_SHORT','AWAY_HISTORY5_SHORT','BOTH_HISTORY5_SHORT'):
             self.assertEqual(diag['reason_counts']['ESP'][reason],1)
 
-    def test_ninety_minutes_and_96_hours_exact_boundaries(self):
+    def test_ninety_minutes_and_7_day_exact_boundaries(self):
         data=sources();current=next(x['payload']['matches'] for x in data if ':ESP:2026/' in x['resource'])
         current[250]['time_utc']=stamp(NOW+timedelta(minutes=90))
-        current[251]['time_utc']=stamp(NOW+timedelta(hours=96))
-        current[252]['time_utc']=stamp(NOW+timedelta(hours=96,seconds=1))
+        current[251]['time_utc']=stamp(NOW+timedelta(days=7))
+        current[252]['time_utc']=stamp(NOW+timedelta(days=7,seconds=1))
         diag={};items,_,_=build(data,diagnostics=diag);ids={x['provider_match_id'] for x in items}
         self.assertNotIn(current[250]['id'],ids);self.assertIn(current[251]['id'],ids)
         self.assertNotIn(current[252]['id'],ids)
         self.assertEqual(diag['reason_counts']['ESP']['INSIDE_90MIN_OR_PAST'],1)
+        self.assertGreaterEqual(diag['reason_counts']['ESP']['OUTSIDE_7D'],1)
 
     def test_processing_delay_never_generates_a_late_target(self):
         data=sources();diag={};items,_,_=build(data,diagnostics=diag,wall_clock=lambda:NOW+timedelta(hours=3,minutes=30))

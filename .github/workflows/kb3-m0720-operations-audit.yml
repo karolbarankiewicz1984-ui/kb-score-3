@@ -78,7 +78,8 @@ jobs:
           python -m scripts.audit_m0720_operations \
             --db "$SNAPSHOT/data/forward_m0_720_eight/kb3_forward_eight.sqlite" \
             --root "$SNAPSHOT" \
-            --verify-report docs/audits/M0_720_OPERATIONS_2026-11-04.json
+            --verify-report docs/audits/M0_720_OPERATIONS_2026-11-04.json \
+            --historical-horizon-hours 96
           git diff --exit-code -- data models config
           git diff --check
       - uses: actions/upload-artifact@v4
