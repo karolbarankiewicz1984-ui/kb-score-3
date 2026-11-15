@@ -10,7 +10,15 @@ class Step02PublicationSafety(unittest.TestCase):
         text=WORKFLOW.read_text(encoding="utf-8")
         self.assertNotIn("git pull --rebase",text)
         self.assertIn("if ! git push origin HEAD:main; then",text)
-        self.assertIn("M0_RESEARCH_PUSH_REJECTED_RECOVER_ORIGINAL_ARTIFACT_NO_REFORECAST",text)
+        # Only entirely new, non-colliding receipts may survive a push race.
+        # Binary SQLite, forecast changes and rewritten ledger evidence still
+        # fail closed and preserve the original Action artifact.
+        self.assertIn("M0_RESEARCH_BINARY_OR_FORECAST_CHANGED_NO_REBASE",text)
+        self.assertIn("M0_RESEARCH_NOT_APPEND_ONLY_NO_REBASE",text)
+        self.assertIn("M0_RESEARCH_RECEIPT_PATH_ALREADY_EXISTS_NO_REBASE",text)
+        self.assertIn("git cat-file -e \\"origin/main:$path\\"",text)
+        self.assertIn("git rebase origin/main",text)
+        self.assertIn("M0_RESEARCH_PUSH_REJECTED_KEEP_ORIGINAL_ARTIFACT",text)
         self.assertIn("exit 1",text)
 
     def test_source_evidence_uploaded_even_on_failed_live_run(self):
