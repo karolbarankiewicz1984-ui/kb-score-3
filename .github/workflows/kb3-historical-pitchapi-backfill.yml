@@ -167,7 +167,8 @@ jobs:
           assert 1<=summary["completed_batches"]<=5
           assert summary["new_match_stats"]<=24
           assert summary["completed_batches"]<=1
-          assert summary["provider_requests_history"]<=5*MAX_CALLS
+          assert summary["provider_requests_history"]<=MAX_CALLS
+          assert summary["issues"].get("requests",0)<=12
           assert summary["new_match_stats"]==sum(x["new"] for x in summary["history_batches"])
           assert summary["effective_xg5_pair_complete"]==quality["totals"]["pair_xg_5_complete"]
           assert summary["cumulative_match_stats"]==quality["totals"]["total_observed_stats_matches"]
