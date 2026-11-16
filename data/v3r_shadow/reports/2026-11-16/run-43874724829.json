@@ -1,0 +1,29 @@
+{
+  "already_scored_or_ineligible_m0": {
+    "not_sufficiently_future": 149
+  },
+  "existing_m0_not_modified": true,
+  "historical_train_n": 4555,
+  "host_attestation_pending": true,
+  "model_research_only": true,
+  "model_version": "KB3_V3R_CATBOOST_NO_XG_14_FORWARD_RESEARCH_V1",
+  "new_future_frozen_forecasts": 70,
+  "new_m0_parent_candidates": 70,
+  "new_pinned_model_built": true,
+  "no_automatic_champion_promotion": true,
+  "official_fit_increment": 0,
+  "pinned_model_sha256": "0faa6159d9d94f8e4931506103ede2d77ada0542f618eb2309ff4da95f78c946",
+  "production_approved": false,
+  "protected_eng_test_not_accessed": true,
+  "provider_errors_by_type": {},
+  "provider_network_request_count": 17,
+  "provider_request_cap": 17,
+  "report_sha256": "11c29b714137be919d4ad4c3c3b1afd7ea919aa46715b7b027dd8cde00f482d6",
+  "run_utc": "2026-11-16T13:21:22.774847Z",
+  "schema": "kb3-v3r-forward-shadow-actual-run-v1",
+  "source_chain_sha256": "2aa0acd09939242edafe6b4587f32bdd358c0d41868272de7369b177a92c5cb1",
+  "source_cipher_sha256": "347fd0816d04a469960a16959ff88cc371f9cfa256dddb7c6541f50c967056e2",
+  "source_missing_leagues": {},
+  "source_observation_after_capture_excluded": 0,
+  "unavailable_reasons": {}
+}
