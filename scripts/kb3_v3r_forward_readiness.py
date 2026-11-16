@@ -21,7 +21,7 @@ from scripts.kb3_p1_retro_catboost_1007_376 import (
 )
 from src.kb3_p1_shared_asof_features_v2 import LEAGUES
 from src.kb3_historical_feature_quality import raw_stat, rolling_window
-from src.kb3_step16_m0_720_eight_forward import DB as M0_DB
+M0_DB = Path(__file__).resolve().parents[1] / 'data/forward_m0_720_eight/kb3_forward_eight.sqlite'
 
 SCHEMA = "kb3-v3r-forward-readiness-existing-m0-v1"
 MIN_LEAD = timedelta(minutes=90)
