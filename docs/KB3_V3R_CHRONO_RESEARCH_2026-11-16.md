@@ -97,4 +97,3 @@ Walka z przeciekiem etykiety i chronologiczny podział **nie rozwiązują** ryzy
 ### Bramka uruchomienia pełnego V3-R Shadow
 
 `V3R_FLEX_OPTIONAL_MISSING_ALLOWED=true` nie oznacza jeszcze `V3R_LIVE_MODEL_ACTIVATED=true`. Wymagana jest oddzielna zgodność trening/forward, przypięty dokładny model CatBoost, host-attested nowa prognoza i kompletna lista terminarza. Do tej chwili działają M0 i dotychczasowy Shadow Six, a V3-R przygotowuje prawdziwe statystyki i kontroluje braki. `GATE14_ORIGINAL_STRICT_NATIVE_PIT=PENDING`, `TEST` oraz model Champion nienaruszone.
-
