@@ -1,0 +1,82 @@
+{
+  "schema": "kb3-step14-independent-recheck-2026-11-16-v1",
+  "checked_at_utc": "2026-11-16T18:46:06Z",
+  "mode": "READ_ONLY_EVIDENCE_APPEND_ONLY_NO_ORIGINAL_M1_FIT_NO_TEST",
+  "original_contract": {
+    "numeric_features": 121,
+    "missing_flags": 38,
+    "train": 760,
+    "validation": 380
+  },
+  "source_documents": [
+    "docs/STEP14_COMPREHENSIVE_HISTORIC_PREMATCH_RECONSTRUCTION_2026-10-28.md",
+    "data/audits/STEP14_INDEPENDENT_RECHECK_2026-11-15.json",
+    "data/pit_sidecar/historical_multistat/2026-11-16/run-43830691797-1-summary/ROLLING_AFTER_RECHECK.json"
+  ],
+  "historically_verified_identity_matches": 1140,
+  "full_original_historic_pit_train_verified": 0,
+  "full_original_historic_pit_validation_verified": 0,
+  "pitchapi_team_xg_original_first_publication_proven": false,
+  "independent_original_159_field_audit_pass": false,
+  "new_actions_checked": [
+    {
+      "run_id": 43830691797,
+      "conclusion": "success",
+      "jobs": [
+        "offline-history-safety:success",
+        "live-observed-backfill:success"
+      ],
+      "limitation": "2026 retrospective observed-at statistics cannot establish 2023-2025 original first-publication timestamps"
+    },
+    {
+      "run_id": 43873029581,
+      "conclusion": "success",
+      "jobs": [
+        "provider-asof-capture:success"
+      ],
+      "limitation": "new capture is not historical first publication"
+    },
+    {
+      "run_id": 43880590244,
+      "conclusion": "success",
+      "jobs": [
+        "future-fixtures-only:success"
+      ],
+      "limitation": "future fixture sidecar does not qualify original historical PIT"
+    },
+    {
+      "run_id": 43899594284,
+      "conclusion": "failure",
+      "failed_step": "Verify independently hosted native bytes with ORIGINAL v3 verified_view",
+      "limitation": "forward native-byte attestation failed; no original historical reconstruction proof"
+    },
+    {
+      "run_id": 43906379256,
+      "conclusion": "success",
+      "jobs": [
+        "offline-xg-semantic-and-time-audit:success",
+        "real-eight-native-xg-source:success"
+      ],
+      "limitation": "forward predecessor xG shadow is not original 121+38 historical PIT"
+    }
+  ],
+  "additional_observations": {
+    "historical_multistat_overlay": {
+      "recovered_yellow_cards": 1272,
+      "card_source_conflicts": 83,
+      "xg_disagreement_persisted": 815
+    },
+    "interpretation": "retrospective source-coverage research, not evidence of original pre-kickoff availability"
+  },
+  "gate14": "PENDING",
+  "original_m1_fit_allowed": false,
+  "original_m1_fit_performed": false,
+  "test_accessed": false,
+  "additional_keys_requested": false,
+  "notification_condition_met": false,
+  "unresolved": [
+    "native per-field original historical PIT receipts for 760 TRAIN and 380 VALIDATION",
+    "PitchAPI team xG original first-publication timestamps and semantic lineage",
+    "full 159-field independent no-leakage PASS audit"
+  ]
+}
