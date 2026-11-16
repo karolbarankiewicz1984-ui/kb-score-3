@@ -43,3 +43,15 @@ Walka z przeciekiem etykiety i chronologiczny podział **nie rozwiązują** ryzy
 - Dodatkowy przedział ufności (bootstrap po tygodniach, 29 tygodni, 600 powtórzeń) dla różnicy xG minus no-xG log loss: **[-0.00328235, +0.00529918]** — nie daje wiarygodnego dowodu przewagi xG w tym historycznym eksperymencie.
 - Nazwa artefaktu: `KB3_V3R_RECONSTRUCTED_CHRONO_RESEARCH_METRICS_ONLY` (GitHub Actions artifact ID `14205308088`, raport SHA256 `c9d11570a993fc144292af58db0bbdfe0631160c10e4251aadde581a0589374e`).
 - **Decyzja:** techniczne wdrożenie toru V3-R zaliczone. `ORIGINAL_STRICT_PIT=PENDING`, `official_fit_increment=0`, `production_approved=false`. Nie przenosić tych metryk do raportu efektywności M0 ani nie mieszać z prospektywnym HOLDOUT. Kolejna faza: świadomie uruchamiany, zamrażany przed meczem V3-R shadow dopiero po niezależnej kontroli zgodności cech TRAIN/FORWARD.
+
+
+## Faza 2 — obiektywna kontrola gotowości źródeł V3-R do przyszłych spotkań (16.11.2026)
+
+- `scripts/kb3_v3r_forward_readiness.py` czyta wyłącznie niezmienne, istniejące prognozy M0 i zamrożone SQLite z historycznymi obserwacjami; **zero zapytań API** i żadnych nowych prognoz.
+- Każda statystyka 5 ostatnich meczów musi mieć oryginalny `source_observed_at_utc` niepóźniejszy od faktycznego `captured_at_utc` prognozy M0; sprawdzane są czas zakończenia wcześniejszego meczu +3h, natywne ID obu drużyn, data, brak TEST ENG, wynik sprzed meczu.
+- Stosowany jest ten sam `build_features_without_target_label`, którego użyto w treningu badawczym. Dostępność klasyfikujemy odrębnie: historia pięciu meczów, komplet 14 cech, komplet 18 cech z xG.
+- Wynik statusu `CANDIDATE_14_ONLY` lub `CANDIDATE_ALL_18` jest **kandydatem do dalszego audytu**, a nie pozwoleniem na zamrożenie prognozy: zbiór dawnego indeksu nie zastępuje rzeczywistego kompletnego terminarza z godziną pobrania w ostatniej sesji. Bez porównania z pełną natywną listą ostatnich spotkań i źródłowego odtwarzania TRAIN/FORWARD pozostaje `not_eligible_for_auto_forward_scoring_without_fresh_listing_crosscheck=true`.
+- Nowy workflow `KB3 V3-R forward readiness from real M0 (no provider API)`: PR, push na `main`, harmonogram codziennie 13:50 UTC (14:50 CET zimą), ręczny `workflow_dispatch`. Każdy przebieg wgrywa tylko agregowany raport do GitHub Actions, bez eksportu surowych danych. Nie zmienia M0/Shadow Six ani nie promuje V3-R.
+- Dalszy etap dopiero po źródłowej gotowości i niezależnym potwierdzeniu train/forward: archiwizacja rzeczywistej prognozy przed kickoff, porównanie tylko z parą M0 tego samego meczu, później właściwy holdout. Nie należy obchodzić braku statystyk przez wstawienie zera.
+
+**Stan decyzyjny:** read-only readiness, `V3R_FULL14_18_SHADOW=NOT_YET_ACTIVATED`, `GATE14_ORIGINAL_STRICT_NATIVE_PIT=PENDING`.
