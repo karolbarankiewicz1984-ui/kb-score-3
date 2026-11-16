@@ -47,7 +47,8 @@ def drive(client,*, run_token,db=DB,archive=ARCHIVE,
     try:
         checked=recheck(client,db_path=db,issue_db=issues_db,
                         root=issues_root,public_key=public_key,
-                        run_token=run_token+"-issues")
+                        run_token=run_token+"-issues",
+                        max_xg=3,max_cards=6)
         issue_state=checked["status"]
     except Exception as exc:
         # Source batches are still valid; do not conceal an unresolved issue pass.
