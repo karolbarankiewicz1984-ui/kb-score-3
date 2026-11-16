@@ -32,3 +32,14 @@ Walka z przeciekiem etykiety i chronologiczny podział **nie rozwiązują** ryzy
 4. Oddzielnie prowadzić poszukiwanie historycznych źródeł PIT dla pierwotnej V3.
 
 **Uruchamianie:** GitHub Actions `KB3 V3-R chronological reconstructed research (offline only)` — tylko pull_request lub świadome ręczne workflow_dispatch, bez dodatkowego cyklicznego obciążenia i bez nowego kosztu API.
+
+
+## Wynik faktycznego uruchomienia i odbiór — 16.11.2026
+
+- [PR #179](https://github.com/karolbarankiewicz1984-ui/kb-score-3/pull/179) **MERGED** (squash commit `dd28610e7447a2f75a1f697450354be2c2a8da38`). Zmiany w gałęzi `main`.
+- [GitHub Actions #43822657527](https://github.com/karolbarankiewicz1984-ui/kb-score-3/actions/runs/43822657527): **SUCCESS**. Weryfikacja SHA256 źródłowego, prawdziwe testy, sześć faktycznych fitów badawczych, niezmienność oryginalnych modeli i brak promocji — wszystkie etapy PASS.
+- Aktualny zbiór badawczy po rozszerzeniu historycznej bazy: **4550 research TRAIN / 1864 research VALIDATION**. Te liczby nie są oryginalnym 760/380 i nie są nowymi, prospektywnymi próbkami.
+- Pierwsza walidacja na dokładnie tych samych 1864 historycznych spotkaniach: wariant 14 cech bez xG: **log loss 1.0397046063, Brier sum3 0.6251960324, top1 46.9957%**; wariant 18 cech z retrospektywnym xG: **log loss 1.0404296571, Brier sum3 0.6256549577, top1 46.7275%**.
+- Dodatkowy przedział ufności (bootstrap po tygodniach, 29 tygodni, 600 powtórzeń) dla różnicy xG minus no-xG log loss: **[-0.00328235, +0.00529918]** — nie daje wiarygodnego dowodu przewagi xG w tym historycznym eksperymencie.
+- Nazwa artefaktu: `KB3_V3R_RECONSTRUCTED_CHRONO_RESEARCH_METRICS_ONLY` (GitHub Actions artifact ID `14205308088`, raport SHA256 `c9d11570a993fc144292af58db0bbdfe0631160c10e4251aadde581a0589374e`).
+- **Decyzja:** techniczne wdrożenie toru V3-R zaliczone. `ORIGINAL_STRICT_PIT=PENDING`, `official_fit_increment=0`, `production_approved=false`. Nie przenosić tych metryk do raportu efektywności M0 ani nie mieszać z prospektywnym HOLDOUT. Kolejna faza: świadomie uruchamiany, zamrażany przed meczem V3-R shadow dopiero po niezależnej kontroli zgodności cech TRAIN/FORWARD.
