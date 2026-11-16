@@ -391,8 +391,11 @@ def capture(*, client, root=ARCHIVE, db_path=DB, public_key=PUBLIC_KEY,
         limit=(max_matches*3)//4)
     planned = set(known) | {(s,m["id"]) for s,season,m in live}
     remaining = max_matches - len(live)
-    best, gain_plan = plan_missing_fixtures(
-        groups, planned, db_path, limit=(remaining*3)//4)
+    best_candidates, gain_plan = plan_missing_fixtures(
+        groups, known, db_path,
+        limit=min(MAX_MATCHES,(remaining*3)//4+len(live)))
+    best = [x for x in best_candidates
+            if (x[0],x[2]["id"]) not in planned][:(remaining*3)//4]
     planned.update((s,m["id"]) for s,season,m in best)
     spare = remaining - len(best)
     selected = list(live) + list(best)
