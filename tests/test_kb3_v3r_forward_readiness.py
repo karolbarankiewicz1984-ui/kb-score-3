@@ -56,8 +56,8 @@ class ForwardReadinessTests(unittest.TestCase):
 
     def test_incomplete_xg_leaves_core14_candidate_only(self):
         fixtures,obs=fixtures_and_observations()
-        obs[0]["xg_status"]="UNVERIFIED"
-        obs[0]["xg_home"]=None;obs[0]["xg_away"]=None
+        obs[9]["xg_status"]="UNVERIFIED"
+        obs[9]["xg_home"]=None;obs[9]["xg_away"]=None
         d=audit_target(TARGET,fixtures,obs)
         self.assertEqual(d["status"],"CANDIDATE_14_ONLY")
 
