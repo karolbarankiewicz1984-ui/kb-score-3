@@ -85,12 +85,14 @@ def main():
     p=argparse.ArgumentParser()
     p.add_argument("--run-token",required=True)
     p.add_argument("--batches",type=int,default=MAX_BATCHES)
+    p.add_argument("--batch-size",type=int,default=BATCH_SIZE)
     args=p.parse_args()
     key=os.getenv("PITCHAPI_API_KEY","").strip()
     if not key:raise SystemExit("MISSING_EXISTING_PITCHAPI_SECRET")
     from pitchapi import PitchAPI
     try:
-        report=drive(PitchAPI(api_key=key),run_token=args.run_token,batches=args.batches)
+        report=drive(PitchAPI(api_key=key,max_retries=0),run_token=args.run_token,
+                     batches=args.batches,batch_size=args.batch_size)
     except Exception as exc:
         print("KB3_ACCELERATED_CAPTURE_BLOCKED",type(exc).__name__)
         raise SystemExit(3)
