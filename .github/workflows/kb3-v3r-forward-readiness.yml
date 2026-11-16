@@ -56,7 +56,7 @@ jobs:
           assert db.stat().st_size==m['raw_bytes'] and sha(db)==m['raw_sha256']
           print('SOURCE_SHA_VERIFIED',m['raw_sha256'])
           PY
-      - name: Regression tests: clock boundaries, source revisions and protected league
+      - name: "Regression tests - clock boundaries, source revisions and protected league"
         run: |
           python -m compileall -q scripts/kb3_v3r_forward_readiness.py
           python -m unittest discover -s tests -p 'test_kb3_v3r_forward_readiness.py' -v
