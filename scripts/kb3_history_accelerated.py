@@ -47,7 +47,8 @@ def drive(client,*, run_token,db=DB,archive=ARCHIVE,
     try:
         checked=recheck(client,db_path=db,issue_db=issues_db,
                         root=issues_root,public_key=public_key,
-                        run_token=run_token+"-issues")
+                        run_token=run_token+"-issues",
+                        max_xg=3,max_cards=6)
         issue_state=checked["status"]
     except Exception as exc:
         # Source batches are still valid; do not conceal an unresolved issue pass.
@@ -85,12 +86,14 @@ def main():
     p=argparse.ArgumentParser()
     p.add_argument("--run-token",required=True)
     p.add_argument("--batches",type=int,default=MAX_BATCHES)
+    p.add_argument("--batch-size",type=int,default=BATCH_SIZE)
     args=p.parse_args()
     key=os.getenv("PITCHAPI_API_KEY","").strip()
     if not key:raise SystemExit("MISSING_EXISTING_PITCHAPI_SECRET")
     from pitchapi import PitchAPI
     try:
-        report=drive(PitchAPI(api_key=key),run_token=args.run_token,batches=args.batches)
+        report=drive(PitchAPI(api_key=key,max_retries=0),run_token=args.run_token,
+                     batches=args.batches,batch_size=args.batch_size)
     except Exception as exc:
         print("KB3_ACCELERATED_CAPTURE_BLOCKED",type(exc).__name__)
         raise SystemExit(3)

@@ -5,6 +5,8 @@ on:
       - scripts/kb3_history_gain_first.py
       - tests/test_kb3_history_gain_first.py
       - scripts/kb3_historical_pitchapi_backfill.py
+      - scripts/kb3_v3r_last5_priority.py
+      - tests/test_kb3_v3r_last5_priority.py
       - scripts/kb3_history_accelerated.py
       - scripts/kb3_history_issue_recheck.py
       - tests/test_kb3_history_accelerated.py
@@ -19,6 +21,8 @@ on:
       - scripts/kb3_history_gain_first.py
       - tests/test_kb3_history_gain_first.py
       - scripts/kb3_historical_pitchapi_backfill.py
+      - scripts/kb3_v3r_last5_priority.py
+      - tests/test_kb3_v3r_last5_priority.py
       - scripts/kb3_history_accelerated.py
       - scripts/kb3_history_issue_recheck.py
       - tests/test_kb3_history_accelerated.py
@@ -28,7 +32,7 @@ on:
       - tests/test_kb3_historical_feature_quality.py
       - .github/workflows/kb3-historical-pitchapi-backfill.yml
   schedule:
-    - cron: '15 2,10,18 * * *'
+    - cron: '15 2,14 * * *'
   workflow_dispatch:
 permissions:
   contents: write
@@ -140,12 +144,12 @@ jobs:
           PY
       - name: Install existing PitchAPI provider and encryption libraries
         run: python -m pip install --disable-pip-version-check 'pitchapi==0.1.6' 'cryptography>=42,<47'
-      - name: Capture five independently sealed source batches (max 240 matches), recheck xG and missing yellow cards
+      - name: Fetch one bounded genuine last-five priority batch; leave missing fields queued
         env:
           PITCHAPI_API_KEY: ${{ secrets.PITCHAPI_API_KEY }}
         run: |
           python -m scripts.kb3_history_accelerated \
-            --run-token "$GITHUB_RUN_ID-$GITHUB_RUN_ATTEMPT" --batches 5
+            --run-token "$GITHUB_RUN_ID-$GITHUB_RUN_ATTEMPT" --batches 1 --batch-size 24
       - name: Validate all encrypted chunks, independent recheck receipts and final rolling report
         run: |
           python - <<'PY'
@@ -161,8 +165,10 @@ jobs:
           quality=json.loads((folder/"ROLLING_AFTER_RECHECK.json").read_text())
           assert summary["completed_batches"]==len(summary["history_batches"])
           assert 1<=summary["completed_batches"]<=5
-          assert summary["new_match_stats"]<=240
-          assert summary["provider_requests_history"]<=5*MAX_CALLS
+          assert summary["new_match_stats"]<=24
+          assert summary["completed_batches"]<=1
+          assert summary["provider_requests_history"]<=MAX_CALLS
+          assert summary["issues"].get("requests",0)<=12
           assert summary["new_match_stats"]==sum(x["new"] for x in summary["history_batches"])
           assert summary["effective_xg5_pair_complete"]==quality["totals"]["pair_xg_5_complete"]
           assert summary["cumulative_match_stats"]==quality["totals"]["total_observed_stats_matches"]

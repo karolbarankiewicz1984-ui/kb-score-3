@@ -365,6 +365,7 @@ def capture(*, client, root=ARCHIVE, db_path=DB, public_key=PUBLIC_KEY,
     require(catalog is not None, "PITCHAPI_CATALOG_UNAVAILABLE")
     scopes, ucl_status = select_scopes(catalog)
     groups = {}
+    raw_current = {}  # exact provider fixture listing for genuine future M0 targets
     source_counts = {}
     indexed = []
     for scope, lid, season in scopes:
@@ -374,21 +375,32 @@ def capture(*, client, root=ARCHIVE, db_path=DB, public_key=PUBLIC_KEY,
             errors["MISSING_SEASON_" + scope + "_" + season] += 1
             continue
         rows = validate_match_rows(listing, scope, season, r["completed_at_utc"])
+        if scope in NATIONAL_SCOPES and season == "2026/2027":
+            raw_current[scope] = listing
         groups[(scope, season)] = rows
         source_counts[scope + "/" + season] = len(rows)
         indexed.extend((scope, season, m, r["completed_at_utc"], r["payload_sha256"])
                        for m in rows)
     require(bool(groups), "NO_VALID_HISTORICAL_MATCHES")
-    # Research-only gain-first ranking: at most 75% of this 48-match batch.
-    # The remaining budget retains the original balanced safe selector.
+    # First, true last-five predecessors for exact upcoming M0 fixtures.
+    # Source fetched NOW is never backdated to the old M0 forecast cutoff.
+    from scripts.kb3_v3r_last5_priority import prioritize_live_last5
     from scripts.kb3_history_gain_first import plan_missing_fixtures
-    best, gain_plan = plan_missing_fixtures(
-        groups, known, db_path, limit=(max_matches*3)//4)
-    extra_known = set(known) | {(s,m["id"]) for s,season,m in best}
-    spare = max_matches - len(best)
-    selected = list(best)
+    live, live_plan = prioritize_live_last5(
+        groups, raw_current, known, now=utc_now(),
+        limit=(max_matches*3)//4)
+    planned = set(known) | {(s,m["id"]) for s,season,m in live}
+    remaining = max_matches - len(live)
+    best_candidates, gain_plan = plan_missing_fixtures(
+        groups, known, db_path,
+        limit=min(MAX_MATCHES,(remaining*3)//4+len(live)))
+    best = [x for x in best_candidates
+            if (x[0],x[2]["id"]) not in planned][:(remaining*3)//4]
+    planned.update((s,m["id"]) for s,season,m in best)
+    spare = remaining - len(best)
+    selected = list(live) + list(best)
     if spare:
-        selected.extend(select_batch(groups,extra_known,max_matches=spare))
+        selected.extend(select_batch(groups,planned,max_matches=spare))
     require(len(selected)<=max_matches and
             len({(scope,m["id"]) for scope,season,m in selected})==len(selected),
             "GAIN_PRIORITY_DUPLICATE_OR_OVER_LIMIT")
@@ -439,6 +451,11 @@ def capture(*, client, root=ARCHIVE, db_path=DB, public_key=PUBLIC_KEY,
             "ended_utc": receipts[-1]["completed_at_utc"],
             "run_token": run_token, "provider_requests": calls,
             "provider_call_cap": MAX_CALLS, "match_request_limit": max_matches,
+            "v3r_live_true_lastfive_acquisition_priority": live_plan,
+            "v3r_live_lastfive_provider_choices": len(live),
+            "v3r_missing_stat_parameters_remain_followup": True,
+            "v3r_missing_optional_stat_does_not_abort_capture": True,
+            "v3r_original_m0_freeze_not_backdated": True,
             "gain_first_preflight": gain_plan,
             "gain_first_ranked_provider_choices": len(best),
             "selection_is_not_a_pit_certification": True,

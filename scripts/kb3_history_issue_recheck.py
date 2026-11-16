@@ -194,10 +194,15 @@ def store_rechecks(path, records):
     return n
 
 def recheck(client, *, db_path=DB,issue_db=ISSUE_DB, root=ISSUE_ROOT,
-            public_key=PUBLIC_KEY,run_token):
+            public_key=PUBLIC_KEY,run_token,
+            max_xg=MAX_XG, max_cards=MAX_CARDS):
     if not re.fullmatch(r"[A-Za-z0-9_-]{1,64}",run_token):
         raise ValueError("UNSAFE_RECHECK_TOKEN")
+    if not (0 <= max_xg <= MAX_XG and 0 <= max_cards <= MAX_CARDS and
+            2*max_xg+max_cards <= MAX_CALLS):
+        raise ValueError("UNSAFE_RECHECK_LIMIT")
     xg,cards=candidates(db_path,issue_db)
+    xg,cards=xg[:max_xg],cards[:max_cards]
     if not xg and not cards:
         return {"status":"NO_NEW_ISSUES","requests":0,
                 "xg_reviewed":0,"cards_reviewed":0,"new_corrections":0}
