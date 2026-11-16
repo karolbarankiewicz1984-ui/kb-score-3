@@ -387,7 +387,7 @@ def capture(*, client, root=ARCHIVE, db_path=DB, public_key=PUBLIC_KEY,
     from scripts.kb3_v3r_last5_priority import prioritize_live_last5
     from scripts.kb3_history_gain_first import plan_missing_fixtures
     live, live_plan = prioritize_live_last5(
-        groups, raw_current, known, now=utc_now(),
+        groups, raw_current, known, now=as_utc(utc_now()),
         limit=(max_matches*3)//4)
     planned = set(known) | {(s,m["id"]) for s,season,m in live}
     remaining = max_matches - len(live)
