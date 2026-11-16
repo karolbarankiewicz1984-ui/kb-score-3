@@ -1,0 +1,94 @@
+name: KB3 V3-R forward readiness from real M0 (no provider API)
+on:
+  pull_request:
+    paths:
+      - scripts/kb3_v3r_forward_readiness.py
+      - tests/test_kb3_v3r_forward_readiness.py
+      - docs/KB3_V3R_CHRONO_RESEARCH_2026-11-16.md
+      - .github/workflows/kb3-v3r-forward-readiness.yml
+  push:
+    branches: [main]
+    paths:
+      - scripts/kb3_v3r_forward_readiness.py
+      - tests/test_kb3_v3r_forward_readiness.py
+      - .github/workflows/kb3-v3r-forward-readiness.yml
+  schedule:
+    - cron: '50 13 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+concurrency:
+  group: kb3-v3r-readonly-source-preflight
+  cancel-in-progress: false
+
+jobs:
+  audited-readonly-gate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Verify and restore exactly the checked-in historical SQLite version
+        run: |
+          python - <<'PY'
+          import gzip,hashlib,json,shutil
+          from pathlib import Path
+          folder=Path('data/research/historical_multistat')
+          archive=folder/'observations.sqlite.gz'
+          manifest=folder/'observations.sqlite.gz.manifest.json'
+          db=folder/'observations.sqlite'
+          m=json.loads(manifest.read_text())
+          def sha(p):
+              h=hashlib.sha256()
+              with p.open('rb') as fh:
+                  for b in iter(lambda:fh.read(1024*1024),b''):
+                      h.update(b)
+              return h.hexdigest()
+          assert archive.is_file() and sha(archive)==m['compressed_sha256']
+          assert not db.exists()
+          with gzip.open(archive,'rb') as source,db.open('xb') as target:
+              shutil.copyfileobj(source,target,length=1024*1024)
+          assert db.stat().st_size==m['raw_bytes'] and sha(db)==m['raw_sha256']
+          print('SOURCE_SHA_VERIFIED',m['raw_sha256'])
+          PY
+      - name: Regression tests: clock boundaries, source revisions and protected league
+        run: |
+          python -m compileall -q scripts/kb3_v3r_forward_readiness.py
+          python -m unittest discover -s tests -p 'test_kb3_v3r_forward_readiness.py' -v
+          python -m unittest discover -s tests -p 'test_kb3_v3r_walkforward.py' -v
+      - name: Real recorded M0 forward readiness survey (no prediction and no API)
+        run: |
+          python -m scripts.kb3_v3r_forward_readiness --out "$RUNNER_TEMP/V3R_FORWARD_READINESS.json"
+      - name: Ensure report is aggregate-only and original research status unchanged
+        run: |
+          python - "$RUNNER_TEMP/V3R_FORWARD_READINESS.json" <<'PY'
+          import json,sys
+          from scripts.kb3_p1_historical_eligibility_split import hash_json
+          report=json.load(open(sys.argv[1]))
+          assert report['schema']=='kb3-v3r-forward-readiness-existing-m0-v1'
+          assert report['no_provider_api_used'] is True
+          assert report['no_new_forward_predictions_generated'] is True
+          assert report['not_eligible_for_auto_forward_scoring_without_fresh_listing_crosscheck'] is True
+          assert report['production_approved'] is False
+          assert report['existing_M0_unchanged'] is True
+          assert report['original_gate14_strict']=='PENDING'
+          assert report['future_m0_targets_in_window']==sum(report['by_status'].values())
+          assert 'fixtures' not in report and 'raw_data' not in report
+          assert report['report_sha256']==hash_json(
+              {k:v for k,v in report.items() if k!='report_sha256'})
+          print('V3R_FORWARD_ASOF_RESEARCH_GATES_PASS',
+                report['future_m0_targets_in_window'],report['by_status'])
+          PY
+          git diff --exit-code -- data/ models/ config/
+      - uses: actions/upload-artifact@v4
+        if: success()
+        with:
+          name: KB3_V3R_FORWARD_READINESS_AGGREGATE_NO_PROVIDER
+          path: ${{ runner.temp }}/V3R_FORWARD_READINESS.json
+          if-no-files-found: error
+          retention-days: 30
