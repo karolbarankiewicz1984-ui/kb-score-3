@@ -68,3 +68,33 @@ Walka z przeciekiem etykiety i chronologiczny podział **nie rozwiązują** ryzy
 - Codzienny odczyt **13:50 UTC**, bez nowych requestów PitchAPI, testów dotykających TRAIN oryginalnego M1, ani pobierania angielskiego TEST. Nie włączać produkcyjnego V3-R na podstawie 70 braków.
 
 **Decyzja:** automatyczny audyt gotowości — **AKTYWNY**, V3-R 14/18 prawdziwy SHADOW — **ZABLOKOWANY DANYMI last5**, oryginalny PIT — **PENDING**. Dalsze przygotowanie zbierania statystyk wymaga kontrolowanego limitu istniejącego API, bez fikcyjnych prognoz.
+
+
+## Faza 3 — decyzja właściciela: dane opcjonalne nie zatrzymują modelu (16.11.2026)
+
+**Dyspozycja:** pobieramy rzeczywiste statystyki ostatnich pięciu meczów; jeżeli pojedynczego parametru nie ma, ignorujemy tylko jego wartość wejściową, ale nadal szukamy go w następnych zbiorach. Nie traktujemy braku jako zera. Nie zatrzymujemy całego przetwarzania z powodu pojedynczej niedostępnej statystyki.
+
+### Nowa polityka danych V3-R FLEX
+
+| Kategoria | Gdy dane istnieją | Gdy brakuje |
+| --- | --- | --- |
+| Natywne ID meczu/drużyn, czas i wynik 90 min | Weryfikacja źródła | **Kwarantanna błędnego rekordu**, nie dopuszczać danych z innego meczu ani z przyszłości; inne mecze działają dalej |
+| Historyczny ostatni wynik / forma 5 | Obliczamy na dokładnie pięciu poprzednich meczach | Wektor może zawierać `null/NaN`, ale przy braku wiarygodnego łańcucha pięciu spotkań **pozostawiamy M0 jako działającą prognozę zastępczą** |
+| Strzały, faule, rożne i żółte kartki | Korzystamy z rzeczywistej wartości dla tych samych pięciu meczów | `null/NaN` w odpowiedniej cesze; pozostałe cechy pozostają aktywne |
+| xG / xGA | Tylko prawidłowa definicja i sprawdzony natywny provider | `null/NaN`; wybieramy wariant bez xG lub model z natywną obsługą braków, nigdy `xG=0` |
+| Status pobierania | Osobny licznik rzeczywiście pozyskanych parametrów | Osobna kolejka `missing_fields_retry_queue`, bez fałszywego statusu PASS źródłowego |
+
+**Ważne:** każda wartość średnia ze zdefiniowanego okna pięciu musi mieć pełne 5/5 rzeczywistych obserwacji; brakujące 2 z 5 nie mogą zostać zastąpione obliczeniem 3/5 i opisane jako 5/5. W ten sposób zachowujemy identyczną definicję cechy po stronie treningu i przyszłych prognoz. CatBoost przyjmuje `NaN`; parametry i wcześniejsze historyczne wyniki pozostają niezmienione. W przypadku braków modelu V3-R istniejący M0 nie przestaje pracować.
+
+### Pobieranie realnego źródła
+
+- Priorytet `scripts/kb3_v3r_last5_priority.py` bierze wyłącznie **rzeczywiste, już zamrożone przyszłe mecze M0**, dopasowuje natywne ID, oba zespoły i UTC do **nowej, oryginalnej listy PitchAPI** i wybiera brakujące autentyczne spotkania z ostatniej piątki. Zły match ID trafia do kwarantanny, a nie do treningu.
+- Samo pobranie wykorzystuje istniejące `scripts/kb3_historical_pitchapi_backfill.py`, szyfrowanie oryginalnych odpowiedzi źródłowych i zapis append-only z rzeczywistą datą obserwacji. Żadnej wartości nie przesuwamy w czasie wstecz do daty zamrożenia poprzedniego M0.
+- **Limit:** 1 paczka do 24 meczów na przebieg; do 150 wywołań historycznego dostawcy na paczkę plus istniejący niezależny recheck. Uruchomienia planowane **02:15 i 14:15 UTC** (3 wcześniejsze zastąpiono 2). Wyłączone próby automatycznego ponawiania SDK. Priorytet dotyczy obecnych przyszłych meczów, a pozostała część paczki zachowuje historyczny gain-first backfill.
+- Jeśli statystyk meczu nie da się pobrać, pozostaje on nierozwiązany i kwalifikuje się ponownie; `new_match_stats` liczy wyłącznie naprawdę uzyskane, zweryfikowane źródła, nie liczy prób ani szacunków.
+- Nie przerabiać wcześniejszego zamrożenia M0 z 15 listopada na nową prognozę V3-R; przed nową prognozą konieczne są rzeczywiście aktualne wejścia i nowy serwerowo potwierdzony dowód czasu. Przy złej tożsamości/niezgodnej definicji danych nie wolno publikować wyliczenia, ale nie zatrzymuje to pozostałych lig.
+
+### Bramka uruchomienia pełnego V3-R Shadow
+
+`V3R_FLEX_OPTIONAL_MISSING_ALLOWED=true` nie oznacza jeszcze `V3R_LIVE_MODEL_ACTIVATED=true`. Wymagana jest oddzielna zgodność trening/forward, przypięty dokładny model CatBoost, host-attested nowa prognoza i kompletna lista terminarza. Do tej chwili działają M0 i dotychczasowy Shadow Six, a V3-R przygotowuje prawdziwe statystyki i kontroluje braki. `GATE14_ORIGINAL_STRICT_NATIVE_PIT=PENDING`, `TEST` oraz model Champion nienaruszone.
+
