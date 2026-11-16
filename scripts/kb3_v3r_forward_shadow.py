@@ -119,10 +119,12 @@ def train_or_load(*,source_db=SOURCE_DB,recheck_db=RECHECK_DB,
          len(train)>=1000 and len(valid)>=300 and
          meta["formal_training_allowed"] is False,
          "RECONSTRUCTED_RESEARCH_TRAIN_PROVENANCE_FAIL")
-    from catboost import CatBoostClassifier
+    from catboost import CatBoostClassifier,Pool
     model=CatBoostClassifier(**PARAMS)
-    model.fit(matrix(train,BASE),[r["label"] for r in train],
+    pool=Pool(matrix(train,BASE),
+              label=[r["label"] for r in train],
               feature_names=list(BASE))
+    model.fit(pool)
     need(list(model.feature_names_)==list(BASE) and
          set(map(str,model.classes_))==set(CLASSES),
          "V3R_MODEL_FITTING_CONTRACT_DRIFT")
