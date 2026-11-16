@@ -98,34 +98,40 @@ def audit_target(target, fixture_rows, obs_rows):
             need(all(ob[k] == row[k] for k in (
                 "home_team_id","away_team_id","kickoff_utc")),
                 "PROVIDER_SOURCE_FIXTURE_IDENTITY_CHANGED")
-    # The builder's regular history restriction excludes the target and any
-    # match finishing too near cutoff, and requires true last-five for goals.
-    try:
-        from scripts.kb3_p1_retro_catboost_1007_376 import (
-            build_features_without_target_label,
-        )
-        feature, flags = build_features_without_target_label(
-            target_obj, history, seen,
-            [utc(r["kickoff_utc"]) for r in history])
-    except Exception as exc:
-        # Only treat genuine last-five shortages as nonfatal eligibility gaps.
-        if str(exc) in ("GOALS_LAST5_INCOMPLETE", "MISSING_REQUIRED_LAST5"):
-            return {"history5":False, "core5":False, "xg5":False,
-                    "status":"HISTORY5_NOT_IN_SOURCE_INDEX"}
-        raise
-    need(set(feature)==set(WITH_XG), "TRAIN_FORWARD_FEATURE_LIST_DRIFT")
-    goal_fields={k for k in feature if k.endswith((
-        "goals_for","goals_against","points"))}
-    need(len(goal_fields)==6 and all(feature[k] is not None for k in goal_fields),
-         "MISSING_GOALS6")
-    core_ok = all(feature[k] is not None for k in BASE)
-    xg_ok = all(feature[k] is not None for k in WITH_XG)
-    need(core_ok == bool(flags["core5"]) and xg_ok == (
-        core_ok and bool(flags["xg5"])), "READINESS_BUILDER_PARITY_DRIFT")
-    return {"history5":True,"core5":core_ok,"xg5":xg_ok,
-            "status":("CANDIDATE_ALL_18" if xg_ok else
-                      "CANDIDATE_14_ONLY" if core_ok else
-                      "STATISTICS_LAST5_INCOMPLETE")}
+    # Exactly the same 14/18 feature names and last-five windows as TRAIN.
+    # Optional missing values remain NULL/NaN rather than rejecting target.
+    features, flags = build_features_without_target_label(
+        target_obj, history, seen,
+        [utc(r["kickoff_utc"]) for r in history], allow_incomplete=True)
+    need(set(features)==set(WITH_XG), "TRAIN_FORWARD_FEATURE_LIST_DRIFT")
+    missing = sorted(k for k in WITH_XG if features[k] is None)
+    # No synthetic mean is permitted: a partial 3/5 is NULL, not 3/5 used
+    # instead of 5/5. Missing stat values are retried in later capture.
+    core_ok = all(features[k] is not None for k in BASE)
+    xg_ok = all(features[k] is not None for k in WITH_XG)
+    need(core_ok == bool(flags["core5"]) and
+         xg_ok == (core_ok and bool(flags["xg5"])),
+         "READINESS_BUILDER_PARITY_DRIFT")
+    if not flags["history5"]:
+        # A completely absent last-five result chain is not a fatal pipeline
+        # error: fallback to M0, which is already independently frozen.
+        status = "M0_FALLBACK_HISTORY_SHORT"
+        action = "CONTINUE_M0_AND_RETRY_MISSING_HISTORY"
+    elif xg_ok:
+        status,action = "CANDIDATE_ALL_18","V3R_RESEARCH_CANDIDATE"
+    elif core_ok:
+        status,action = "CANDIDATE_14_ONLY","V3R_RESEARCH_WITH_XG_NAN"
+    else:
+        status,action = "PARTIAL_NAN_OK_RESEARCH","V3R_RESEARCH_WITH_OPTIONAL_NAN"
+    return {
+        "history5":bool(flags["history5"]),
+        "core5":core_ok,"xg5":xg_ok,
+        "status":status,"pipeline_action":action,
+        "missing_fields":missing,
+        "missing_values_are_null_not_zero":True,
+        "missing_fields_remain_on_retrieval_queue":bool(missing),
+        "source_first_publication_proven":False,
+        "not_automatic_prediction_without_complete_catalog":True}
 
 
 def _load_db_rows(m0_db, source_db):
@@ -165,9 +171,12 @@ def run(*, m0_db=M0_DB, source_db=SOURCE_DB, now=None, since=None, out=None):
     candidates=[x for x in forecasts if utc(x["captured_at_utc"])>=floor
                 and utc(x["kickoff_utc"])>now]
     counts = Counter();league = defaultdict(Counter)
+    actions = Counter(); missing_fields = Counter()
     for target in candidates:
         state=audit_target(target,fixtures,observations)
         counts[state["status"]]+=1
+        actions[state["pipeline_action"]]+=1
+        missing_fields.update(state["missing_fields"])
         league[target["league"]][state["status"]]+=1
     result={
         "schema":SCHEMA,
@@ -179,6 +188,10 @@ def run(*, m0_db=M0_DB, source_db=SOURCE_DB, now=None, since=None, out=None):
         "source_observation_rows_examined":len(observations),
         "source_fixture_rows_examined":len(fixtures),
         "by_status":dict(sorted(counts.items())),
+        "nonblocking_pipeline_decisions":dict(sorted(actions.items())),
+        "missing_fields_retry_queue":dict(sorted(missing_fields.items())),
+        "missing_optional_stats_will_be_retried":True,
+        "missing_optional_stats_do_not_stop_research":True,
         "by_league":{k:dict(sorted(v.items())) for k,v in sorted(league.items())},
         "original_asof_provider_publication_proven":False,
         "source_index_is_not_complete_live_fixture_catalog":True,
