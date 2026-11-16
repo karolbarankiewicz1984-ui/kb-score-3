@@ -48,7 +48,8 @@ def asof_observations(observed_rows, cutoff):
     for item in observed_rows:
         k = (item["scope"], item["match_id"])
         need(k not in result, "DUPLICATE_OBSERVATION")
-        if item["scope"] not in SOURCE_SCOPES:\n            continue  # UCL research rows are not part of the eight-league V3-R
+        if item["scope"] not in SOURCE_SCOPES:
+            continue  # UCL research rows are not part of the eight-league V3-R
         if utc(item["observed_at_utc"]) <= utc(cutoff):
             result[k] = {
                 "home_team_id": item["home_team_id"],
