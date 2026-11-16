@@ -44,7 +44,14 @@ def numeric(v):
     return float(v)
 
 
-def build_features_without_target_label(target,history,observed,clocks):
+def build_features_without_target_label(target,history,observed,clocks,*,allow_incomplete=False):
+    """Same last-five feature contract; NaN means missing, never invented zero.
+
+    Existing retrospective 4550/1864 validation remains strict by default.
+    True new forward research may tolerate unavailable optional statistics.
+    If a whole five-game history is absent, the caller must mark low coverage
+    and use the existing M0 fallback, not pretend a reliable V3-R estimate.
+    """
     ko=utc(target["kickoff_utc"])
     proxy=ko-timedelta(hours=2)
     need(proxy<=ko-MIN_LEAD,"CUTOFF_BEFORE_90MIN")
@@ -62,14 +69,15 @@ def build_features_without_target_label(target,history,observed,clocks):
         flags["xg5"] &=roll["xg_complete"]
         for key in GOALS+CORE+XG:
             metric=roll["metrics"][key]
-            if key in GOALS:
+            if key in GOALS and not allow_incomplete:
                 need(metric["complete"] and metric["valid_n"]==5 and
                      metric["mean"] is not None,"GOALS_LAST5_INCOMPLETE")
             if not metric["complete"]:
                 need(metric["mean"] is None,"PARTIAL_MEAN_LEAK")
             feats[f"{side}_{key}"]=metric["mean"]
-    need(flags["history5"] and set(feats)==set(WITH_XG),
-         "MISSING_REQUIRED_LAST5")
+    need(set(feats)==set(WITH_XG),"FEATURE_CONTRACT_MISSING")
+    if not allow_incomplete:
+        need(flags["history5"], "MISSING_REQUIRED_LAST5")
     return feats,flags
 
 
