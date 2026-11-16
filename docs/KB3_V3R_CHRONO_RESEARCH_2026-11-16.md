@@ -55,3 +55,16 @@ Walka z przeciekiem etykiety i chronologiczny podział **nie rozwiązują** ryzy
 - Dalszy etap dopiero po źródłowej gotowości i niezależnym potwierdzeniu train/forward: archiwizacja rzeczywistej prognozy przed kickoff, porównanie tylko z parą M0 tego samego meczu, później właściwy holdout. Nie należy obchodzić braku statystyk przez wstawienie zera.
 
 **Stan decyzyjny:** read-only readiness, `V3R_FULL14_18_SHADOW=NOT_YET_ACTIVATED`, `GATE14_ORIGINAL_STRICT_NATIVE_PIT=PENDING`.
+
+
+## Wynik faktycznego uruchomienia Fazy 2 — 16.11.2026, 07:47 UTC
+
+- [PR #180](https://github.com/karolbarankiewicz1984-ui/kb-score-3/pull/180) **MERGED**. Oddzielny workflow i testy są na `main`; składnia workflow poprawiona commit `b7e414cd5de3fc3225df2e64cd9a7bedc5e98720`.
+- [GitHub Actions #43826225574](https://github.com/karolbarankiewicz1984-ui/kb-score-3/actions/runs/43826225574) **SUCCESS**, w tym 7 testów niepozwalających na późne obserwacje oraz 5 testów pierwotnego walk-forward.
+- Na **70 realnie zamrożonych M0** z rozkładem przyszłych meczów: `STATISTICS_LAST5_INCOMPLETE=70`, `CANDIDATE_14_ONLY=0`, `CANDIDATE_ALL_18=0`. Oznacza to brak wystarczających kompletnych statystyk last5 w aktualnie odtworzonym i datowanym przed cutoff źródle; nie dowodzi braku danych u dostawcy w ogóle.
+- Nie utworzono nowych forward V3-R 14/18: `no_new_forward_predictions_generated=true`. M0 i starszy Shadow Six pozostają bez zmian. Potwierdzony sam odczyt 70, nie automatyczny awans.
+- Zachowany wyłącznie agregowany plik GitHub Actions artifact ID `14205904600`; raport SHA256 `f6b02f149f8fa93d1834ec68f32fb5b845b56b62918069def8aa1d82d22da711`.
+- Następny techniczny bloker i kryteria zakończenia zapisano w [Issue #181](https://github.com/karolbarankiewicz1984-ui/kb-score-3/issues/181): przedmeczowy komplet last5 prawdziwych źródeł z katalogu live + matching feature names/order/units/NaN, potem host-attested forward-shadow i rzeczywisty paired comparison.
+- Codzienny odczyt **13:50 UTC**, bez nowych requestów PitchAPI, testów dotykających TRAIN oryginalnego M1, ani pobierania angielskiego TEST. Nie włączać produkcyjnego V3-R na podstawie 70 braków.
+
+**Decyzja:** automatyczny audyt gotowości — **AKTYWNY**, V3-R 14/18 prawdziwy SHADOW — **ZABLOKOWANY DANYMI last5**, oryginalny PIT — **PENDING**. Dalsze przygotowanie zbierania statystyk wymaga kontrolowanego limitu istniejącego API, bez fikcyjnych prognoz.
