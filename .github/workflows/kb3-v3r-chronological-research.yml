@@ -4,6 +4,8 @@ on:
     paths:
       - scripts/kb3_v3r_walkforward.py
       - tests/test_kb3_v3r_walkforward.py
+      - scripts/kb3_v3r_forward_readiness.py
+      - tests/test_kb3_v3r_forward_readiness.py
       - docs/KB3_V3R_CHRONO_RESEARCH_2026-11-16.md
       - .github/workflows/kb3-v3r-chronological-research.yml
   workflow_dispatch:
@@ -55,6 +57,8 @@ jobs:
         run: |
           python -m compileall -q scripts/kb3_v3r_walkforward.py
           python -m unittest discover -s tests -p 'test_kb3_v3r_walkforward.py' -v
+          python -m unittest discover -s tests -p 'test_kb3_v3r_forward_readiness.py' -v
+          python -m scripts.kb3_v3r_forward_readiness --out "$RUNNER_TEMP/V3R_FORWARD_READINESS_PR.json"
           python -m unittest discover -s tests -p 'test_kb3_p1_archive_research_catboost.py' -v
           python -m unittest discover -s tests -p 'test_kb3_p1_historical_eligibility_split.py' -v
       - name: Train independent historical walk-forward and one original validation experiment
