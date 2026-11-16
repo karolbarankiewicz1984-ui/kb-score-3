@@ -1,0 +1,107 @@
+name: KB3 V3-R chronological reconstructed research (offline only)
+on:
+  pull_request:
+    paths:
+      - scripts/kb3_v3r_walkforward.py
+      - tests/test_kb3_v3r_walkforward.py
+      - docs/KB3_V3R_CHRONO_RESEARCH_2026-11-16.md
+      - .github/workflows/kb3-v3r-chronological-research.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  offline-retrospective-v3r:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Verify and restore versioned historical SQLite without provider API
+        run: |
+          python - <<'PY'
+          import gzip,hashlib,json,shutil
+          from pathlib import Path
+          folder=Path('data/research/historical_multistat')
+          source=folder/'observations.sqlite.gz'
+          manifest=folder/'observations.sqlite.gz.manifest.json'
+          target=folder/'observations.sqlite'
+          assert source.is_file() and manifest.is_file(), 'HISTORICAL_SOURCE_MISSING'
+          meta=json.loads(manifest.read_text())
+          def sha(path):
+              h=hashlib.sha256()
+              with path.open('rb') as handle:
+                  for block in iter(lambda:handle.read(1024*1024),b''):
+                      h.update(block)
+              return h.hexdigest()
+          assert sha(source)==meta['compressed_sha256'], 'SOURCE_ARCHIVE_SHA_MISMATCH'
+          assert not target.exists(), 'NO_REPLACEMENT_OR_EXISTING_SQLITE_ALLOWED'
+          with gzip.open(source,'rb') as reader, target.open('xb') as writer:
+              shutil.copyfileobj(reader,writer,length=1024*1024)
+          assert target.stat().st_size==meta['raw_bytes'], 'SOURCE_DB_LENGTH_MISMATCH'
+          assert sha(target)==meta['raw_sha256'], 'SOURCE_DB_SHA_MISMATCH'
+          print('IMMUTABLE_HISTORICAL_SQLITE_RESTORED',meta['raw_sha256'])
+          PY
+      - name: Install fixed offline model dependency
+        run: |
+          python -m pip install --disable-pip-version-check 'catboost==1.2.8'
+      - name: Static code and negative test gates
+        run: |
+          python -m compileall -q scripts/kb3_v3r_walkforward.py
+          python -m unittest discover -s tests -p 'test_kb3_v3r_walkforward.py' -v
+          python -m unittest discover -s tests -p 'test_kb3_p1_archive_research_catboost.py' -v
+          python -m unittest discover -s tests -p 'test_kb3_p1_historical_eligibility_split.py' -v
+      - name: Train independent historical walk-forward and one original validation experiment
+        run: |
+          python -m scripts.kb3_v3r_walkforward --outdir "$RUNNER_TEMP/kb3_v3r"
+      - name: Fail closed for leakage, provenance claims, or model promotion
+        run: |
+          python - "$RUNNER_TEMP/kb3_v3r/V3R_WALKFORWARD_REPORT.json" <<'PY'
+          import json,sys
+          from scripts.kb3_p1_historical_eligibility_split import hash_json,utc
+          from datetime import timedelta
+          r=json.load(open(sys.argv[1]))
+          assert r['schema']=='kb3-v3r-chronological-research-walkforward-v1'
+          assert r['research_only'] is True and r['production_approved'] is False
+          assert r['champion_auto_promoted'] is False and r['production_M0_modified'] is False
+          assert r['official_fit_increment']==0 and r['original_V3_gate14_strict']=='PENDING'
+          assert r['actual_historic_provider_publication_certified'] is False
+          assert r['future_holdout_evaluated'] is False
+          assert r['original_test_england_2026_27_accessed'] is False
+          assert len(r['folds_from_training_only'])==2
+          for f in r['folds_from_training_only']:
+              assert f['training_n']>=100 and f['validation_n']>=20
+              assert utc(f['last_train_kickoff_utc'])+timedelta(days=7) <= utc(f['first_validation_kickoff_utc'])
+              assert set(f['variants'])=={
+                'TRAIN_ONLY_LAPLACE','CATBOOST_NO_XG','CATBOOST_PLUS_RETROSPECTIVE_XG'}
+              assert all(0<=s['top1_accuracy']<=1 and s['n']==f['validation_n']
+                         for s in f['variants'].values())
+          assert r['report_sha256']==hash_json({k:v for k,v in r.items() if k!='report_sha256'})
+          print('V3R_RESEARCH_GATES_PASS',r['report_sha256'])
+          PY
+      - name: Confirm all original code, source archives and models untouched
+        run: |
+          git fetch --no-tags origin "$GITHUB_BASE_REF" || true
+          if [ -n "$GITHUB_BASE_REF" ]; then
+            git diff --exit-code "origin/$GITHUB_BASE_REF...HEAD" -- \
+              data/ models/ config/ src/kb3_features.py \
+              src/kb3_step16_m0_720_eight_forward.py \
+              scripts/step14_m1r_recompute_1140_relaxed_48h.py
+          fi
+          git diff --exit-code -- data/ models/ config/
+          git diff --check
+      - uses: actions/upload-artifact@v4
+        if: success()
+        with:
+          name: KB3_V3R_RECONSTRUCTED_CHRONO_RESEARCH_METRICS_ONLY
+          path: |
+            ${{ runner.temp }}/kb3_v3r/V3R_WALKFORWARD_REPORT.json
+            ${{ runner.temp }}/kb3_v3r/original_validation/RETRO_CATBOOST_*_REPORT.json
+          retention-days: 30
+          if-no-files-found: error
