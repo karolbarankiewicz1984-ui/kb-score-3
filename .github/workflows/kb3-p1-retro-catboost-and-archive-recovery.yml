@@ -19,6 +19,28 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
+      - name: Verify and restore compressed immutable historical SQLite
+        run: |
+          python - <<'PY'
+          import gzip,hashlib,json,shutil
+          from pathlib import Path
+          directory=Path('data/research/historical_multistat')
+          archive=directory/'observations.sqlite.gz'
+          manifest=directory/'observations.sqlite.gz.manifest.json'
+          db=directory/'observations.sqlite'
+          assert archive.is_file() and manifest.is_file() and not db.exists()
+          m=json.loads(manifest.read_text())
+          def sha(p):
+              h=hashlib.sha256()
+              with p.open('rb') as handle:
+                  for block in iter(lambda:handle.read(1048576),b''):
+                      h.update(block)
+              return h.hexdigest()
+          assert sha(archive)==m['compressed_sha256'],'SOURCE_ARCHIVE_SHA_MISMATCH'
+          with gzip.open(archive,'rb') as source,db.open('xb') as target:
+              shutil.copyfileobj(source,target,length=1048576)
+          assert db.stat().st_size==m['raw_bytes'] and sha(db)==m['raw_sha256'],'SOURCE_DB_SHA_MISMATCH'
+          PY
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
