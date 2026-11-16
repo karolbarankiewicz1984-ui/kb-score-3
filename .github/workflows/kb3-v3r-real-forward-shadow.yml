@@ -1,0 +1,180 @@
+name: KB3 V3-R real future CatBoost Shadow (isolated from M0)
+on:
+  pull_request:
+    paths:
+      - scripts/kb3_v3r_forward_shadow.py
+      - tests/test_kb3_v3r_forward_shadow.py
+      - .github/workflows/kb3-v3r-real-forward-shadow.yml
+      - docs/KB3_V3R_CHRONO_RESEARCH_2026-11-16.md
+  push:
+    branches: [main]
+    paths:
+      - scripts/kb3_v3r_forward_shadow.py
+      - tests/test_kb3_v3r_forward_shadow.py
+      - .github/workflows/kb3-v3r-real-forward-shadow.yml
+  schedule:
+    - cron: '9 7,13,19 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+concurrency:
+  group: kb3-v3r-real-forward-shadow-only
+  cancel-in-progress: false
+
+jobs:
+  research-train-and-forward-safety:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Restore original immutable historical research SQLite by verified hash
+        run: |
+          python - <<'PY'
+          import gzip,hashlib,json,shutil
+          from pathlib import Path
+          folder=Path('data/research/historical_multistat')
+          source=folder/'observations.sqlite.gz'
+          meta=json.loads((folder/'observations.sqlite.gz.manifest.json').read_text())
+          target=folder/'observations.sqlite'
+          assert source.is_file() and not target.exists()
+          def sha(p):
+              h=hashlib.sha256()
+              with p.open('rb') as f:
+                  for c in iter(lambda:f.read(1048576),b''):
+                      h.update(c)
+              return h.hexdigest()
+          assert sha(source)==meta['compressed_sha256']
+          with gzip.open(source,'rb') as inp,target.open('xb') as out:
+              shutil.copyfileobj(inp,out,length=1048576)
+          assert target.stat().st_size==meta['raw_bytes']
+          assert sha(target)==meta['raw_sha256']
+          print('V3R_IMMUTABLE_RESEARCH_SOURCE_SHA_PASS')
+          PY
+      - name: Install pinned CatBoost and exact source evidence dependencies
+        run: python -m pip install --disable-pip-version-check -r config/step16_live_requirements.txt
+      - name: Reject retro prediction, fabricated stats, parent corruption and source clock leak
+        run: |
+          python -m compileall -q scripts/kb3_v3r_forward_shadow.py
+          python -m unittest discover -s tests -p 'test_kb3_v3r_forward_shadow.py' -v
+          python -m unittest discover -s tests -p 'test_kb3_v3r_forward_readiness.py' -v
+          python -m unittest discover -s tests -p 'test_kb3_v3r_walkforward.py' -v
+      - name: Real TRAIN-only research CatBoost model pin smoke test (NO API)
+        run: |
+          python - "$RUNNER_TEMP" <<'PY'
+          import sys,json,hashlib
+          from pathlib import Path
+          from scripts.kb3_v3r_forward_shadow import train_or_load,verify_pinned
+          root=Path(sys.argv[1])/'v3r_smoke_model'
+          model,manifest,created=train_or_load(
+              model_file=root/'v3r.cbm',manifest_file=root/'manifest.json')
+          assert created and manifest['train_only']
+          assert manifest['training_rows']>=1000
+          assert manifest['validation_rows_not_fitted']>=300
+          assert manifest['production_approved'] is False
+          assert manifest['official_fit_increment']==0
+          assert manifest['original_eng_test_accessed'] is False
+          model2,verified=verify_pinned(root/'v3r.cbm',root/'manifest.json')
+          assert verified['manifest_sha256']==manifest['manifest_sha256']
+          assert list(model2.feature_names_)==manifest['feature_names']
+          print('V3R_REAL_RESEARCH_PIN_SMOKE_PASS',json.dumps({
+             'train':manifest['training_rows'],
+             'validation_never_fit':manifest['validation_rows_not_fitted'],
+             'binary_sha':manifest['binary_sha256'],
+             'research_only':True},sort_keys=True))
+          PY
+      - name: Verify legacy and protected datasets remained byte-unchanged
+        run: |
+          git diff --exit-code -- src/ models/ config/ data/ assets/research/kb3_shadow_six_v1/
+          git diff --check
+
+  real-future-v3r-shadow:
+    needs: research-train-and-forward-safety
+    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Verify and restore source SQLite snapshot, never edit its archived bytes
+        run: |
+          python - <<'PY'
+          import gzip,hashlib,json,shutil
+          from pathlib import Path
+          d=Path('data/research/historical_multistat')
+          source=d/'observations.sqlite.gz'
+          meta=json.loads((d/'observations.sqlite.gz.manifest.json').read_text())
+          raw=d/'observations.sqlite'
+          assert source.is_file() and not raw.exists()
+          assert hashlib.sha256(source.read_bytes()).hexdigest()==meta['compressed_sha256']
+          with gzip.open(source,'rb') as inp,raw.open('xb') as out:
+              shutil.copyfileobj(inp,out,length=1048576)
+          assert raw.stat().st_size==meta['raw_bytes']
+          h=hashlib.sha256()
+          with raw.open('rb') as f:
+              for c in iter(lambda:f.read(1048576),b''):
+                  h.update(c)
+          assert h.hexdigest()==meta['raw_sha256']
+          PY
+      - name: Install fixed PitchAPI SDK, CatBoost and encrypted raw receipts
+        run: python -m pip install --disable-pip-version-check -r config/step16_live_requirements.txt
+      - name: First pin TRAIN-only CatBoost; then create genuine new pre-kickoff M0-matched V3-R forecasts
+        env:
+          PITCHAPI_API_KEY: ${{ secrets.PITCHAPI_API_KEY }}
+        run: python -m scripts.kb3_v3r_forward_shadow
+      - name: Integrity audit of real frozen research rows and no legacy mutation
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import json
+          from scripts.kb3_v3r_forward_shadow import verify_pinned,when,LEAD,CONTRACT,MODEL_VERSION
+          from scripts.kb3_p1_historical_eligibility_split import hash_json
+          _,pin=verify_pinned()
+          docs=list(Path('data/v3r_shadow/forecasts').glob('*/*.json'))
+          for path in docs:
+              r=json.loads(path.read_text())
+              assert r['schema']==CONTRACT and r['model_version']==MODEL_VERSION
+              assert r['model_binary_sha256']==pin['binary_sha256']
+              assert r['model_manifest_sha256']==pin['manifest_sha256']
+              assert r['research_only'] is True and r['production_approved'] is False
+              assert r['official_fit_increment']==0
+              assert r['target_result_used'] is False
+              assert r['independent_host_publication_proof_pending'] is True
+              assert when(r['generated_at_utc'])<when(r['kickoff_utc'])-LEAD
+              assert r['forecast_sha256']==hash_json({k:v for k,v in r.items() if k!='forecast_sha256'})
+              assert abs(sum(r['p_1x2'].values())-1)<1e-8
+              assert r['missing_value_policy']=='NAN_NOT_ZERO_AND_RETRY'
+          print('V3R_REAL_FUTURE_UNATTESTED_RESEARCH_ROWS',len(docs),'CATBOOST_BINARY_PINNED',pin['binary_sha256'])
+          PY
+          git diff --exit-code -- src/ models/ config/ tests/ scripts/ data/forward_m0_720_eight/ data/research/ assets/research/kb3_shadow_six_v1/
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: KB3_V3R_REAL_FORWARD_SHADOW_PIN_AND_ENCRYPTED_SOURCE
+          path: |
+            assets/research/kb3_v3r_forward/
+            data/v3r_shadow/
+          retention-days: 30
+          if-no-files-found: warn
+      - name: Persist only separate research model and immutable new V3-R forecasts to main
+        run: |
+          git config user.name 'kb3-v3r-shadow-research-bot'
+          git config user.email 'kb3-v3r-shadow-research-bot@users.noreply.github.com'
+          git add -f assets/research/kb3_v3r_forward/ data/v3r_shadow/
+          if git diff --cached --quiet; then
+            echo 'No new V3-R forward research data.'
+          else
+            git commit -m 'research(v3r): pin 14-feature CatBoost and genuine before-kickoff shadow forecasts'
+            git pull --rebase origin main
+            git push origin HEAD:main
+          fi
