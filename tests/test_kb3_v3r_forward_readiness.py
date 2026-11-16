@@ -50,7 +50,10 @@ class ForwardReadinessTests(unittest.TestCase):
         for o in obs:
             o["observed_at_utc"]="2026-11-16T00:00:00Z"
         d=audit_target(TARGET,fixtures,obs)
-        self.assertEqual(d["status"],"STATISTICS_LAST5_INCOMPLETE")
+        self.assertEqual(d["status"],"PARTIAL_NAN_OK_RESEARCH")
+        self.assertEqual(d["pipeline_action"],"V3R_RESEARCH_WITH_OPTIONAL_NAN")
+        self.assertTrue(d["missing_fields_remain_on_retrieval_queue"])
+        self.assertIn("home_fouls",d["missing_fields"])
         self.assertTrue(d["history5"])
         self.assertFalse(d["core5"])
 
@@ -60,13 +63,17 @@ class ForwardReadinessTests(unittest.TestCase):
         obs[9]["xg_home"]=None;obs[9]["xg_away"]=None
         d=audit_target(TARGET,fixtures,obs)
         self.assertEqual(d["status"],"CANDIDATE_14_ONLY")
+        self.assertIn("home_xg_for",d["missing_fields"])
+        self.assertFalse(d["xg5"])
 
     def test_missing_recent_source_fails_closed(self):
         fixtures,obs=fixtures_and_observations()
         for row in fixtures:
             row["listed_at_utc"]="2026-11-16T00:00:00Z"
         d=audit_target(TARGET,fixtures,obs)
-        self.assertEqual(d["status"],"HISTORY5_NOT_IN_SOURCE_INDEX")
+        self.assertEqual(d["status"],"M0_FALLBACK_HISTORY_SHORT")
+        self.assertEqual(d["pipeline_action"],
+                         "CONTINUE_M0_AND_RETRY_MISSING_HISTORY")
 
     def test_protected_and_late_m0_capture_rejected(self):
         f,o=fixtures_and_observations()
