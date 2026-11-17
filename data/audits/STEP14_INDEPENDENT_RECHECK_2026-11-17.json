@@ -1,0 +1,64 @@
+{
+  "schema": "kb3-step14-independent-recheck-2026-11-17-v1",
+  "checked_at_local": "2026-11-17 19:50 Europe/Warsaw",
+  "mode": "EVIDENCE_ONLY_NO_ORIGINAL_M1_NO_TEST",
+  "contract": {
+    "features": 121,
+    "flags": 38,
+    "train": 760,
+    "validation": 380
+  },
+  "source_documents": [
+    "docs/STEP14_COMPREHENSIVE_HISTORIC_PREMATCH_RECONSTRUCTION_2026-10-28.md",
+    "data/audits/STEP14_FINAL_1140x159_PIT_GATE_2026-10-29.json",
+    "data/audits/STEP14_INDEPENDENT_RECHECK_2026-11-16.json",
+    "data/pit_sidecar/historical_multistat/2026-11-17/run-44066730277-1-summary/ACCELERATED_CAPTURE_REPORT.json"
+  ],
+  "exact_native_fixture_identity_confirmed_by_prior_audit": 1140,
+  "full_original_historical_pit_train_verified": 0,
+  "full_original_historical_pit_validation_verified": 0,
+  "original_pitchapi_team_xg_first_publication_proven": false,
+  "independent_159_field_no_leakage_audit_pass": false,
+  "new_research_overlay": {
+    "run_id": 44066730277,
+    "conclusion": "success",
+    "new_match_stats": 24,
+    "new_verified_xg": 21,
+    "cumulative_match_stats": 7352,
+    "observed_at_utc": "2026-11-17T10:41:19.461709Z",
+    "historical_first_publication_proof": false
+  },
+  "new_actions": [
+    {
+      "id": 44120564230,
+      "conclusion": "failure",
+      "failed_step": "Verify independently hosted native bytes with ORIGINAL v3 verified_view"
+    },
+    {
+      "id": 44138721800,
+      "conclusion": "failure",
+      "failed_step": "Validate GitHub ZIP digest, encrypted raw bytes, original 87 clocks and exact cutoff"
+    },
+    {
+      "id": 44101359247,
+      "conclusion": "success",
+      "scope": "forward native 87-vector gate; not historical 159-field PIT"
+    },
+    {
+      "id": 44130223050,
+      "conclusion": "success",
+      "scope": "future V3-R shadow; not original M1"
+    }
+  ],
+  "gate14": "PENDING",
+  "original_m1_fit_allowed": false,
+  "original_m1_fit_performed": false,
+  "test_accessed": false,
+  "independent_full_audit_pass": false,
+  "remaining": [
+    "per-field original PIT receipts for 760 TRAIN and 380 VALIDATION",
+    "PitchAPI team xG original publication and revision lineage",
+    "full 159-field no-leakage PASS"
+  ],
+  "note": "Current 2026 observed-at research must not be backdated to 2023-2025 source availability."
+}
