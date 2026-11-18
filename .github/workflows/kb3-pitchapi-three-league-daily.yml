@@ -119,6 +119,33 @@ jobs:
           assert all(x['provider_original_published_at'] is None for x in a['leagues'])
           print('THREE_LEAGUE_DAILY_REAL_SEALED',a['newly_verified_match_shot_stat_pairs'],a['provider_calls'])
           PY
+      - name: Preserve immutable captured SQLite ledger before M0 settlement or shadow writes
+        if: github.ref == 'refs/heads/main' && (github.event_name == 'schedule' || github.event_name == 'workflow_dispatch')
+        run: |
+          python - <<'PY'
+          import datetime, hashlib, json
+          from pathlib import Path
+          day=datetime.datetime.now(datetime.timezone.utc).date().isoformat()
+          root=Path('data/pit_sidecar/pitchapi_three_league_daily')/day
+          receipt=json.loads((root/'THREE_LEAGUE_DAILY_RECEIPT.json').read_text())
+          source=Path('data/forward_m0/kb3_forward_m0.sqlite')
+          captured=root/'M0_CAPTURE_LEDGER.sqlite'
+          expected=receipt['feature_sqlite_ledger_sha256']
+          if captured.is_file():
+              assert hashlib.sha256(captured.read_bytes()).hexdigest()==expected, 'IMMUTABLE_CAPTURE_LEDGER_CHANGED'
+              print('REUSED_EXACT_IMMUTABLE_CAPTURE_LEDGER')
+          else:
+              current=source.read_bytes()
+              if hashlib.sha256(current).hexdigest()!=expected:
+                  # Old days were captured before this immutable snapshot was
+                  # introduced. A later updated DB cannot prove the original SHA.
+                  # Do not forge a substitute and do not weaken verification.
+                  print('::warning::OLD_CAPTURE_LEDGER_NOT_RECOVERABLE_FROM_UPDATED_DB')
+              else:
+                  captured.write_bytes(current)
+                  assert hashlib.sha256(captured.read_bytes()).hexdigest()==expected
+                  print('SEALED_IMMUTABLE_CAPTURE_LEDGER',day)
+          PY
       - name: Freeze brand-new M0 1X2 90 minutes before kick-off from recorded 121+38 only
         if: github.ref == 'refs/heads/main' && (github.event_name == 'schedule' || github.event_name == 'workflow_dispatch')
         run: |
