@@ -88,7 +88,7 @@ jobs:
           with zipfile.ZipFile(sys.argv[1]) as z:
               days=sorted({m.group(1) for n in z.namelist() if
                   (m:=re.fullmatch(
-                   r'pit_sidecar/pitchapi_three_league_daily/(\\d{4}-\\d{2}-\\d{2})/THREE_LEAGUE_DAILY_RECEIPT\\.json',n))})
+                   r'pit_sidecar/pitchapi_three_league_daily/(\d{4}-\d{2}-\d{2})/THREE_LEAGUE_DAILY_RECEIPT\.json',n))})
               if not days:
                   raise SystemExit('NO_GENUINE_DAILY_RECEIPT_IN_HOST_ARCHIVE')
               day=days[-1]
