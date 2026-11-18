@@ -34,36 +34,78 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          gh api "repos/${GITHUB_REPOSITORY}/actions/artifacts?name=KB3_3_LEAGUE_DAILY_REAL_PIT_ENCRYPTED_OBSERVATION&per_page=25" > "$RUNNER_TEMP/artifacts.json"
+          gh api "repos/${GITHUB_REPOSITORY}/actions/artifacts?name=KB3_3_LEAGUE_DAILY_REAL_PIT_ENCRYPTED_OBSERVATION&per_page=100" > "$RUNNER_TEMP/artifacts.json"
           python - "$RUNNER_TEMP/artifacts.json" "$GITHUB_OUTPUT" <<'PY'
-          import json,sys
+          import json,os,re,subprocess,sys
+          repo=os.environ['GITHUB_REPOSITORY']
+          assert re.fullmatch(r'[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+',repo)
           artifacts=json.load(open(sys.argv[1]))['artifacts']
-          valid=[x for x in artifacts if
-                 x.get('name')=='KB3_3_LEAGUE_DAILY_REAL_PIT_ENCRYPTED_OBSERVATION'
-                 and x.get('expired') is False
-                 and isinstance(x.get('digest'),str)
-                 and x['digest'].startswith('sha256:')
-                 and x.get('workflow_run',{}).get('head_branch')=='main']
-          if not valid:
-              raise SystemExit('NO_UNEXPIRED_GITHUB_HOSTED_THREE_LEAGUE_EVIDENCE')
-          newest=max(valid,key=lambda x:(x['created_at'],x['id']))
+          candidates=[x for x in artifacts if
+                      x.get('name')=='KB3_3_LEAGUE_DAILY_REAL_PIT_ENCRYPTED_OBSERVATION'
+                      and x.get('expired') is False
+                      and isinstance(x.get('digest'),str)
+                      and re.fullmatch(r'sha256:[a-f0-9]{64}',x['digest'])
+                      and (x.get('workflow_run') or {}).get('head_branch')=='main']
+          candidates.sort(key=lambda x:(x['created_at'],x['id']),reverse=True)
+          newest=None
+          for item in candidates:
+              run_id=(item.get('workflow_run') or {}).get('id')
+              if not isinstance(run_id,int):
+                  continue
+              response=subprocess.run(
+                  ['gh','api',f'repos/{repo}/actions/runs/{run_id}'],
+                  capture_output=True,text=True,timeout=25,check=True)
+              run=json.loads(response.stdout)
+              if (run.get('id') == run_id
+                  and run.get('event') in ('schedule','workflow_dispatch')
+                  and run.get('head_branch')=='main'
+                  and run.get('head_sha')==item['workflow_run'].get('head_sha')
+                  and run.get('path','').split('@')[0] ==
+                      '.github/workflows/kb3-pitchapi-three-league-daily.yml'):
+                  newest=item
+                  break
+          if newest is None:
+              raise SystemExit('NO_AUTHENTIC_SCHEDULED_OR_MANUAL_CAPTURE_ARTIFACT')
           with open(sys.argv[2],'a') as o:
               for k,v in [('id',newest['id']),
                           ('created',newest['created_at']),
-                          ('digest',newest['digest']),
-                          ('day',newest['created_at'][:10])]:
+                          ('digest',newest['digest'])]:
                   print(k+'='+str(v),file=o)
-          print('SELECTED_EXISTING_ARCHIVE_ID',newest['id'],
+          print('SELECTED_GENUINE_CAPTURE_ARCHIVE_ID',newest['id'],
                 'HOST_CREATED',newest['created_at'],
-                'NO_NEW_PROVIDER_API_CALLS')
+                'CODE_PUSH_ARTIFACTS_REJECTED','NO_PROVIDER_API_CALLS')
           PY
-      - name: Download exact artifact bytes, no provider connection
+      - name: Download exact artifact bytes and resolve receipt day, no provider connection
+        id: download
         if: github.event_name != 'pull_request'
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
           gh api "repos/${GITHUB_REPOSITORY}/actions/artifacts/${{ steps.source.outputs.id }}/zip" > "$RUNNER_TEMP/hosted.zip"
           test -s "$RUNNER_TEMP/hosted.zip"
+          python - "$RUNNER_TEMP/hosted.zip" "$GITHUB_OUTPUT" "${{ steps.source.outputs.created }}" <<'PY'
+          import datetime,json,re,sys,zipfile
+          with zipfile.ZipFile(sys.argv[1]) as z:
+              days=sorted({m.group(1) for n in z.namelist() if
+                  (m:=re.fullmatch(
+                   r'pit_sidecar/pitchapi_three_league_daily/(\\d{4}-\\d{2}-\\d{2})/THREE_LEAGUE_DAILY_RECEIPT\\.json',n))})
+              if not days:
+                  raise SystemExit('NO_GENUINE_DAILY_RECEIPT_IN_HOST_ARCHIVE')
+              day=days[-1]
+              prefix='pit_sidecar/pitchapi_three_league_daily/'+day+'/'
+              receipt=json.loads(z.read(prefix+'THREE_LEAGUE_DAILY_RECEIPT.json'))
+              if receipt.get('utc_day')!=day:
+                  raise SystemExit('RECEIPT_UTC_DAY_MISMATCH')
+              created=datetime.date.fromisoformat(sys.argv[3][:10])
+              if (created-datetime.date.fromisoformat(day)).days not in (0,1):
+                  raise SystemExit('STALE_CAPTURE_NOT_REHOSTED_AS_NEW_PIT')
+              # Old immutable evidence may be absent; the validator below
+              # will fail closed without inventing a snapshot.
+              print('HOSTED_CAPTURE_RECEIPT_DAY',day,
+                    'HAS_IMMUTABLE_LEDGER',(prefix+'M0_CAPTURE_LEDGER.sqlite') in z.namelist())
+          with open(sys.argv[2],'a') as o:
+              print('day='+day,file=o)
+          PY
       - name: Validate GitHub ZIP digest, encrypted raw bytes, original 87 clocks and exact cutoff
         if: github.event_name != 'pull_request'
         run: |
@@ -72,7 +114,7 @@ jobs:
             --artifact-id "${{ steps.source.outputs.id }}" \
             --github-created-at "${{ steps.source.outputs.created }}" \
             --github-sha256 "${{ steps.source.outputs.digest }}" \
-            --day "${{ steps.source.outputs.day }}" \
+            --day "${{ steps.download.outputs.day }}" \
             --contract contracts/kb3_catboost_asof_v3.json \
             --out "$RUNNER_TEMP/KB3_CATBOOST_V3_THREE_LEAGUE_PREFLIGHT.json"
           python - "$RUNNER_TEMP/KB3_CATBOOST_V3_THREE_LEAGUE_PREFLIGHT.json" <<'PY'
