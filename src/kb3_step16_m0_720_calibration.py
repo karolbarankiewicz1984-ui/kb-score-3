@@ -406,7 +406,7 @@ def _gh_artifact_zip(url,token,*,limit=30*1024*1024):
         if exc.code == 404:
             import re, subprocess
             if not re.fullmatch(
-                    r"https://api\\.github\\.com/repos/[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+/actions/artifacts/[0-9]+/zip",
+                    r"https://api\.github\.com/repos/[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+/actions/artifacts/[0-9]+/zip",
                     url):
                 raise
             env=dict(os.environ)
