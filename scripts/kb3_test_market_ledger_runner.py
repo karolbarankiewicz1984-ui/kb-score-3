@@ -129,16 +129,11 @@ class _StripAuthOnOffsiteRedirect(urllib.request.HTTPRedirectHandler):
 
 
 def _gh_zip(url,token):
-    req=urllib.request.Request(
-        url,headers={"Authorization":"Bearer "+token,
-                     "Accept":"application/vnd.github+json",
-                     "X-GitHub-Api-Version":"2022-11-28"})
-    # Request to api.github.com is authenticated; the signed artifact CDN URL
-    # MUST NOT receive that Authorization header. Standard urllib redirects
-    # would forward it and some CDN backends reject the request with 401.
-    opener=urllib.request.build_opener(_StripAuthOnOffsiteRedirect())
-    with opener.open(req,timeout=50) as response:
-        return response.read()
+    # Use the same strictly bounded GitHub-hosted ZIP reader as M0 and v3.
+    # It validates the trusted API origin and retries urllib's hosted 404
+    # via the authenticated GitHub CLI; callers still verify GitHub SHA256.
+    from src.kb3_step16_m0_720_calibration import _gh_artifact_zip
+    return _gh_artifact_zip(url, token)
 
 
 def github_artifact_attest(*, staging, ledger_root, token, run_id,
