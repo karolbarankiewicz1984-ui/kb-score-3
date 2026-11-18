@@ -125,6 +125,23 @@ class ThreeLeagueRealArchiveGate(unittest.TestCase):
         with self.assertRaisesRegex(EvidenceFailure, "POSTCAPTURE_SQLITE_FROZEN_ROWS_CHANGED"):
             run(make_archive(appended_shadow=True, changed_frozen_row=True))
 
+    def test_genuine_archive_is_not_published_on_code_push(self):
+        workflow = Path(".github/workflows/kb3-pitchapi-three-league-daily.yml").read_text()
+        self.assertIn("steps.true_source_capture.outcome == 'success'", workflow)
+        self.assertIn("steps.receipt_verified.outcome == 'success'", workflow)
+        self.assertIn("steps.ledger_proof.outputs.immutable_ledger_sha_verified == 'true'", workflow)
+        self.assertIn("contains(fromJSON", workflow)
+        self.assertIn("NO_CAPTURE_TIME_LEDGER_NO_MAIN_PUBLISH", workflow)
+
+    def test_preflight_requires_original_run_event_not_main_branch_alone(self):
+        workflow = Path(".github/workflows/kb3-catboost-v3-three-league-evidence.yml").read_text()
+        self.assertIn("run.get('event') in ('schedule','workflow_dispatch')", workflow)
+        self.assertIn("run.get('head_branch')=='main'", workflow)
+        self.assertIn("CODE_PUSH_ARTIFACTS_REJECTED", workflow)
+        self.assertIn("NO_AUTHENTIC_SCHEDULED_OR_MANUAL_CAPTURE_ARTIFACT", workflow)
+        self.assertIn("RECEIPT_UTC_DAY_MISMATCH", workflow)
+        self.assertIn("STALE_CAPTURE_NOT_REHOSTED_AS_NEW_PIT", workflow)
+
     def test_github_zip_sha_mismatch_refused(self):
         raw = make_archive()
         with self.assertRaisesRegex(EvidenceFailure, "HOSTED_ZIP_DIGEST_MISMATCH"):

@@ -5,12 +5,13 @@ All fixture rows here are synthetic; no network, no TEST, no user secrets.
 from datetime import datetime,timedelta,timezone
 from pathlib import Path
 from unittest.mock import patch
-import json,sqlite3,tempfile,unittest
+import json,sqlite3,tempfile,unittest,urllib.error
+from types import SimpleNamespace
 from src.kb3_step16_m0_720_eight_forward import (
     MODEL,freeze_sqlite,trained_params,stamp,hashobj,Research720Error)
 from src.kb3_step16_m0_720_calibration import (
     append_proofs,calibrate_if_eligible,inspect_event_proofs,MIN_FIT,MIN_HOLDOUT,
-    github_events,github_actions_artifact_proofs,_zip_frozen_rows)
+    github_events,github_actions_artifact_proofs,_zip_frozen_rows,_gh_artifact_zip)
 NOW=datetime.now(timezone.utc).replace(microsecond=0)
 P={"1":0.52,"X":0.27,"2":0.21}
 def sample(idx,params_sha,manifest_sha,*,before):
@@ -192,4 +193,21 @@ class GateTests(unittest.TestCase):
                 db,token="SYNTHETIC_TOKEN",now=NOW+timedelta(days=10))
         self.assertEqual(found,[])
         self.assertEqual(report["verified"],0)
+ def test_artifact_404_uses_gh_cli_only_for_trusted_api(self):
+    url="https://api.github.com/repos/example/research/actions/artifacts/123/zip"
+    err=urllib.error.HTTPError(url,404,"not found",{},None)
+    with patch("urllib.request.build_opener") as opener, patch("subprocess.run") as proc:
+        opener.return_value.open.side_effect=err
+        proc.return_value=SimpleNamespace(returncode=0,stdout=b"small-zip",stderr=b"")
+        self.assertEqual(_gh_artifact_zip(url,"token-for-test",limit=64),b"small-zip")
+        proc.assert_called_once()
+        self.assertEqual(proc.call_args.args[0],["gh","api",url])
+        self.assertEqual(proc.call_args.kwargs["env"]["GH_TOKEN"],"token-for-test")
+
+ def test_artifact_url_refuses_foreign_host_before_auth(self):
+    with patch("urllib.request.build_opener") as opener, patch("subprocess.run") as proc:
+        with self.assertRaisesRegex(Exception,"UNTRUSTED_GITHUB_ARTIFACT_URL"):
+            _gh_artifact_zip("https://elsewhere.example/test","token-for-test")
+        opener.assert_not_called()
+        proc.assert_not_called()
 if __name__=="__main__":unittest.main()

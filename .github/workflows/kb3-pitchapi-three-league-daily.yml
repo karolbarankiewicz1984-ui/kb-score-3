@@ -71,6 +71,7 @@ jobs:
             --public-key config/step11_archive_recipient_public.pem \
             --v3-bridge-root data/forward_v3_native
       - name: Verify original raw SHA, TRUE UTC, exactly 3 league names and withheld TEST
+        id: receipt_verified
         if: github.ref == 'refs/heads/main' && (github.event_name == 'schedule' || github.event_name == 'workflow_dispatch')
         env:
           FRESH_CAPTURE: ${{ steps.true_source_capture.outputs.fresh_capture }}
@@ -120,6 +121,9 @@ jobs:
           print('THREE_LEAGUE_DAILY_REAL_SEALED',a['newly_verified_match_shot_stat_pairs'],a['provider_calls'])
           PY
       - name: Preserve immutable captured SQLite ledger before M0 settlement or shadow writes
+        id: ledger_proof
+        env:
+          FRESH_CAPTURE: ${{ steps.true_source_capture.outputs.fresh_capture }}
         if: github.ref == 'refs/heads/main' && contains(fromJSON('["schedule","workflow_dispatch"]'), github.event_name)
         run: |
           python - <<'PY'
@@ -137,14 +141,20 @@ jobs:
           else:
               current=source.read_bytes()
               if hashlib.sha256(current).hexdigest()!=expected:
-                  # Old days were captured before this immutable snapshot was
-                  # introduced. A later updated DB cannot prove the original SHA.
-                  # Do not forge a substitute and do not weaken verification.
-                  print('::warning::OLD_CAPTURE_LEDGER_NOT_RECOVERABLE_FROM_UPDATED_DB')
+                  # A previously archived ledger was later changed by another
+                  # append-only consumer. We cannot reconstruct the exact
+                  # capture-time bytes. Never re-label it as new hosted proof.
+                  print('::warning::ORIGINAL_CAPTURE_LEDGER_UNAVAILABLE_NO_HOST_PROOF')
+                  if __import__('os').environ.get('FRESH_CAPTURE')=='true':
+                      raise SystemExit('FRESH_CAPTURE_SHA256_MISMATCH')
               else:
                   captured.write_bytes(current)
                   assert hashlib.sha256(captured.read_bytes()).hexdigest()==expected
                   print('SEALED_IMMUTABLE_CAPTURE_LEDGER',day)
+          if captured.is_file():
+              assert hashlib.sha256(captured.read_bytes()).hexdigest()==expected
+              with open(__import__('os').environ['GITHUB_OUTPUT'],'a') as output:
+                  print('immutable_ledger_sha_verified=true',file=output)
           PY
       - name: Freeze brand-new M0 1X2 90 minutes before kick-off from recorded 121+38 only
         if: github.ref == 'refs/heads/main' && (github.event_name == 'schedule' || github.event_name == 'workflow_dispatch')
@@ -216,7 +226,10 @@ jobs:
           retention-days: 30
           if-no-files-found: error
       - uses: actions/upload-artifact@v4
-        if: always()
+        # Only genuine scheduled/manual captures with an exact immutable
+        # capture-time SQLite proof can publish attestable evidence. Code
+        # pushes, pull requests and stale copies must never mint new evidence.
+        if: ${{ always() && github.ref == 'refs/heads/main' && contains(fromJSON('["schedule","workflow_dispatch"]'), github.event_name) && steps.true_source_capture.outcome == 'success' && steps.receipt_verified.outcome == 'success' && steps.ledger_proof.outputs.immutable_ledger_sha_verified == 'true' }}
         with:
           name: KB3_3_LEAGUE_DAILY_REAL_PIT_ENCRYPTED_OBSERVATION
           path: |
@@ -228,6 +241,10 @@ jobs:
       - name: Append actual verified encrypted observations to private main
         if: github.ref == 'refs/heads/main' && (github.event_name == 'schedule' || github.event_name == 'workflow_dispatch')
         run: |
+          if [[ "${{ steps.ledger_proof.outputs.immutable_ledger_sha_verified }}" != "true" ]]; then
+            echo '::warning::NO_CAPTURE_TIME_LEDGER_NO_MAIN_PUBLISH'
+            exit 0
+          fi
           git config user.name "kb3-pit-bot"
           git config user.email "kb3-pit-bot@users.noreply.github.com"
           git add -f data/pit_sidecar/pitchapi_three_league_daily/*/THREE_LEAGUE_DAILY_SOURCE.enc

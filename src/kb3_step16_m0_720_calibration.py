@@ -386,6 +386,12 @@ def _gh_json(url,token,*,timeout=15):
 
 def _gh_artifact_zip(url,token,*,limit=30*1024*1024):
     from urllib.parse import urlparse
+    import re
+    # This helper carries a GitHub token. Reject any endpoint outside the
+    # exact trusted GitHub Actions artifact ZIP API before making a request.
+    require(isinstance(url,str) and re.fullmatch(
+        r"https://api\.github\.com/repos/[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+/actions/artifacts/[0-9]+/zip",
+        url) is not None, "UNTRUSTED_GITHUB_ARTIFACT_URL")
     class NoRedirect(urllib.request.HTTPRedirectHandler):
         def redirect_request(self,req,fp,code,msg,headers,newurl):
             return None
