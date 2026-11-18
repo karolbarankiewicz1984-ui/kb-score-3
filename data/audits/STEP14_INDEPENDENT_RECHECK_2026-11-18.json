@@ -1,0 +1,55 @@
+{
+  "schema": "kb3-step14-independent-recheck-2026-11-18-v1",
+  "checked_at_local": "2026-11-18 20:10 Europe/Warsaw",
+  "mode": "EVIDENCE_ONLY_NO_ORIGINAL_M1_NO_TEST",
+  "original_contract": {
+    "features": 121,
+    "flags": 38,
+    "train": 760,
+    "validation": 380
+  },
+  "sources": [
+    "docs/STEP14_COMPREHENSIVE_HISTORIC_PREMATCH_RECONSTRUCTION_2026-10-28.md",
+    "data/audits/STEP14_FINAL_1140x159_PIT_GATE_2026-10-29.json",
+    "data/audits/STEP14_PITCHAPI_ORIGINAL_XG_FIRST_PUBLICATION_AND_SEMANTICS_STATUS_2026-10-28.json",
+    "data/audits/STEP14_INDEPENDENT_RECHECK_2026-11-17.json"
+  ],
+  "previously_verified_native_fixture_identity": 1140,
+  "original_historical_pit_train_certified": 0,
+  "original_historical_pit_validation_certified": 0,
+  "pitchapi_team_xg_first_publication_proven": false,
+  "independent_original_159_field_no_leakage_pass": false,
+  "observed_actions": [
+    {
+      "id": 44367248352,
+      "name": "3 league daily PitchAPI true pre-match source capture",
+      "conclusion": "success"
+    },
+    {
+      "id": 44367248349,
+      "name": "M0-720 operational audit and full offline regression",
+      "conclusion": "success"
+    },
+    {
+      "id": 44366670578,
+      "name": "CatBoost v3 hosted native-data preflight - 3 leagues",
+      "conclusion": "success"
+    },
+    {
+      "id": 44366504427,
+      "name": "CatBoost v3 hosted native-data preflight - 3 leagues",
+      "conclusion": "failure"
+    },
+    {
+      "id": 44361873854,
+      "name": "Step17 historical xG5 CatBoost ablation (research only)",
+      "conclusion": "success"
+    }
+  ],
+  "interpretation": "Recent operational success or retrospective xG research does not prove first publication of original historical PitchAPI team xG, nor independently certify full 121+38 PIT vectors. No newly qualified original historic rows established in this recheck.",
+  "gate14": "PENDING",
+  "original_m1_fit_allowed": false,
+  "original_m1_fit_performed": false,
+  "test_accessed": false,
+  "full_independent_audit_pass": false
+}
