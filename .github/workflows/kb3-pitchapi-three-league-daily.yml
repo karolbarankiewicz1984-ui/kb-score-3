@@ -120,7 +120,7 @@ jobs:
           print('THREE_LEAGUE_DAILY_REAL_SEALED',a['newly_verified_match_shot_stat_pairs'],a['provider_calls'])
           PY
       - name: Preserve immutable captured SQLite ledger before M0 settlement or shadow writes
-        if: github.ref == 'refs/heads/main' && (github.event_name == 'schedule' || github.event_name == 'workflow_dispatch')
+        if: github.ref == 'refs/heads/main' && contains(fromJSON('["schedule","workflow_dispatch"]'), github.event_name)
         run: |
           python - <<'PY'
           import datetime, hashlib, json
