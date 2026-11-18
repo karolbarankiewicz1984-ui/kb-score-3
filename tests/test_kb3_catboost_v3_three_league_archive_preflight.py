@@ -8,6 +8,11 @@ from pathlib import Path
 import sqlite3
 import unittest
 import zipfile
+from types import SimpleNamespace
+from unittest.mock import patch
+import urllib.error
+
+from src.kb3_step16_m0_720_calibration import _gh_artifact_zip
 
 from scripts.kb3_catboost_v3_three_league_archive_preflight import (
     EvidenceFailure, inspect_archive, json_digest,
@@ -141,6 +146,26 @@ class ThreeLeagueRealArchiveGate(unittest.TestCase):
         self.assertIn("NO_AUTHENTIC_SCHEDULED_OR_MANUAL_CAPTURE_ARTIFACT", workflow)
         self.assertIn("RECEIPT_UTC_DAY_MISMATCH", workflow)
         self.assertIn("STALE_CAPTURE_NOT_REHOSTED_AS_NEW_PIT", workflow)
+
+    def test_github_artifact_404_retries_with_token_only_for_trusted_api(self):
+        url = "https://api.github.com/repos/example/research/actions/artifacts/123/zip"
+        bad = urllib.error.HTTPError(url, 404, "not found", {}, None)
+        with patch("urllib.request.build_opener") as opener, patch("subprocess.run") as proc:
+            opener.return_value.open.side_effect = bad
+            proc.return_value = SimpleNamespace(returncode=0, stdout=b"small-zip",
+                                                stderr=b"")
+            self.assertEqual(_gh_artifact_zip(url, "token-for-test", limit=64), b"small-zip")
+            proc.assert_called_once()
+            argv = proc.call_args.args[0]
+            self.assertEqual(argv, ["gh", "api", url])
+            self.assertEqual(proc.call_args.kwargs["env"]["GH_TOKEN"], "token-for-test")
+
+    def test_github_artifact_reader_refuses_foreign_host_without_network(self):
+        with patch("urllib.request.build_opener") as opener, patch("subprocess.run") as proc:
+            with self.assertRaisesRegex(Exception, "UNTRUSTED_GITHUB_ARTIFACT_URL"):
+                _gh_artifact_zip("https://elsewhere.example/test", "token-for-test")
+            opener.assert_not_called()
+            proc.assert_not_called()
 
     def test_github_zip_sha_mismatch_refused(self):
         raw = make_archive()
