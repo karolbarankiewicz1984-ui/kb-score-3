@@ -398,18 +398,38 @@ def _gh_artifact_zip(url,token,*,limit=30*1024*1024):
         with opener.open(req,timeout=20) as reply:
             data=reply.read(limit+1)
     except urllib.error.HTTPError as exc:
-        if exc.code not in (301,302,303,307,308):
+        # In some hosted runners urllib receives a transient 404 at the
+        # artifact-download endpoint even though authenticated GitHub CLI
+        # successfully downloads the exact same server-hosted archive.
+        # Only retry the trusted GitHub Actions ZIP API URL; never trust an
+        # arbitrary external URL or replace digest/provenance validation.
+        if exc.code == 404:
+            import re, subprocess
+            if not re.fullmatch(
+                    r"https://api\\.github\\.com/repos/[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+/actions/artifacts/[0-9]+/zip",
+                    url):
+                raise
+            env=dict(os.environ)
+            env["GH_TOKEN"]=token
+            result=subprocess.run(
+                ["gh","api",url],env=env,stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,timeout=60,check=False)
+            if result.returncode != 0:
+                raise exc
+            data=result.stdout
+        elif exc.code in (301,302,303,307,308):
+            target=exc.headers.get("Location","")
+            u=urlparse(target)
+            require(u.scheme=="https" and bool(u.hostname)
+                    and u.hostname.lower() not in ("localhost","127.0.0.1","::1"),
+                    "UNTRUSTED_GITHUB_ARTIFACT_REDIRECT")
+            # Follow signed GitHub-selected storage URL without bearer auth.
+            with urllib.request.urlopen(
+                    urllib.request.Request(target,headers={"User-Agent":"KB3-Step16-auditor"}),
+                    timeout=30) as response:
+                data=response.read(limit+1)
+        else:
             raise
-        target=exc.headers.get("Location","")
-        u=urlparse(target)
-        require(u.scheme=="https" and bool(u.hostname)
-                and u.hostname.lower() not in ("localhost","127.0.0.1","::1"),
-                "UNTRUSTED_GITHUB_ARTIFACT_REDIRECT")
-        # Follow signed GitHub-selected storage URL *without* bearer credentials.
-        with urllib.request.urlopen(
-                urllib.request.Request(target,headers={"User-Agent":"KB3-Step16-auditor"}),
-                timeout=30) as response:
-            data=response.read(limit+1)
     require(0<len(data)<=limit,"GITHUB_ARTIFACT_SIZE_LIMIT")
     return data
 
