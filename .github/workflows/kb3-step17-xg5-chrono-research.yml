@@ -44,6 +44,29 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
+      - name: Restore SHA256-verified archived historical SQLite (read-only source)
+        run: |
+          python - <<'PY'
+          import gzip, hashlib, json, sqlite3
+          from pathlib import Path
+          root = Path('data/research/historical_multistat')
+          archive = root / 'observations.sqlite.gz'
+          manifest_path = root / 'observations.sqlite.gz.manifest.json'
+          assert archive.is_file() and manifest_path.is_file(), 'HISTORICAL_ARCHIVE_OR_MANIFEST_MISSING'
+          manifest = json.loads(manifest_path.read_text())
+          zipped = archive.read_bytes()
+          assert len(zipped) == manifest['compressed_bytes']
+          assert hashlib.sha256(zipped).hexdigest() == manifest['compressed_sha256']
+          raw = gzip.decompress(zipped)
+          assert len(raw) == manifest['raw_bytes']
+          assert hashlib.sha256(raw).hexdigest() == manifest['raw_sha256']
+          db_path = root / 'observations.sqlite'
+          db_path.write_bytes(raw)
+          with sqlite3.connect('file:' + str(db_path.resolve()) + '?mode=ro', uri=True) as db:
+              assert db.execute('PRAGMA integrity_check').fetchone()[0] == 'ok'
+              assert db.execute('SELECT COUNT(*) FROM observations WHERE scope=\'ENG\'').fetchone()[0] == 0
+          print('KB3_VERIFIED_HISTORICAL_SQLITE_RESTORED', len(raw))
+          PY
       - name: Install isolated CatBoost, no provider API required
         run: python -m pip install --disable-pip-version-check 'catboost==1.2.8'
       - name: Train older, evaluate later (unchanged historical observations)

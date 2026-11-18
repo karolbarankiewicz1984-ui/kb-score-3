@@ -129,12 +129,18 @@ def inspect_archive(raw_zip, *, artifact_id, artifact_created_at_utc,
         manifest = json.loads(read_member(z, base + "THREE_LEAGUE_DAILY_SOURCE.manifest.json"))
         encrypted = read_member(z, base + "THREE_LEAGUE_DAILY_SOURCE.enc")
         db_bytes = read_member(z, SQLITE_MEMBER, max_size=256_000_000)
+        capture_member = base + "M0_CAPTURE_LEDGER.sqlite"
+        # The original receipt SHA refers to the exact pre-shadow capture DB.
+        # Subsequent append-only M0 settlements change the file-level SHA.
+        # Never claim that an updated DB equals the original captured bytes.
+        captured_db_bytes = (read_member(z, capture_member, max_size=256_000_000)
+                             if capture_member in names else db_bytes)
     require(receipt.get("utc_day") == day, "RECEIPT_DAY_MISMATCH")
     require(digest(encrypted) == manifest.get("ciphertext_sha256") ==
             receipt.get("source_ciphertext_sha256"), "ENCRYPTED_PAYLOAD_SHA_MISMATCH")
     require(manifest.get("proof", {}).get("final_chain_sha256") ==
             receipt.get("source_chain_sha256"), "SOURCE_CHAIN_MISMATCH")
-    require(digest(db_bytes) == receipt.get("feature_sqlite_ledger_sha256"),
+    require(digest(captured_db_bytes) == receipt.get("feature_sqlite_ledger_sha256"),
             "SQLITE_LEDGER_SHA_MISMATCH")
     require(utc(receipt["observation_end_utc"]) <= host_created,
             "HOST_ARCHIVE_CREATED_BEFORE_CAPTURE_FINISHED")
@@ -144,22 +150,29 @@ def inspect_archive(raw_zip, *, artifact_id, artifact_created_at_utc,
             manifest.get("offsite_restore_verified") is False,
             "MANIFEST_ELIGIBILITY_DRIFT")
 
-    conn = sqlite3.connect(":memory:")
-    try:
-        conn.deserialize(db_bytes)
-        conn.execute("PRAGMA query_only=ON")
-        require(conn.execute("PRAGMA integrity_check").fetchone()[0] == "ok",
-                "CORRUPT_SQLITE")
-        cols = ("league_country, kickoff_original_utc, captured_before_kickoff_utc, "
-                "signed_source_chain_sha256, source_ciphertext_sha256, "
-                "feature_payload_json, numeric_fields, missing_flag_fields, "
-                "eligible_for_original_M1")
-        rows = conn.execute("SELECT " + cols +
-                            " FROM m0_forward_feature_records "
-                            "WHERE snapshot_day_utc=? ORDER BY league_country,"
-                            "provider_match_id", (day,)).fetchall()
-    finally:
-        conn.close()
+    def read_frozen_day_rows(binary_sqlite):
+        conn = sqlite3.connect(":memory:")
+        try:
+            conn.deserialize(binary_sqlite)
+            conn.execute("PRAGMA query_only=ON")
+            require(conn.execute("PRAGMA integrity_check").fetchone()[0] == "ok",
+                    "CORRUPT_SQLITE")
+            cols = ("league_country, kickoff_original_utc, captured_before_kickoff_utc, "
+                    "signed_source_chain_sha256, source_ciphertext_sha256, "
+                    "feature_payload_json, numeric_fields, missing_flag_fields, "
+                    "eligible_for_original_M1")
+            return conn.execute("SELECT " + cols +
+                                " FROM m0_forward_feature_records "
+                                "WHERE snapshot_day_utc=? ORDER BY league_country,"
+                                "provider_match_id", (day,)).fetchall()
+        finally:
+            conn.close()
+
+    rows = read_frozen_day_rows(captured_db_bytes)
+    # Validate that later SQLite writes did not change any captured feature
+    # rows. Append-only unrelated tables are allowed, altered day-rows are not.
+    require(read_frozen_day_rows(db_bytes) == rows,
+            "POSTCAPTURE_SQLITE_FROZEN_ROWS_CHANGED")
 
     pre_90 = 0
     before_exact_cutoff = 0

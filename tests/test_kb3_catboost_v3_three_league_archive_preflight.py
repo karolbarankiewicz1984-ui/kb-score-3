@@ -16,7 +16,7 @@ from scripts.kb3_catboost_v3_three_league_archive_preflight import (
 CONTRACT = json.loads(Path("contracts/kb3_catboost_asof_v3.json").read_text())
 
 
-def make_archive(*, corrupt_view=False):
+def make_archive(*, corrupt_view=False, appended_shadow=False, changed_frozen_row=False):
     day = "2026-11-09"
     prefix = "pit_sidecar/pitchapi_three_league_daily/" + day + "/"
     chain = "a" * 64
@@ -56,7 +56,15 @@ def make_archive(*, corrupt_view=False):
               ("ESP", "synthetic-target", day, view["kickoff_utc"],
                view["feature_cutoff_utc"], chain, cipher_sha,
                json.dumps(view), 121, 38, 0))
+    c.commit()
     data = c.serialize()
+    if appended_shadow:
+        c.execute("CREATE TABLE later_shadow_settlement (id INTEGER PRIMARY KEY, status TEXT)")
+        c.execute("INSERT INTO later_shadow_settlement VALUES (1, 'settled')")
+    if changed_frozen_row:
+        c.execute("UPDATE m0_forward_feature_records SET numeric_fields=122")
+    c.commit()
+    current = c.serialize()
     c.close()
     receipt = {
         "utc_day": day, "source_ciphertext_sha256": cipher_sha,
@@ -75,7 +83,9 @@ def make_archive(*, corrupt_view=False):
         z.writestr(prefix + "THREE_LEAGUE_DAILY_RECEIPT.json", json.dumps(receipt))
         z.writestr(prefix + "THREE_LEAGUE_DAILY_SOURCE.manifest.json", json.dumps(manifest))
         z.writestr(prefix + "THREE_LEAGUE_DAILY_SOURCE.enc", encrypted)
-        z.writestr("forward_m0/kb3_forward_m0.sqlite", data)
+        if appended_shadow or changed_frozen_row:
+            z.writestr(prefix + "M0_CAPTURE_LEDGER.sqlite", data)
+        z.writestr("forward_m0/kb3_forward_m0.sqlite", current)
     return bio.getvalue()
 
 
@@ -104,6 +114,16 @@ class ThreeLeagueRealArchiveGate(unittest.TestCase):
         self.assertEqual(r["hosted_before_existing_exact_feature_cutoff_count"], 1)
         self.assertEqual(r["official_v3_admitted_samples"], 0)
         self.assertNotIn("HOST_ARTIFACT_CREATED_AFTER_EXISTING_FEATURE_CUTOFF", r["blockers"])
+
+    def test_append_only_shadow_does_not_falsify_capture_sha(self):
+        result = run(make_archive(appended_shadow=True))
+        self.assertTrue(result["sqlite_ledger_sha256_verified"])
+        self.assertEqual(result["contract_87_fields_and_clocks_verified"], 1)
+        self.assertEqual(result["official_v3_admitted_samples"], 0)
+
+    def test_changing_day_rows_after_capture_is_rejected(self):
+        with self.assertRaisesRegex(EvidenceFailure, "POSTCAPTURE_SQLITE_FROZEN_ROWS_CHANGED"):
+            run(make_archive(appended_shadow=True, changed_frozen_row=True))
 
     def test_github_zip_sha_mismatch_refused(self):
         raw = make_archive()
