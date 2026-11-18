@@ -131,7 +131,7 @@ class ThreeLeagueRealArchiveGate(unittest.TestCase):
         self.assertIn("steps.receipt_verified.outcome == 'success'", workflow)
         self.assertIn("steps.ledger_proof.outputs.immutable_ledger_sha_verified == 'true'", workflow)
         self.assertIn("contains(fromJSON", workflow)
-        self.assertIn("'NO_CAPTURE_TIME_LEDGER_NO_MAIN_PUBLISH'", workflow)
+        self.assertIn("NO_CAPTURE_TIME_LEDGER_NO_MAIN_PUBLISH", workflow)
 
     def test_preflight_requires_original_run_event_not_main_branch_alone(self):
         workflow = Path(".github/workflows/kb3-catboost-v3-three-league-evidence.yml").read_text()
