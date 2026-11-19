@@ -1,0 +1,34 @@
+{
+  "card_issues_selected": 6,
+  "cards_reviewed": 6,
+  "cards_selected_by_scope": {
+    "ESP": 1,
+    "GER": 4,
+    "ITA": 1
+  },
+  "cumulative_issue_rows": 2224,
+  "error_types": {},
+  "observed_at_utc": "2026-11-19T10:17:04.885276Z",
+  "official_training_allowed": false,
+  "original_historical_pit_certified": false,
+  "original_rows_modified": false,
+  "production_approved": false,
+  "provider_requests": 8,
+  "schema": "kb3-historical-issue-recheck-v1-20261103",
+  "selection": "CORE5_AND_XG5_RESEARCH_TARGET_IMPACT_RANKED",
+  "source_chain_sha256": "95409b2a8bd56c348acc19ba9ddce1f4713d896a4b495d7694f945e54ae942a4",
+  "source_cipher_sha256": "16f80b8bc2c199bb67381c13f49881b6dc54235159cfabb50fa261b9bbe27eaf",
+  "source_receipts": 8,
+  "status": "OBSERVED_RECHECK",
+  "status_counts": {
+    "XG:XG_DISAGREEMENT_PERSISTS": 1,
+    "YELLOW_CARDS:EVENT_YELLOW_CONFIRMED": 6
+  },
+  "xg_issues_selected": 1,
+  "xg_reverified": 0,
+  "xg_reviewed": 1,
+  "xg_selected_by_scope": {
+    "GER": 1
+  },
+  "yellow_from_events": 6
+}
