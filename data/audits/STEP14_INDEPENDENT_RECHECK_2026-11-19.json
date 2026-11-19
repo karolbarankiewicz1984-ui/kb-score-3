@@ -1,0 +1,59 @@
+{
+  "schema": "kb3-step14-independent-recheck-2026-11-19-v1",
+  "checked_at_local": "2026-11-19 19:49 Europe/Warsaw",
+  "mode": "EVIDENCE_ONLY_NO_ORIGINAL_M1_NO_TEST",
+  "contract": {
+    "features": 121,
+    "flags": 38,
+    "train": 760,
+    "validation": 380
+  },
+  "source_paths": [
+    "docs/STEP14_COMPREHENSIVE_HISTORIC_PREMATCH_RECONSTRUCTION_2026-10-28.md",
+    "data/audits/STEP14_FINAL_1140x159_PIT_GATE_2026-10-29.json",
+    "data/audits/STEP14_PITCHAPI_ORIGINAL_XG_FIRST_PUBLICATION_AND_SEMANTICS_STATUS_2026-10-28.json",
+    "data/audits/STEP14_INDEPENDENT_RECHECK_2026-11-18.json",
+    "data/pit_sidecar/step14_pitchapi_native/2026-11-19/KB3_PITCH_NATIVE_ASOF_RECEIPT.json"
+  ],
+  "prior_native_fixture_identity_verified": 1140,
+  "original_full_historical_pit_train_certified": 0,
+  "original_full_historical_pit_validation_certified": 0,
+  "original_pitchapi_team_xg_first_publication_proven": false,
+  "independent_original_159_field_no_leakage_pass": false,
+  "latest_real_actions": [
+    {
+      "run_id": 44503746735,
+      "kind": "historical multi-stat backfill research",
+      "conclusion": "success",
+      "job_steps": "all success",
+      "historical_first_publication_proven": false
+    },
+    {
+      "run_id": 44538078364,
+      "kind": "prospective PitchAPI observed-at capture",
+      "conclusion": "success",
+      "historical_first_publication_proven": false
+    },
+    {
+      "run_id": 44545994769,
+      "kind": "public schedule PIT sidecar",
+      "conclusion": "success",
+      "historical_first_publication_proven": false
+    }
+  ],
+  "prospective_capture_receipt": {
+    "captured_at_utc": "2026-11-19T13:54:25.962304Z",
+    "future_target_schedules": 4,
+    "finished_prior_match_shot_stats_pairs_observed": 2,
+    "provider_call_count": 6,
+    "provider_first_publication_known": false,
+    "old_2023_2025_original_PIT_recovered": false,
+    "gate14_pass": false
+  },
+  "interpretation": "Recent successful workflow jobs and 2026 prospective captures do not establish historical 2023-2025 first-publication timestamps, original 121+38 per-field PIT, or independent no-leakage PASS. No additional historical original PIT rows certified by this review.",
+  "gate14": "PENDING",
+  "original_m1_fit_allowed": false,
+  "original_m1_fit_performed": false,
+  "test_accessed": false,
+  "full_independent_audit_pass": false
+}
