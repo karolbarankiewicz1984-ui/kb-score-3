@@ -1,0 +1,69 @@
+{
+  "calibration_unchanged": true,
+  "completed_batches": 1,
+  "cumulative_match_stats": 7472,
+  "effective_core5_pair_complete": 5432,
+  "effective_xg10_pair_complete": 666,
+  "effective_xg15_pair_complete": 220,
+  "effective_xg5_pair_complete": 2082,
+  "effective_xg_verified": 6637,
+  "gate16_17": "PENDING",
+  "history_batches": [
+    {
+      "batch": 1,
+      "cum": 7472,
+      "new": 24,
+      "requests": 83,
+      "sha256": "ee938f1fea385757070b1d5fb0e4be5f1cd8f419a5cc29b919a591b91131eb26",
+      "token": "44625585004-1-b1",
+      "verified_xg": 21
+    }
+  ],
+  "issue_status": "OBSERVED_RECHECK",
+  "issues": {
+    "card_issues_selected": 6,
+    "cards_reviewed": 6,
+    "cards_selected_by_scope": {
+      "ESP": 1,
+      "GER": 4,
+      "ITA": 1
+    },
+    "cumulative_issue_rows": 2233,
+    "error_types": {},
+    "observed_at_utc": "2026-11-19T22:10:08.673122Z",
+    "official_training_allowed": false,
+    "original_historical_pit_certified": false,
+    "original_rows_modified": false,
+    "production_approved": false,
+    "provider_requests": 12,
+    "schema": "kb3-historical-issue-recheck-v1-20261103",
+    "selection": "CORE5_AND_XG5_RESEARCH_TARGET_IMPACT_RANKED",
+    "source_chain_sha256": "dee3abc794a88fbffb80331d31fe69ad838322667f78c76ea489b10b99fecdd9",
+    "source_cipher_sha256": "03093c5969f17bfa19260fa240945b0c0f33b9f9ea8878be48ea75b3c93ec9c2",
+    "source_receipts": 12,
+    "status": "OBSERVED_RECHECK",
+    "status_counts": {
+      "XG:XG_DISAGREEMENT_PERSISTS": 3,
+      "YELLOW_CARDS:EVENT_YELLOW_CONFIRMED": 6
+    },
+    "xg_issues_selected": 3,
+    "xg_reverified": 0,
+    "xg_reviewed": 3,
+    "xg_selected_by_scope": {
+      "BEL": 1,
+      "ESP": 1,
+      "POL": 1
+    },
+    "yellow_from_events": 6
+  },
+  "new_match_stats": 24,
+  "new_verified_xg": 21,
+  "original_m0_unchanged": true,
+  "production_approved": false,
+  "protected_english_test_untouched": true,
+  "provider_original_pit_certified": false,
+  "provider_requests_history": 83,
+  "research_only": true,
+  "run_token": "44625585004-1",
+  "schema": "kb3-accelerated-history-240-and-recheck-v1"
+}
