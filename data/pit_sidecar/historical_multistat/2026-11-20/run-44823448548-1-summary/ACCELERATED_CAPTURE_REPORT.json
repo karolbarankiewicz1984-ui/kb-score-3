@@ -1,0 +1,66 @@
+{
+  "calibration_unchanged": true,
+  "completed_batches": 1,
+  "cumulative_match_stats": 7520,
+  "effective_core5_pair_complete": 5461,
+  "effective_xg10_pair_complete": 669,
+  "effective_xg15_pair_complete": 221,
+  "effective_xg5_pair_complete": 2088,
+  "effective_xg_verified": 6685,
+  "gate16_17": "PENDING",
+  "history_batches": [
+    {
+      "batch": 1,
+      "cum": 7520,
+      "new": 24,
+      "requests": 83,
+      "sha256": "7f43c1d949883358dfb535399e9c7da44be986354f1eace93ce1033fe4314ec2",
+      "token": "44823448548-1-b1",
+      "verified_xg": 24
+    }
+  ],
+  "issue_status": "OBSERVED_RECHECK",
+  "issues": {
+    "card_issues_selected": 6,
+    "cards_reviewed": 6,
+    "cards_selected_by_scope": {
+      "ESP": 1,
+      "GER": 1,
+      "ITA": 1,
+      "NED": 1,
+      "TUR": 2
+    },
+    "cumulative_issue_rows": 2245,
+    "error_types": {},
+    "observed_at_utc": "2026-11-20T21:50:17.359981Z",
+    "official_training_allowed": false,
+    "original_historical_pit_certified": false,
+    "original_rows_modified": false,
+    "production_approved": false,
+    "provider_requests": 6,
+    "schema": "kb3-historical-issue-recheck-v1-20261103",
+    "selection": "CORE5_AND_XG5_RESEARCH_TARGET_IMPACT_RANKED",
+    "source_chain_sha256": "466ab3d7db9bfe6433f1ecd213fede08d05de769d89a823084cb0171cafef03e",
+    "source_cipher_sha256": "431aa8289dbf383a0a9b64f06430c2fccac40cbfdbc49b294d22c1bfde66e17f",
+    "source_receipts": 6,
+    "status": "OBSERVED_RECHECK",
+    "status_counts": {
+      "YELLOW_CARDS:EVENT_YELLOW_CONFIRMED": 6
+    },
+    "xg_issues_selected": 0,
+    "xg_reverified": 0,
+    "xg_reviewed": 0,
+    "xg_selected_by_scope": {},
+    "yellow_from_events": 6
+  },
+  "new_match_stats": 24,
+  "new_verified_xg": 24,
+  "original_m0_unchanged": true,
+  "production_approved": false,
+  "protected_english_test_untouched": true,
+  "provider_original_pit_certified": false,
+  "provider_requests_history": 83,
+  "research_only": true,
+  "run_token": "44823448548-1",
+  "schema": "kb3-accelerated-history-240-and-recheck-v1"
+}
