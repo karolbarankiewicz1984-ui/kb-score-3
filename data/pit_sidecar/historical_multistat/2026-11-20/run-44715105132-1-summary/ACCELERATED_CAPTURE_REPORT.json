@@ -1,0 +1,65 @@
+{
+  "calibration_unchanged": true,
+  "completed_batches": 1,
+  "cumulative_match_stats": 7496,
+  "effective_core5_pair_complete": 5446,
+  "effective_xg10_pair_complete": 668,
+  "effective_xg15_pair_complete": 221,
+  "effective_xg5_pair_complete": 2084,
+  "effective_xg_verified": 6661,
+  "gate16_17": "PENDING",
+  "history_batches": [
+    {
+      "batch": 1,
+      "cum": 7496,
+      "new": 24,
+      "requests": 83,
+      "sha256": "e2117bdbed60e7cff89b02733fb32d3813e8fd926737ff15cf139f08188e23cf",
+      "token": "44715105132-1-b1",
+      "verified_xg": 24
+    }
+  ],
+  "issue_status": "OBSERVED_RECHECK",
+  "issues": {
+    "card_issues_selected": 6,
+    "cards_reviewed": 6,
+    "cards_selected_by_scope": {
+      "ESP": 1,
+      "GER": 1,
+      "ITA": 2,
+      "NED": 2
+    },
+    "cumulative_issue_rows": 2239,
+    "error_types": {},
+    "observed_at_utc": "2026-11-20T10:00:06.894883Z",
+    "official_training_allowed": false,
+    "original_historical_pit_certified": false,
+    "original_rows_modified": false,
+    "production_approved": false,
+    "provider_requests": 6,
+    "schema": "kb3-historical-issue-recheck-v1-20261103",
+    "selection": "CORE5_AND_XG5_RESEARCH_TARGET_IMPACT_RANKED",
+    "source_chain_sha256": "068de37d763107ff7be323e42986662573adaa2c03024362764158a6aa063f83",
+    "source_cipher_sha256": "3eb863500091b40c856218ad4a45c611311bd2a73e256c2c7e58fc0c35f34fc5",
+    "source_receipts": 6,
+    "status": "OBSERVED_RECHECK",
+    "status_counts": {
+      "YELLOW_CARDS:EVENT_YELLOW_CONFIRMED": 6
+    },
+    "xg_issues_selected": 0,
+    "xg_reverified": 0,
+    "xg_reviewed": 0,
+    "xg_selected_by_scope": {},
+    "yellow_from_events": 6
+  },
+  "new_match_stats": 24,
+  "new_verified_xg": 24,
+  "original_m0_unchanged": true,
+  "production_approved": false,
+  "protected_english_test_untouched": true,
+  "provider_original_pit_certified": false,
+  "provider_requests_history": 83,
+  "research_only": true,
+  "run_token": "44715105132-1",
+  "schema": "kb3-accelerated-history-240-and-recheck-v1"
+}
