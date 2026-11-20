@@ -1,0 +1,82 @@
+{
+  "actual_derived_forecasts": 2,
+  "actual_generated_utc": "2026-11-20T15:27:20.849595Z",
+  "calibration_status": "NOT_STARTED",
+  "eligible_for_betting_claims": false,
+  "historic_provider_original_PIT_verified": false,
+  "individual_forecasts": [
+    {
+      "away": "Fiorentina",
+      "calibrated": false,
+      "elo_pre_match": {
+        "away": 1465.67793,
+        "home": 1451.28573
+      },
+      "engine": "KB3_ELO_POISSON_M0_V0_1",
+      "evidence_state": "OBSERVED_BEFORE_KICKOFF_NOT_ORIGINAL_HISTORIC_PIT",
+      "expected_goals": {
+        "away": 1.1645737233733915,
+        "home": 1.4318543914676303
+      },
+      "feature_cutoff_utc": "2026-11-20T15:27:19.551003Z",
+      "feature_sha256": "3d1d6c9a8353e1344037a38a258a36054876eac9c434ce6c1d690ed57d6f69fa",
+      "feature_snapshot_id": "af64fcc9503a7b015d197d4de6eb28f24d8dc4e9869b6d1da90b3d28721e61f7",
+      "forecast_sha256": "fc9f6606b63fdf7d5e4395f3d39af377d31bc5287fcb2eb39c328a455f6daf68",
+      "generated_at_utc": "2026-11-20T15:27:20.849595Z",
+      "home": "Monza",
+      "kickoff_utc": "2026-11-23T19:45:00Z",
+      "league": "ITA",
+      "match_id": "m_08lkfg",
+      "p_1x2": {
+        "1": 0.43180684613625214,
+        "2": 0.3068735631708162,
+        "X": 0.2613195906929317
+      },
+      "parameter_status": "ILLUSTRATIVE_UNFITTED_NOT_FOR_BETTING",
+      "params_sha256": "0535d6c0095815eb42937994d7392504ba9a43d588bd256bf8e0e4d029c8a9ff",
+      "phase": "EARLY",
+      "schema": "kb3-real-forward-M0-Elo-Poisson-shadow-1x2-v1",
+      "training_allowed": false
+    },
+    {
+      "away": "Elche",
+      "calibrated": false,
+      "elo_pre_match": {
+        "away": 1452.15146,
+        "home": 1466.66981
+      },
+      "engine": "KB3_ELO_POISSON_M0_V0_1",
+      "evidence_state": "OBSERVED_BEFORE_KICKOFF_NOT_ORIGINAL_HISTORIC_PIT",
+      "expected_goals": {
+        "away": 1.1354833123169155,
+        "home": 1.4685376543293465
+      },
+      "feature_cutoff_utc": "2026-11-20T15:27:19.551003Z",
+      "feature_sha256": "f94154e8b89d909e899bc6d077b26c669d277db06ee316d2b4f11e34f4e67612",
+      "feature_snapshot_id": "56d47d1517144da3b901deddb948bf82b88298e4c90d70838c8ae764043fff3b",
+      "forecast_sha256": "082e8ff90295c6ca23f95b075059ab12aca4d9af9b9a7eeb6e0f8aa94babe632",
+      "generated_at_utc": "2026-11-20T15:27:20.849595Z",
+      "home": "Levante",
+      "kickoff_utc": "2026-11-23T20:00:00Z",
+      "league": "ESP",
+      "match_id": "m_3jVoFq",
+      "p_1x2": {
+        "1": 0.447938156893631,
+        "2": 0.29271889964822223,
+        "X": 0.25934294345814685
+      },
+      "parameter_status": "ILLUSTRATIVE_UNFITTED_NOT_FOR_BETTING",
+      "params_sha256": "0535d6c0095815eb42937994d7392504ba9a43d588bd256bf8e0e4d029c8a9ff",
+      "phase": "EARLY",
+      "schema": "kb3-real-forward-M0-Elo-Poisson-shadow-1x2-v1",
+      "training_allowed": false
+    }
+  ],
+  "mode": "M0_SHADOW_PROVISIONAL_UNFITTED",
+  "original_2026_27_Premier_League_TEST_touched": false,
+  "original_M1_training_or_calibration": false,
+  "report_sha256": "bb42af2fdb1a3b81ed28dfc3c0220678fb327d7cc37d57f24efbfbc288b7fe6b",
+  "schema": "kb3-real-forward-M0-Elo-Poisson-shadow-1x2-v1",
+  "source": "REAL_PITCHAPI_OBSERVED_BEFORE_TARGET_FROM_SQLITE",
+  "total_immutable_forecasts": 79
+}
