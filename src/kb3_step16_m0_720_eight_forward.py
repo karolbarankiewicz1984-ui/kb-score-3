@@ -66,7 +66,7 @@ def trained_params(root=ROOT):
             "FALSE_PIT_PROOF")
     return p,hashobj(asdict(p)),hashobj(m)
 
-def select_eight(catalog):
+def select_eight(catalog, *, allow_absent_tur=False):
     """Select only uniquely verified, free, two-season top-flight league IDs.
 
     Use public metadata for diagnostics; never guess an ID, leak provider tokens,
@@ -78,6 +78,11 @@ def select_eight(catalog):
     for country, title, aliases in EIGHT:
         same_country = [x for x in catalog["leagues"] if isinstance(x, dict)
                         and str(x.get("country_code", "")).upper() == country]
+        # Only a genuinely absent Turkey country entry may be quarantined.
+        # A matching country with ambiguous name, changed seasons, or paid
+        # entitlement MUST still fail closed (never guess a competition ID).
+        if country == "TUR" and not same_country and allow_absent_tur:
+            continue
         named = [x for x in same_country if norm(x.get("name", "")) in aliases]
         found = [x for x in named if CURRENT in (x.get("seasons") or [])
                  and PREVIOUS in (x.get("seasons") or [])]
@@ -111,7 +116,8 @@ def select_eight(catalog):
             }
             raise error
         chosen.append((country, title, found[0]["id"]))
-    require(len(chosen) == 8 and len({x[2] for x in chosen}) == 8,
+    expected = 7 if allow_absent_tur and all(x[0] != "TUR" for x in chosen) else 8
+    require(len(chosen) == expected and len({x[2] for x in chosen}) == expected,
             "DUPLICATE_OR_MISSING_EIGHT_LEAGUE_IDENTITIES")
     return chosen
 
@@ -507,14 +513,15 @@ def collect_receipts(client,*,mode,now):
                         started=start,completed=end)
         return data
     catalog=call("pitchapi:m0720:catalog",client.leagues.list)
-    chosen=select_eight(catalog)
+    chosen=select_eight(catalog, allow_absent_tur=True)
     for c,title,lid in chosen:
         seasons=(PREVIOUS,CURRENT) if mode=="forecast" else (CURRENT,)
         for season in seasons:
             call("pitchapi:m0720:fixtures:"+c+":"+season,
                  client.leagues.matches,lid,season=season,
                  **({"status":"all"} if season==CURRENT else {}))
-    require(calls==(CALL_CAP_CAPTURE if mode=="forecast" else CALL_CAP_SETTLE),
+    expected_calls=1+len(chosen)*(2 if mode=="forecast" else 1)
+    require(calls==expected_calls,
             "ACTUAL_PROVIDER_CALL_COUNT_MISMATCH")
     return receipts,chosen,calls
 
@@ -563,6 +570,7 @@ def run(*,mode,client,now=None,db_path=DB,root=SOURCES,public_key=None,
             diagnostics={}
             forecasts,coverage,season_shapes=make_forecasts(receipts,cutoff=cutoff,
                 params=p,param_sha=param_sha,manifest_sha=manifest_sha,
+                available_countries=frozenset(c for c,_,_ in chosen),
                 challenger_engine=candidate_engine,challenger_sink=candidates,
                 shadow_engine=shadow_engine,shadow_sink=shadow_candidates,
                 known_fixtures=known_forecast_fixtures(staging),diagnostics=diagnostics,
@@ -664,7 +672,9 @@ def run(*,mode,client,now=None,db_path=DB,root=SOURCES,public_key=None,
             "mode":mode,"model_version":MODEL,"params_sha256":param_sha,
             "manifest_sha256":manifest_sha,"run_utc":stamp(cutoff),
             "network_calls":calls,"league_count":len(chosen),
-            "countries":[x[0] for x in chosen],"source_cipher_sha256":rawmeta["ciphertext_sha256"],
+            "countries":[x[0] for x in chosen],
+            "missing_catalog_leagues":sorted(EIGHT_COUNTRIES-{c for c,_,_ in chosen}),
+            "partial_source_coverage_research_only":len(chosen)<8,"source_cipher_sha256":rawmeta["ciphertext_sha256"],
             "source_chain_sha256":rawmeta["proof"]["final_chain_sha256"],
             "source_first_published_by_provider_proven":False,
             "independent_first_repo_publication_before_kickoff_proven":False,
