@@ -27,12 +27,15 @@ def check_catalog(catalog):
              "is_free": x.get("is_free") is True}
             for x in candidates[:12]]
     try:
-        selected = select_eight(catalog)
+        selected = select_eight(catalog, allow_absent_tur=True)
     except Research720Error as exc:
         summary["error_code"] = str(exc)[:160]
         summary["capture_detail"] = getattr(exc, "capture_detail", None)
     else:
-        summary["validated"] = len(selected)==8
+        observed = {c for c, _, _ in selected}
+        summary["missing_catalog_leagues"] = sorted(expected-observed)
+        summary["partial_research_coverage"] = len(selected)<8
+        summary["validated"] = (len(selected)==8 or (len(selected)==7 and expected-observed=={"TUR"}))
     return summary
 
 
