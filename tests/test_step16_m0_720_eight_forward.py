@@ -215,6 +215,30 @@ class RealCatalogueDriftTests(unittest.TestCase):
     self.assertEqual(cm.exception.capture_detail["reason"],"LEAGUE_ALIAS_NOT_MATCHED")
     self.assertEqual(cm.exception.capture_detail["country"],"TUR")
 
+ def test_absent_tur_is_quarantined_only_with_explicit_research_override(self):
+    cat=self.catalogue()
+    cat["leagues"]=[x for x in cat["leagues"] if x["country_code"]!="TUR"]
+    with self.assertRaisesRegex(Research720Error,"CANDIDATE_LEAGUE_UNAVAILABLE_TUR"):
+        select_eight(cat)
+    seven=select_eight(cat,allow_absent_tur=True)
+    self.assertEqual(len(seven),7)
+    self.assertEqual({c for c,_,_ in seven},EIGHT_COUNTRIES-{"TUR"})
+
+ def test_seven_immutable_forecast_sources_without_fabricated_tur(self):
+    data=[r for r in fake_receipts() if ":TUR:" not in r["resource"]]
+    p,sha,manifest=trained_params()
+    with self.assertRaisesRegex(Research720Error,"MISSING_OR_EXTRA_AVAILABLE_LEAGUE_SEASON_PAIR"):
+        make_forecasts(data,cutoff=NOW,params=p,param_sha=sha,manifest_sha=manifest)
+    forecasts,coverage,shapes=make_forecasts(data,cutoff=NOW,
+        params=p,param_sha=sha,manifest_sha=manifest,
+        available_countries=frozenset(EIGHT_COUNTRIES-{"TUR"}))
+    self.assertEqual(len(forecasts),56)
+    self.assertEqual(len(shapes),14)
+    self.assertEqual(set(coverage),EIGHT_COUNTRIES-{"TUR"})
+    self.assertTrue(all(r["league_country"]!="TUR"
+        and r["production_approved"] is False and r["training_allowed"] is False
+        for r in forecasts))
+
  def test_disappeared_season_blocks_without_invented_fixture(self):
     cat=self.catalogue()
     next(x for x in cat["leagues"] if x["country_code"]=="TUR")["seasons"]=["2026/2027"]
