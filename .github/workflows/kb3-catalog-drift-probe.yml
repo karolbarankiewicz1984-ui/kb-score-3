@@ -1,0 +1,32 @@
+name: KB3 one-call PitchAPI eight league catalogue drift preflight
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - scripts/kb3_catalog_8league_probe.py
+      - .github/workflows/kb3-catalog-drift-probe.yml
+permissions:
+  contents: read
+concurrency:
+  group: kb3-catalog-drift-probe
+  cancel-in-progress: false
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install already-approved PitchAPI and encryption dependencies
+        run: python -m pip install --disable-pip-version-check -r config/step16_live_requirements.txt
+      - name: Query only live league catalogue; no fixture or model writes
+        env:
+          PITCHAPI_API_KEY: ${{ secrets.PITCHAPI_API_KEY }}
+        run: |
+          python -m scripts.kb3_catalog_8league_probe
+          git diff --exit-code
