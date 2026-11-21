@@ -186,9 +186,12 @@ def historical_phase_id_inventory(receipts):
 
 def make_forecasts(receipts,*,cutoff,params,param_sha,manifest_sha,challenger_engine=None,challenger_sink=None,
                    known_fixtures=(),diagnostics=None,wall_clock=None,
-                   shadow_engine=None,shadow_sink=None):
+                   shadow_engine=None,shadow_sink=None,available_countries=None):
     require((challenger_engine is None)==(challenger_sink is None),"CHALLENGER_SINK_PAIR_REQUIRED")
     require((shadow_engine is None)==(shadow_sink is None),"SHADOW_SINK_PAIR_REQUIRED")
+    allowed = EIGHT_COUNTRIES if available_countries is None else frozenset(available_countries)
+    require(allowed in (EIGHT_COUNTRIES, EIGHT_COUNTRIES-{'TUR'}),
+            'SOURCE_LEAGUE_QUARANTINE_INVALID')
     grouped={}
     for rec in receipts:
         part=rec["resource"].split(":")
@@ -199,7 +202,8 @@ def make_forecasts(receipts,*,cutoff,params,param_sha,manifest_sha,challenger_en
             require(as_utc(rec["completed_at_utc"])<=cutoff
                     and rec.get("origin")=="NETWORK_OBSERVED","SOURCE_AFTER_CUTOFF")
             grouped[(country,season)]=rec
-    require(len(grouped)==16,"ALL_EIGHT_LEAGUE_SOURCES_REQUIRED")
+    require(set(grouped)=={(c,season) for c in allowed for season in (PREVIOUS,CURRENT)},
+            "MISSING_OR_EXTRA_AVAILABLE_LEAGUE_SEASON_PAIR")
     rows=[];by_league=Counter();verified={};known_fixtures=set(known_fixtures)
     reasons=defaultdict(Counter);decisions=[]
     shadow_unavailable=[]
@@ -209,6 +213,8 @@ def make_forecasts(receipts,*,cutoff,params,param_sha,manifest_sha,challenger_en
             decisions.append({'league':country,'native_match_id':m['id'],
                 'kickoff_utc':m['time_utc'],'reason':reason})
     for country,title,_ in EIGHT:
+        if country not in allowed:
+            continue
         src_old=grouped[(country,PREVIOUS)]
         src_now=grouped[(country,CURRENT)]
         old=src_old["payload"].get("matches");current=src_now["payload"].get("matches")
