@@ -1,0 +1,56 @@
+{
+  "schema": "kb3-step14-independent-recheck-2026-11-21-v1",
+  "checked_at_local": "2026-11-21 19:58 Europe/Warsaw",
+  "mode": "EVIDENCE_ONLY_NO_ORIGINAL_M1_NO_TEST",
+  "contract": {
+    "features": 121,
+    "flags": 38,
+    "train": 760,
+    "validation": 380
+  },
+  "verified_sources": [
+    "docs/STEP14_COMPREHENSIVE_HISTORIC_PREMATCH_RECONSTRUCTION_2026-10-28.md",
+    "data/audits/STEP14_FINAL_1140x159_PIT_GATE_2026-10-29.json",
+    "data/audits/STEP14_INDEPENDENT_RECHECK_2026-11-20.json",
+    "data/pit_sidecar/historical_multistat/2026-11-21/run-44890784397-1-summary/ACCELERATED_CAPTURE_REPORT.json",
+    "data/pit_sidecar/step17_native_xg_eight/2026-11-21/XG_READINESS_RECEIPT.json"
+  ],
+  "native_fixture_identity_prior_verified": 1140,
+  "original_historical_pit_train_certified": 0,
+  "original_historical_pit_validation_certified": 0,
+  "original_pitchapi_team_xg_first_publication_proven": false,
+  "independent_159_field_no_leakage_pass": false,
+  "observations": {
+    "historical_research_cumulative_match_stats": 7544,
+    "historical_research_new_match_stats": 24,
+    "historical_research_new_verified_xg": 23,
+    "historical_research_original_pit_certified": false,
+    "prospective_eight_league_xg_verified_matches": 93,
+    "prospective_future_targets_scanned": 39,
+    "prospective_future_targets_both_teams_last5_complete": 0,
+    "prospective_original_provider_published_at_known": false
+  },
+  "actions": [
+    {
+      "id": 44924313085,
+      "name": "Step17 eight-league native xG predecessor shadow",
+      "conclusion": "success"
+    },
+    {
+      "id": 44924357351,
+      "name": "PitchAPI eight-league catalogue drift preflight",
+      "conclusion": "success"
+    },
+    {
+      "id": 44922772996,
+      "name": "CatBoost v3 hosted native-data preflight (NO provider API)",
+      "conclusion": "success"
+    }
+  ],
+  "interpretation": "New retrospective research captures and prospective 2026 xG cannot establish original 2023-2025 per-field PIT timestamps or PitchAPI first publication. No new certified original 760/380 rows. Action success is not independent historical audit PASS.",
+  "gate14": "PENDING",
+  "original_m1_fit_allowed": false,
+  "original_m1_fit_performed": false,
+  "test_accessed": false,
+  "full_independent_audit_pass": false
+}
