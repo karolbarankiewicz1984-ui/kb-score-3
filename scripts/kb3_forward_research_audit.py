@@ -49,9 +49,12 @@ def band(p):
 def bands(rows):
     out = {k: {"rows": 0, "wins": 0, "losses": 0, "pushes": 0, "sum_p": 0.0}
            for k in ("under60", "60-70", "70-80", "80-90", "90-100")}
+    # A push has no conditional win probability in the immutable settlement ledger.
+    # Record it separately rather than silently imputing zero or a probability band.
+    out["unbinned_push"] = {"rows": 0, "wins": 0, "losses": 0, "pushes": 0, "sum_p": 0.0}
     for p, label in rows:
         need(label in ("WIN", "LOSS", "PUSH"), "UNKNOWN_SETTLEMENT")
-        b = out[band(p)]
+        b = out["unbinned_push"] if p is None and label == "PUSH" else out[band(p)]
         b["rows"] += 1
         if label == "PUSH":
             b["pushes"] += 1
@@ -212,6 +215,15 @@ def self_test():
         "under60","under60","60-70","60-70","70-80","70-80","80-90","80-90","90-100","90-100"]
     b = bands([(.8,"WIN"),(.85,"LOSS"),(.88,"PUSH")])["80-90"]
     assert b["rows"] == 3 and b["wins"] == b["losses"] == b["pushes"] == 1 and b["hit_rate"] == .5
+    p = bands([(None,"PUSH"),(.8,"WIN")])["unbinned_push"]
+    assert p["rows"] == p["pushes"] == 1 and p["hit_rate"] is None
+    for outcome in ("WIN", "LOSS"):
+        try:
+            bands([(None,outcome)])
+        except ValueError:
+            pass
+        else:
+            raise AssertionError("missing probability on a resolved win/loss")
     m = score([{"M0":{"1":.7,"X":.2,"2":.1},"outcome":"1"}],"M0")
     assert m["top1_accuracy"] == 1 and abs(m["brier_sum3"]-.14) < 1e-9
     assert score([],"M0")["brier_sum3"] is None
