@@ -1,0 +1,35 @@
+{
+  "card_issues_selected": 6,
+  "cards_reviewed": 6,
+  "cards_selected_by_scope": {
+    "BEL": 1,
+    "ESP": 1,
+    "GER": 1,
+    "TUR": 3
+  },
+  "cumulative_issue_rows": 2252,
+  "error_types": {},
+  "observed_at_utc": "2026-11-21T09:43:54.510372Z",
+  "official_training_allowed": false,
+  "original_historical_pit_certified": false,
+  "original_rows_modified": false,
+  "production_approved": false,
+  "provider_requests": 8,
+  "schema": "kb3-historical-issue-recheck-v1-20261103",
+  "selection": "CORE5_AND_XG5_RESEARCH_TARGET_IMPACT_RANKED",
+  "source_chain_sha256": "02300d9e674e9647cc7abb642b1e76ecb62598e12eb49f6d25b6c68c67b4502d",
+  "source_cipher_sha256": "59af510a78715f1bfad83f4e6e57cea9e478fb5e2eb9aef7f8e01df10ff84825",
+  "source_receipts": 8,
+  "status": "OBSERVED_RECHECK",
+  "status_counts": {
+    "XG:XG_DISAGREEMENT_PERSISTS": 1,
+    "YELLOW_CARDS:EVENT_YELLOW_CONFIRMED": 6
+  },
+  "xg_issues_selected": 1,
+  "xg_reverified": 0,
+  "xg_reviewed": 1,
+  "xg_selected_by_scope": {
+    "POL": 1
+  },
+  "yellow_from_events": 6
+}

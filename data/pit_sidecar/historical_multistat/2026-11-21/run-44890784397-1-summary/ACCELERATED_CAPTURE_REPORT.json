@@ -1,0 +1,68 @@
+{
+  "calibration_unchanged": true,
+  "completed_batches": 1,
+  "cumulative_match_stats": 7544,
+  "effective_core5_pair_complete": 5478,
+  "effective_xg10_pair_complete": 669,
+  "effective_xg15_pair_complete": 221,
+  "effective_xg5_pair_complete": 2092,
+  "effective_xg_verified": 6708,
+  "gate16_17": "PENDING",
+  "history_batches": [
+    {
+      "batch": 1,
+      "cum": 7544,
+      "new": 24,
+      "requests": 83,
+      "sha256": "4b2d60d71b31b721a13ae768c21dd1353a250049f3ca617df40abf07f10524e2",
+      "token": "44890784397-1-b1",
+      "verified_xg": 23
+    }
+  ],
+  "issue_status": "OBSERVED_RECHECK",
+  "issues": {
+    "card_issues_selected": 6,
+    "cards_reviewed": 6,
+    "cards_selected_by_scope": {
+      "BEL": 1,
+      "ESP": 1,
+      "GER": 1,
+      "TUR": 3
+    },
+    "cumulative_issue_rows": 2252,
+    "error_types": {},
+    "observed_at_utc": "2026-11-21T09:43:54.510372Z",
+    "official_training_allowed": false,
+    "original_historical_pit_certified": false,
+    "original_rows_modified": false,
+    "production_approved": false,
+    "provider_requests": 8,
+    "schema": "kb3-historical-issue-recheck-v1-20261103",
+    "selection": "CORE5_AND_XG5_RESEARCH_TARGET_IMPACT_RANKED",
+    "source_chain_sha256": "02300d9e674e9647cc7abb642b1e76ecb62598e12eb49f6d25b6c68c67b4502d",
+    "source_cipher_sha256": "59af510a78715f1bfad83f4e6e57cea9e478fb5e2eb9aef7f8e01df10ff84825",
+    "source_receipts": 8,
+    "status": "OBSERVED_RECHECK",
+    "status_counts": {
+      "XG:XG_DISAGREEMENT_PERSISTS": 1,
+      "YELLOW_CARDS:EVENT_YELLOW_CONFIRMED": 6
+    },
+    "xg_issues_selected": 1,
+    "xg_reverified": 0,
+    "xg_reviewed": 1,
+    "xg_selected_by_scope": {
+      "POL": 1
+    },
+    "yellow_from_events": 6
+  },
+  "new_match_stats": 24,
+  "new_verified_xg": 23,
+  "original_m0_unchanged": true,
+  "production_approved": false,
+  "protected_english_test_untouched": true,
+  "provider_original_pit_certified": false,
+  "provider_requests_history": 83,
+  "research_only": true,
+  "run_token": "44890784397-1",
+  "schema": "kb3-accelerated-history-240-and-recheck-v1"
+}
