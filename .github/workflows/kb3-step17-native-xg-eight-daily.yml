@@ -75,7 +75,11 @@ jobs:
           info=json.loads((d/'XG_READINESS_RECEIPT.json').read_text())
           manifest=json.loads((d/'XG_SOURCE.manifest.json').read_text())
           assert info['network_calls']<=MAX_CALLS
-          assert len(info['leagues'])==8 and 'ENG' not in info['leagues']
+          from src.kb3_step16_m0_720_eight_forward import EIGHT_COUNTRIES
+          observed=set(info['leagues'])
+          assert observed in (EIGHT_COUNTRIES,EIGHT_COUNTRIES-{'TUR'}) and 'ENG' not in observed
+          assert set(info['missing_catalog_leagues'])==EIGHT_COUNTRIES-observed
+          assert info['partial_source_coverage_research_only'] is (len(observed)<8)
           assert info['training_ready'] is False
           assert info['trained_xg_catboost_exists'] is False
           assert info['original_m0_modified'] is False
