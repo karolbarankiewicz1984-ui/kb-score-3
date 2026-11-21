@@ -83,6 +83,26 @@ class EightXgTests(unittest.TestCase):
               summary["real_missing_last5_predecessor_ids"] for v in x["teams"].values()))
         with self.assertRaisesRegex(Research720Error,"ALREADY_SAVED"):
             run(client=fake,db_path=root/"xg.sqlite",archive=root/"evidence",now=NOW)
+ def test_real_seven_league_capture_when_tur_country_absent(self):
+    fake=FakeClient()
+    original_list=fake.leagues.list
+    fake.leagues.list=lambda: {"leagues": [
+        x for x in original_list()["leagues"] if x["country_code"]!="TUR"]}
+    with tempfile.TemporaryDirectory() as td:
+        root=Path(td)
+        report=run(client=fake,db_path=root/"xg.sqlite",archive=root/"evidence",now=NOW)
+        self.assertEqual(report["network_calls"],29)
+        self.assertEqual(set(report["leagues"]),{c for c,_,_ in EIGHT}-{"TUR"})
+        self.assertEqual(report["missing_catalog_leagues"],["TUR"])
+        self.assertTrue(report["partial_source_coverage_research_only"])
+        self.assertEqual(report["prior_matches_selected"],7)
+        self.assertFalse(report["training_ready"])
+        self.assertFalse(report["auto_promotion"])
+        self.assertEqual(report["gate17"],"PENDING")
+        with connect(root/"xg.sqlite") as db:
+            self.assertEqual(db.execute("SELECT COUNT(*) FROM observed_native_xg").fetchone()[0],7)
+            self.assertEqual(db.execute("SELECT COUNT(*) FROM observed_native_xg WHERE country='TUR'").fetchone()[0],0)
+
  def test_native_semantic_mismatch_blocks_as_predecessor(self):
     fake=FakeClient();m=next(v for v in fake.lookup.values() if v["status"]=="finished")
     shots=fake.matches.shots(m["id"]);stats=fake.matches.stats(m["id"])
