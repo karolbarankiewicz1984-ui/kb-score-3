@@ -27,7 +27,7 @@ def main():
     except Research720Error as exc:
         if str(exc).startswith('FORECAST_NOT_DUE:'):
             print('M0_720_LOCAL_FORECAST_SKIP',str(exc));return
-        print('M0_720_CAPTURE_FAILED',type(exc).__name__,json.dumps(getattr(exc,'capture_detail',{}),sort_keys=True))
+        print('M0_720_CAPTURE_FAILED',json.dumps({"error_type":type(exc).__name__,"error_code":str(exc)[:160],"capture_detail":getattr(exc,'capture_detail',None)},sort_keys=True,ensure_ascii=False))
         raise SystemExit(3)
     except Exception as exc:
         print('M0_720_CAPTURE_FAILED',type(exc).__name__)
