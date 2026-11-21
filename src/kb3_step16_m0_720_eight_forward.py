@@ -699,6 +699,7 @@ def run(*,mode,client,now=None,db_path=DB,root=SOURCES,public_key=None,
         if mirror_created:shutil.rmtree(reportdir,ignore_errors=True)
         failure={'model_version':MODEL,'mode':mode,'run_utc':stamp(now),
                  'status':'FAILED_NO_DATABASE_PUBLICATION','error_type':type(exc).__name__,
+                 'error_code':str(exc)[:160] if isinstance(exc,Research720Error) else 'UNEXPECTED_EXCEPTION',
                  'source_encrypted':(folder/'SOURCE.enc').exists(),
                  'capture_detail':getattr(exc,'capture_detail',None)}
         try:
