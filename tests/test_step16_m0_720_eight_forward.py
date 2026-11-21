@@ -188,4 +188,60 @@ class EightForwardTests(unittest.TestCase):
         with sqlite3.connect(db) as con:
             with self.assertRaises(sqlite3.IntegrityError):
                 con.execute("UPDATE model_meta SET status='CHAMPION'")
+
+class RealCatalogueDriftTests(unittest.TestCase):
+ def catalogue(self):
+    return {"leagues": [{"country_code":c,"name":title,
+              "seasons":["2025/2026","2026/2027"],
+              "id":"l_"+c,"is_free":True} for c,title,_ in EIGHT]}
+
+ def test_turkish_real_unicode_alias_is_equivalent_not_a_new_league(self):
+    from scripts.step16_additional_leagues_audit import norm
+    self.assertEqual(norm("Süper Lig"), "superlig")
+    self.assertEqual(norm("Trendyol Süper Lig"), "trendyolsuperlig")
+    self.assertEqual(norm("Trendyol SÜPER LİG"), "trendyolsuperlig")
+    cat=self.catalogue()
+    next(x for x in cat["leagues"] if x["country_code"]=="TUR")["name"]="Trendyol Süper Lig"
+    selected=select_eight(cat)
+    self.assertEqual(len(selected),8)
+    self.assertEqual(next(x[2] for x in selected if x[0]=="TUR"),"l_TUR")
+
+ def test_unlisted_turkish_second_division_is_rejected_with_safe_reason(self):
+    cat=self.catalogue()
+    next(x for x in cat["leagues"] if x["country_code"]=="TUR")["name"]="1. Lig"
+    with self.assertRaises(Research720Error) as cm:
+        select_eight(cat)
+    self.assertEqual(str(cm.exception),"CANDIDATE_LEAGUE_UNAVAILABLE_TUR")
+    self.assertEqual(cm.exception.capture_detail["reason"],"LEAGUE_ALIAS_NOT_MATCHED")
+    self.assertEqual(cm.exception.capture_detail["country"],"TUR")
+
+ def test_disappeared_season_blocks_without_invented_fixture(self):
+    cat=self.catalogue()
+    next(x for x in cat["leagues"] if x["country_code"]=="TUR")["seasons"]=["2026/2027"]
+    with self.assertRaises(Research720Error) as cm:
+        select_eight(cat)
+    self.assertEqual(cm.exception.capture_detail["reason"],"CURRENT_PREVIOUS_SEASONS_NOT_BOTH_LISTED")
+
+ def test_duplicate_turkish_identity_is_not_silently_selected(self):
+    cat=self.catalogue()
+    cat["leagues"].append({"country_code":"TUR","name":"Süper Lig",
+            "seasons":["2025/2026","2026/2027"],"id":"l_TUR_OTHER","is_free":True})
+    with self.assertRaises(Research720Error) as cm:
+        select_eight(cat)
+    self.assertEqual(cm.exception.capture_detail["reason"],"AMBIGUOUS_LEAGUE")
+
+ def test_paid_catalogue_keeps_free_entitlement_gate(self):
+    cat=self.catalogue()
+    next(x for x in cat["leagues"] if x["country_code"]=="TUR")["is_free"]=False
+    with self.assertRaisesRegex(Research720Error, "PROVIDER_FREE_ENTITLEMENT_NOT_CONFIRMED_TUR"):
+        select_eight(cat)
+
+ def test_wrong_country_never_matches_alias_to_protected_england(self):
+    cat=self.catalogue()
+    original=next(x for x in cat["leagues"] if x["country_code"]=="TUR")
+    original["country_code"]="ENG"
+    with self.assertRaises(Research720Error) as cm:
+        select_eight(cat)
+    self.assertEqual(cm.exception.capture_detail["reason"],"NO_COUNTRY_IN_CATALOG")
+
 if __name__=="__main__":unittest.main()
