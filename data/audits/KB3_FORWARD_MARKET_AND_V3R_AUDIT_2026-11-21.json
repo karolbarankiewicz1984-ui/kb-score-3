@@ -1,0 +1,297 @@
+{
+  "schema": "kb3-manual-forward-research-audit-v1",
+  "date": "2026-11-21",
+  "cutoff_utc": "2026-11-21T07:24:00Z",
+  "status": "RESEARCH_ONLY",
+  "v3r_inventory": {
+    "total": 74,
+    "read": 74,
+    "started_before_cutoff": 6,
+    "future": 68,
+    "host_attestation_pending": true,
+    "league_counts": {
+      "BEL": 9,
+      "ESP": 10,
+      "FRA": 9,
+      "GER": 9,
+      "ITA": 10,
+      "NED": 9,
+      "POL": 9,
+      "TUR": 9
+    }
+  },
+  "pairs": [
+    {
+      "league": "GER",
+      "match": "m_4McNx8",
+      "parent": "b94afc24cf2aa30edc74330d5ca120af704961a098caa10cb6c8cc9774c8453a",
+      "forecast_hash": "d558fb19fec8159fd23d8fb24b54c9e7f346dbf79c805d66bc56dcd96e5b1fea",
+      "generated": "2026-11-16T13:21:47.504655Z",
+      "kickoff": "2026-11-20T19:30:00Z",
+      "observed": "2026-11-21T03:15:13.464901Z",
+      "score": [
+        1,
+        1
+      ],
+      "outcome": "X",
+      "M0": {
+        "1": 0.678086854129208,
+        "2": 0.14293902787952595,
+        "X": 0.17897411799126603
+      },
+      "V3R": {
+        "1": 0.6649173784203336,
+        "2": 0.14389224497519812,
+        "X": 0.19119037660446825
+      },
+      "missing_optional": 8,
+      "v3r_host_pending": true
+    },
+    {
+      "league": "POL",
+      "match": "m_44q9f4",
+      "parent": "ac4b115f0b86e3a212ba66bbb78598a0f3c050702906888d570540dcc356c2a3",
+      "forecast_hash": "3e0c761efdc5e45efc934f6a7111e7d84877a3efcabeba0412ff9dabc67bcf33",
+      "generated": "2026-11-16T13:21:47.501413Z",
+      "kickoff": "2026-11-20T17:00:00Z",
+      "observed": "2026-11-21T03:15:13.464901Z",
+      "score": [
+        2,
+        0
+      ],
+      "outcome": "1",
+      "M0": {
+        "1": 0.45183921844192715,
+        "2": 0.3125924695576005,
+        "X": 0.23556831200047232
+      },
+      "V3R": {
+        "1": 0.5927221116163159,
+        "2": 0.17651258751256307,
+        "X": 0.2307653008711209
+      },
+      "missing_optional": 8,
+      "v3r_host_pending": true
+    },
+    {
+      "league": "ESP",
+      "match": "m_0iaTdE",
+      "parent": "a1ed3f1eaa64d3fc5c09b6b4e6f924e5d2e6b74f2e57d129839fa8975bd23fb3",
+      "forecast_hash": "48b2b91fdae82aa97c258c496ef14d3d9add25008559eae927e985497be32003",
+      "generated": "2026-11-16T13:21:47.515994Z",
+      "kickoff": "2026-11-20T20:00:00Z",
+      "observed": "2026-11-21T03:15:13.464901Z",
+      "score": [
+        0,
+        1
+      ],
+      "outcome": "2",
+      "M0": {
+        "1": 0.457387271756274,
+        "2": 0.3076696104126223,
+        "X": 0.2349431178311036
+      },
+      "V3R": {
+        "1": 0.561949888767349,
+        "2": 0.1961917656999773,
+        "X": 0.2418583455326737
+      },
+      "missing_optional": 8,
+      "v3r_host_pending": true
+    },
+    {
+      "league": "FRA",
+      "match": "m_3rtQqb",
+      "parent": "a31fba5334539e63172b9a9639651e83e3c74b33cbfc7f3228bf062a6f290849",
+      "forecast_hash": "a23ae80e44b006fad2730b957712ed345a738a2e1508d758120fb2677923fc72",
+      "generated": "2026-11-16T13:21:47.513298Z",
+      "kickoff": "2026-11-20T19:45:00Z",
+      "observed": "2026-11-21T03:15:13.464901Z",
+      "score": [
+        3,
+        1
+      ],
+      "outcome": "1",
+      "M0": {
+        "1": 0.4955895682996144,
+        "2": 0.2749123472137271,
+        "X": 0.2294980844866585
+      },
+      "V3R": {
+        "1": 0.530487291258482,
+        "2": 0.20094249258301644,
+        "X": 0.2685702161585015
+      },
+      "missing_optional": 8,
+      "v3r_host_pending": true
+    },
+    {
+      "league": "POL",
+      "match": "m_18gP2q",
+      "parent": "7ca0a79496faa3814ce67fb528ca1df803e04d90f1cde5fcb18a3b5e40461e04",
+      "forecast_hash": "865001cf88f8cebc7e62e3e7fa1e5afefc3e981b8eab175bf9671c49c742d58a",
+      "generated": "2026-11-16T13:21:47.507466Z",
+      "kickoff": "2026-11-20T19:30:00Z",
+      "observed": "2026-11-21T03:15:13.464901Z",
+      "score": [
+        1,
+        2
+      ],
+      "outcome": "2",
+      "M0": {
+        "1": 0.5042970118479482,
+        "2": 0.2677160350736153,
+        "X": 0.22798695307843647
+      },
+      "V3R": {
+        "1": 0.5423342010636386,
+        "2": 0.2055162722013374,
+        "X": 0.25214952673502394
+      },
+      "missing_optional": 4,
+      "v3r_host_pending": true
+    },
+    {
+      "league": "BEL",
+      "match": "m_0h4svj",
+      "parent": "52629946a20f03cf47dc84babf4d8d6496818bf77bed8d7b54b53da861626004",
+      "forecast_hash": "3d01b37804eee0d3ec5f22fbb41c5414fc6b512e2f4f0293d8565cb8a6cc4b92",
+      "generated": "2026-11-16T13:21:47.510584Z",
+      "kickoff": "2026-11-20T19:45:00Z",
+      "observed": "2026-11-21T03:15:13.464901Z",
+      "score": [
+        1,
+        0
+      ],
+      "outcome": "1",
+      "M0": {
+        "1": 0.39248903777520855,
+        "2": 0.3680669391911098,
+        "X": 0.2394440230336817
+      },
+      "V3R": {
+        "1": 0.44573099003297156,
+        "2": 0.29441157922544003,
+        "X": 0.25985743074158835
+      },
+      "missing_optional": 8,
+      "v3r_host_pending": true
+    }
+  ],
+  "paired_metrics": {
+    "M0": {
+      "n": 6,
+      "hit": 3,
+      "brier": 0.6898019983581157,
+      "log_loss": 1.1081256658638166
+    },
+    "V3R": {
+      "n": 6,
+      "hit": 3,
+      "brier": 0.6951578177377331,
+      "log_loss": 1.1384011549203978
+    }
+  },
+  "v3r_1x_bands": {
+    "80-90": {
+      "n": 3,
+      "w": 2,
+      "sum_p": 2.4834034018122613
+    },
+    "70-80": {
+      "n": 3,
+      "w": 2,
+      "sum_p": 2.299129655990206
+    }
+  },
+  "market_ledger": {
+    "fixtures": 78,
+    "positions": 2184,
+    "source": "all 78 settlement JSON files, sorted listing, six complete batches 12/13/13/13/13/14",
+    "bands": {
+      "under60": {
+        "rows": 1362,
+        "push": 40,
+        "wins": 455,
+        "losses": 867,
+        "hit_rate": 0.3441754916792738,
+        "mean_probability": 0.3548944590852883
+      },
+      "60-70": {
+        "rows": 281,
+        "push": 0,
+        "wins": 186,
+        "losses": 95,
+        "hit_rate": 0.6619217081850534,
+        "mean_probability": 0.6291763394267469
+      },
+      "70-80": {
+        "rows": 328,
+        "push": 0,
+        "wins": 246,
+        "losses": 82,
+        "hit_rate": 0.75,
+        "mean_probability": 0.761995353433346
+      },
+      "80-90": {
+        "rows": 211,
+        "push": 0,
+        "wins": 183,
+        "losses": 28,
+        "hit_rate": 0.8672985781990521,
+        "mean_probability": 0.8259245033365131
+      },
+      "90-100": {
+        "rows": 2,
+        "push": 0,
+        "wins": 2,
+        "losses": 0,
+        "hit_rate": 1,
+        "mean_probability": 0.9132137900956218
+      }
+    },
+    "market_families": {
+      "FT_1X2": {
+        "rows": 234,
+        "wins": 78
+      },
+      "FT_DOUBLE_CHANCE": {
+        "rows": 234,
+        "wins": 156
+      },
+      "FT_TOTAL_GOALS_OU": {
+        "rows": 468,
+        "wins": 234
+      },
+      "FT_BTTS": {
+        "rows": 156,
+        "wins": 78
+      },
+      "FT_TEAM_GOALS_OU": {
+        "rows": 936,
+        "wins": 468
+      },
+      "FT_TOTAL_GOALS_INTEGER_OU": {
+        "rows": 156,
+        "wins": 58,
+        "pushes": 40
+      }
+    },
+    "no_handicap_fouls_cards_corners_settlements": true,
+    "roi": null
+  },
+  "calibration": {
+    "fit": 100,
+    "post_fit_verified": 6,
+    "post_fit_required": 50,
+    "missing": 44,
+    "source": "data/pit_sidecar/m0_720_eight/2026-11-21/settle-031511983421/RECEIPT.json"
+  },
+  "limitations": [
+    "V3R declaration of pregame capture is not independently attested; no formal acceptance.",
+    "Multiple correlated selections per game, including opposite sides. Do not interpret overall hit-rate as actionable selection accuracy.",
+    "No odds. No ROI. No threshold fitting. No model or protected test changes.",
+    "Six paired matches only; no champion promotion; remaining 68 forecasts not yet started at cutoff.",
+    "Market families listed explicitly: no handicap, foul, card or corner prediction in these settlements."
+  ]
+}
