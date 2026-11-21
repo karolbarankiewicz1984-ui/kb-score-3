@@ -1,0 +1,30 @@
+{
+  "already_scored_or_ineligible_m0": {
+    "already_shadowed": 74,
+    "not_sufficiently_future": 149
+  },
+  "existing_m0_not_modified": true,
+  "historical_train_n": 4555,
+  "host_attestation_pending": true,
+  "model_research_only": true,
+  "model_version": "KB3_V3R_CATBOOST_NO_XG_14_FORWARD_RESEARCH_V1",
+  "new_future_frozen_forecasts": 0,
+  "new_m0_parent_candidates": 0,
+  "new_pinned_model_built": false,
+  "no_automatic_champion_promotion": true,
+  "official_fit_increment": 0,
+  "pinned_model_sha256": "0faa6159d9d94f8e4931506103ede2d77ada0542f618eb2309ff4da95f78c946",
+  "production_approved": false,
+  "protected_eng_test_not_accessed": true,
+  "provider_errors_by_type": {},
+  "provider_network_request_count": 0,
+  "provider_request_cap": 17,
+  "report_sha256": "0aaceaeae188d84887635182f7bfae11f0f4aee1aec46ecdad016a5fcd0664eb",
+  "run_utc": "2026-11-21T23:47:19.609015Z",
+  "schema": "kb3-v3r-forward-shadow-actual-run-v1",
+  "source_chain_sha256": null,
+  "source_cipher_sha256": null,
+  "source_missing_leagues": {},
+  "source_observation_after_capture_excluded": 0,
+  "unavailable_reasons": {}
+}
