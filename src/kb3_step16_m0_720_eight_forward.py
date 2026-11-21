@@ -67,23 +67,54 @@ def trained_params(root=ROOT):
     return p,hashobj(asdict(p)),hashobj(m)
 
 def select_eight(catalog):
-    require(isinstance(catalog,dict) and isinstance(catalog.get("leagues"),list),
+    """Select only uniquely verified, free, two-season top-flight league IDs.
+
+    Use public metadata for diagnostics; never guess an ID, leak provider tokens,
+    or silently swap a missing league with a different competition.
+    """
+    require(isinstance(catalog, dict) and isinstance(catalog.get("leagues"), list),
             "SOURCE_CATALOG_INVALID")
-    chosen=[]
-    for country,title,aliases in EIGHT:
-        found=[x for x in catalog["leagues"] if isinstance(x,dict)
-               and x.get("country_code","").upper()==country
-               and norm(x.get("name","")) in aliases
-               and CURRENT in (x.get("seasons") or [])
-               and PREVIOUS in (x.get("seasons") or [])]
-        require(len(found)==1 and isinstance(found[0].get("id"),str)
-                and found[0]["id"].startswith("l_"),"CANDIDATE_LEAGUE_UNAVAILABLE_"+country)
-        require(found[0].get("is_free") is True,
-                "PROVIDER_FREE_ENTITLEMENT_NOT_CONFIRMED_"+country)
-        chosen.append((country,title,found[0]["id"]))
-    require(len({x[2] for x in chosen})==8
-            and all(x[0]!="ENG" for x in chosen),"PROTECTED_LEAGUE_OR_ALIAS")
+    chosen = []
+    for country, title, aliases in EIGHT:
+        same_country = [x for x in catalog["leagues"] if isinstance(x, dict)
+                        and str(x.get("country_code", "")).upper() == country]
+        named = [x for x in same_country if norm(x.get("name", "")) in aliases]
+        found = [x for x in named if CURRENT in (x.get("seasons") or [])
+                 and PREVIOUS in (x.get("seasons") or [])]
+        if len(found) != 1 or not isinstance(found[0].get("id"), str) or not found[0]["id"].startswith("l_"):
+            error = Research720Error("CANDIDATE_LEAGUE_UNAVAILABLE_" + country)
+            error.capture_detail = {
+                "resource": "pitchapi:m0720:catalog",
+                "country": country,
+                "reason": ("NO_COUNTRY_IN_CATALOG" if not same_country
+                           else "LEAGUE_ALIAS_NOT_MATCHED" if not named
+                           else "CURRENT_PREVIOUS_SEASONS_NOT_BOTH_LISTED" if not found
+                           else "AMBIGUOUS_LEAGUE" if len(found) > 1
+                           else "INVALID_NATIVE_LEAGUE_ID"),
+                "country_candidate_count": len(same_country),
+                "name_candidate_count": len(named),
+                "eligible_candidate_count": len(found),
+                "candidate_metadata": [
+                    {"name_normalized": norm(x.get("name", ""))[:80],
+                     "has_current": CURRENT in (x.get("seasons") or []),
+                     "has_previous": PREVIOUS in (x.get("seasons") or []),
+                     "is_free": x.get("is_free") is True}
+                    for x in same_country[:12]],
+            }
+            raise error
+        if found[0].get("is_free") is not True:
+            error = Research720Error("PROVIDER_FREE_ENTITLEMENT_NOT_CONFIRMED_" + country)
+            error.capture_detail = {
+                "resource": "pitchapi:m0720:catalog", "country": country,
+                "reason": "FREE_ENTITLEMENT_NOT_VERIFIED",
+                "is_free": found[0].get("is_free") is True,
+            }
+            raise error
+        chosen.append((country, title, found[0]["id"]))
+    require(len(chosen) == 8 and len({x[2] for x in chosen}) == 8,
+            "DUPLICATE_OR_MISSING_EIGHT_LEAGUE_IDENTITIES")
     return chosen
+
 
 def validate_season(games,*,current):
     require(isinstance(games,list) and len(games)>=250,
