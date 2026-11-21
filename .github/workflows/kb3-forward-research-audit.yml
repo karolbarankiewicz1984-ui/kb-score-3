@@ -1,0 +1,38 @@
+name: KB3 read-only V3-R paired and market probability audit
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '30 6 * * *'
+  push:
+    branches: [main]
+    paths:
+      - scripts/kb3_forward_research_audit.py
+      - .github/workflows/kb3-forward-research-audit.yml
+permissions:
+  contents: read
+concurrency:
+  group: kb3-forward-research-audit
+  cancel-in-progress: false
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Check arithmetic and probability bands
+        run: python scripts/kb3_forward_research_audit.py --self-test
+      - name: Read existing M0 and V3-R records without provider calls
+        run: |
+          python scripts/kb3_forward_research_audit.py --output "${RUNNER_TEMP}/KB3_FORWARD_RESEARCH_AUDIT.json"
+          git diff --exit-code
+      - uses: actions/upload-artifact@v4
+        with:
+          name: KB3_FORWARD_RESEARCH_AUDIT
+          path: ${{ runner.temp }}/KB3_FORWARD_RESEARCH_AUDIT.json
+          if-no-files-found: error
+          retention-days: 30
