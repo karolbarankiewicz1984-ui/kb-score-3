@@ -13,7 +13,7 @@ import hashlib,json,math,os,shutil,sqlite3
 from scripts.pitchapi_step06_audit import to_plain
 from scripts.step14_three_league_pitchapi_actual_audit import PREVIOUS,CURRENT
 from src.kb3_step16_m0_720_eight_forward import (
-    ROOT,EIGHT,select_eight,validate_season,stamp,hashobj,require,LEAD)
+    ROOT,EIGHT,EIGHT_COUNTRIES,select_eight,validate_season,stamp,hashobj,require,LEAD)
 from src.kb3_pit_ledger import utc_now,as_utc
 from src.kb3_pitch_uefa_evidence import add_observation,seal
 from src.kb3_step14_pitchapi_xg_semantics import (
@@ -70,7 +70,10 @@ def fixture_groups(receipts):
             key=(parts[3],parts[4])
             require(key not in out,"DUPLICATE_FIXTURES")
             out[key]=item
-    require(len(out)==16,"REQUIRE_EXACT_EIGHT_SEASON_PAIRS")
+    actual={c for c,season in out}
+    require(actual in (EIGHT_COUNTRIES,EIGHT_COUNTRIES-{'TUR'}) and
+            set(out)=={(c,season) for c in actual for season in (PREVIOUS,CURRENT)},
+            "REQUIRE_COMPLETE_AVAILABLE_LEAGUE_SEASON_PAIRS")
     return out
 
 def rank_sources(grouped,known,now):
@@ -80,6 +83,8 @@ def rank_sources(grouped,known,now):
     """
     selected=[];all_fixtures={}
     for c,title,_ in EIGHT:
+        if (c,PREVIOUS) not in grouped:
+            continue
         previous=grouped[(c,PREVIOUS)]["payload"]["matches"]
         current=grouped[(c,CURRENT)]["payload"]["matches"]
         validate_season(previous,current=False)
@@ -251,7 +256,7 @@ def run(*,client,db_path=DB,archive=ARCHIVE,now=None,public_key=None):
         return data
     catalog=call("pitchapi:step17xg:catalog",client.leagues.list)
     require(catalog is not None,"XG_CATALOG_UNAVAILABLE")
-    selected=select_eight(catalog)
+    selected=select_eight(catalog,allow_absent_tur=True)
     for c,title,lid in selected:
         for season in (PREVIOUS,CURRENT):
             got=call("pitchapi:step17xg:fixtures:"+c+":"+season,
@@ -305,7 +310,9 @@ def run(*,client,db_path=DB,archive=ARCHIVE,now=None,public_key=None):
         report={"schema":"kb3-step17-native-xg-eight-asof-shadow-v1",
          "observed_at_utc":stamp(cutoff),
          "network_calls":calls,"hard_limit_calls":MAX_CALLS,
-         "leagues":list(c for c,_,_ in EIGHT),
+         "leagues":list(c for c,_,_ in selected),
+         "missing_catalog_leagues":sorted(EIGHT_COUNTRIES-{c for c,_,_ in selected}),
+         "partial_source_coverage_research_only":len(selected)<8,
          "prior_matches_selected":len(picks),
          "new_shots_stats_xg_verified":len(candidates),
          "cumulative_verified_xg_matches":count,
