@@ -8,6 +8,7 @@ import argparse
 import hashlib
 import json
 import os
+import unicodedata
 from datetime import datetime, timezone, timedelta
 from pathlib import Path
 from scripts.pitchapi_step06_audit import to_plain
@@ -32,7 +33,17 @@ class LeagueAuditError(ValueError):
     pass
 
 def norm(s):
-    return "".join(c for c in str(s).casefold() if c.isalnum())
+    """Canonical Latin league spelling, including real provider diacritics.
+
+    For example `Süper Lig`, `Super Lig` and `Trendyol Süper Lig` must
+    not diverge solely because the catalogue has switched display spelling.
+    This changes *only* name comparison, never country, season, ID or licence.
+    """
+    folded = str(s).casefold().translate(str.maketrans({
+        "ı": "i", "ł": "l", "ø": "o", "đ": "d",
+    }))
+    return "".join(c for c in unicodedata.normalize("NFKD", folded)
+                   if c.isalnum())
 
 def digest(value):
     return hashlib.sha256(json.dumps(
