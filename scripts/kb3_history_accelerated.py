@@ -13,12 +13,33 @@ from datetime import datetime,timezone
 from pathlib import Path
 
 from scripts.kb3_historical_pitchapi_backfill import (
-    capture, DB, ARCHIVE, ROOT, PUBLIC_KEY,
+    capture, DB, ARCHIVE, ROOT, PUBLIC_KEY, BackfillError,
 )
+from src.kb3_step16_m0_720_eight_forward import Research720Error
 from scripts.kb3_history_issue_recheck import (
     recheck, ISSUE_DB, ISSUE_ROOT,
 )
 from src.kb3_historical_feature_quality import assess_and_cache
+
+def safe_capture_failure(exc):
+    """Expose domain error codes and catalogue counts, never provider payloads."""
+    code = str(exc)
+    if not (isinstance(exc,(BackfillError,Research720Error))
+            and re.fullmatch(r"[A-Z][A-Z0-9_]{2,100}",code)):
+        code = "UNCLASSIFIED_CAPTURE_EXCEPTION"
+    details = {"error_code":code,"error_type":type(exc).__name__}
+    extra = getattr(exc,"capture_detail",None)
+    if isinstance(extra,dict):
+        for field in ("country","reason"):
+            value=extra.get(field)
+            if isinstance(value,str) and re.fullmatch(r"[A-Z][A-Z0-9_]{1,80}",value):
+                details[field]=value
+        for field in ("country_candidate_count","name_candidate_count",
+                      "eligible_candidate_count"):
+            value=extra.get(field)
+            if type(value) is int and 0<=value<=1000:
+                details[field]=value
+    return details
 
 MAX_BATCHES=5
 BATCH_SIZE=48
@@ -95,7 +116,8 @@ def main():
         report=drive(PitchAPI(api_key=key,max_retries=0),run_token=args.run_token,
                      batches=args.batches,batch_size=args.batch_size)
     except Exception as exc:
-        print("KB3_ACCELERATED_CAPTURE_BLOCKED",type(exc).__name__)
+        print("KB3_ACCELERATED_CAPTURE_BLOCKED",
+              json.dumps(safe_capture_failure(exc),sort_keys=True))
         raise SystemExit(3)
     print("KB3_ACCELERATED_CAPTURE",json.dumps({k:report[k] for k in (
         "completed_batches","new_match_stats","new_verified_xg",
