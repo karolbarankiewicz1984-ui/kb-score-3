@@ -39,6 +39,42 @@ def scenario():
 
 
 class V3RForwardSafetyTests(unittest.TestCase):
+    def test_missing_tur_catalogue_runs_real_seven_and_quarantines_tur(self):
+        from unittest.mock import patch
+        from scripts.kb3_v3r_forward_shadow import current_listings
+        from src.kb3_step16_m0_720_eight_forward import EIGHT
+        from scripts.kb3_historical_pitchapi_backfill import SEASONS
+        countries={c for c,_,_ in EIGHT}
+        entries=[{"id":"l_"+c+"123","country_code":c,
+                  "name":next(iter(aliases)),
+                  "seasons":list(SEASONS),"is_free":True}
+                 for c,_,aliases in EIGHT if c!="TUR"]
+        class Provider:
+            def __init__(self):
+                self.leagues=self
+                self.requested=[]
+            def list(self):
+                return {"leagues":entries}
+            def matches(self,league_id,*,season,status=None):
+                self.requested.append((league_id,season))
+                return {"matches":[]}
+        fake=Provider()
+        targets=[{"league":country} for country in countries]
+        with patch("scripts.kb3_v3r_forward_shadow.validate_season",
+                   return_value={"all":300}), \
+             patch("scripts.kb3_v3r_forward_shadow.add_observation",
+                   side_effect=lambda receipts,**kw: receipts.append(
+                       {"chain_sha256":"a"*64})):
+            receipts,histories,live,missing,calls,failures=current_listings(
+                fake,targets,now=NOW)
+        self.assertEqual(calls,15)  # one catalogue plus 2*7 seasons
+        self.assertEqual(len(receipts),15)
+        self.assertEqual(set(histories),countries-{"TUR"})
+        self.assertEqual(set(live),countries-{"TUR"})
+        self.assertEqual(missing,{"TUR":"COUNTRY_ABSENT_FROM_PROVIDER_CATALOG"})
+        self.assertEqual(failures,{})
+        self.assertTrue(all("TUR" not in lid for lid,_ in fake.requested))
+
     def test_missing_optional_stats_are_nan_and_do_not_stop_prediction(self):
         target,listing,history=scenario()
         r,err=record_for(target,history=history,listing=listing,
