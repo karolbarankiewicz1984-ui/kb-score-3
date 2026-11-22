@@ -1,0 +1,54 @@
+{
+  "schema": "kb3-step14-independent-recheck-2026-11-22-v1",
+  "checked_at_utc": "2026-11-22",
+  "mode": "EVIDENCE_ONLY_NO_ORIGINAL_M1_NO_TEST",
+  "contract": {
+    "features": 121,
+    "flags": 38,
+    "train": 760,
+    "validation": 380
+  },
+  "evidence": [
+    "docs/STEP14_COMPREHENSIVE_HISTORIC_PREMATCH_RECONSTRUCTION_2026-10-28.md",
+    "data/audits/STEP14_INDEPENDENT_RECHECK_2026-11-21.json",
+    "data/pit_sidecar/historical_multistat/2026-11-21/run-44890784397-1-summary/ACCELERATED_CAPTURE_REPORT.json"
+  ],
+  "prior_native_fixture_identity_verified": 1140,
+  "original_historical_pit_train_certified": 0,
+  "original_historical_pit_validation_certified": 0,
+  "original_pitchapi_team_xg_first_publication_proven": false,
+  "independent_159_field_no_leakage_pass": false,
+  "observed_actions": [
+    {
+      "id": 45008811993,
+      "name": "historical PitchAPI multi-stat backfill",
+      "conclusion": "failure"
+    },
+    {
+      "id": 45024473957,
+      "name": "daily real PitchAPI native observed-at xG archive",
+      "conclusion": "success"
+    },
+    {
+      "id": 45033472901,
+      "name": "three league true pre-match capture",
+      "conclusion": "success"
+    },
+    {
+      "id": 45042637585,
+      "name": "CatBoost v3 hosted native-data preflight",
+      "conclusion": "success"
+    },
+    {
+      "id": 45037075596,
+      "name": "V3-R real future CatBoost Shadow",
+      "conclusion": "failure"
+    }
+  ],
+  "interpretation": "Research archives and workflow completion are not evidence of original historical provider first publication or per-field pre-kickoff PIT for 760/380 frozen rows. No independent original 159-field PASS. No additional verified original PIT row certified in this recheck.",
+  "gate14": "PENDING",
+  "original_m1_fit_allowed": false,
+  "original_m1_fit_performed": false,
+  "test_accessed_by_this_audit": false,
+  "full_independent_audit_pass": false
+}
