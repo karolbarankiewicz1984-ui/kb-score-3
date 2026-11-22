@@ -463,7 +463,8 @@ def capture(*, client, root=ARCHIVE, db_path=DB, public_key=PUBLIC_KEY,
             "missing_catalog_leagues": sorted({country for country, _, _ in EIGHT}
                 - {scope for scope, _, _ in scopes}),
             "available_national_leagues": len({scope for scope, _, _ in scopes}
-                & {country for country, _, _ in EIGHT}),\n            "scopes_catalogued": len(scopes), "scopes_observed": len(groups),
+                & {country for country, _, _ in EIGHT}),
+            "scopes_catalogued": len(scopes), "scopes_observed": len(groups),
             "source_finished_counts": source_counts,
             "ucl_catalog_status": ucl_status,
             "new_match_stats": len(samples), "missing_stats": missing_stats,
