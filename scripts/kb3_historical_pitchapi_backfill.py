@@ -62,7 +62,7 @@ def hashobj(value):
 
 def select_scopes(catalog):
     """Eight fixed national leagues, optional exact UEFA UCL; no English TEST."""
-    selected = select_eight(catalog)
+    selected = select_eight(catalog, allow_absent_tur=True)
     leagues = catalog["leagues"]
     lookup = {item["id"]: item for item in leagues if isinstance(item, dict) and isinstance(item.get("id"), str)}
     scopes = []
@@ -460,6 +460,10 @@ def capture(*, client, root=ARCHIVE, db_path=DB, public_key=PUBLIC_KEY,
             "gain_first_ranked_provider_choices": len(best),
             "selection_is_not_a_pit_certification": True,
             "source_seasons": list(SEASONS),
+            "missing_catalog_leagues": sorted({country for country, _, _ in EIGHT}
+                - {scope for scope, _, _ in scopes}),
+            "available_national_leagues": len({scope for scope, _, _ in scopes}
+                & {country for country, _, _ in EIGHT}),
             "scopes_catalogued": len(scopes), "scopes_observed": len(groups),
             "source_finished_counts": source_counts,
             "ucl_catalog_status": ucl_status,

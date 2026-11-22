@@ -55,6 +55,30 @@ class HistoricalBackfillTests(unittest.TestCase):
         self.assertEqual(len(scopes),9*len(SEASONS))
         self.assertTrue(all(x[0] != "ENG" for x in scopes))
 
+    def test_absent_tur_quarantined_without_omitting_other_seven(self):
+        from src.kb3_step16_m0_720_eight_forward import Research720Error
+        entries=[{"id":"l_"+country+"123","country_code":country,
+                  "name":next(iter(aliases)),"seasons":list(SEASONS),
+                  "is_free":True}
+                 for country,_,aliases in EIGHT]
+        without_tur=[item for item in entries if item["country_code"]!="TUR"]
+        scopes,_=select_scopes({"leagues":without_tur})
+        self.assertEqual(len(scopes),7*len(SEASONS))
+        self.assertEqual({scope for scope,_,_ in scopes},
+                         {country for country,_,_ in EIGHT}-{"TUR"})
+        restored,_=select_scopes({"leagues":entries})
+        self.assertEqual(len(restored),8*len(SEASONS))
+        for invalid in (
+            [item for item in entries if item["country_code"]!="ESP"],
+            without_tur+[dict(next(i for i in entries if i["country_code"]=="TUR"),
+                              name="UNRECOGNIZED_COMPETITION")],
+            without_tur+[dict(next(i for i in entries if i["country_code"]=="TUR"),
+                              is_free=False)],
+        ):
+            with self.subTest(invalid=invalid[-1]["country_code"]):
+                with self.assertRaises(Research720Error):
+                    select_scopes({"leagues":invalid})
+
     def test_leakage_filter_finished_only_and_three_hour_lag(self):
         older=game("m_Aaaaaa",dt="2025-07-01T12:00:00Z")
         fresh=game("m_Bbbbbb",dt="2025-07-02T10:00:00Z")

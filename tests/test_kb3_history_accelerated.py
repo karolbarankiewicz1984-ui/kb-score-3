@@ -4,7 +4,9 @@ import unittest
 from pathlib import Path
 from unittest.mock import patch
 
-from scripts.kb3_history_accelerated import drive
+from scripts.kb3_history_accelerated import drive,safe_capture_failure
+from scripts.kb3_historical_pitchapi_backfill import BackfillError
+from src.kb3_step16_m0_720_eight_forward import Research720Error
 
 def fake_capture(*, run_token, max_matches, **kwargs):
     assert max_matches==48
@@ -62,6 +64,24 @@ class AcceleratedTests(unittest.TestCase):
                     issues_root=Path(d)/"rechecks",batches=1)
         self.assertEqual(r["issue_status"],"RECHECK_ERROR")
         self.assertEqual(r["issues"]["error_type"],"ValueError")
+
+    def test_capture_failure_reports_safe_code_and_country_not_secrets(self):
+        e=Research720Error("CANDIDATE_LEAGUE_UNAVAILABLE_TUR")
+        e.capture_detail={"country":"TUR","reason":"NO_COUNTRY_IN_CATALOG",
+                          "country_candidate_count":0,
+                          "provider_payload":"never print this"}
+        safe=safe_capture_failure(e)
+        self.assertEqual(safe["error_code"],"CANDIDATE_LEAGUE_UNAVAILABLE_TUR")
+        self.assertEqual(safe["reason"],"NO_COUNTRY_IN_CATALOG")
+        self.assertEqual(safe["country"],"TUR")
+        self.assertEqual(safe["country_candidate_count"],0)
+        self.assertNotIn("provider_payload",str(safe))
+        self.assertEqual(
+            safe_capture_failure(BackfillError("HISTORICAL_PROVIDER_CALL_CAP"))["error_code"],
+            "HISTORICAL_PROVIDER_CALL_CAP")
+        unknown=safe_capture_failure(RuntimeError("SECRET=do-not-log"))
+        self.assertEqual(unknown["error_code"],"UNCLASSIFIED_CAPTURE_EXCEPTION")
+        self.assertNotIn("do-not-log",str(unknown))
 
     def test_unsafe_requested_batches_blocked_before_network(self):
         with self.assertRaisesRegex(ValueError,"UNSAFE_BATCH_COUNT"):

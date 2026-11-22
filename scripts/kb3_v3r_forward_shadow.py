@@ -253,9 +253,12 @@ def current_listings(client,targets,*,now):
         return data
     catalog=call("pitchapi:v3r:catalog",client.leagues.list)
     need(catalog is not None,"PITCHAPI_LEAGUE_CATALOG_UNAVAILABLE")
-    chosen=select_eight(catalog)
+    chosen=select_eight(catalog,allow_absent_tur=True)
     requested={t["league"] for t in targets}
     histories={};live_targets={};scope_errors={}
+    if "TUR" in requested and not any(country=="TUR" for country,_,_ in chosen):
+        # Quarantine only a genuinely absent country, never fabricate a replacement.
+        scope_errors["TUR"]="COUNTRY_ABSENT_FROM_PROVIDER_CATALOG"
     for league,_,lid in chosen:
         if league not in requested:
             continue
