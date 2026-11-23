@@ -2,7 +2,11 @@ name: KB3 research HOLDOUT50 and weekly exact-fixture model comparison
 on:
   workflow_dispatch:
   schedule:
+    # Weekly independent model evaluation (existing cadence).
     - cron: '25 7 * * 1'
+    # P0 read-only follow-up after evening M0 settlement (22:17 UTC).
+    # No provider API, no DB writes, no model promotion.
+    - cron: '45 23 * * *'
   pull_request:
     paths:
       - scripts/kb3_review_postfit_readonly.py
