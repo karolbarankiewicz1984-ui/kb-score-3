@@ -1,0 +1,120 @@
+{
+  "auto_promotion": false,
+  "cumulative_verified_xg_matches": 97,
+  "current_2026_capture_is_NOT_historic_2023_25_PIT": true,
+  "encrypted_source_sha256": "4654f5d8c4d95f8fc9079f0b4309231ca1e88e7285ad5144d4fb5502a57724aa",
+  "future_form5_coverage": {
+    "complete_last5_both_team_xg": 0,
+    "future_targets_scanned": 1,
+    "missing_by_country": {
+      "POL": 1
+    },
+    "research_only_no_fitted_xg_model": true
+  },
+  "gate17": "PENDING",
+  "hard_limit_calls": 33,
+  "last5_priority_shadow_comparison": {
+    "additional_api_calls": 0,
+    "baseline_selected_count": 1,
+    "observed_baseline_complete_last5_after_real_capture": 0,
+    "overlap_exact_native_pairs": 1,
+    "priority_different_native_pairs": 0,
+    "priority_live_activated": false,
+    "priority_meta": {
+      "activated_in_live": false,
+      "candidates": 7,
+      "max_provider_calls": 33,
+      "no_network": true,
+      "score_missing_last5": 0.08433378015916475,
+      "selected_pairs": 1,
+      "training_allowed": false
+    },
+    "priority_real_outcome_verified": false,
+    "priority_selected_count": 1,
+    "research_not_training": true,
+    "source": "IDENTICAL_REAL_FIXTURES_SAME_OBSERVATION_CUTOFF",
+    "theoretical_if_all_success": {
+      "additional_provider_calls": 0,
+      "baseline_if_all_selected_xg_pairs_validate": 0,
+      "counterfactual_gain_if_all_valid": 0,
+      "current_verified_last5": 0,
+      "experimental_if_all_selected_xg_pairs_validate": 0,
+      "model_fit_or_promotion": false,
+      "only_a_theoretical_ceiling_not_observed_gain": true,
+      "targets": 1
+    }
+  },
+  "leagues": [
+    "ESP",
+    "ITA",
+    "GER",
+    "FRA",
+    "NED",
+    "BEL",
+    "POL"
+  ],
+  "missing_catalog_leagues": [
+    "TUR"
+  ],
+  "missing_id_inventory_source": "SAME_AUTHENTIC_FIXTURE_GROUPS_NO_EXTRA_API",
+  "network_calls": 17,
+  "new_shots_stats_xg_verified": 1,
+  "observed_at_utc": "2026-11-23T18:42:30.250203Z",
+  "original_catboost_noxg_modified": false,
+  "original_m0_modified": false,
+  "original_provider_published_at_not_known": true,
+  "partial_source_coverage_research_only": true,
+  "prior_matches_selected": 1,
+  "protected_premier_league_TEST_2026_27_requested": false,
+  "provider_error_types": {},
+  "real_missing_last5_predecessor_ids": [
+    {
+      "both_teams_last5_verified": false,
+      "country": "POL",
+      "kickoff_utc": "2026-11-27T17:00:00Z",
+      "target_provider_match_id": "m_4PlDeR",
+      "teams": {
+        "away_team": {
+          "actual_last5_provider_ids": [
+            "m_44q9f4",
+            "m_1Cd8Es",
+            "m_4WVSrE",
+            "m_23y7hw",
+            "m_3zJ1WO"
+          ],
+          "exact_last5_verified": false,
+          "fewer_than_five_finished_predecessors": false,
+          "missing_native_xg_provider_ids": [
+            "m_44q9f4",
+            "m_1Cd8Es",
+            "m_4WVSrE",
+            "m_23y7hw",
+            "m_3zJ1WO"
+          ],
+          "native_team_id": "t_184lFA"
+        },
+        "home_team": {
+          "actual_last5_provider_ids": [
+            "m_42XRoo",
+            "m_0QVmvs",
+            "m_0JOsqP",
+            "m_2pP9BJ",
+            "m_32ojSb"
+          ],
+          "exact_last5_verified": false,
+          "fewer_than_five_finished_predecessors": false,
+          "missing_native_xg_provider_ids": [
+            "m_32ojSb"
+          ],
+          "native_team_id": "t_0vT0AW"
+        }
+      }
+    }
+  ],
+  "report_sha256": "f72bc2870a2a1faa45ab741ab9a658778077fc0235db4957ecaa9ea839059383",
+  "schema": "kb3-step17-native-xg-eight-asof-shadow-v1",
+  "source_chain_sha256": "f5270362d70f668a2ad2a7ce607556b30e5bcefe258ae6417095ce64445fcc82",
+  "trained_xg_catboost_exists": false,
+  "training_ready": false,
+  "xg_semantic_errors": {}
+}
