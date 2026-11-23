@@ -1672,3 +1672,7 @@ W tym samym wdrożeniu [Actions #41346411117](https://github.com/karolbarankiewi
 - **Następne kroki:** weryfikacja pierwszego cotygodniowego uruchomienia historycznego workflow i liczby płatnych zapytań, równoległe śledzenie nowych prawdziwych forward forecastów/settlementów, audyt Brier/log loss/ECE i niezależnych tygodni; ewentualne nowe dowody historyczne sprawdzać osobno, bez automatycznej certyfikacji.
 - **Odbiór:** decyzja właściciela z 23.11.2026; wprowadzenie i kontrola zawartości plików przez asystenta, rzeczywista weryfikacja przebiegu CI po zmianie = **PENDING**.
 
+### 2026-11-23 — DEC-FORWARD-FIRST-PIT-001 / aktualizacja harmonogramu zadania ChatGPT
+
+- **Dodatkowa wykonana czynność:** dotychczasowe zadanie „KB Score 3.0 — zamknięcie PIT” (`6ae2417dc4d081918a24b9e4f170091e`) przestawiono z codziennego sprawdzania na **co środę o 19:40 Europe/Warsaw**, zachowując jego temat i zakres. Operacja zmiany harmonogramu została potwierdzona odpowiedzią `Automation updated`; kolejne rzeczywiste wykonanie nie jest jeszcze zweryfikowane.
+- **Cel:** zmniejszyć liczbę powtarzanych przeglądów oryginalnego historycznego PIT, który według audytu 22.11 nadal nie posiada dowodu pierwszej publikacji; uwolnić priorytet dla nowych danych forward. Harmonogram GitHub backfillu pozostaje osobno co środę o 03:15 UTC. Nie zmieniono automatyzacji MULTIMODEL, E8 ani istniejącego cyklu M0/settlements.
