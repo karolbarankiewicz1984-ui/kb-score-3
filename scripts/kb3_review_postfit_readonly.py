@@ -276,6 +276,8 @@ def main():
         json.dump(report, f, ensure_ascii=False, sort_keys=True, indent=2, allow_nan=False)
         f.write("\n")
     summary = {"holdout": report["holdout"], "m0_overall": report["m0_overall"],
+               "m0_per_league": report["m0_per_league"],
+               "m0_top1_confidence_bands": report["m0_top1_confidence_bands"],
                "three_engine": report["step17_exact_three_engine_paired"],
                "formal_gates": report["formal_gates"]}
     print("KB3_HOLDOUT_REAL_READONLY_AUDIT", json.dumps(
