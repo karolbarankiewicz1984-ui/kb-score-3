@@ -202,9 +202,6 @@ class SettlementTests(unittest.TestCase):
                              stamp(revised))
             self.assertEqual(decision['kickoff_delta_minutes'],days*1440)
             self.assertEqual(decision['original_forecast_capture_utc'],
-                             self.item['generated_at_utc'] if
-                             self.item.get('generated_at_utc') ==
-                             self.item.get('captured_at_utc') else
                              self.db_capture())
             self.assertTrue(decision['provider_home_id_matches_original'])
             self.assertTrue(decision['provider_away_id_matches_original'])
