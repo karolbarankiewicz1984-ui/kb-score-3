@@ -1651,3 +1651,10 @@ W tym samym wdrożeniu [Actions #41346411117](https://github.com/karolbarankiewi
 - **M0 pełna próba:** 119/208 top1 = 57.21%. Per liga BEL 15/28, ESP 18/29, FRA 12/25, GER 17/27, ITA 17/29, NED 14/27, POL 13/25, TUR 13/18. Pasma top1: <40% 9/26, 40–50% 69/128, 50–60% 37/49, 60–70% 4/5, >=70% 0/0. Liczby są badawcze; bez automatycznego ustalania progów.
 - **Porównanie trzech modeli:** 135 identycznych spotkań i tylko 2 niezależne bloki tygodniowe, więc formalny wybór Championa nadal NIE; oryginalny PIT 0/760 TRAIN +0/380 VALIDATION, xG first-publication brak; GATE14/16/17 PENDING i ENG TEST nietknięty.
 - **Dalsze działanie:** harmonogram tygodniowego odczytu po scaleniu workflow; kolejne tygodnie forward, nie przetrenowywać na HOLDOUT50. [Pełny raport](KB3_HOLDOUT50_MODEL_DECISION_AUDIT_2026-11-23.md). Weryfikator: niezależny skrypt read-only i GitHub Actions, odczyt wyników przez ChatGPT.
+
+
+### 2026-11-23 — KB3-HOLDOUT50-WEEKLY — MERGED i główny workflow PASS
+
+- [PR #187](https://github.com/karolbarankiewicz1984-ui/kb-score-3/pull/187) **MERGED** metodą squash, commit [288d70ec](https://github.com/karolbarankiewicz1984-ui/kb-score-3/commit/288d70ec43bbcd853871a3d09837a8610f726880). Techniczne CI na PR PASS po ostatnich zmianach, bez modyfikacji danych modelu.
+- **Po scaleniu:** [GitHub Actions main #45137516721](https://github.com/karolbarankiewicz1984-ui/kb-score-3/actions/runs/45137516721) — rzeczywisty audyt 50 HOLDOUT i obliczenia modelu na bazie głównej **COMPLETED SUCCESS**. Harmonogram cotygodniowy został zapisany w workflow main: poniedziałek 07:25 UTC, bez provider API, bez zmian M0/Champion.
+- **Status bramek:** PASS wyłącznie dla uruchomienia badawczego i technicznego audytu 100+50; GATE14/16/17 formalnie PENDING. Oryginalny PIT i niezależność cech nadal wymagają dowodów. Wyniki oraz ograniczenia w [raporcie audytu](KB3_HOLDOUT50_MODEL_DECISION_AUDIT_2026-11-23.md).
