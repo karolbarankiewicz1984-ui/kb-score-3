@@ -1,0 +1,42 @@
+name: KB3 research HOLDOUT50 and weekly exact-fixture model comparison
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '25 7 * * 1'
+  pull_request:
+    paths:
+      - scripts/kb3_review_postfit_readonly.py
+      - .github/workflows/kb3-holdout50-weekly-research.yml
+  push:
+    branches: [main]
+    paths:
+      - scripts/kb3_review_postfit_readonly.py
+      - .github/workflows/kb3-holdout50-weekly-research.yml
+permissions:
+  contents: read
+concurrency:
+  group: kb3-holdout50-readonly
+  cancel-in-progress: false
+jobs:
+  read-only-evaluation:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Strict standalone arithmetic checks
+        run: python scripts/kb3_review_postfit_readonly.py --self-test
+      - name: Audit first genuine post-FIT HOLDOUT and existing pairwise forecasts
+        run: |
+          python scripts/kb3_review_postfit_readonly.py --output /tmp/KB3_HOLDOUT50_WEEKLY.json
+          git diff --exit-code
+      - uses: actions/upload-artifact@v4
+        with:
+          name: KB3_HOLDOUT50_WEEKLY_RESEARCH
+          path: /tmp/KB3_HOLDOUT50_WEEKLY.json
+          if-no-files-found: error
+          retention-days: 30
