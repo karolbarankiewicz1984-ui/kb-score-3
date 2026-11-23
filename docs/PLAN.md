@@ -9,6 +9,15 @@
 
 **Pozostałe dokumenty:** [DANE.md](DANE.md), [MODEL.md](MODEL.md), [ZMIANY.md](ZMIANY.md), [instrukcja bezpieczeństwa kroku 03](STEP_03_SECURITY_CHECKLIST.md). **Repozytorium:** https://github.com/karolbarankiewicz1984-ui/kb-score-3.
 
+## Priorytet operacyjny od 23.11.2026 — FORWARD FIRST (bez zmiany formalnych GATE)
+
+**Decyzja właściciela:** od 23.11 priorytet P0 mają nowe, rzeczywiście zamrożone przed kickoff prognozy M0 oraz ich rozliczenia; P1 — niezależna ocena jakości, FIT100/HOLDOUT50 i porównania Shadow/Challenger; P2 — ograniczone pozyskiwanie historycznej pierwszej publikacji PitchAPI. Szczegóły: [polityka FORWARD FIRST](KB3_FORWARD_FIRST_HISTORY_PIT_POLICY_2026-11-23.md), [aneks do ADR](ADR_2026-10-29_FORWARD_M0_PIT_CALIBRATION_STORAGE.md) i [rejestr decyzji](ZMIANY.md).
+
+- **P0/P1 nie czekają** na `first_published_at` 2023–2025: obecne forward M0 + settlement i zatwierdzony tylko badawczo M1-R/Challenger kontynuują pracę na odrębnych, jawnie kwalifikowanych próbkach. Opcjonalne brakujące statystyki są `NULL + reason`, a obowiązkowe wymagania danego rynku/modelu pozostają warunkiem kwalifikacji.
+- Historyczny badawczy workflow [PitchAPI backfill](../.github/workflows/kb3-historical-pitchapi-backfill.yml) od teraz ma **jeden cotygodniowy cron w środę 03:15 UTC**, nie dwa dziennie; ręczny tryb i audyt offline pozostają dostępne.
+- **Bez zmian w odbiorach:** formalny krok 14 = PASS wyłącznie dla wcześniejszego wariantu B; `GATE14_ORIGINAL_STRICT_NATIVE_PIT=PENDING` pozostaje niespełniony (0/760 TRAIN, 0/380 VALIDATION według 22.11); krok 15 = PASS, krok 16 = PENDING; brak zmian w kodzie M0, Championie, TEST, automatycznym raportowaniu i zakupach.
+- Weryfikacja kolejna: liczba nowych zamrożonych i rozliczonych forward forecastów, Brier/log loss/ECE per wersja/ligę, realne błędy API, liczebność porównań tych samych spotkań, kontrola nieużywania ENG TEST. Wynik jednej zmiany w cron **nie jest** zatwierdzeniem jakości modelu.
+
 ## Zasady projektu
 
 - Całkowicie niezależny KB Score 3.0; KB2.1, API Market i MultiModel tylko jako historyczne benchmarki, nie silnik treningowy ani podstawowy model.
