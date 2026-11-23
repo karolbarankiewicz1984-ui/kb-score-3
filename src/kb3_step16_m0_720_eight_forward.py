@@ -462,7 +462,31 @@ def settle_sqlite(db_path,real_results,*,observed_at,source_chain_sha):
                 elif any(type(m.get(x)) is not int or not 0<=m[x]<=30 for x in ('score_home','score_away')):reason='RESULT_SCORE_INVALID'
             if reason:
                 unready+=1;reasons[reason]+=1
-                decisions.append({'forecast_id':fid,'league':league,'native_match_id':mid,'reason':reason})
+                decision={'forecast_id':fid,'league':league,
+                          'native_match_id':mid,'reason':reason}
+                if reason=='KICKOFF_CHANGED_REVIEW_REQUIRED':
+                    # Diagnostic source metadata only; never revise an immutable
+                    # forecast or silently settle against a new kickoff.
+                    provider_home=m.get('home_team')
+                    provider_away=m.get('away_team')
+                    decision.update({
+                        'original_kickoff_utc':kick,
+                        'provider_reported_kickoff_utc':stamp(source_kick),
+                        'kickoff_delta_minutes':round(
+                            (source_kick-as_utc(kick)).total_seconds()/60,3),
+                        'original_forecast_capture_utc':captured,
+                        'provider_home_id_matches_original':(
+                            isinstance(provider_home,dict)
+                            and provider_home.get('id')==h),
+                        'provider_away_id_matches_original':(
+                            isinstance(provider_away,dict)
+                            and provider_away.get('id')==a),
+                        'original_capture_before_earliest_90m_cutoff':(
+                            as_utc(captured)<min(as_utc(kick),source_kick)-LEAD),
+                        'manual_review_required':True,
+                        'automatic_settlement_permitted':False,
+                    })
+                decisions.append(decision)
                 continue
             gh,ga=m["score_home"],m["score_away"]
             label="1" if gh>ga else "2" if gh<ga else "X"
