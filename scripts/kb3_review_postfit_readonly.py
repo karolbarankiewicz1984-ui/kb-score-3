@@ -193,9 +193,27 @@ def pending_settlement_review(db, receipt):
                 "frozen_capture_utc": captured,
                 "original_capture_lead_minutes": round(lead, 2)}
         if reason == "KICKOFF_CHANGED_REVIEW_REQUIRED":
+            revised = d.get("provider_reported_kickoff_utc")
+            if revised is not None:
+                need(d.get("original_kickoff_utc") == kick
+                     and d.get("original_forecast_capture_utc") == captured
+                     and utc(revised) != utc(kick)
+                     and abs((utc(revised)-utc(kick)).total_seconds()/60
+                             - d["kickoff_delta_minutes"]) < 0.001
+                     and d.get("manual_review_required") is True
+                     and d.get("automatic_settlement_permitted") is False,
+                     "PROVIDER_KICKOFF_REVIEW_RECEIPT_MISMATCH")
             needs_kickoff_check.append({**case,
                 "state": "MANUAL_PROVIDER_ID_TIME_RECONCILIATION_REQUIRED",
-                "provider_revised_kickoff_utc": None,
+                "provider_revised_kickoff_utc": revised,
+                "provider_time_delta_minutes": (d.get("kickoff_delta_minutes")
+                                                if revised is not None else None),
+                "provider_home_id_matches_original": (
+                    d.get("provider_home_id_matches_original")),
+                "provider_away_id_matches_original": (
+                    d.get("provider_away_id_matches_original")),
+                "original_capture_before_earliest_90m_cutoff": (
+                    d.get("original_capture_before_earliest_90m_cutoff")),
                 "retrospective_result_injected": False,
                 "automatic_settlement_allowed": False})
         elif reason == "PROVIDER_RESULT_MISSING":
@@ -360,6 +378,44 @@ def self_test():
                  "SELFTEST_FAIL_CLOSED_WRONG_REASON")
         else:
             need(False, "SELFTEST_OPEN_COUNT_MUST_FAIL_CLOSED")
+        frozen = {"model_version": MODEL, "league_country": "POL",
+                  "provider_match_id": "m_fixture",
+                  "kickoff_utc": "2026-11-21T20:00:00Z"}
+        fid = sha(frozen)
+        frozen["forecast_sha256"] = fid
+        fake.execute("INSERT INTO forecasts VALUES(?,?,?,?,?,?)",
+                     (fid, "POL", "m_fixture", frozen["kickoff_utc"],
+                      "2026-11-19T10:00:00Z", json.dumps(frozen)))
+        reason = "KICKOFF_CHANGED_REVIEW_REQUIRED"
+        drift = {"forecast_id": fid, "league": "POL",
+                 "native_match_id": "m_fixture", "reason": reason,
+                 "original_kickoff_utc": frozen["kickoff_utc"],
+                 "provider_reported_kickoff_utc": "2026-11-21T21:00:00Z",
+                 "kickoff_delta_minutes": 60.0,
+                 "original_forecast_capture_utc": "2026-11-19T10:00:00Z",
+                 "manual_review_required": True,
+                 "automatic_settlement_permitted": False}
+        with_one = dict(test_receipt,
+                        settlement_decisions=[drift],
+                        settlement_reason_counts={reason: 1},
+                        not_yet_settled=1)
+        report = pending_settlement_review(fake, with_one)
+        need(report["frozen_not_yet_settled"] == 1 and
+             report["kickoff_changed_review_cases"][0][
+                 "provider_time_delta_minutes"] == 60 and
+             report["automatic_kickoff_override"] is False,
+             "SELFTEST_DRIFT_READONLY_QUEUE")
+        need(fake.execute("SELECT COUNT(*) FROM settlements").fetchone()[0] == 0,
+             "SELFTEST_MUST_NOT_SETTLE")
+        drift_bad = dict(drift, kickoff_delta_minutes=0)
+        invalid = dict(with_one, settlement_decisions=[drift_bad])
+        try:
+            pending_settlement_review(fake, invalid)
+        except ValueError as exc:
+            need(str(exc) == "PROVIDER_KICKOFF_REVIEW_RECEIPT_MISMATCH",
+                 "SELFTEST_BAD_DELTA_WRONG_FAILURE")
+        else:
+            need(False, "SELFTEST_FABRICATED_DELTA_ACCEPTED")
     print("KB3_HOLDOUT_READONLY_SELFTEST_PASS")
 
 
