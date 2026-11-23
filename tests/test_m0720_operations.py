@@ -184,6 +184,41 @@ class SettlementTests(unittest.TestCase):
         self.assertIn('RESULT_TEAM_SIDE_MISMATCH',self.settle(bad)['settlement_reason_counts'])
         self.assertEqual(self.settle()['new_settlements'],1)
 
+    def test_changed_kickoff_emits_both_verified_clocks_but_never_settles(self):
+        for days in (1, -1):
+            changed=deepcopy(self.result)
+            revised=self.ko+timedelta(days=days)
+            changed['time_utc']=stamp(revised)
+            result=self.settle(changed,at=self.ko+timedelta(days=4))
+            self.assertEqual(result['new_settlements'],0)
+            self.assertEqual(result['total_settlements'],0)
+            self.assertEqual(result['not_yet_settled'],1)
+            self.assertEqual(result['settlement_reason_counts'],
+                             {'KICKOFF_CHANGED_REVIEW_REQUIRED':1})
+            decision=result['settlement_decisions'][0]
+            self.assertEqual(decision['original_kickoff_utc'],
+                             self.item['kickoff_utc'])
+            self.assertEqual(decision['provider_reported_kickoff_utc'],
+                             stamp(revised))
+            self.assertEqual(decision['kickoff_delta_minutes'],days*1440)
+            self.assertEqual(decision['original_forecast_capture_utc'],
+                             self.item['generated_at_utc'] if
+                             self.item.get('generated_at_utc') ==
+                             self.item.get('captured_at_utc') else
+                             self.db_capture())
+            self.assertTrue(decision['provider_home_id_matches_original'])
+            self.assertTrue(decision['provider_away_id_matches_original'])
+            self.assertTrue(decision['manual_review_required'])
+            self.assertFalse(decision['automatic_settlement_permitted'])
+        with sqlite3.connect(self.db) as db:
+            self.assertEqual(db.execute('SELECT COUNT(*) FROM settlements').fetchone()[0],0)
+            self.assertEqual(json.loads(db.execute(
+                'SELECT payload_json FROM forecasts').fetchone()[0]),self.item)
+
+    def db_capture(self):
+        with sqlite3.connect(self.db) as db:
+            return db.execute('SELECT captured_at_utc FROM forecasts').fetchone()[0]
+
     def test_repeat_and_duplicate_forecast_never_change_original(self):
         self.settle();self.assertEqual(self.settle()['new_settlements'],0)
         changed=deepcopy(self.item);changed['generated_at_utc']=stamp(NOW+timedelta(minutes=1));changed['forecast_sha256']=hashobj({k:v for k,v in changed.items() if k!='forecast_sha256'})
