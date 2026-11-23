@@ -6,7 +6,7 @@ The 50 post-FIT games are never reused to fit temperature or select a winner.
 from __future__ import annotations
 
 import argparse
-from collections import defaultdict
+from collections import Counter, defaultdict
 from datetime import datetime, timedelta, timezone
 import hashlib
 import json
@@ -142,6 +142,85 @@ def latest_receipt():
     return files[-1], json.loads(files[-1].read_text(encoding="utf-8"))
 
 
+def pending_settlement_review(db, receipt):
+    """Reconcile *all* unclosed frozen matches with the last genuine receipt.
+
+    Read-only: source update timestamps for postponed games are NOT in the
+    receipt, so these rows are REVIEW_REQUIRED, never falsely settled.
+    """
+    decisions = receipt.get("settlement_decisions")
+    need(isinstance(decisions, list), "SETTLEMENT_DECISIONS_MISSING")
+    reason_counts = Counter(d["reason"] for d in decisions)
+    need(dict(reason_counts) == receipt.get("settlement_reason_counts"),
+         "SETTLEMENT_REASON_COUNTS_DRIFT")
+    need(reason_counts["SETTLED_NEW"] == receipt.get("new_settlements"),
+         "NEW_SETTLEMENT_COUNT_DRIFT")
+    open_decisions = [d for d in decisions if d["reason"] != "SETTLED_NEW"]
+    need(len(open_decisions) == receipt.get("not_yet_settled"),
+         "OPEN_DECISIONS_COUNT_DRIFT")
+    decision_index = {d["forecast_id"]: d for d in open_decisions}
+    need(len(decision_index) == len(open_decisions), "DUPLICATE_PENDING_FORECAST")
+    pending = db.execute("""SELECT f.id, f.league, f.native_match_id,
+                    f.kickoff_utc, f.captured_at_utc, f.payload_json
+          FROM forecasts f LEFT JOIN settlements s ON s.forecast_id=f.id
+          WHERE s.forecast_id IS NULL ORDER BY f.kickoff_utc, f.id""").fetchall()
+    need(len(pending) == len(open_decisions), "PENDING_DB_VS_RECEIPT_DRIFT")
+    need(set(decision_index) == {r[0] for r in pending},
+         "PENDING_IDS_VS_RECEIPT_DRIFT")
+    by_reason = defaultdict(Counter)
+    needs_kickoff_check = []
+    missing_results = []
+    immature = []
+    for fid, league, native, kick, captured, raw in pending:
+        d = decision_index[fid]
+        frozen = json.loads(raw)
+        need(d["league"] == league and d["native_match_id"] == native
+             and league in LEAGUES, "PENDING_NATIVE_ID_OR_LEAGUE_DRIFT")
+        need(frozen.get("forecast_sha256") == fid
+             and sha({k: v for k, v in frozen.items()
+                      if k != "forecast_sha256"}) == fid
+             and frozen.get("league_country") == league
+             and frozen.get("provider_match_id") == native
+             and frozen.get("kickoff_utc") == kick
+             and frozen.get("model_version") == MODEL,
+             "PENDING_FROZEN_SOURCE_INTEGRITY_FAIL")
+        lead = (utc(kick) - utc(captured)).total_seconds() / 60
+        need(lead > 90, "PENDING_FORECAST_FROZEN_TOO_LATE")
+        reason = d["reason"]
+        by_reason[reason][league] += 1
+        case = {"forecast_id": fid, "league": league,
+                "native_match_id": native, "original_frozen_kickoff_utc": kick,
+                "frozen_capture_utc": captured,
+                "original_capture_lead_minutes": round(lead, 2)}
+        if reason == "KICKOFF_CHANGED_REVIEW_REQUIRED":
+            needs_kickoff_check.append({**case,
+                "state": "MANUAL_PROVIDER_ID_TIME_RECONCILIATION_REQUIRED",
+                "provider_revised_kickoff_utc": None,
+                "retrospective_result_injected": False,
+                "automatic_settlement_allowed": False})
+        elif reason == "PROVIDER_RESULT_MISSING":
+            missing_results.append(case)
+        elif reason == "RESULT_MATURITY_3H_NOT_REACHED":
+            immature.append({**case, "earliest_original_maturity_utc":
+                 (utc(kick) + timedelta(hours=3)).isoformat()})
+        # Unknown reasons remain visible in the per-league counts, not waived.
+    return {
+        "source_receipt_run_utc": receipt["run_utc"],
+        "frozen_not_yet_settled": len(pending),
+        "pending_reason_counts": dict(sorted((k, v) for k, v in
+                                             reason_counts.items()
+                                             if k != "SETTLED_NEW")),
+        "by_reason_and_league": {k: dict(sorted(v.items()))
+                                for k, v in sorted(by_reason.items())},
+        "kickoff_changed_review_cases": needs_kickoff_check,
+        "provider_result_missing_cases": missing_results,
+        "result_maturity_pending_cases": immature,
+        "provider_revised_kickoff_not_proven_by_receipt": True,
+        "read_only": True, "existing_forecasts_and_settlements_modified": False,
+        "automatic_kickoff_override": False,
+    }
+
+
 def review(root=ROOT):
     need(DB.is_file(), "SQLITE_NOT_FOUND")
     uri = DB.resolve().as_uri()+"?mode=ro"
@@ -195,6 +274,7 @@ def review(root=ROOT):
         for x in all_rows:
             by_league[x["league"]].append((x["p"], x["y"]))
         receipt_path, receipt = latest_receipt()
+        settlement_queue = pending_settlement_review(db, receipt)
         need(len(all_rows) == receipt["calibration_readiness"]["eligible_settled_unique"],
              "RECEIPT_VS_DB_COHORT_DRIFT")
         paired = receipt["step17_paired_same_fixture_readiness"]["exact_three_engine_comparison"]
@@ -228,9 +308,11 @@ def review(root=ROOT):
             "m0_overall": metrics([(x["p"], x["y"]) for x in all_rows]),
             "m0_per_league": {k: metrics(v) for k, v in sorted(by_league.items())},
             "m0_top1_confidence_bands": bands([(x["p"], x["y"]) for x in all_rows]),
+            "pending_settlement_review": settlement_queue,
             "step17_exact_three_engine_paired": {
                 "common_n": paired["common_n"], "independent_week_blocks": weeks,
                 "scores": paired["scores"],
+                "per_league": paired["per_league"],
                 "confidence_intervals_ready": weeks >= 4,
                 "winner_selected": False
             },
@@ -258,6 +340,26 @@ def self_test():
     need(metrics([(p, "1")])["top1_accuracy"] == 1, "SELFTEST_SCORE")
     need(bands([(p, "1")])["60-70"]["n"] == 1, "SELFTEST_BAND")
     need(sha(["a"]) == hashlib.sha256(b'["a"]').hexdigest(), "SELFTEST_HASH")
+    with sqlite3.connect(":memory:") as fake:
+        fake.executescript("""CREATE TABLE forecasts(
+              id TEXT, league TEXT, native_match_id TEXT, kickoff_utc TEXT,
+              captured_at_utc TEXT, payload_json TEXT);
+              CREATE TABLE settlements(forecast_id TEXT);""")
+        need(bool(fake.execute("SELECT COUNT(*) FROM forecasts").fetchone()),
+             "SELFTEST_PENDING_TABLE")
+        test_receipt = {"settlement_decisions": [],
+                        "settlement_reason_counts": {}, "new_settlements": 0,
+                        "not_yet_settled": 0, "run_utc": "2026-11-23T00:00:00Z"}
+        need(pending_settlement_review(fake, test_receipt)[
+             "frozen_not_yet_settled"] == 0, "SELFTEST_EMPTY_PENDING")
+        altered = dict(test_receipt, not_yet_settled=1)
+        try:
+            pending_settlement_review(fake, altered)
+        except ValueError as exc:
+            need(str(exc) == "OPEN_DECISIONS_COUNT_DRIFT",
+                 "SELFTEST_FAIL_CLOSED_WRONG_REASON")
+        else:
+            need(False, "SELFTEST_OPEN_COUNT_MUST_FAIL_CLOSED")
     print("KB3_HOLDOUT_READONLY_SELFTEST_PASS")
 
 
@@ -279,6 +381,7 @@ def main():
                "m0_per_league": report["m0_per_league"],
                "m0_top1_confidence_bands": report["m0_top1_confidence_bands"],
                "three_engine": report["step17_exact_three_engine_paired"],
+               "pending_settlement_review": report["pending_settlement_review"],
                "formal_gates": report["formal_gates"]}
     print("KB3_HOLDOUT_REAL_READONLY_AUDIT", json.dumps(
         summary, sort_keys=True, ensure_ascii=False))
