@@ -30,3 +30,12 @@ Uruchomienie cotygodniowe oraz ręczne i test PR daje audytowalny JSON, bez comm
 Do odbioru potrzeba dla każdego rekordu i pola: oryginalnych wersji/bajtów i SHA, źródłowego ID, serwerowego zegara publikacji przed kickoff, definicji, mapowania drużyny/meczu i missingness oraz niezależnego testu 159 pól i chronologii 760/380. Braki opcjonalne pozostają oznaczone jako braki, nie zera i nie blokują odrębnych eksperymentów forward.
 
 **Ograniczenia:** GATE14/16/17 PENDING, bez dostępu do chronionego ENG TEST, brak zatwierdzenia produkcyjnego, brak automatycznego Championa i nowych opłat. Skrypt oraz workflow mają najpierw wykazać realny PASS w CI.
+
+## REALNY ODBIÓR CI — PASS, 23.11.2026 08:17 UTC
+
+- [Uruchomienie #45137310981](https://github.com/karolbarankiewicz1984-ui/kb-score-3/actions/runs/45137310981): self-test PASS, pełny odczyt rzeczywistej SQLite PASS, weryfikacja SHA / chronologii i niezależna kontrola zgodności metryk z niezmiennym review PASS, artefakt JSON opublikowany, brak modyfikacji bazy.
+- **Wynik pierwszych 50 HOLDOUT:** 29/50 top1 (58.00%), zarówno przed, jak i po zamrożonej temperaturze T=0.7. Surowe Brier **0.56695415**, LL **0.95540357**, ECE10 **0.17106788**. Po kalibracji: Brier **0.55081560**, LL **0.93163311**, ECE10 **0.04529290**. Poprawa Brier **-0.01613855**, log loss **-0.02377046**, ECE10 **-0.12577498**. To ocena zachowania prawdopodobieństw na tych 50, nie dodatkowy fit i nie potwierdzone ROI.
+- **Zbiór 208 M0:** 119/208 top1 = 57.21%. Według lig (top1 poprawne/liczność): BEL 15/28, ESP 18/29, FRA 12/25, GER 17/27, ITA 17/29, NED 14/27, POL 13/25, TUR 13/18.
+- **Pasma najwyższej prognozowanej klasy 1X2:** poniżej 40%: 9/26 = 34.62% (średnia deklarowana 39.09%); 40–50%: 69/128 = 53.91% (średnia deklarowana 44.07%); 50–60%: 37/49 = 75.51% (średnia deklarowana 53.98%); 60–70%: 4/5 = 80% (średnia deklarowana 63.32%); 70–100%: **0/0**. Takie wyniki są surowo opisowe i zależą od małych prób, w szczególności 5 meczów powyżej 60%. Nie wolno traktować 75.51% jako gwarantowanej przyszłej skuteczności czy ustalać pod nią progu.
+- **CatBoost/Elo/M0:** ponownie potwierdzone na 135 wspólnych spotkaniach i 2 blokach tygodniowych. Formalny ranking nadal PENDING; brak wiarygodnych CI95 i pełnej zgodności pochodzenia historycznych cech.
+- **Odbiór:** PASS technicznego audytu i obliczeń HOLDOUT50. FAIL/PENDING dla formalnego przełączenia produkcyjnego oraz Step14/16/17. Champion i M0 bez zmian. Kolejna cotygodniowa kontrola powinna korzystać z nowego JSON, nie z ponownego dostrajania na tej samej próbie.
