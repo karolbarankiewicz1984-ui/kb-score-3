@@ -22,6 +22,9 @@ MODEL = "M0_ELO_POISSON_RESEARCH_720TRAIN_V1"
 LABELS = ("1", "X", "2")
 LEAGUES = frozenset(("BEL", "ESP", "FRA", "GER", "ITA", "NED", "POL", "TUR"))
 EPS = 1e-15
+# Match src/kb3_step17_engine_comparison.py::MIN_BLOCKS. Never
+# advertise an interval merely because some weeks have elapsed.
+STEP17_MIN_WEEK_BLOCKS = 8
 
 
 def need(ok, why):
@@ -140,6 +143,29 @@ def latest_receipt():
     files = sorted(RECEIPTS.glob("*/settle-*/RECEIPT.json"))
     need(bool(files), "M0_RECEIPT_MISSING")
     return files[-1], json.loads(files[-1].read_text(encoding="utf-8"))
+
+
+def valid_paired_ci_evidence(paired):
+    """All three 1X2 engines require actual ISO-week block-bootstrap CI data."""
+    if not isinstance(paired, dict) or paired.get("common_n", 0) < 100:
+        return False
+    comparisons = paired.get("paired_deltas", {})
+    if len(comparisons) != 3:
+        return False
+    for pair in comparisons.values():
+        if pair.get("common_n") != paired["common_n"]:
+            return False
+        for metric in ("brier_sum3", "log_loss", "top1_accuracy"):
+            block = pair.get("deltas", {}).get(metric, {})
+            ci = block.get("ci95")
+            if (block.get("week_blocks", 0) < STEP17_MIN_WEEK_BLOCKS
+                    or block.get("status") != "PAIRED_ISO_WEEK_BOOTSTRAP"
+                    or not isinstance(ci, list) or len(ci) != 2
+                    or not all(type(v) in (int, float) and math.isfinite(v)
+                               for v in ci)
+                    or ci[0] > ci[1]):
+                return False
+    return True
 
 
 def pending_settlement_review(db, receipt):
@@ -331,7 +357,10 @@ def review(root=ROOT):
                 "common_n": paired["common_n"], "independent_week_blocks": weeks,
                 "scores": paired["scores"],
                 "per_league": paired["per_league"],
-                "confidence_intervals_ready": weeks >= 4,
+                "minimum_independent_week_blocks_for_ci": STEP17_MIN_WEEK_BLOCKS,
+                "missing_independent_week_blocks_for_ci": max(
+                    0, STEP17_MIN_WEEK_BLOCKS-weeks),
+                "confidence_intervals_ready": valid_paired_ci_evidence(paired),
                 "winner_selected": False
             },
             "history_pit": {
@@ -358,6 +387,24 @@ def self_test():
     need(metrics([(p, "1")])["top1_accuracy"] == 1, "SELFTEST_SCORE")
     need(bands([(p, "1")])["60-70"]["n"] == 1, "SELFTEST_BAND")
     need(sha(["a"]) == hashlib.sha256(b'["a"]').hexdigest(), "SELFTEST_HASH")
+    metric_block = lambda n, ci: {
+        "week_blocks": n, "ci95": ci,
+        "status": ("PAIRED_ISO_WEEK_BOOTSTRAP" if ci is not None
+                   else "INSUFFICIENT_INDEPENDENT_WEEKS")}
+    def paired_sample(n, ci):
+        return {"common_n": 135, "paired_deltas": {
+            p: {"common_n": 135, "deltas": {
+                 m: metric_block(n, ci)
+                 for m in ("brier_sum3", "log_loss", "top1_accuracy")}}
+            for p in ("ELO_ONLY__vs__CATBOOST_NO_XG",
+                      "ELO_ONLY__vs__M0_ELO_POISSON_720TRAIN",
+                      "M0_ELO_POISSON_720TRAIN__vs__CATBOOST_NO_XG")}}
+    need(not valid_paired_ci_evidence(paired_sample(4, [-.01, .01])),
+         "SELFTEST_FOUR_WEEKS_PREMATURE_CI")
+    need(not valid_paired_ci_evidence(paired_sample(8, None)),
+         "SELFTEST_NO_FAKE_CI_WITH_EIGHT_WEEKS")
+    need(valid_paired_ci_evidence(paired_sample(8, [-.01, .01])),
+         "SELFTEST_EIGHT_WEEKS_VALID_CI_NOT_RECOGNIZED")
     with sqlite3.connect(":memory:") as fake:
         fake.executescript("""CREATE TABLE forecasts(
               id TEXT, league TEXT, native_match_id TEXT, kickoff_utc TEXT,
