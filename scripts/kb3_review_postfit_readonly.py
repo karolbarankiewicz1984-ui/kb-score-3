@@ -437,7 +437,15 @@ def main():
                "m0_per_league": report["m0_per_league"],
                "m0_top1_confidence_bands": report["m0_top1_confidence_bands"],
                "three_engine": report["step17_exact_three_engine_paired"],
-               "pending_settlement_review": report["pending_settlement_review"],
+               "pending_settlement_review": {
+                    "frozen_not_yet_settled": report["pending_settlement_review"][
+                        "frozen_not_yet_settled"],
+                    "pending_reason_counts": report["pending_settlement_review"][
+                        "pending_reason_counts"],
+                    "by_reason_and_league": report["pending_settlement_review"][
+                        "by_reason_and_league"],
+                    "kickoff_changed_review_cases": report["pending_settlement_review"][
+                        "kickoff_changed_review_cases"]},
                "formal_gates": report["formal_gates"]}
     print("KB3_HOLDOUT_REAL_READONLY_AUDIT", json.dumps(
         summary, sort_keys=True, ensure_ascii=False))
