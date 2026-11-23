@@ -1642,3 +1642,12 @@ W tym samym wdrożeniu [Actions #41346411117](https://github.com/karolbarankiewi
 - **Opis szczegółowy i wymagane dowody:** [KB3_HOLDOUT50_MODEL_DECISION_AUDIT_2026-11-23.md](KB3_HOLDOUT50_MODEL_DECISION_AUDIT_2026-11-23.md). Sam commit kodu = IMPLEMENTED; PASS realnego audytu dopiero po runie CI. Bez auto-aktualizacji modelu.
 - **PIT / formalny wynik:** ostatni audyt Step14 22.11: oryginalne TRAIN 0/760, VALIDATION 0/380, brak first-publication PitchAPI team-xG i niezależnego PASS 159 pól. GATE14/16/17 PENDING, bez naruszania ENG TEST; liczbę nowych badawczych historycznych obserwacji traktować osobno od certyfikowanego PIT.
 - **Następny etap:** po CI zapisać faktyczny wynik HOLDOUT raw vs calibrated, rozdzielić metryki per liga i pasmo, budować prospektywne tygodnie i przedziały niepewności bez ponownego strojenia na HOLDOUT. Żadnej promocji bez niezależnych dowodów i akceptacji.
+
+
+### 2026-11-23 — KB3-RESEARCH-HOLDOUT50-CI-ACCEPTANCE — rzeczywisty audyt 50 po FIT: PASS badawczy
+
+- **Dowód:** [GitHub Actions #45137310981](https://github.com/karolbarankiewicz1984-ui/kb-score-3/actions/runs/45137310981) COMPLETED SUCCESS — self-test i real-data read-only audit PASS, JSON artifact opublikowany. Weryfikacja niezmienności SHA FIT/holdout, rozłączność 100+50, potwierdzony serwerowy czas publikacji i przeliczenie oryginalnych wyników HOLDOUT bez nowych parametrów PASS.
+- **50 HOLDOUT po FIT:** 29/50 top1 = 58.0% raw i T=0.7; Brier sum3 raw 0.566954 → calibrated 0.550816, log loss raw 0.955404 → calibrated 0.931633, top1 ECE10 raw 0.171068 → calibrated 0.045293. 61 zweryfikowanych post-FIT dostępnych, lecz review chroni pierwsze 50. Nie zmieniono FIT ani modelu; poprawa prawdopodobieństw nie dowodzi przewagi finansowej.
+- **M0 pełna próba:** 119/208 top1 = 57.21%. Per liga BEL 15/28, ESP 18/29, FRA 12/25, GER 17/27, ITA 17/29, NED 14/27, POL 13/25, TUR 13/18. Pasma top1: <40% 9/26, 40–50% 69/128, 50–60% 37/49, 60–70% 4/5, >=70% 0/0. Liczby są badawcze; bez automatycznego ustalania progów.
+- **Porównanie trzech modeli:** 135 identycznych spotkań i tylko 2 niezależne bloki tygodniowe, więc formalny wybór Championa nadal NIE; oryginalny PIT 0/760 TRAIN +0/380 VALIDATION, xG first-publication brak; GATE14/16/17 PENDING i ENG TEST nietknięty.
+- **Dalsze działanie:** harmonogram tygodniowego odczytu po scaleniu workflow; kolejne tygodnie forward, nie przetrenowywać na HOLDOUT50. [Pełny raport](KB3_HOLDOUT50_MODEL_DECISION_AUDIT_2026-11-23.md). Weryfikator: niezależny skrypt read-only i GitHub Actions, odczyt wyników przez ChatGPT.
