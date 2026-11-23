@@ -63,6 +63,10 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
+      - name: Install attestation import dependency and verify ZIP reader
+        run: |
+          python -m pip install 'cryptography>=43'
+          python -c "from src.kb3_step16_m0_720_calibration import _gh_artifact_zip; assert callable(_gh_artifact_zip); print('KB3_MARKET_ARTIFACT_ZIP_READER_IMPORT_OK')"
       - name: Generate genuinely NEW market snapshots with >100min safety lead
         id: market_capture
         run: |
