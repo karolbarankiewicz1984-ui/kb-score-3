@@ -31,8 +31,9 @@ on:
       - src/kb3_historical_feature_quality.py
       - tests/test_kb3_historical_feature_quality.py
       - .github/workflows/kb3-historical-pitchapi-backfill.yml
+  # Forward-first policy 2026-11-23: bounded weekly historical research; forward M0 schedules unchanged.
   schedule:
-    - cron: '15 2,14 * * *'
+    - cron: '15 3 * * 3'
   workflow_dispatch:
 permissions:
   contents: write
