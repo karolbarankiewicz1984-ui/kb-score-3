@@ -1,0 +1,96 @@
+{
+  "schema": "kb3-shifted-kickoff-external-crosscheck-research-v1",
+  "review_date": "2026-11-24",
+  "m0_source_receipt": "data/pit_sidecar/m0_720_eight/2026-11-23/settle-201542175506/RECEIPT.json",
+  "fixture_native_id_crosswalk_verified": false,
+  "changed_times_corrob_by_independent_public_schedule": true,
+  "candidate_final_scores_are_not_native_provider_settlements": true,
+  "every_case_manually_quarantined": true,
+  "original_frozen_forecasts_unchanged": true,
+  "existing_settlements_unchanged": true,
+  "production_approved": false,
+  "no_auto_settlement": true,
+  "entries": [
+    {
+      "country": "FRA",
+      "native_match_id": "m_1ronn6",
+      "source_frozen_kickoff_utc": "2026-11-07T16:15:00Z",
+      "provider_revised_kickoff_utc": "2026-11-07T18:00:00.000000Z",
+      "provider_delta_minutes": 105,
+      "original_capture_utc": "2026-11-04T14:43:51.881894Z",
+      "provider_same_home_and_away_ids": true,
+      "earliest_90min_cutoff_pass": true,
+      "external_candidate_fixture": "AJ Auxerre — Paris FC",
+      "external_candidate_club_local_before": "2026-11-07 17:15 CET",
+      "external_candidate_club_local_after": "2026-11-07 19:00 CET",
+      "external_candidate_final_score_90min": {
+        "home": 0,
+        "away": 1
+      },
+      "schedule_evidence_urls": [
+        "https://www.lfp.fr/article/les-coups-d-envoi-de-aj-auxerre-paris-fc-et-psg-estac-troyes-decales",
+        "https://parisfc.fr/en/pro-mens-team/aj-auxerre-vs-paris-fc-kickoff-postponed/"
+      ],
+      "final_candidate_source_url": "https://ligue1.com/en/articles/l1_article_6054-j10-les-enseignements-du-week-end-ligue-1-2026-2027",
+      "native_id_team_name_mapping_verified": false,
+      "source_vs_official_result_side_mapping_verified": false,
+      "status": "OFFICIAL_FIXTURE_TIMES_CORROBORATED_NATIVE_ID_CROSSWALK_PENDING_NO_SETTLE"
+    },
+    {
+      "country": "FRA",
+      "native_match_id": "m_264TKg",
+      "source_frozen_kickoff_utc": "2026-11-07T19:45:00Z",
+      "provider_revised_kickoff_utc": "2026-11-07T20:05:00.000000Z",
+      "provider_delta_minutes": 20,
+      "original_capture_utc": "2026-11-04T14:43:51.881894Z",
+      "provider_same_home_and_away_ids": true,
+      "earliest_90min_cutoff_pass": true,
+      "external_candidate_fixture": "Paris Saint-Germain — ESTAC Troyes",
+      "external_candidate_club_local_before": "2026-11-07 20:45 CET",
+      "external_candidate_club_local_after": "2026-11-07 21:05 CET",
+      "external_candidate_final_score_90min": {
+        "home": 1,
+        "away": 0
+      },
+      "schedule_evidence_urls": [
+        "https://www.lfp.fr/article/les-coups-d-envoi-de-aj-auxerre-paris-fc-et-psg-estac-troyes-decales",
+        "https://www.psg.fr/en/content/ligue-1-matchday-10-fixtures-2026-2027-paris-saint-germain-estac-troyes"
+      ],
+      "final_candidate_source_url": "https://www.psg.fr/en/matches/mens-football/20262027/paris-vs-troyes-2026-11-07",
+      "native_id_team_name_mapping_verified": false,
+      "source_vs_official_result_side_mapping_verified": false,
+      "status": "OFFICIAL_FIXTURE_TIMES_CORROBORATED_NATIVE_ID_CROSSWALK_PENDING_NO_SETTLE"
+    },
+    {
+      "country": "POL",
+      "native_match_id": "m_4dpQ5H",
+      "source_frozen_kickoff_utc": "2026-11-21T19:15:00Z",
+      "provider_revised_kickoff_utc": "2026-11-21T19:45:00.000000Z",
+      "provider_delta_minutes": 30,
+      "original_capture_utc": "2026-11-15T20:09:18.692579Z",
+      "provider_same_home_and_away_ids": true,
+      "earliest_90min_cutoff_pass": true,
+      "external_candidate_fixture": "Radomiak Radom — Wisła Kraków",
+      "external_candidate_club_local_before": "2026-11-21 20:15 CET",
+      "external_candidate_club_local_after": "2026-11-21 20:45 CET",
+      "external_candidate_final_score_90min": {
+        "home": 0,
+        "away": 0
+      },
+      "schedule_evidence_urls": [
+        "https://ekstraklasa.org/aktualnosci/terminarz-15-kolejki-202627/",
+        "https://sport.tvp.pl/96609695/pko-bp-ekstraklasa-wisla-krakow-nie-wyszla-na-mecz-z-radomiakiem-radom/amp"
+      ],
+      "final_candidate_source_url": "https://ekstraklasa.org/mecz/3141ed0a-7da2-482a-8126-065afd29c91d/radomiak-radom-wisla-krakow/przeglad/",
+      "native_id_team_name_mapping_verified": false,
+      "source_vs_official_result_side_mapping_verified": false,
+      "status": "OFFICIAL_FIXTURE_TIMES_CORROBORATED_NATIVE_ID_CROSSWALK_PENDING_NO_SETTLE"
+    }
+  ],
+  "next_requirements": [
+    "Obtain authentic native PitchAPI fixture-id to named home/away team mapping for each frozen match from immutable source, matching exact sides",
+    "Independently recheck final full-time 90 minute result and verify no walkover/award",
+    "Require source-chronological manual approval audit and never mutate original frozen forecasts",
+    "Only after all proof, create new append-only settlement through auditable separate process, not bypass generic mismatch guard"
+  ]
+}
