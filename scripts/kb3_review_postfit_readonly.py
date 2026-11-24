@@ -187,8 +187,11 @@ def pending_settlement_review(db, receipt):
     decision_index = {d["forecast_id"]: d for d in open_decisions}
     need(len(decision_index) == len(open_decisions), "DUPLICATE_PENDING_FORECAST")
     pending = db.execute("""SELECT f.id, f.league, f.native_match_id,
-                    f.kickoff_utc, f.captured_at_utc, f.payload_json
-          FROM forecasts f LEFT JOIN settlements s ON s.forecast_id=f.id
+                    f.kickoff_utc, f.captured_at_utc, f.payload_json,
+                    p.github_server_event_utc
+          FROM forecasts f
+          LEFT JOIN settlements s ON s.forecast_id=f.id
+          LEFT JOIN m0720_github_push_proofs p ON p.forecast_id=f.id
           WHERE s.forecast_id IS NULL ORDER BY f.kickoff_utc, f.id""").fetchall()
     need(len(pending) == len(open_decisions), "PENDING_DB_VS_RECEIPT_DRIFT")
     need(set(decision_index) == {r[0] for r in pending},
@@ -197,7 +200,7 @@ def pending_settlement_review(db, receipt):
     needs_kickoff_check = []
     missing_results = []
     immature = []
-    for fid, league, native, kick, captured, raw in pending:
+    for fid, league, native, kick, captured, raw, host_published in pending:
         d = decision_index[fid]
         frozen = json.loads(raw)
         need(d["league"] == league and d["native_match_id"] == native
@@ -212,11 +215,16 @@ def pending_settlement_review(db, receipt):
              "PENDING_FROZEN_SOURCE_INTEGRITY_FAIL")
         lead = (utc(kick) - utc(captured)).total_seconds() / 60
         need(lead > 90, "PENDING_FORECAST_FROZEN_TOO_LATE")
+        need(host_published is not None and
+             utc(captured) <= utc(host_published) <=
+             utc(kick) - timedelta(minutes=90),
+             "PENDING_HOST_PUBLICATION_NOT_BEFORE_CUTOFF")
         reason = d["reason"]
         by_reason[reason][league] += 1
         case = {"forecast_id": fid, "league": league,
                 "native_match_id": native, "original_frozen_kickoff_utc": kick,
                 "frozen_capture_utc": captured,
+                "host_publication_utc": host_published,
                 "original_capture_lead_minutes": round(lead, 2)}
         if reason == "KICKOFF_CHANGED_REVIEW_REQUIRED":
             revised = d.get("provider_reported_kickoff_utc")
@@ -229,8 +237,18 @@ def pending_settlement_review(db, receipt):
                      and d.get("manual_review_required") is True
                      and d.get("automatic_settlement_permitted") is False,
                      "PROVIDER_KICKOFF_REVIEW_RECEIPT_MISMATCH")
+            source_review_pass = (
+                revised is not None
+                and d.get("provider_home_id_matches_original") is True
+                and d.get("provider_away_id_matches_original") is True
+                and d.get("original_capture_before_earliest_90m_cutoff") is True
+                and utc(host_published) <= min(utc(kick), utc(revised))
+                - timedelta(minutes=90))
             needs_kickoff_check.append({**case,
-                "state": "MANUAL_PROVIDER_ID_TIME_RECONCILIATION_REQUIRED",
+                "state": "EXTERNAL_OFFICIAL_TIME_AND_FINAL_RESULT_REVIEW_REQUIRED",
+                "provider_source_identity_and_cutoff_checks_pass": source_review_pass,
+                "independent_official_fixture_change_verified": False,
+                "independent_final_90min_score_verified": False,
                 "provider_revised_kickoff_utc": revised,
                 "provider_time_delta_minutes": (d.get("kickoff_delta_minutes")
                                                 if revised is not None else None),
@@ -259,7 +277,8 @@ def pending_settlement_review(db, receipt):
         "kickoff_changed_review_cases": needs_kickoff_check,
         "provider_result_missing_cases": missing_results,
         "result_maturity_pending_cases": immature,
-        "provider_revised_kickoff_not_proven_by_receipt": True,
+        "provider_reported_kickoff_is_source_only_not_official_verification": True,
+        "all_changed_kickoffs_remain_in_manual_quarantine": True,
         "read_only": True, "existing_forecasts_and_settlements_modified": False,
         "automatic_kickoff_override": False,
     }
@@ -409,7 +428,9 @@ def self_test():
         fake.executescript("""CREATE TABLE forecasts(
               id TEXT, league TEXT, native_match_id TEXT, kickoff_utc TEXT,
               captured_at_utc TEXT, payload_json TEXT);
-              CREATE TABLE settlements(forecast_id TEXT);""")
+              CREATE TABLE settlements(forecast_id TEXT);
+              CREATE TABLE m0720_github_push_proofs(
+                  forecast_id TEXT, github_server_event_utc TEXT);""")
         need(bool(fake.execute("SELECT COUNT(*) FROM forecasts").fetchone()),
              "SELFTEST_PENDING_TABLE")
         test_receipt = {"settlement_decisions": [],
@@ -433,6 +454,8 @@ def self_test():
         fake.execute("INSERT INTO forecasts VALUES(?,?,?,?,?,?)",
                      (fid, "POL", "m_fixture", frozen["kickoff_utc"],
                       "2026-11-19T10:00:00Z", json.dumps(frozen)))
+        fake.execute("INSERT INTO m0720_github_push_proofs VALUES(?,?)",
+                     (fid, "2026-11-19T10:02:00Z"))
         reason = "KICKOFF_CHANGED_REVIEW_REQUIRED"
         drift = {"forecast_id": fid, "league": "POL",
                  "native_match_id": "m_fixture", "reason": reason,
@@ -450,7 +473,11 @@ def self_test():
         need(report["frozen_not_yet_settled"] == 1 and
              report["kickoff_changed_review_cases"][0][
                  "provider_time_delta_minutes"] == 60 and
-             report["automatic_kickoff_override"] is False,
+             report["kickoff_changed_review_cases"][0][
+                 "provider_source_identity_and_cutoff_checks_pass"] is True
+             and report["kickoff_changed_review_cases"][0][
+                 "independent_final_90min_score_verified"] is False
+             and report["automatic_kickoff_override"] is False,
              "SELFTEST_DRIFT_READONLY_QUEUE")
         need(fake.execute("SELECT COUNT(*) FROM settlements").fetchone()[0] == 0,
              "SELFTEST_MUST_NOT_SETTLE")
@@ -463,6 +490,17 @@ def self_test():
                  "SELFTEST_BAD_DELTA_WRONG_FAILURE")
         else:
             need(False, "SELFTEST_FABRICATED_DELTA_ACCEPTED")
+        # Even a valid provider-reported kickoff is not independently verified.
+        # A late Github host event or missing attestation must fail closed.
+        fake.execute("UPDATE m0720_github_push_proofs SET github_server_event_utc=?",
+                     ("2026-11-22T22:00:00Z",))
+        try:
+            pending_settlement_review(fake, with_one)
+        except ValueError as exc:
+            need(str(exc) == "PENDING_HOST_PUBLICATION_NOT_BEFORE_CUTOFF",
+                 "SELFTEST_LATE_HOST_PROOF_WRONG_FAILURE")
+        else:
+            need(False, "SELFTEST_LATE_HOST_PROOF_ACCEPTED")
     print("KB3_HOLDOUT_READONLY_SELFTEST_PASS")
 
 
