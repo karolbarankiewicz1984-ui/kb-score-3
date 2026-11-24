@@ -9,22 +9,24 @@ import argparse
 from collections import Counter, defaultdict
 from datetime import datetime, timedelta, timezone
 import hashlib
+from itertools import combinations
 import json
 import math
 from pathlib import Path
 import sqlite3
+import sys
 
 ROOT = Path(__file__).resolve().parents[1]
-DB = ROOT / "data/forward_m0_720_eight/kb3_forward_eight.sqlite"
-RECEIPTS = ROOT / "data/pit_sidecar/m0_720_eight"
-PIT_AUDITS = ROOT / "data/audits"
+if not __package__:
+    sys.path.insert(0, str(ROOT))
+
+from src.kb3_step17_challenger_provenance import paired_settled_report_from_connection
+from src.kb3_step17_engine_comparison import FORWARD_TRIO, MIN_BLOCKS, MIN_FUTURE_PAIRED, iso_week
+
 MODEL = "M0_ELO_POISSON_RESEARCH_720TRAIN_V1"
 LABELS = ("1", "X", "2")
 LEAGUES = frozenset(("BEL", "ESP", "FRA", "GER", "ITA", "NED", "POL", "TUR"))
 EPS = 1e-15
-# Match src/kb3_step17_engine_comparison.py::MIN_BLOCKS. Never
-# advertise an interval merely because some weeks have elapsed.
-STEP17_MIN_WEEK_BLOCKS = 8
 
 
 def need(ok, why):
@@ -111,36 +113,40 @@ def bands(rows):
     return output
 
 
-def source_rows(db):
+def source_rows(db, *, as_of):
     rows = db.execute("""SELECT f.id, f.league, f.native_match_id, f.payload_json,
       f.kickoff_utc, f.captured_at_utc, s.outcome, s.observed_utc,
-      p.github_server_event_utc
+      p.github_server_event_utc, p.original_forecast_sha256,
+      f.params_sha256, m.parameters_sha256
       FROM forecasts f
+      JOIN model_meta m ON m.model=f.model
       JOIN settlements s ON s.forecast_id=f.id
       JOIN m0720_github_push_proofs p ON p.forecast_id=f.id
       WHERE f.model=? ORDER BY f.kickoff_utc, f.id""", (MODEL,)).fetchall()
     output = {}
     fixtures = set()
     for r in rows:
-        fid, league, native, raw, kick, capture, result, settled, host = r
+        fid, league, native, raw, kick, capture, result, settled, host, proof_sha, params_sha, model_sha = r
         need(league in LEAGUES and (league, native) not in fixtures, "FIXTURE_DRIFT")
         fixtures.add((league, native))
         f = json.loads(raw)
         need(f.get("model_version") == MODEL and f.get("league_country") == league
              and f.get("provider_match_id") == native and f.get("phase") == "EARLY"
-             and f.get("forecast_sha256") == fid and
+             and f.get("kickoff_utc") == kick and f.get("generated_at_utc") == capture
+             and f.get("params_sha256") == params_sha == model_sha
+             and f.get("forecast_sha256") == proof_sha == fid and
              sha({k: v for k, v in f.items() if k != "forecast_sha256"}) == fid,
              "FORECAST_HASH_OR_SCOPE_DRIFT")
         need(utc(capture) <= utc(host) <= utc(kick)-timedelta(minutes=90)
-             and utc(settled) >= utc(kick)+timedelta(hours=3),
+             and utc(kick)+timedelta(hours=3) <= utc(settled) <= as_of,
              "FREEZE_OR_SETTLEMENT_CLOCK_NOT_VERIFIED")
         output[fid] = {"league": league, "kick": kick, "captured": capture,
                        "settled": settled, "p": checked(f["p_1x2"]), "y": result}
     return output
 
 
-def latest_receipt():
-    files = sorted(RECEIPTS.glob("*/settle-*/RECEIPT.json"))
+def latest_receipt(root):
+    files = sorted((root / "data/pit_sidecar/m0_720_eight").glob("*/settle-*/RECEIPT.json"))
     need(bool(files), "M0_RECEIPT_MISSING")
     return files[-1], json.loads(files[-1].read_text(encoding="utf-8"))
 
@@ -155,6 +161,8 @@ def post_holdout_followup(rows, fit_ids, holdout_ids, *,
          "HOLDOUT_REVIEW_NOT_AFTER_FIT")
     forbidden = set(fit_ids) | set(holdout_ids)
     later = []
+    by_league = defaultdict(list)
+    by_week = defaultdict(list)
     other_postfit = 0
     for fid, row in rows.items():
         if fid in forbidden:
@@ -164,17 +172,23 @@ def post_holdout_followup(rows, fit_ids, holdout_ids, *,
             other_postfit += 1
         if (utc(row["captured"]) > utc(reviewed_at_utc)
                 and utc(row["kick"]) > utc(reviewed_at_utc)):
-            need(fid not in forbidden, "FOLLOWUP_FIT_OR_HOLDOUT_LEAKAGE")
-            later.append((row["p"], row["y"]))
-    raw = metrics(later)
-    calibrated = metrics([(rescale(p, temperature), y) for p, y in later])
+            pair = (row["p"], row["y"])
+            later.append(pair)
+            by_league[row["league"]].append(pair)
+            by_week[iso_week(row["kick"])].append(pair)
+
+    def score(sample):
+        return {"raw": metrics(sample),
+                "fixed_T_calibrated": metrics([(rescale(p, temperature), y) for p, y in sample])}
+
     return {
         "scope": "STRICT_NEW_FORECASTS_CREATED_AFTER_FIRST_HOLDOUT_REVIEW",
         "first_holdout_reviewed_at_utc": reviewed_at_utc,
         "other_postfit_settlements_not_used_in_original_holdout50": other_postfit,
         "strictly_new_after_review_n": len(later),
-        "raw": raw,
-        "fixed_T_calibrated": calibrated,
+        **score(later),
+        "per_league": {k: score(v) for k, v in sorted(by_league.items())},
+        "per_iso_week": {k: score(v) for k, v in sorted(by_week.items())},
         "temperature_reused_without_refit": temperature,
         "new_calibrator_trained": False,
         "holdout50_reused_as_training": False,
@@ -185,10 +199,12 @@ def post_holdout_followup(rows, fit_ids, holdout_ids, *,
 
 def valid_paired_ci_evidence(paired):
     """All three 1X2 engines require actual ISO-week block-bootstrap CI data."""
-    if not isinstance(paired, dict) or paired.get("common_n", 0) < 100:
+    if not isinstance(paired, dict) or paired.get("common_n", 0) < MIN_FUTURE_PAIRED:
         return False
     comparisons = paired.get("paired_deltas", {})
-    if len(comparisons) != 3:
+    weeks = len(paired.get("per_iso_week", {}))
+    if (weeks < MIN_BLOCKS or
+            set(comparisons) != {f"{a}__vs__{b}" for a, b in combinations(FORWARD_TRIO, 2)}):
         return False
     for pair in comparisons.values():
         if pair.get("common_n") != paired["common_n"]:
@@ -196,7 +212,7 @@ def valid_paired_ci_evidence(paired):
         for metric in ("brier_sum3", "log_loss", "top1_accuracy"):
             block = pair.get("deltas", {}).get(metric, {})
             ci = block.get("ci95")
-            if (block.get("week_blocks", 0) < STEP17_MIN_WEEK_BLOCKS
+            if (block.get("week_blocks") != weeks or block.get("n") != paired["common_n"]
                     or block.get("status") != "PAIRED_ISO_WEEK_BOOTSTRAP"
                     or not isinstance(ci, list) or len(ci) != 2
                     or not all(type(v) in (int, float) and math.isfinite(v)
@@ -204,6 +220,22 @@ def valid_paired_ci_evidence(paired):
                     or ci[0] > ci[1]):
                 return False
     return True
+
+
+def same_report_values(recomputed, saved):
+    """Counts and structure are exact. Scores can round differently across Python versions."""
+    if type(recomputed) is not type(saved):
+        return False
+    if isinstance(recomputed, dict):
+        return recomputed.keys() == saved.keys() and all(
+            same_report_values(value, saved[key]) for key, value in recomputed.items())
+    if isinstance(recomputed, list):
+        return len(recomputed) == len(saved) and all(
+            same_report_values(left, right) for left, right in zip(recomputed, saved))
+    if isinstance(recomputed, float):
+        return math.isfinite(recomputed) and math.isfinite(saved) and math.isclose(
+            recomputed, saved, rel_tol=0, abs_tol=1e-12)
+    return recomputed == saved
 
 
 def pending_settlement_review(db, receipt):
@@ -226,7 +258,8 @@ def pending_settlement_review(db, receipt):
     need(len(decision_index) == len(open_decisions), "DUPLICATE_PENDING_FORECAST")
     pending = db.execute("""SELECT f.id, f.league, f.native_match_id,
                     f.kickoff_utc, f.captured_at_utc, f.payload_json,
-                    p.github_server_event_utc
+                    p.github_server_event_utc, p.original_forecast_sha256,
+                    f.home_team_id, f.away_team_id, f.source_chain_sha256
           FROM forecasts f
           LEFT JOIN settlements s ON s.forecast_id=f.id
           LEFT JOIN m0720_github_push_proofs p ON p.forecast_id=f.id
@@ -238,7 +271,8 @@ def pending_settlement_review(db, receipt):
     needs_kickoff_check = []
     missing_results = []
     immature = []
-    for fid, league, native, kick, captured, raw, host_published in pending:
+    for (fid, league, native, kick, captured, raw, host_published, proof_sha, home, away,
+         source_chain) in pending:
         d = decision_index[fid]
         frozen = json.loads(raw)
         need(d["league"] == league and d["native_match_id"] == native
@@ -249,11 +283,15 @@ def pending_settlement_review(db, receipt):
              and frozen.get("league_country") == league
              and frozen.get("provider_match_id") == native
              and frozen.get("kickoff_utc") == kick
+             and frozen.get("generated_at_utc") == captured
+             and frozen.get("home_team_id") == home
+             and frozen.get("away_team_id") == away
+             and frozen.get("source_chain_sha256") == source_chain
              and frozen.get("model_version") == MODEL,
              "PENDING_FROZEN_SOURCE_INTEGRITY_FAIL")
         lead = (utc(kick) - utc(captured)).total_seconds() / 60
         need(lead > 90, "PENDING_FORECAST_FROZEN_TOO_LATE")
-        need(host_published is not None and
+        need(proof_sha == fid and host_published is not None and
              utc(captured) <= utc(host_published) <=
              utc(kick) - timedelta(minutes=90),
              "PENDING_HOST_PUBLICATION_NOT_BEFORE_CUTOFF")
@@ -285,6 +323,10 @@ def pending_settlement_review(db, receipt):
             needs_kickoff_check.append({**case,
                 "state": "EXTERNAL_OFFICIAL_TIME_AND_FINAL_RESULT_REVIEW_REQUIRED",
                 "provider_source_identity_and_cutoff_checks_pass": source_review_pass,
+                "frozen_home_team_id": home,
+                "frozen_away_team_id": away,
+                "frozen_source_chain_sha256": source_chain,
+                "native_id_team_name_mapping_verified": False,
                 "independent_official_fixture_change_verified": False,
                 "independent_final_90min_score_verified": False,
                 "provider_revised_kickoff_utc": revised,
@@ -323,8 +365,12 @@ def pending_settlement_review(db, receipt):
 
 
 def review(root=ROOT):
-    need(DB.is_file(), "SQLITE_NOT_FOUND")
-    uri = DB.resolve().as_uri()+"?mode=ro"
+    root = Path(root).resolve()
+    path = root / "data/forward_m0_720_eight/kb3_forward_eight.sqlite"
+    need(path.is_file(), "SQLITE_NOT_FOUND")
+    receipt_path, receipt = latest_receipt(root)
+    run_at = utc(receipt["run_utc"])
+    uri = path.as_uri()+"?mode=ro"
     with sqlite3.connect(uri, uri=True) as db:
         db.execute("PRAGMA query_only=ON")
         need(db.execute("PRAGMA integrity_check").fetchone()[0] == "ok",
@@ -334,7 +380,7 @@ def review(root=ROOT):
                              production_approved FROM m0720_calibrators""").fetchall()
         reviews = db.execute("""SELECT review_sha256, candidate_sha256,
               holdout_n, raw_log_loss, calibrated_log_loss, raw_brier_sum3,
-              calibrated_brier_sum3, payload_json, production_approved
+              calibrated_brier_sum3, payload_json, production_approved, reviewed_at_utc
               FROM m0720_holdout_reviews""").fetchall()
         need(len(fits) == len(reviews) == 1, "EXPECTED_EXACTLY_ONE_FIT_AND_REVIEW")
         fit = fits[0]
@@ -345,6 +391,14 @@ def review(root=ROOT):
         need(sha(fit_body) == fit[0] == h[1]
              and sha(h_body) == h[0] and
              h_body["candidate_sha256"] == fit[0], "IMMUTABLE_HASH_CHANGED")
+        need(fit_body["fitted_at_utc"] == fit[1]
+             and fit_body["fitted_temperature"] == fit[2]
+             and h_body["reviewed_at_utc"] == h[9]
+             and fit_body["model"] == h_body["model"] == MODEL
+             and fit_body["phase"] == h_body["phase"] == "EARLY"
+             and fit_body["scope"] == h_body["scope"]
+             and fit_body["production_approved"] is h_body["production_approved"] is False
+             and utc(fit[1]) < utc(h[9]) <= run_at, "CALIBRATION_METADATA_OR_CLOCK_DRIFT")
         fit_ids = fit_body["training_forecast_ids"]
         holdout_ids = h_body["holdout_forecast_ids"]
         need(len(fit_ids) == len(set(fit_ids)) == 100 and
@@ -352,12 +406,15 @@ def review(root=ROOT):
              not set(fit_ids).intersection(holdout_ids) and
              sha(fit_ids) == fit_body["training_ids_sha256"] and
              sha(holdout_ids) == h_body["holdout_ids_sha256"], "COHORT_OR_FIT_LEAKAGE")
-        rows = source_rows(db)
+        rows = source_rows(db, as_of=run_at)
+        need(all(fid in rows and utc(rows[fid]["settled"]) <= utc(fit[1]) for fid in fit_ids),
+             "FIT_ROW_NOT_VERIFIED_BEFORE_FIT")
         need(all(x in rows for x in holdout_ids), "HOLDOUT_ROW_OR_HOST_PROOF_MISSING")
         for fid in holdout_ids:
             row = rows[fid]
             need(utc(row["captured"]) > utc(fit[1]) and
                  utc(row["kick"]) > utc(fit[1]), "HOLDOUT_CREATED_BEFORE_FIT")
+            need(utc(row["settled"]) <= utc(h[9]), "HOLDOUT_RESULT_AFTER_REVIEW")
         sample = [rows[fid] for fid in holdout_ids]
         raw_rows = [(x["p"], x["y"]) for x in sample]
         post_rows = [(rescale(x["p"], fit[2]), x["y"]) for x in sample]
@@ -377,7 +434,6 @@ def review(root=ROOT):
         by_league = defaultdict(list)
         for x in all_rows:
             by_league[x["league"]].append((x["p"], x["y"]))
-        receipt_path, receipt = latest_receipt()
         settlement_queue = pending_settlement_review(db, receipt)
         need(len(all_rows) == receipt["calibration_readiness"]["eligible_settled_unique"],
              "RECEIPT_VS_DB_COHORT_DRIFT")
@@ -385,21 +441,23 @@ def review(root=ROOT):
              + len(holdout_ids) ==
              receipt["calibration_readiness"]["post_fit_newly_created_settled_verified"],
              "POSTFIT_COHORT_VS_RECEIPT_DRIFT")
-        paired = receipt["step17_paired_same_fixture_readiness"]["exact_three_engine_comparison"]
-        need(paired["common_n"] > 0 and
-             all(paired["scores"][key]["n"] == paired["common_n"]
-                 for key in ("M0_ELO_POISSON_720TRAIN", "CATBOOST_NO_XG", "ELO_ONLY")),
+        paired_review = paired_settled_report_from_connection(db)
+        paired = paired_review["exact_three_engine_comparison"]
+        saved_paired = receipt["step17_paired_same_fixture_readiness"]["exact_three_engine_comparison"]
+        comparison_fields = ["common_n", "scores", "per_league", "paired_deltas"]
+        if "per_iso_week" in saved_paired:
+            comparison_fields.append("per_iso_week")
+        need(all(same_report_values(paired[key], saved_paired[key]) for key in comparison_fields),
              "STEP17_SAME_GAME_COMPARISON_DRIFT")
-        weeks = paired["paired_deltas"]["M0_ELO_POISSON_720TRAIN__vs__CATBOOST_NO_XG"][
-            "deltas"]["brier_sum3"]["week_blocks"]
-        latest_pit = sorted(PIT_AUDITS.glob("STEP14_INDEPENDENT_RECHECK_*.json"))[-1]
+        weeks = len(paired["per_iso_week"])
+        latest_pit = sorted((root / "data/audits").glob("STEP14_INDEPENDENT_RECHECK_*.json"))[-1]
         pit = json.loads(latest_pit.read_text(encoding="utf-8"))
         result = {
             "schema": "kb3-readonly-holdout-weekly-research-v1",
-            "source_receipt": str(receipt_path.relative_to(ROOT)),
+            "source_receipt": str(receipt_path.relative_to(root)),
             "source_holdout_review_sha256": h[0],
             "source_calibrator_sha256": fit[0],
-            "source_pit_audit": str(latest_pit.relative_to(ROOT)),
+            "source_pit_audit": str(latest_pit.relative_to(root)),
             "research_only": True,
             "production_approved": False,
             "protected_eng_test_read": False,
@@ -422,9 +480,15 @@ def review(root=ROOT):
                 "common_n": paired["common_n"], "independent_week_blocks": weeks,
                 "scores": paired["scores"],
                 "per_league": paired["per_league"],
-                "minimum_independent_week_blocks_for_ci": STEP17_MIN_WEEK_BLOCKS,
+                "per_iso_week": paired["per_iso_week"],
+                "paired_deltas": paired["paired_deltas"],
+                "eligible_m0_settled_n": len(all_rows),
+                "eligible_m0_outside_trio_n": len(all_rows)-paired["common_n"],
+                "engines_without_frozen_predictions_in_comparison": [
+                    engine for engine, version in paired_review["candidate_versions"].items() if version is None],
+                "minimum_independent_week_blocks_for_ci": MIN_BLOCKS,
                 "missing_independent_week_blocks_for_ci": max(
-                    0, STEP17_MIN_WEEK_BLOCKS-weeks),
+                    0, MIN_BLOCKS-weeks),
                 "confidence_intervals_ready": valid_paired_ci_evidence(paired),
                 "winner_selected": False
             },
@@ -459,14 +523,18 @@ def self_test():
         "holdout": {"captured": "2026-11-04T12:00:00Z",
                     "kick": "2026-11-05T18:00:00Z", "p": p0, "y": "X"},
         "new": {"captured": "2026-11-12T12:00:00Z",
-                "kick": "2026-11-13T18:00:00Z", "p": p0, "y": "1"}}
+                "kick": "2026-11-13T18:00:00Z", "p": p0, "y": "1", "league": "POL"},
+        "frozen_at_review": {"captured": "2026-11-10T00:00:00Z",
+                             "kick": "2026-11-11T18:00:00Z", "p": p0, "y": "2"}}
     future = post_holdout_followup(
         follow_rows, ["fit"], ["holdout"],
         fitted_at_utc="2026-11-03T12:00:00Z",
         reviewed_at_utc="2026-11-10T00:00:00Z", temperature=0.7)
     need(future["strictly_new_after_review_n"] == 1
-         and future["other_postfit_settlements_not_used_in_original_holdout50"] == 1
+         and future["other_postfit_settlements_not_used_in_original_holdout50"] == 2
          and future["raw"]["top1_correct"] == 1
+         and future["per_league"]["POL"]["raw"]["n"] == 1
+         and future["per_iso_week"]["2026-W46"]["fixed_T_calibrated"]["n"] == 1
          and future["new_calibrator_trained"] is False,
          "SELFTEST_STRICT_POSTHOLDOUT_COHORT")
     need(post_holdout_followup(
@@ -477,11 +545,12 @@ def self_test():
          "SELFTEST_REVIEW_TIME_CUTOFF")
 
     metric_block = lambda n, ci: {
-        "week_blocks": n, "ci95": ci,
+        "week_blocks": n, "ci95": ci, "n": 135,
         "status": ("PAIRED_ISO_WEEK_BOOTSTRAP" if ci is not None
                    else "INSUFFICIENT_INDEPENDENT_WEEKS")}
     def paired_sample(n, ci):
-        return {"common_n": 135, "paired_deltas": {
+        return {"common_n": 135, "per_iso_week": {f"2026-W{i:02d}": {} for i in range(1, n+1)},
+                "paired_deltas": {
             p: {"common_n": 135, "deltas": {
                  m: metric_block(n, ci)
                  for m in ("brier_sum3", "log_loss", "top1_accuracy")}}
@@ -494,13 +563,23 @@ def self_test():
          "SELFTEST_NO_FAKE_CI_WITH_EIGHT_WEEKS")
     need(valid_paired_ci_evidence(paired_sample(8, [-.01, .01])),
          "SELFTEST_EIGHT_WEEKS_VALID_CI_NOT_RECOGNIZED")
+    wrong_pair = paired_sample(8, [-.01, .01])
+    comparisons = wrong_pair["paired_deltas"]
+    comparisons["UNRELATED_ENGINES"] = comparisons.pop(next(iter(comparisons)))
+    need(not valid_paired_ci_evidence(wrong_pair), "SELFTEST_WRONG_ENGINE_PAIR_ACCEPTED")
+    need(same_report_values({"loss": [0.25, 0.5], "n": 135},
+                            {"loss": [0.25, 0.5 + 1e-15], "n": 135})
+         and not same_report_values({"loss": 0.5}, {"loss": 0.51})
+         and not same_report_values({"n": 135}, {"n": 134}),
+         "SELFTEST_RECEIPT_ROUNDING_OR_VALUE_DRIFT")
     with sqlite3.connect(":memory:") as fake:
         fake.executescript("""CREATE TABLE forecasts(
               id TEXT, league TEXT, native_match_id TEXT, kickoff_utc TEXT,
-              captured_at_utc TEXT, payload_json TEXT);
+              captured_at_utc TEXT, payload_json TEXT, home_team_id TEXT, away_team_id TEXT,
+              source_chain_sha256 TEXT);
               CREATE TABLE settlements(forecast_id TEXT);
               CREATE TABLE m0720_github_push_proofs(
-                  forecast_id TEXT, github_server_event_utc TEXT);""")
+                  forecast_id TEXT, github_server_event_utc TEXT, original_forecast_sha256 TEXT);""")
         need(bool(fake.execute("SELECT COUNT(*) FROM forecasts").fetchone()),
              "SELFTEST_PENDING_TABLE")
         test_receipt = {"settlement_decisions": [],
@@ -518,14 +597,17 @@ def self_test():
             need(False, "SELFTEST_OPEN_COUNT_MUST_FAIL_CLOSED")
         frozen = {"model_version": MODEL, "league_country": "POL",
                   "provider_match_id": "m_fixture",
+                  "generated_at_utc": "2026-11-19T10:00:00Z",
+                  "home_team_id": "t_home", "away_team_id": "t_away",
+                  "source_chain_sha256": "a"*64,
                   "kickoff_utc": "2026-11-21T20:00:00Z"}
         fid = sha(frozen)
         frozen["forecast_sha256"] = fid
-        fake.execute("INSERT INTO forecasts VALUES(?,?,?,?,?,?)",
+        fake.execute("INSERT INTO forecasts VALUES(?,?,?,?,?,?,?,?,?)",
                      (fid, "POL", "m_fixture", frozen["kickoff_utc"],
-                      "2026-11-19T10:00:00Z", json.dumps(frozen)))
-        fake.execute("INSERT INTO m0720_github_push_proofs VALUES(?,?)",
-                     (fid, "2026-11-19T10:02:00Z"))
+                      frozen["generated_at_utc"], json.dumps(frozen), "t_home", "t_away", "a"*64))
+        fake.execute("INSERT INTO m0720_github_push_proofs VALUES(?,?,?)",
+                     (fid, "2026-11-19T10:02:00Z", fid))
         reason = "KICKOFF_CHANGED_REVIEW_REQUIRED"
         drift = {"forecast_id": fid, "league": "POL",
                  "native_match_id": "m_fixture", "reason": reason,
@@ -533,6 +615,9 @@ def self_test():
                  "provider_reported_kickoff_utc": "2026-11-21T21:00:00Z",
                  "kickoff_delta_minutes": 60.0,
                  "original_forecast_capture_utc": "2026-11-19T10:00:00Z",
+                 "provider_home_id_matches_original": True,
+                 "provider_away_id_matches_original": True,
+                 "original_capture_before_earliest_90m_cutoff": True,
                  "manual_review_required": True,
                  "automatic_settlement_permitted": False}
         with_one = dict(test_receipt,
@@ -540,13 +625,13 @@ def self_test():
                         settlement_reason_counts={reason: 1},
                         not_yet_settled=1)
         report = pending_settlement_review(fake, with_one)
-        need(report["frozen_not_yet_settled"] == 1 and
-             report["kickoff_changed_review_cases"][0][
-                 "provider_time_delta_minutes"] == 60 and
-             report["kickoff_changed_review_cases"][0][
-                 "provider_source_identity_and_cutoff_checks_pass"] is True
-             and report["kickoff_changed_review_cases"][0][
-                 "independent_final_90min_score_verified"] is False
+        case = report["kickoff_changed_review_cases"][0]
+        need(report["frozen_not_yet_settled"] == 1
+             and case["provider_time_delta_minutes"] == 60
+             and case["provider_source_identity_and_cutoff_checks_pass"] is True
+             and case["frozen_home_team_id"] == "t_home" and case["frozen_away_team_id"] == "t_away"
+             and case["native_id_team_name_mapping_verified"] is False
+             and case["independent_final_90min_score_verified"] is False
              and report["automatic_kickoff_override"] is False,
              "SELFTEST_DRIFT_READONLY_QUEUE")
         need(fake.execute("SELECT COUNT(*) FROM settlements").fetchone()[0] == 0,
@@ -562,15 +647,17 @@ def self_test():
             need(False, "SELFTEST_FABRICATED_DELTA_ACCEPTED")
         # Even a valid provider-reported kickoff is not independently verified.
         # A late Github host event or missing attestation must fail closed.
-        fake.execute("UPDATE m0720_github_push_proofs SET github_server_event_utc=?",
-                     ("2026-11-22T22:00:00Z",))
-        try:
-            pending_settlement_review(fake, with_one)
-        except ValueError as exc:
-            need(str(exc) == "PENDING_HOST_PUBLICATION_NOT_BEFORE_CUTOFF",
-                 "SELFTEST_LATE_HOST_PROOF_WRONG_FAILURE")
-        else:
-            need(False, "SELFTEST_LATE_HOST_PROOF_ACCEPTED")
+        for host_time, proof_sha in (("2026-11-22T22:00:00Z", fid),
+                                    (None, fid), ("2026-11-19T10:02:00Z", "other")):
+            fake.execute("UPDATE m0720_github_push_proofs SET github_server_event_utc=?, original_forecast_sha256=?",
+                         (host_time, proof_sha))
+            try:
+                pending_settlement_review(fake, with_one)
+            except ValueError as exc:
+                need(str(exc) == "PENDING_HOST_PUBLICATION_NOT_BEFORE_CUTOFF",
+                     "SELFTEST_HOST_PROOF_WRONG_FAILURE")
+            else:
+                need(False, "SELFTEST_INVALID_HOST_PROOF_ACCEPTED")
     print("KB3_HOLDOUT_READONLY_SELFTEST_PASS")
 
 

@@ -10,11 +10,19 @@ on:
   pull_request:
     paths:
       - scripts/kb3_review_postfit_readonly.py
+      - scripts/kb3_review_shifted_kickoff_source.py
+      - tests/test_kb3_review_shifted_kickoff_source.py
+      - src/kb3_step17_challenger_provenance.py
+      - src/kb3_step17_engine_comparison.py
       - .github/workflows/kb3-holdout50-weekly-research.yml
   push:
     branches: [main]
     paths:
       - scripts/kb3_review_postfit_readonly.py
+      - scripts/kb3_review_shifted_kickoff_source.py
+      - tests/test_kb3_review_shifted_kickoff_source.py
+      - src/kb3_step17_challenger_provenance.py
+      - src/kb3_step17_engine_comparison.py
       - .github/workflows/kb3-holdout50-weekly-research.yml
 permissions:
   contents: read
@@ -32,8 +40,12 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      - name: Strict standalone arithmetic checks
-        run: python scripts/kb3_review_postfit_readonly.py --self-test
+      - name: Install the ledger reader dependency
+        run: python -m pip install --disable-pip-version-check 'cryptography>=42,<47'
+      - name: Run strict audit regression checks
+        run: |
+          python scripts/kb3_review_postfit_readonly.py --self-test
+          python -m unittest discover -s tests -p 'test_kb3_review_shifted_kickoff_source.py' -v
       - name: Audit first genuine post-FIT HOLDOUT and existing pairwise forecasts
         run: |
           python scripts/kb3_review_postfit_readonly.py --output /tmp/KB3_HOLDOUT50_WEEKLY.json

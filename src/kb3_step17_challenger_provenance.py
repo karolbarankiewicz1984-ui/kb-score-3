@@ -164,26 +164,50 @@ def paired_settled_report(db_path):
     """Only same original M0 forecast, settled truth, attested *each* model."""
     with connect_db(db_path) as db:
         ensure(db)
-        sql="""SELECT f.id,f.league,f.native_match_id,f.kickoff_utc,f.captured_at_utc,
+        return paired_settled_report_from_connection(db)
+
+
+def paired_settled_report_from_connection(db):
+    """Recompute the paired report from an existing ledger without writing to it."""
+    rows=db.execute("""SELECT f.id,f.league,f.native_match_id,f.kickoff_utc,f.captured_at_utc,
                   f.payload_json,s.outcome,s.observed_utc,
-                  c.challenger_sha256,c.model_version,c.engine,c.payload_json
+                  c.challenger_sha256,c.model_version,c.engine,c.payload_json,
+                  p.original_forecast_sha256,p.github_server_event_utc,p.github_event_id,
+                  pr.source_m0_forecast_sha256,pr.github_server_artifact_created_utc,
+                  pr.github_artifact_id,pr.model_version
             FROM forecasts f
             JOIN settlements s ON s.forecast_id=f.id
             JOIN m0720_github_push_proofs p ON p.forecast_id=f.id
             JOIN step17_frozen_challengers c ON c.source_m0_forecast_sha256=f.id
             JOIN step17_challenger_host_proofs pr ON pr.challenger_sha256=c.challenger_sha256
-            ORDER BY f.kickoff_utc,f.id,c.engine"""
-        rows=db.execute(sql).fetchall()
+            ORDER BY f.kickoff_utc,f.id,c.engine""").fetchall()
     models={"ELO_ONLY":ELO,"M0_ELO_POISSON_720TRAIN":MODEL,
             "CATBOOST_NO_XG":CAT,"CATBOOST_WITH_XG":None,"ENSEMBLE":None}
     games={}
-    for fid,league,mid,kick,captured,fjson,y,obs,child_id,version,engine,cjson in rows:
+    for (fid,league,mid,kick,captured,fjson,y,obs,child_id,version,engine,cjson,
+            parent_proof_id,parent_host,parent_event,child_proof_parent,child_host,
+            child_artifact,child_proof_version) in rows:
         f=json.loads(fjson);c=json.loads(cjson)
         require(hashobj({k:v for k,v in f.items() if k!="forecast_sha256"})==fid
                 and hashobj({k:v for k,v in c.items() if k!="challenger_sha256"})==child_id
+                and f.get("forecast_sha256")==fid and c.get("challenger_sha256")==child_id
                 and c["source_m0_forecast_sha256"]==fid
-                and c["model_version"]==version==models[engine],
+                and c.get("engine")==engine
+                and c["model_version"]==version==models.get(engine),
                 "STEP17_PAIR_SHA_OR_MODEL_CHANGED")
+        require((f.get("league_country"),f.get("provider_match_id"),f.get("kickoff_utc"),
+                 f.get("generated_at_utc"),f.get("phase"),f.get("model_version"))==
+                (league,mid,kick,captured,"EARLY",MODEL)
+                and (c.get("league_country"),c.get("provider_match_id"),c.get("kickoff_utc"),
+                     c.get("frozen_at_utc"),c.get("phase"),c.get("horizon"))==
+                (league,mid,kick,captured,"EARLY","EARLY_90MIN_OR_MORE")
+                and c["feature_sha256"]==f["feature_sha256"]
+                and c["source_chain_sha256"]==f["source_chain_sha256"],
+                "STEP17_PAIR_FIXTURE_OR_CUTOFF_CHANGED")
+        require(parent_proof_id==child_proof_parent==fid and child_proof_version==version
+                and parent_event=="actions-artifact:"+child_artifact
+                and as_utc(captured)<=as_utc(parent_host)==as_utc(child_host)<=as_utc(kick)-LEAD,
+                "STEP17_PAIR_HOST_PROOF_CHANGED")
         key=(league,mid)
         if key not in games:
             games[key]={"fixture_id":mid,"league":league,

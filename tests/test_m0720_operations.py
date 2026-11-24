@@ -171,6 +171,34 @@ class SettlementTests(unittest.TestCase):
         out=self.settle(bad);self.assertEqual(out['settlement_reason_counts'],{'RESULT_NATIVE_MATCH_ID_MISMATCH':1})
         self.assertEqual(out['total_settlements'],0)
 
+    def test_malformed_provider_team_does_not_block_valid_settlements(self):
+        earlier, later = sorted(build()[0][:2], key=lambda f: f['kickoff_utc'])
+        freeze_sqlite(self.db,[earlier,later],param_sha=self.sha,manifest_sha=self.manifest,now=NOW)
+        results = {}
+        for fixture in (earlier,later):
+            key = (fixture['league_country'],fixture['provider_match_id'])
+            results[key] = dict(self.result,id=key[1],time_utc=fixture['kickoff_utc'],
+                               home_team={'id':fixture['home_team_id']},
+                               away_team={'id':fixture['away_team_id']})
+        bad_key = (earlier['league_country'],earlier['provider_match_id'])
+        results[bad_key]['home_team'] = None
+        out = settle_sqlite(self.db,results,observed_at=self.ko+timedelta(days=7),
+                            source_chain_sha='a'*64)
+        self.assertEqual(out['new_settlements'],1)
+        self.assertEqual(out['settlement_reason_counts']['RESULT_TEAM_SIDE_MISMATCH'],1)
+        with sqlite3.connect(self.db) as db:
+            self.assertEqual(db.execute('SELECT native_match_id FROM settlements').fetchall(),
+                             [(later['provider_match_id'],)])
+
+    def test_result_cannot_use_fixture_index_different_from_frozen_hash(self):
+        with sqlite3.connect(self.db) as db:
+            db.execute('DROP TRIGGER research_forecast_no_update')
+            db.execute("UPDATE forecasts SET home_team_id='wrong-team'")
+        with self.assertRaisesRegex(ValueError,'ORIGINAL_FROZEN_FIXTURE_INDEX_DRIFT'):
+            self.settle(dict(self.result,home_team={'id':'wrong-team'}))
+        with sqlite3.connect(self.db) as db:
+            self.assertEqual(db.execute('SELECT COUNT(*) FROM settlements').fetchone()[0],0)
+
     def test_utc_spelling_same_instant_is_accepted(self):
         self.result['time_utc']=self.ko.isoformat()
         self.assertEqual(self.settle()['new_settlements'],1)

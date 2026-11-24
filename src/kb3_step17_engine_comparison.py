@@ -12,6 +12,7 @@ import hashlib,json,math,random
 
 ENGINES=("ELO_ONLY","M0_ELO_POISSON_720TRAIN","CATBOOST_NO_XG",
          "CATBOOST_WITH_XG","ENSEMBLE")
+FORWARD_TRIO=ENGINES[:3]
 LABELS=("1","X","2")
 MIN_FUTURE_PAIRED=100
 MIN_BLOCKS=8
@@ -124,6 +125,10 @@ def check_payload(payload):
         validated.append(row)
     return validated
 
+def iso_week(kickoff_utc):
+    week=utc(kickoff_utc).isocalendar()
+    return f"{week.year}-W{week.week:02d}"
+
 def paired_ci(rows,left,right,metric_name,*,replicates=1200,seed=20261029):
     """Same-game paired bootstrap, resampling whole ISO weeks, not outcomes independently."""
     check(metric_name in ("log_loss","brier_sum3","top1_accuracy"),
@@ -131,8 +136,7 @@ def paired_ci(rows,left,right,metric_name,*,replicates=1200,seed=20261029):
     check(type(replicates) is int and 100<=replicates<=10000,"BOOTSTRAP_REPS")
     values=defaultdict(list)
     for g in rows:
-        week=utc(g["kickoff_utc"]).isocalendar()
-        key=f"{week.year}-W{week.week:02d}"
+        key=iso_week(g["kickoff_utc"])
         p=g["predictions"]
         a=loss(p[left]["p_1x2"],g["outcome_1x2"])
         b=loss(p[right]["p_1x2"],g["outcome_1x2"])
@@ -190,13 +194,13 @@ def compare(payload,*,replicates=1200):
                            for metric_name in ("log_loss","brier_sum3","top1_accuracy")}
                            if pair else {}}
     # Exact three-engine intersection, never marginal pairwise counts.
-    trio=("ELO_ONLY","M0_ELO_POISSON_720TRAIN","CATBOOST_NO_XG")
+    trio=FORWARD_TRIO
     triplets=[g for g in games if all(e in g["predictions"] for e in trio)]
-    triplet_leagues={}
-    for league in sorted({g["league"] for g in triplets}):
-        group=[g for g in triplets if g["league"]==league]
-        triplet_leagues[league]={"common_n":len(group),
-            "scores":{e:metric(group,e) for e in trio}}
+    by_league=defaultdict(list)
+    by_week=defaultdict(list)
+    for game in triplets:
+        by_league[game["league"]].append(game)
+        by_week[iso_week(game["kickoff_utc"])].append(game)
     triplet_pairs={}
     for i,left in enumerate(trio):
         for right in trio[i+1:]:
@@ -207,7 +211,10 @@ def compare(payload,*,replicates=1200):
                           if triplets else {}}
     triplet_summary={"common_n":len(triplets),
         "scores":{e:metric(triplets,e) for e in trio},
-        "per_league":triplet_leagues,
+        "per_league":{key:{"common_n":len(group),"scores":{e:metric(group,e) for e in trio}}
+                      for key,group in sorted(by_league.items())},
+        "per_iso_week":{key:{"common_n":len(group),"scores":{e:metric(group,e) for e in trio}}
+                        for key,group in sorted(by_week.items())},
         "paired_deltas":triplet_pairs,
         "scope":"SAME_EXACT_THREE_ENGINE_FIXTURES_ONLY",
         "research_only":True,"winner_auto_selected":False}
