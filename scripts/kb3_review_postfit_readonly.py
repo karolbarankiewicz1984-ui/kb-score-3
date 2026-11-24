@@ -145,6 +145,44 @@ def latest_receipt():
     return files[-1], json.loads(files[-1].read_text(encoding="utf-8"))
 
 
+def post_holdout_followup(rows, fit_ids, holdout_ids, *,
+                          fitted_at_utc, reviewed_at_utc, temperature):
+    """Score strictly new untouched 1X2 forecasts after locked HOLDOUT50 review.
+
+    Never train, re-fit T, or make a formal GATE16 promotion decision.
+    """
+    need(utc(reviewed_at_utc) > utc(fitted_at_utc),
+         "HOLDOUT_REVIEW_NOT_AFTER_FIT")
+    forbidden = set(fit_ids) | set(holdout_ids)
+    later = []
+    other_postfit = 0
+    for fid, row in rows.items():
+        if fid in forbidden:
+            continue
+        if (utc(row["captured"]) > utc(fitted_at_utc)
+                and utc(row["kick"]) > utc(fitted_at_utc)):
+            other_postfit += 1
+        if (utc(row["captured"]) > utc(reviewed_at_utc)
+                and utc(row["kick"]) > utc(reviewed_at_utc)):
+            need(fid not in forbidden, "FOLLOWUP_FIT_OR_HOLDOUT_LEAKAGE")
+            later.append((row["p"], row["y"]))
+    raw = metrics(later)
+    calibrated = metrics([(rescale(p, temperature), y) for p, y in later])
+    return {
+        "scope": "STRICT_NEW_FORECASTS_CREATED_AFTER_FIRST_HOLDOUT_REVIEW",
+        "first_holdout_reviewed_at_utc": reviewed_at_utc,
+        "other_postfit_settlements_not_used_in_original_holdout50": other_postfit,
+        "strictly_new_after_review_n": len(later),
+        "raw": raw,
+        "fixed_T_calibrated": calibrated,
+        "temperature_reused_without_refit": temperature,
+        "new_calibrator_trained": False,
+        "holdout50_reused_as_training": False,
+        "insufficient_or_small_followup_sample_is_not_gate16_pass": True,
+        "production_approved": False,
+    }
+
+
 def valid_paired_ci_evidence(paired):
     """All three 1X2 engines require actual ISO-week block-bootstrap CI data."""
     if not isinstance(paired, dict) or paired.get("common_n", 0) < 100:
@@ -325,6 +363,9 @@ def review(root=ROOT):
         post_rows = [(rescale(x["p"], fit[2]), x["y"]) for x in sample]
         raw = metrics(raw_rows)
         calibrated = metrics(post_rows)
+        followup = post_holdout_followup(
+            rows, fit_ids, holdout_ids, fitted_at_utc=fit[1],
+            reviewed_at_utc=h_body["reviewed_at_utc"], temperature=fit[2])
         for name, calc, db_value, saved in [
             ("raw_ll", raw["log_loss"], h[3], h_body["holdout_raw"]["log_loss"]),
             ("post_ll", calibrated["log_loss"], h[4], h_body["holdout_calibrated"]["log_loss"]),
@@ -340,6 +381,10 @@ def review(root=ROOT):
         settlement_queue = pending_settlement_review(db, receipt)
         need(len(all_rows) == receipt["calibration_readiness"]["eligible_settled_unique"],
              "RECEIPT_VS_DB_COHORT_DRIFT")
+        need(followup["other_postfit_settlements_not_used_in_original_holdout50"]
+             + len(holdout_ids) ==
+             receipt["calibration_readiness"]["post_fit_newly_created_settled_verified"],
+             "POSTFIT_COHORT_VS_RECEIPT_DRIFT")
         paired = receipt["step17_paired_same_fixture_readiness"]["exact_three_engine_comparison"]
         need(paired["common_n"] > 0 and
              all(paired["scores"][key]["n"] == paired["common_n"]
@@ -368,6 +413,7 @@ def review(root=ROOT):
                 "leakage_checks": "PASS",
                 "report_saved_immutably": True
             },
+            "post_holdout_forward_followup": followup,
             "m0_overall": metrics([(x["p"], x["y"]) for x in all_rows]),
             "m0_per_league": {k: metrics(v) for k, v in sorted(by_league.items())},
             "m0_top1_confidence_bands": bands([(x["p"], x["y"]) for x in all_rows]),
@@ -406,6 +452,30 @@ def self_test():
     need(metrics([(p, "1")])["top1_accuracy"] == 1, "SELFTEST_SCORE")
     need(bands([(p, "1")])["60-70"]["n"] == 1, "SELFTEST_BAND")
     need(sha(["a"]) == hashlib.sha256(b'["a"]').hexdigest(), "SELFTEST_HASH")
+    p0 = {"1": 0.6, "X": 0.3, "2": 0.1}
+    follow_rows = {
+        "fit": {"captured": "2026-11-01T12:00:00Z",
+                "kick": "2026-11-01T18:00:00Z", "p": p0, "y": "1"},
+        "holdout": {"captured": "2026-11-04T12:00:00Z",
+                    "kick": "2026-11-05T18:00:00Z", "p": p0, "y": "X"},
+        "new": {"captured": "2026-11-12T12:00:00Z",
+                "kick": "2026-11-13T18:00:00Z", "p": p0, "y": "1"}}
+    future = post_holdout_followup(
+        follow_rows, ["fit"], ["holdout"],
+        fitted_at_utc="2026-11-03T12:00:00Z",
+        reviewed_at_utc="2026-11-10T00:00:00Z", temperature=0.7)
+    need(future["strictly_new_after_review_n"] == 1
+         and future["other_postfit_settlements_not_used_in_original_holdout50"] == 1
+         and future["raw"]["top1_correct"] == 1
+         and future["new_calibrator_trained"] is False,
+         "SELFTEST_STRICT_POSTHOLDOUT_COHORT")
+    need(post_holdout_followup(
+        follow_rows, ["fit"], ["holdout"],
+        fitted_at_utc="2026-11-03T12:00:00Z",
+        reviewed_at_utc="2026-11-20T00:00:00Z",
+        temperature=0.7)["strictly_new_after_review_n"] == 0,
+         "SELFTEST_REVIEW_TIME_CUTOFF")
+
     metric_block = lambda n, ci: {
         "week_blocks": n, "ci95": ci,
         "status": ("PAIRED_ISO_WEEK_BOOTSTRAP" if ci is not None
@@ -522,6 +592,8 @@ def main():
                "m0_per_league": report["m0_per_league"],
                "m0_top1_confidence_bands": report["m0_top1_confidence_bands"],
                "three_engine": report["step17_exact_three_engine_paired"],
+               "post_holdout_forward_followup": report[
+                   "post_holdout_forward_followup"],
                "pending_settlement_review": {
                     "frozen_not_yet_settled": report["pending_settlement_review"][
                         "frozen_not_yet_settled"],
