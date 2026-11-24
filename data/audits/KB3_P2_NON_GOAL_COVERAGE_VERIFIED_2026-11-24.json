@@ -1,0 +1,83 @@
+{
+  "schema": "kb3-p2-exact-github-host-audited-observation-coverage-checkpoint-v1",
+  "date": "2026-11-24",
+  "source": "GitHub Actions original historical SQLite restored only after exact committed gzip/raw SHA256/size",
+  "source_sqlite_sha256": "daef1627aaa2b355b8452dc5b170b1474a8775a14600aef1d7fe1105cfb8ceb0",
+  "original_audit_report_json_sha256": "7b443b4a8a1d0850a42d6e3ca05fd9b620b28063aa1c9cb9e9c19ed8a43129b9",
+  "original_artifact_zip_sha256": "369a64c314850b53dcd175e47ebc41b7c966ac9183b1da5a79ac5ebd6542ced2",
+  "github_workflow_run_url": "https://github.com/karolbarankiewicz1984-ui/kb-score-3/actions/runs/45417378956",
+  "github_workflow_run_id": 45417378956,
+  "github_workflow_job_id": 138527190323,
+  "github_workflow_conclusion": "success",
+  "github_artifact_id": 14933001183,
+  "github_artifact_name": "KB3_P2_NON_GOAL_READONLY_SOURCE_COVERAGE",
+  "pr_url": "https://github.com/karolbarankiewicz1984-ui/kb-score-3/pull/191",
+  "pr_merged_commit_sha": "895580fad77f316e03859ce82971caf4c71d8d02",
+  "synthetic_unit_tests": 9,
+  "synthetic_unit_test_errors": 0,
+  "stats_observations": 7592,
+  "per_scope": {
+    "BEL": {
+      "observations": 733,
+      "yellow_pair": 550
+    },
+    "ESP": {
+      "observations": 1173,
+      "yellow_pair": 956
+    },
+    "FRA": {
+      "observations": 951,
+      "yellow_pair": 744
+    },
+    "GER": {
+      "observations": 952,
+      "yellow_pair": 717
+    },
+    "ITA": {
+      "observations": 1111,
+      "yellow_pair": 875
+    },
+    "NED": {
+      "observations": 969,
+      "yellow_pair": 620
+    },
+    "POL": {
+      "observations": 368,
+      "yellow_pair": 295
+    },
+    "TUR": {
+      "observations": 1055,
+      "yellow_pair": 854
+    },
+    "UCL": {
+      "observations": 280,
+      "yellow_pair": 194
+    }
+  },
+  "totals_complete_home_and_away": {
+    "FOULS": 7592,
+    "YELLOW_CARDS": 5805,
+    "RED_CARDS": 7592,
+    "CORNERS": 7592,
+    "SHOTS_TOTAL": 7592,
+    "SHOTS_ON_TARGET": 7592
+  },
+  "yellow_cards_incomplete_pair_count": 1787,
+  "zero_or_missing_are_distinct": true,
+  "duplicate_conflicts_rejected": true,
+  "shots_on_target_exceeds_total_shots_rejected": true,
+  "nested_market_products_or_bookmaker_lines_included": false,
+  "stats_extracted_from_normalized_historical_records_not_original_provider_period": false,
+  "independent_regular_90_minutes_period_evidence": false,
+  "independent_original_first_provider_publication_before_kickoff": false,
+  "sportsbook_target_semantics_verified": false,
+  "forward_predictions_created": 0,
+  "market_settlements_created": 0,
+  "provider_api_calls": 0,
+  "model_fit_or_calibration_performed": false,
+  "production_approved": false,
+  "protected_test_accessed": false,
+  "gate16": "PENDING",
+  "gate17": "PENDING",
+  "formal_project_completed_steps": 15
+}
