@@ -1,0 +1,82 @@
+name: KB3 P2 non-goal source coverage (research only, 0 provider API)
+on:
+  pull_request:
+    paths:
+      - scripts/kb3_p2_non_goal_offline_coverage.py
+      - tests/test_kb3_p2_non_goal_offline_coverage.py
+      - .github/workflows/kb3-p2-nongoal-offline-coverage.yml
+  push:
+    branches: [main]
+    paths:
+      - scripts/kb3_p2_non_goal_offline_coverage.py
+      - tests/test_kb3_p2_non_goal_offline_coverage.py
+      - .github/workflows/kb3-p2-nongoal-offline-coverage.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  test-and-audit-original-history:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Check strict offline tests (no sports API or secrets)
+        run: |
+          python -m compileall -q scripts/kb3_p2_non_goal_offline_coverage.py tests/test_kb3_p2_non_goal_offline_coverage.py
+          python -m unittest discover -s tests -p 'test_kb3_p2_non_goal_offline_coverage.py' -v
+      - name: Restore original historical SQLite from committed gzip only after verifying exact hashes
+        shell: bash
+        run: |
+          python - <<'PY'
+          import gzip, hashlib, json, sqlite3, shutil
+          from pathlib import Path
+          root=Path("data/research/historical_multistat")
+          source=root/"observations.sqlite.gz"
+          target=root/"observations.sqlite"
+          manifest=json.loads((root/"observations.sqlite.gz.manifest.json").read_text())
+          def sha256(path):
+              h=hashlib.sha256()
+              with path.open("rb") as fd:
+                  for chunk in iter(lambda: fd.read(1<<20), b""):
+                      h.update(chunk)
+              return h.hexdigest()
+          assert source.stat().st_size==manifest["compressed_bytes"], "HISTORY_COMPRESSED_BYTES_CHANGED"
+          assert sha256(source)==manifest["compressed_sha256"], "HISTORY_COMPRESSED_HASH_CHANGED"
+          with gzip.open(source, "rb") as packed, target.open("xb") as unpacked:
+              shutil.copyfileobj(packed, unpacked)
+          assert target.stat().st_size==manifest["raw_bytes"], "HISTORY_UNPACKED_BYTES_CHANGED"
+          assert sha256(target)==manifest["raw_sha256"], "HISTORY_UNPACKED_HASH_CHANGED"
+          with sqlite3.connect(target.resolve().as_uri()+"?mode=ro", uri=True) as db:
+              assert db.execute("PRAGMA integrity_check").fetchone()[0]=="ok", "HISTORY_SQLITE_INVALID"
+          print("KB3_P2_VERIFIED_SOURCE_RESTORED", manifest["raw_sha256"])
+          PY
+      - name: Produce actual read-only per-league source-availability audit
+        run: |
+          python -m scripts.kb3_p2_non_goal_offline_coverage \
+            --db data/research/historical_multistat/observations.sqlite \
+            --out research-results/KB3_P2_NON_GOAL_SOURCE_COVERAGE.json
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          p=Path("research-results/KB3_P2_NON_GOAL_SOURCE_COVERAGE.json")
+          r=json.loads(p.read_text())
+          assert r["research_only"] is True and r["settlement_eligible"] is False
+          assert r["period_90_minutes_independently_proven"] is False
+          assert r["first_provider_publication_before_target_kickoff_proven"] is False
+          assert r["matches_bookmaker_target_definitions"] is False
+          assert r["forward_model_trained"] is False
+          assert r["provider_api_calls"] == 0 and r["protected_test_read"] is False
+          assert r["observations"] > 0 and sum(x["observations"] for x in r["per_scope"].values()) == r["observations"]
+          print("KB3_P2_NON_GOAL_RESEARCH_ONLY_REPORT_VERIFIED", r["observations"])
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: KB3_P2_NON_GOAL_READONLY_SOURCE_COVERAGE
+          path: research-results/KB3_P2_NON_GOAL_SOURCE_COVERAGE.json
+          if-no-files-found: error
+          retention-days: 30
