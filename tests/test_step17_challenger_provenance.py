@@ -12,7 +12,8 @@ from src.kb3_step16_m0_720_eight_forward import (
 from src.kb3_step16_m0_720_calibration import append_proofs
 from src.kb3_step17_forward_challengers import Challengers,freeze_new_challengers
 from src.kb3_step17_challenger_provenance import (
-    audit_challengers,paired_settled_report,_archived_challengers)
+    audit_challengers,paired_settled_report,paired_settled_report_from_connection,
+    _archived_challengers)
 from src.kb3_pit_ledger import as_utc
 
 class ChallengerProvenanceTests(unittest.TestCase):
@@ -90,6 +91,11 @@ class ChallengerProvenanceTests(unittest.TestCase):
     self.assertEqual(pair["deltas"]["log_loss"]["status"],
                      "INSUFFICIENT_INDEPENDENT_WEEKS")
     self.assertFalse(after["enough_for_formal_step17"])
+    with sqlite3.connect(self.db.as_uri()+"?mode=ro",uri=True) as c:
+        from_readonly = paired_settled_report_from_connection(c)
+    self.assertEqual(from_readonly,after)
+    trio=from_readonly["exact_three_engine_comparison"]
+    self.assertEqual([w["common_n"] for w in trio["per_iso_week"].values()],[1])
     x,y=self.context()
     with x,y:
         repeat=audit_challengers(self.db,token="SYNTHETIC_TOKEN",
@@ -98,6 +104,11 @@ class ChallengerProvenanceTests(unittest.TestCase):
     with sqlite3.connect(self.db) as c:
         with self.assertRaises(sqlite3.IntegrityError):
             c.execute("DELETE FROM step17_challenger_host_proofs")
+        c.execute("DROP TRIGGER step17_proofs_no_update")
+        c.execute("UPDATE step17_challenger_host_proofs SET github_artifact_id='wrong-artifact'")
+    with sqlite3.connect(self.db.as_uri()+"?mode=ro",uri=True) as c:
+        with self.assertRaisesRegex(ValueError,"STEP17_PAIR_HOST_PROOF_CHANGED"):
+            paired_settled_report_from_connection(c)
  def test_no_artifact_or_invalid_binary_never_proves(self):
     # Only real exact bytes can prove. An archive with the original M0 table
     # but no challenger rows is not a valid challenger proof.

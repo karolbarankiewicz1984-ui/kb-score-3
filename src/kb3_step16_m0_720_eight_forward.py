@@ -446,18 +446,25 @@ def settle_sqlite(db_path,real_results,*,observed_at,source_chain_sha):
                     item["params_sha256"]==db.execute("SELECT parameters_sha256 FROM model_meta").fetchone()[0]
                     and as_utc(captured)<as_utc(kick)-LEAD,
                     "ORIGINAL_FROZEN_VERSION_OR_TIME_DRIFT")
+            require((league,mid,h,a,kick,captured)==(
+                    item.get("league_country"),item.get("provider_match_id"),
+                    item.get("home_team_id"),item.get("away_team_id"),
+                    item.get("kickoff_utc"),item.get("generated_at_utc")),
+                    "ORIGINAL_FROZEN_FIXTURE_INDEX_DRIFT")
             m=real_results.get((league,mid))
             reason=None
             if as_utc(kick)+timedelta(hours=3)>observed_at:reason='RESULT_MATURITY_3H_NOT_REACHED'
             elif m is None:reason='PROVIDER_RESULT_MISSING'
-            elif m.get('id')!=mid:reason='RESULT_NATIVE_MATCH_ID_MISMATCH'
+            elif not isinstance(m,dict) or m.get('id')!=mid:reason='RESULT_NATIVE_MATCH_ID_MISMATCH'
             else:
                 try:source_kick=as_utc(m.get('time_utc'))
                 except (TypeError,ValueError):reason='RESULT_KICKOFF_INVALID'
                 else:
                     if source_kick!=as_utc(kick):reason='KICKOFF_CHANGED_REVIEW_REQUIRED'
             if reason is None:
-                if m.get('home_team',{}).get('id')!=h or m.get('away_team',{}).get('id')!=a:reason='RESULT_TEAM_SIDE_MISMATCH'
+                sides=(m.get('home_team'),m.get('away_team'))
+                if not all(isinstance(team,dict) and team.get('id')==tid
+                           for team,tid in zip(sides,(h,a))):reason='RESULT_TEAM_SIDE_MISMATCH'
                 elif m.get('status')!='finished':reason='RESULT_NOT_FINISHED'
                 elif any(type(m.get(x)) is not int or not 0<=m[x]<=30 for x in ('score_home','score_away')):reason='RESULT_SCORE_INVALID'
             if reason:
