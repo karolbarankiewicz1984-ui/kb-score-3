@@ -9,6 +9,8 @@
 
 **Pozostałe dokumenty:** [DANE.md](DANE.md), [MODEL.md](MODEL.md), [ZMIANY.md](ZMIANY.md), [instrukcja bezpieczeństwa kroku 03](STEP_03_SECURITY_CHECKLIST.md). **Repozytorium:** https://github.com/karolbarankiewicz1984-ui/kb-score-3.
 
+**AKTUALNY REJESTR OPERACYJNY (24.11.2026):** [WYKONANE / DZIAŁA — ZBIERA DANE / ZABLOKOWANE / DO ZROBIENIA](KB3_ACTIVE_STATUS_AND_NEXT_ACTIONS_2026-11-24.md). Najnowsze potwierdzone osiem lig M0: 286 zamrożonych, 211 rozliczonych, 75 pending według [RECEIPT 24.11 06:05 UTC](../data/pit_sidecar/m0_720_eight/2026-11-24/settle-060525722082/RECEIPT.json), GATE17 138 wspólnych w 3/8 tygodniach. To migawka, nie aktualizuje się bez nowego receipt. **Nie dublować GATE15/rynków bramkowych, FIT100/HOLDOUT50, GATE17 ani kodu PR #189**; zachować 15/29 i formalne GATE16/GATE17 PENDING. Oddzielny P2 rynków pozabramkowych [Issue #190](https://github.com/karolbarankiewicz1984-ui/kb-score-3/issues/190).
+
 ## Priorytet operacyjny od 23.11.2026 — FORWARD FIRST (bez zmiany formalnych GATE)
 
 **Decyzja właściciela:** od 23.11 priorytet P0 mają nowe, rzeczywiście zamrożone przed kickoff prognozy M0 oraz ich rozliczenia; P1 — niezależna ocena jakości, FIT100/HOLDOUT50 i porównania Shadow/Challenger; P2 — ograniczone pozyskiwanie historycznej pierwszej publikacji PitchAPI. Szczegóły: [polityka FORWARD FIRST](KB3_FORWARD_FIRST_HISTORY_PIT_POLICY_2026-11-23.md), [aneks do ADR](ADR_2026-10-29_FORWARD_M0_PIT_CALIBRATION_STORAGE.md) i [rejestr decyzji](ZMIANY.md).
