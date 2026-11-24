@@ -67,7 +67,7 @@
   "duplicate_conflicts_rejected": true,
   "shots_on_target_exceeds_total_shots_rejected": true,
   "nested_market_products_or_bookmaker_lines_included": false,
-  "stats_extracted_from_normalized_historical_records_not_original_provider_period": false,
+  "stats_extracted_from_normalized_historical_records_not_original_provider_period": true,
   "independent_regular_90_minutes_period_evidence": false,
   "independent_original_first_provider_publication_before_kickoff": false,
   "sportsbook_target_semantics_verified": false,
