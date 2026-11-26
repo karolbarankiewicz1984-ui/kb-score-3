@@ -1,0 +1,46 @@
+{
+  "catalog_status": "UCL_SOURCE_CAPTURED_PREMATCH_RESEARCH_ONLY",
+  "current_count": 144,
+  "current_status_counts": {
+    "finished": 90,
+    "not_started": 54
+  },
+  "existing_m0_databases_modified": false,
+  "forecasts_created": 0,
+  "historical_coverage_available": true,
+  "league_id": "l_0bfbkO",
+  "league_is_free_flag": true,
+  "max_pitchapi_calls": 7,
+  "model_fit_performed": false,
+  "model_gate": "PENDING_UCL_QUALITY_AND_INDEPENDENT_DECISION",
+  "native_shots_xg_complete": 2,
+  "native_shots_xg_missing_or_invalid": 0,
+  "observed_completed_utc": "2026-11-26T05:10:01.123261Z",
+  "observed_first_publication_proven": false,
+  "observed_started_utc": "2026-11-26T05:09:59.306386Z",
+  "original_2026_27_premier_league_test_accessed": false,
+  "original_historic_pit_certified": false,
+  "previous_count": 189,
+  "previous_season": "2025/2026",
+  "previous_status_counts": {
+    "finished": 189
+  },
+  "production_approved": false,
+  "provider": "PitchAPI",
+  "provider_calls": 7,
+  "raw_source_encrypted": true,
+  "sampled_finished_games": 2,
+  "sampled_stat_key_counts": [
+    37,
+    37
+  ],
+  "schema": "kb3-ucl-pitchapi-independent-observed-20261103-v1",
+  "season": "2026/2027",
+  "source_chain_sha256": "a321ff87d6b9ad99451b17ae653ad45142283751c8f302f581bccdf68977d6e6",
+  "source_ciphertext_sha256": "4c63a01503a3ad160dec0afb76518294dc115203fc3f552dec7bf15bc743ac29",
+  "target_earliest_kickoff_utc": null,
+  "target_latest_kickoff_utc": null,
+  "training_allowed": false,
+  "upcoming_prematch_targets": 0,
+  "upcoming_target_ids_sha256": null
+}
