@@ -12,7 +12,7 @@ FIXTURE = Fixture("POL", "m_000001", "t_000001", "t_000002", "2026-11-01T16:00:0
 REVISION = "synthetic-schema-rev"
 PERIOD_LABEL = "SyntheticRegulation"
 TARGET_KICKOFF = "2026-11-02T20:30:00Z"
-RULES = {target: StatRule(REVISION, PERIOD_LABEL, field, "integer", "synthetic-definition")
+RULES = {target: StatRule(target, REVISION, PERIOD_LABEL, field, "integer", "synthetic-definition")
          for target, field in STAT_FIELDS.items()}
 CARD_RULE = CardRule(REVISION, "synthetic-card-definition", True)
 
@@ -123,6 +123,13 @@ class StatContractTests(unittest.TestCase):
         self.assertEqual(results["fouls_called"]["home"].reason, "NATIVE_STAT_SEMANTICS_UNVERIFIED")
         self.assertEqual(results["corners_taken"]["total"].value, 5)
         self.assertIsNone(results["shots_on_target"]["total"].value)
+
+    def test_reviewed_rule_for_one_target_cannot_be_used_for_another(self):
+        counts = validate(FIXTURE, stats=source(stats()),
+                          stat_rules={"fouls_called": RULES["corners_taken"]})
+        count = counts["fouls_called"]["total"]
+        self.assertEqual((count.status, count.value, count.reason),
+                         ("QUARANTINE", None, "STAT_RULE_TARGET_MISMATCH"))
 
     def test_missing_total_shots_is_not_imputed_from_other_categories(self):
         payload = stats()

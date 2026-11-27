@@ -63,6 +63,7 @@ class StatRule:
     time, and that native_field is complete per side with the target definition.
     """
 
+    target: str
     revision: str
     native_period: str
     native_field: str
@@ -233,7 +234,9 @@ def side_count(items, side):
     return accepted(values[0])
 
 
-def validate_stat(periods, rule, source, target_kickoff_utc):
+def validate_stat(target, periods, rule, source, target_kickoff_utc):
+    if rule is not None and rule.target != target:
+        return unavailable(blocked("STAT_RULE_TARGET_MISMATCH", "QUARANTINE"))
     if (rule is None or not rule.definition_ref or not source.revision
             or source.revision != rule.revision or not rule.native_period
             or not rule.native_field or not isinstance(rule.format_type, str)):
@@ -262,7 +265,7 @@ def validate_stats(source, fixture, rules, target_kickoff_utc):
     if error:
         return {target: unavailable(error) for target in STAT_FIELDS}
     results = {
-        target: validate_stat(periods, rules.get(target), source, target_kickoff_utc)
+        target: validate_stat(target, periods, rules.get(target), source, target_kickoff_utc)
         for target in STAT_FIELDS
     }
     total, on_target = results["total_shots"], results["shots_on_target"]
