@@ -518,7 +518,24 @@ def github_actions_artifact_proofs(db_path,*,token,now,max_runs=60):
          and x.get("event") in ("push","schedule","workflow_dispatch")
          and x.get("path")==".github/workflows/kb3-step16-m0-720-eight-forward.yml"
          and isinstance(x.get("head_sha"),str) and len(x["head_sha"])==40),
-         key=lambda z:(z.get("created_at",""),z.get("id",0)))[:max_runs]
+         key=lambda z:(z.get("created_at",""),z.get("id",0)))
+    # Discard runs whose possible upload window cannot intersect any pending
+    # forecast's valid publication interval BEFORE spending the bounded budget.
+    # Otherwise old successful runs can starve recent genuine artifacts.
+    eligible_runs=[]
+    for run in valid_runs:
+        try:
+            rstart=as_utc(run["created_at"])
+            rend=as_utc(run["updated_at"])
+            if rstart>now or rend>now+timedelta(minutes=1) or rend<rstart:
+                continue
+            if any(rstart<=as_utc(row[1])-LEAD
+                   and rend+timedelta(minutes=1)>=as_utc(row[2])
+                   for row in pending):
+                eligible_runs.append(run)
+        except (KeyError,TypeError,ValueError,Research720Error):
+            blocked+=1
+    valid_runs=eligible_runs[:max_runs]
     for run in valid_runs:
         if not unproven:break
         try:
