@@ -152,12 +152,22 @@ class GateTests(unittest.TestCase):
         artifact={"id":5001,"name":"KB3_STEP16_M0_720_EIGHT_LEAGUE_FREEZE_SETTLEMENT_SOURCE_EVIDENCE",
                   "created_at":stamp(upload),"expired":False,
                   "archive_download_url":"https://api.github.com/test/zip"}
+        # Old runs must not exhaust max_runs before the relevant artifact.
+        older=run|{"id":918,"created_at":stamp(rstart-timedelta(days=2)),
+                   "updated_at":stamp(rstart-timedelta(days=1))}
+        checked=[]
         def api(url,token):
-            return {"workflow_runs":[run]} if "/workflows/" in url else {"artifacts":[artifact]}
+            if "/workflows/" in url:
+                return {"workflow_runs":[run,older]}
+            checked.append(url)
+            return {"artifacts":[artifact]} if "/919/" in url else {"artifacts":[]}
         with patch("src.kb3_step16_m0_720_calibration._gh_json",side_effect=api),patch(
              "src.kb3_step16_m0_720_calibration._gh_artifact_zip",return_value=blob):
             found,report=github_actions_artifact_proofs(
-                db,token="SYNTHETIC_TOKEN",now=NOW+timedelta(days=10))
+                db,token="SYNTHETIC_TOKEN",now=NOW+timedelta(days=10),max_runs=1)
+        self.assertEqual(len(checked),1)
+        self.assertIn("/919/",checked[0])
+        self.assertEqual(report["runs_checked"],1)
         self.assertEqual(len(found),1)
         self.assertEqual(report["verified"],1)
         self.assertEqual(found[0]["source"],
