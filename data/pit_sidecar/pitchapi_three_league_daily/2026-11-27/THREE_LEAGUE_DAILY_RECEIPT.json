@@ -1,0 +1,256 @@
+{
+  "M0_feature_fields": 121,
+  "M0_feature_snapshot_schema": "kb3-step14-true-network-three-league-sqlite-m0-121-38-pit-observed-freeze-v1",
+  "M0_features_observed_pre_kickoff_not_original_first_publication": true,
+  "M0_missing_flags": 38,
+  "M0_target_horizon_hours": 96,
+  "M0_target_limit_per_league": 10,
+  "M0_targets_by_country": {
+    "ESP": 10,
+    "GER": 9,
+    "ITA": 10
+  },
+  "any_results_or_xg_values_exported_in_plain_json": false,
+  "failed_provider_request_count": 0,
+  "feature_sqlite_ledger_sha256": "b8b88eb7f68f44369bfcc95fb73ae7ab4b1f016b6455f6fc1cc25c8622ee9b9c",
+  "frozen_M0_feature_snapshots": 29,
+  "gate14_pass": false,
+  "hard_api_calls_ceiling": 43,
+  "leagues": [
+    {
+      "as_of_now_new_unsampled_prior_matches": 89,
+      "different_team_ids_this_season": 20,
+      "finished_this_season": 129,
+      "fixtures_this_season": 380,
+      "future_fixtures_remaining": 251,
+      "future_scores_are_not_pre_match_features": true,
+      "league": "LaLiga",
+      "new_prior_matches_selected_today": 6,
+      "next_four_upcoming_test_targets": 4,
+      "original_provider_first_published_at": null,
+      "previous_season": "2025/2026",
+      "previous_season_finished_fixtures": 380,
+      "prior_match_count_max_capped_at15": 15,
+      "prior_match_count_min_capped_at15": 13,
+      "prior_unique_matches_needed_for_four_targets": 150,
+      "prior_unique_matches_needed_for_selected_targets": 150,
+      "prospective_target_horizon_hours": 96,
+      "prospective_target_limit_per_league": 10,
+      "prospective_targets_selected": 10,
+      "provider_original_published_at": null,
+      "report_status": "PROSPECTIVE_SOURCE_CAPTURE_ONLY_NOT_M0_MODEL",
+      "season": "2026/2027",
+      "target_team_sides_considered": 8,
+      "target_team_sides_with_prior_10_of_10": 8,
+      "target_team_sides_with_prior_15_of_15": 6,
+      "target_team_sides_with_prior_5_of_5": 8
+    },
+    {
+      "as_of_now_new_unsampled_prior_matches": 91,
+      "different_team_ids_this_season": 20,
+      "finished_this_season": 120,
+      "fixtures_this_season": 380,
+      "future_fixtures_remaining": 260,
+      "future_scores_are_not_pre_match_features": true,
+      "league": "Serie A",
+      "new_prior_matches_selected_today": 6,
+      "next_four_upcoming_test_targets": 4,
+      "original_provider_first_published_at": null,
+      "previous_season": "2025/2026",
+      "previous_season_finished_fixtures": 380,
+      "prior_match_count_max_capped_at15": 15,
+      "prior_match_count_min_capped_at15": 12,
+      "prior_unique_matches_needed_for_four_targets": 149,
+      "prior_unique_matches_needed_for_selected_targets": 149,
+      "prospective_target_horizon_hours": 96,
+      "prospective_target_limit_per_league": 10,
+      "prospective_targets_selected": 10,
+      "provider_original_published_at": null,
+      "report_status": "PROSPECTIVE_SOURCE_CAPTURE_ONLY_NOT_M0_MODEL",
+      "season": "2026/2027",
+      "target_team_sides_considered": 8,
+      "target_team_sides_with_prior_10_of_10": 8,
+      "target_team_sides_with_prior_15_of_15": 6,
+      "target_team_sides_with_prior_5_of_5": 8
+    },
+    {
+      "as_of_now_new_unsampled_prior_matches": 73,
+      "different_team_ids_this_season": 18,
+      "finished_this_season": 90,
+      "fixtures_this_season": 306,
+      "future_fixtures_remaining": 216,
+      "future_scores_are_not_pre_match_features": true,
+      "league": "Bundesliga",
+      "new_prior_matches_selected_today": 6,
+      "next_four_upcoming_test_targets": 4,
+      "original_provider_first_published_at": null,
+      "previous_season": "2025/2026",
+      "previous_season_finished_fixtures": 306,
+      "prior_match_count_max_capped_at15": 15,
+      "prior_match_count_min_capped_at15": 10,
+      "prior_unique_matches_needed_for_four_targets": 133,
+      "prior_unique_matches_needed_for_selected_targets": 133,
+      "prospective_target_horizon_hours": 96,
+      "prospective_target_limit_per_league": 10,
+      "prospective_targets_selected": 9,
+      "provider_original_published_at": null,
+      "report_status": "PROSPECTIVE_SOURCE_CAPTURE_ONLY_NOT_M0_MODEL",
+      "season": "2026/2027",
+      "target_team_sides_considered": 8,
+      "target_team_sides_with_prior_10_of_10": 8,
+      "target_team_sides_with_prior_15_of_15": 5,
+      "target_team_sides_with_prior_5_of_5": 8
+    }
+  ],
+  "model_fit_or_calibration_performed": false,
+  "newly_verified_match_shot_stat_pairs": 18,
+  "observation_end_utc": "2026-11-27T16:39:04.960470Z",
+  "observation_start_utc": "2026-11-27T16:38:50.698478Z",
+  "original_Premier_League_2026_27_TEST_not_accessed": true,
+  "original_pitchapi_published_at_2023_25_proven": false,
+  "previous_successful_source_shot_stats_count": 264,
+  "provider_calls": 43,
+  "sampled": [
+    {
+      "country": "ESP",
+      "native_match_id_sha256": "48f9785070576fc18ab3b4a903e641e083c3ed1748ec5b7d44ebb194c848bc88",
+      "original_first_published_at_utc": null,
+      "state": "SOURCE_STATS_XG_VERIFIED",
+      "valid_for_2023_25_original_M1": false
+    },
+    {
+      "country": "ESP",
+      "native_match_id_sha256": "94edfa11b3e0d61e58be9ed5f0c8f4ae45ea311ac249503bf53e3aa9a8d4e26d",
+      "original_first_published_at_utc": null,
+      "state": "SOURCE_STATS_XG_VERIFIED",
+      "valid_for_2023_25_original_M1": false
+    },
+    {
+      "country": "ESP",
+      "native_match_id_sha256": "1080bc23d4b7e90a810423150df5dc166a5045afcc727f43772b9f0f39d3b8ef",
+      "original_first_published_at_utc": null,
+      "state": "SOURCE_STATS_XG_VERIFIED",
+      "valid_for_2023_25_original_M1": false
+    },
+    {
+      "country": "ESP",
+      "native_match_id_sha256": "65196787180a5807c39900bafe3857d2d2e3902dcb550679fa062619aff3bb4f",
+      "original_first_published_at_utc": null,
+      "state": "SOURCE_STATS_XG_VERIFIED",
+      "valid_for_2023_25_original_M1": false
+    },
+    {
+      "country": "ESP",
+      "native_match_id_sha256": "12eb081c5228e08ef63cdde1e8b641e2fdaca0a341cd7531be24060e9cca2266",
+      "original_first_published_at_utc": null,
+      "state": "SOURCE_STATS_XG_VERIFIED",
+      "valid_for_2023_25_original_M1": false
+    },
+    {
+      "country": "ESP",
+      "native_match_id_sha256": "3aef937a8912395633ab3c5fd86777dfde024461ba2726f18186bb3437df4242",
+      "original_first_published_at_utc": null,
+      "state": "SOURCE_STATS_XG_VERIFIED",
+      "valid_for_2023_25_original_M1": false
+    },
+    {
+      "country": "ITA",
+      "native_match_id_sha256": "c4aee2183d13882fd529a506f56de644a580e9aab595d90a268f1cc5b56aab38",
+      "original_first_published_at_utc": null,
+      "state": "SOURCE_STATS_XG_VERIFIED",
+      "valid_for_2023_25_original_M1": false
+    },
+    {
+      "country": "ITA",
+      "native_match_id_sha256": "4fde5e0e16dc2ff3ed67e06960ec9a7e7a767823627f11b5dd43bd39a65b6898",
+      "original_first_published_at_utc": null,
+      "state": "SOURCE_STATS_XG_VERIFIED",
+      "valid_for_2023_25_original_M1": false
+    },
+    {
+      "country": "ITA",
+      "native_match_id_sha256": "cccc306556e9c58bd49baba7fa6455dc9b5a1d6892ea41e777263f6b868d0ca2",
+      "original_first_published_at_utc": null,
+      "state": "SOURCE_STATS_XG_VERIFIED",
+      "valid_for_2023_25_original_M1": false
+    },
+    {
+      "country": "ITA",
+      "native_match_id_sha256": "4c8792f061ef8cfccd5ea4026779dd9757a636bfa269d9fc1a77e8c21d5525d7",
+      "original_first_published_at_utc": null,
+      "state": "SOURCE_STATS_XG_VERIFIED",
+      "valid_for_2023_25_original_M1": false
+    },
+    {
+      "country": "ITA",
+      "native_match_id_sha256": "2c10525aae6c708cbfef73ec4e4b7b053935db7442f9c7935ae66f3108c32fa7",
+      "original_first_published_at_utc": null,
+      "state": "SOURCE_STATS_XG_VERIFIED",
+      "valid_for_2023_25_original_M1": false
+    },
+    {
+      "country": "ITA",
+      "native_match_id_sha256": "3d42036058719fe7df1cf55946a84664291d541b3c6a5bb6a1867695448c50fd",
+      "original_first_published_at_utc": null,
+      "state": "SOURCE_STATS_XG_VERIFIED",
+      "valid_for_2023_25_original_M1": false
+    },
+    {
+      "country": "GER",
+      "native_match_id_sha256": "e75307aa78829da4f9565e4bd65492b575ce4e9c0c13ad137349c8e27834c228",
+      "original_first_published_at_utc": null,
+      "state": "SOURCE_STATS_XG_VERIFIED",
+      "valid_for_2023_25_original_M1": false
+    },
+    {
+      "country": "GER",
+      "native_match_id_sha256": "36e779fb96c485295a1d6d935f5be5fc7d0a671a8737e0136b6fbab3d317d09e",
+      "original_first_published_at_utc": null,
+      "state": "SOURCE_STATS_XG_VERIFIED",
+      "valid_for_2023_25_original_M1": false
+    },
+    {
+      "country": "GER",
+      "native_match_id_sha256": "aa2bd2ff52d99df09ca43be07f1abfa3d6ab2384383724d0676e867bb05c4d5f",
+      "original_first_published_at_utc": null,
+      "state": "SOURCE_STATS_XG_VERIFIED",
+      "valid_for_2023_25_original_M1": false
+    },
+    {
+      "country": "GER",
+      "native_match_id_sha256": "f3aeea30861a316265e2565bc82759d8d10a758216d2919f57bbed49699cdb00",
+      "original_first_published_at_utc": null,
+      "state": "SOURCE_STATS_XG_VERIFIED",
+      "valid_for_2023_25_original_M1": false
+    },
+    {
+      "country": "GER",
+      "native_match_id_sha256": "4cd3894556a1db8ed5be5232000229fde3e75ba9f26d0472047eb45118261a2d",
+      "original_first_published_at_utc": null,
+      "state": "SOURCE_STATS_XG_VERIFIED",
+      "valid_for_2023_25_original_M1": false
+    },
+    {
+      "country": "GER",
+      "native_match_id_sha256": "fd5dbdef90754dd69c414d4579b0852e97e328ddedd9da1973d6f79225a30060",
+      "original_first_published_at_utc": null,
+      "state": "SOURCE_STATS_XG_VERIFIED",
+      "valid_for_2023_25_original_M1": false
+    }
+  ],
+  "schema": "kb3-pitchapi-three-league-prospective-daily-incremental-shot-stats-v1",
+  "source_chain_sha256": "a5887310e7abec478f012fc750d21fdf3411ae5f888e3a49484abb8b544cb959",
+  "source_ciphertext_sha256": "f6be2b129e7074f4f017f3f970d76f891161072e9db789d2637c425c1fd50574",
+  "source_payloads_RSA_sealed": true,
+  "source_receipt_count": 43,
+  "this_is_not_121_plus_38_feature_matrix": true,
+  "three_league_M0_predictions_started": false,
+  "utc_day": "2026-11-27",
+  "v3_native_forward_bridge": {
+    "input_and_raw_native_artifact_pending_host_attestation": true,
+    "provider_calls_added": 0,
+    "source_count": 6,
+    "target_count": 26,
+    "training_allowed": false
+  }
+}

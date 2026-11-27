@@ -1,0 +1,115 @@
+{
+  "actual_derived_forecasts": 3,
+  "actual_generated_utc": "2026-11-27T16:39:06.950526Z",
+  "calibration_status": "NOT_STARTED",
+  "eligible_for_betting_claims": false,
+  "historic_provider_original_PIT_verified": false,
+  "individual_forecasts": [
+    {
+      "away": "Atalanta",
+      "calibrated": false,
+      "elo_pre_match": {
+        "away": 1514.90759,
+        "home": 1429.69302
+      },
+      "engine": "KB3_ELO_POISSON_M0_V0_1",
+      "evidence_state": "OBSERVED_BEFORE_KICKOFF_NOT_ORIGINAL_HISTORIC_PIT",
+      "expected_goals": {
+        "away": 1.239024889874431,
+        "home": 1.3458163864399793
+      },
+      "feature_cutoff_utc": "2026-11-27T16:39:05.065369Z",
+      "feature_sha256": "ce39a98653a87add0895854275a51bec8bee33c7e447ba1e47a633598316bbe0",
+      "feature_snapshot_id": "763b7d0492585fe0f7a670475b58070c774faabe67c442838c6dd056e397c0e3",
+      "forecast_sha256": "784ef5e72a35637d1cb9a63368203c6a798b21b9f416556079cb64aaa2d5df83",
+      "generated_at_utc": "2026-11-27T16:39:06.950526Z",
+      "home": "Lecce",
+      "kickoff_utc": "2026-11-30T17:30:00Z",
+      "league": "ITA",
+      "match_id": "m_0fP1BP",
+      "p_1x2": {
+        "1": 0.39288863996717005,
+        "2": 0.3427462917827631,
+        "X": 0.26436506825006684
+      },
+      "parameter_status": "ILLUSTRATIVE_UNFITTED_NOT_FOR_BETTING",
+      "params_sha256": "0535d6c0095815eb42937994d7392504ba9a43d588bd256bf8e0e4d029c8a9ff",
+      "phase": "EARLY",
+      "schema": "kb3-real-forward-M0-Elo-Poisson-shadow-1x2-v1",
+      "training_allowed": false
+    },
+    {
+      "away": "Milan",
+      "calibrated": false,
+      "elo_pre_match": {
+        "away": 1596.78911,
+        "home": 1482.64158
+      },
+      "engine": "KB3_ELO_POISSON_M0_V0_1",
+      "evidence_state": "OBSERVED_BEFORE_KICKOFF_NOT_ORIGINAL_HISTORIC_PIT",
+      "expected_goals": {
+        "away": 1.2707928933401975,
+        "home": 1.3121729030267733
+      },
+      "feature_cutoff_utc": "2026-11-27T16:39:05.065369Z",
+      "feature_sha256": "57c1daf1a9fdaa6cf1751817decc4414ab914b0fb67061239130fc1df80fdf4a",
+      "feature_snapshot_id": "f1de34fa9bfef8a31185b792b2d04900c83724bdc6c4f7c95dd28fae09284422",
+      "forecast_sha256": "0701174a8e604a9e1e05a7bc1109ed57a788b8e493e4debb3e9fa4c3b29ef3af",
+      "generated_at_utc": "2026-11-27T16:39:06.950526Z",
+      "home": "Cagliari",
+      "kickoff_utc": "2026-11-30T19:45:00Z",
+      "league": "ITA",
+      "match_id": "m_2TYAqN",
+      "p_1x2": {
+        "1": 0.3772911092435513,
+        "2": 0.35784754588907647,
+        "X": 0.2648613448673722
+      },
+      "parameter_status": "ILLUSTRATIVE_UNFITTED_NOT_FOR_BETTING",
+      "params_sha256": "0535d6c0095815eb42937994d7392504ba9a43d588bd256bf8e0e4d029c8a9ff",
+      "phase": "EARLY",
+      "schema": "kb3-real-forward-M0-Elo-Poisson-shadow-1x2-v1",
+      "training_allowed": false
+    },
+    {
+      "away": "Getafe",
+      "calibrated": false,
+      "elo_pre_match": {
+        "away": 1464.09365,
+        "home": 1461.88907
+      },
+      "engine": "KB3_ELO_POISSON_M0_V0_1",
+      "evidence_state": "OBSERVED_BEFORE_KICKOFF_NOT_ORIGINAL_HISTORIC_PIT",
+      "expected_goals": {
+        "away": 1.1522204996166543,
+        "home": 1.4472056351668625
+      },
+      "feature_cutoff_utc": "2026-11-27T16:39:05.065369Z",
+      "feature_sha256": "153af28b67113e5361f22bf067ae1209e38481195c0ec0625d25c6010abd0b0e",
+      "feature_snapshot_id": "69aaf38ec58f2c9b36a19f9a5743b9f9eb640be615fef77b0ed5aaf1b08de3c4",
+      "forecast_sha256": "c8b1d312939eb3a02053e90e4b314d45ae473854c6c5c9dfd85771e87d5ec0cd",
+      "generated_at_utc": "2026-11-27T16:39:06.950526Z",
+      "home": "Espanyol",
+      "kickoff_utc": "2026-11-30T20:00:00Z",
+      "league": "ESP",
+      "match_id": "m_3iTvoj",
+      "p_1x2": {
+        "1": 0.43859261244573355,
+        "2": 0.3008700649919337,
+        "X": 0.26053732256233275
+      },
+      "parameter_status": "ILLUSTRATIVE_UNFITTED_NOT_FOR_BETTING",
+      "params_sha256": "0535d6c0095815eb42937994d7392504ba9a43d588bd256bf8e0e4d029c8a9ff",
+      "phase": "EARLY",
+      "schema": "kb3-real-forward-M0-Elo-Poisson-shadow-1x2-v1",
+      "training_allowed": false
+    }
+  ],
+  "mode": "M0_SHADOW_PROVISIONAL_UNFITTED",
+  "original_2026_27_Premier_League_TEST_touched": false,
+  "original_M1_training_or_calibration": false,
+  "report_sha256": "8c495abdd5cbe15fa8903597c87d23eb90b3e6b477644249cb45560698b07050",
+  "schema": "kb3-real-forward-M0-Elo-Poisson-shadow-1x2-v1",
+  "source": "REAL_PITCHAPI_OBSERVED_BEFORE_TARGET_FROM_SQLITE",
+  "total_immutable_forecasts": 108
+}
