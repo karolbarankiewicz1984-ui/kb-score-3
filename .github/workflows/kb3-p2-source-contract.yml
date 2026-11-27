@@ -1,0 +1,51 @@
+name: KB3 P2-02 source contract (offline)
+on:
+  pull_request:
+    paths:
+      - src/kb3_p2_source_contract.py
+      - scripts/kb3_p2_source_audit.py
+      - tests/test_kb3_p2_source_*.py
+      - .github/workflows/kb3-p2-source-contract.yml
+permissions:
+  contents: read
+jobs:
+  validate-and-audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install offline archive dependency
+        run: python -m pip install --disable-pip-version-check 'cryptography>=42,<47'
+      - name: Run contract and archive regressions
+        run: python -m unittest discover -s tests -p 'test_kb3_p2_source_*.py' -v
+      - name: Verify existing source archives and card evidence
+        run: |
+          python -m scripts.kb3_p2_source_audit --out "$RUNNER_TEMP/KB3_P2_02_SOURCE_AUDIT.json"
+          python - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+
+          report = json.loads((Path(os.environ["RUNNER_TEMP"]) / "KB3_P2_02_SOURCE_AUDIT.json").read_text())
+          assert report["raw_access"] == "OWNER_KEY_NOT_AVAILABLE"
+          assert report["provider_api_calls"] == 0
+          assert report["settlement_eligible"] is False
+          assert report["provider_first_publication_proven"] is False
+          assert all(archive["ciphertexts_verified"] > 0 for archive in report["archives"].values())
+          assert report["card_event_rechecks"]["rows"] > 0
+          assert len(report["targets"]) == 8
+          for target in report["targets"].values():
+              assert target["status"] == "UNKNOWN"
+              assert all(value is None for value in target["values"].values())
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: KB3_P2_02_SOURCE_AUDIT
+          path: ${{ runner.temp }}/KB3_P2_02_SOURCE_AUDIT.json
+          if-no-files-found: error
+          retention-days: 30

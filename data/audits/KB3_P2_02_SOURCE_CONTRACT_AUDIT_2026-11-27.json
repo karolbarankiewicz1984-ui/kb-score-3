@@ -1,0 +1,195 @@
+{
+  "archive_inventory_sha256": "4d9ae2452eb32cf85759d6005d2c5c0b8b5a0cc91ee67fc060606793d181e76c",
+  "archives": {
+    "historical_issue_rechecks": {
+      "ciphertexts_decrypted": 0,
+      "ciphertexts_verified": 44,
+      "manifest_declared_receipts": 3118,
+      "verified_decrypted_receipts": 0
+    },
+    "historical_multistat": {
+      "ciphertexts_decrypted": 0,
+      "ciphertexts_verified": 166,
+      "manifest_declared_receipts": 21030,
+      "verified_decrypted_receipts": 0
+    }
+  },
+  "bookmaker_compatibility_proven": false,
+  "card_event_rechecks": {
+    "per_scope": {
+      "BEL": {
+        "both_event_values_stored": 154,
+        "first_publication_present": 0,
+        "legacy_status_counts": {
+          "EVENTS_TEAM_STATS_CONFLICT": 4,
+          "EVENT_YELLOW_CONFIRMED": 150
+        },
+        "rows": 154
+      },
+      "ESP": {
+        "both_event_values_stored": 180,
+        "first_publication_present": 0,
+        "legacy_status_counts": {
+          "EVENTS_TEAM_STATS_CONFLICT": 12,
+          "EVENT_YELLOW_CONFIRMED": 168
+        },
+        "rows": 180
+      },
+      "FRA": {
+        "both_event_values_stored": 158,
+        "first_publication_present": 0,
+        "legacy_status_counts": {
+          "EVENTS_EMPTY_OR_MISSING": 1,
+          "EVENTS_TEAM_STATS_CONFLICT": 13,
+          "EVENT_YELLOW_CONFIRMED": 145
+        },
+        "rows": 159
+      },
+      "GER": {
+        "both_event_values_stored": 174,
+        "first_publication_present": 0,
+        "legacy_status_counts": {
+          "EVENTS_TEAM_STATS_CONFLICT": 6,
+          "EVENT_YELLOW_CONFIRMED": 168
+        },
+        "rows": 174
+      },
+      "ITA": {
+        "both_event_values_stored": 176,
+        "first_publication_present": 0,
+        "legacy_status_counts": {
+          "EVENTS_TEAM_STATS_CONFLICT": 19,
+          "EVENT_YELLOW_CONFIRMED": 157
+        },
+        "rows": 176
+      },
+      "NED": {
+        "both_event_values_stored": 337,
+        "first_publication_present": 0,
+        "legacy_status_counts": {
+          "EVENTS_TEAM_STATS_CONFLICT": 15,
+          "EVENT_YELLOW_CONFIRMED": 322
+        },
+        "rows": 337
+      },
+      "POL": {
+        "both_event_values_stored": 67,
+        "first_publication_present": 0,
+        "legacy_status_counts": {
+          "EVENTS_TEAM_STATS_CONFLICT": 7,
+          "EVENT_YELLOW_CONFIRMED": 60
+        },
+        "rows": 67
+      },
+      "TUR": {
+        "both_event_values_stored": 187,
+        "first_publication_present": 0,
+        "legacy_status_counts": {
+          "EVENTS_TEAM_STATS_CONFLICT": 10,
+          "EVENT_YELLOW_CONFIRMED": 177
+        },
+        "rows": 187
+      }
+    },
+    "rows": 1434,
+    "sqlite_sha256": "778c478c9741b0e9abfa8d53ad1e71d74b420f13b0ce2458a4d9934d0f104caf"
+  },
+  "independent_host_attestation_verified": false,
+  "native_diagnostics": null,
+  "provider_api_calls": 0,
+  "provider_first_publication_proven": false,
+  "raw_access": "OWNER_KEY_NOT_AVAILABLE",
+  "regular_time_semantics_proven": false,
+  "schema": "kb3-p2-02-source-contract-audit-v1",
+  "settlement_eligible": false,
+  "targets": {
+    "card_units": {
+      "candidate_native_field": null,
+      "confirmed_native_field": null,
+      "reason": "NATIVE_CARD_EVENT_SEMANTICS_UNVERIFIED",
+      "status": "UNKNOWN",
+      "values": {
+        "away": null,
+        "home": null,
+        "total": null
+      }
+    },
+    "corners_taken": {
+      "candidate_native_field": "corners",
+      "confirmed_native_field": null,
+      "reason": "NATIVE_STAT_SEMANTICS_UNVERIFIED",
+      "status": "UNKNOWN",
+      "values": {
+        "away": null,
+        "home": null,
+        "total": null
+      }
+    },
+    "fouls_called": {
+      "candidate_native_field": "fouls",
+      "confirmed_native_field": null,
+      "reason": "NATIVE_STAT_SEMANTICS_UNVERIFIED",
+      "status": "UNKNOWN",
+      "values": {
+        "away": null,
+        "home": null,
+        "total": null
+      }
+    },
+    "second_yellow_dismissals": {
+      "candidate_native_field": null,
+      "confirmed_native_field": null,
+      "reason": "NATIVE_CARD_EVENT_SEMANTICS_UNVERIFIED",
+      "status": "UNKNOWN",
+      "values": {
+        "away": null,
+        "home": null,
+        "total": null
+      }
+    },
+    "shots_on_target": {
+      "candidate_native_field": "ShotsOnTarget",
+      "confirmed_native_field": null,
+      "reason": "NATIVE_STAT_SEMANTICS_UNVERIFIED",
+      "status": "UNKNOWN",
+      "values": {
+        "away": null,
+        "home": null,
+        "total": null
+      }
+    },
+    "straight_red_cards": {
+      "candidate_native_field": null,
+      "confirmed_native_field": null,
+      "reason": "NATIVE_CARD_EVENT_SEMANTICS_UNVERIFIED",
+      "status": "UNKNOWN",
+      "values": {
+        "away": null,
+        "home": null,
+        "total": null
+      }
+    },
+    "total_shots": {
+      "candidate_native_field": "total_shots",
+      "confirmed_native_field": null,
+      "reason": "NATIVE_STAT_SEMANTICS_UNVERIFIED",
+      "status": "UNKNOWN",
+      "values": {
+        "away": null,
+        "home": null,
+        "total": null
+      }
+    },
+    "yellow_cards": {
+      "candidate_native_field": null,
+      "confirmed_native_field": null,
+      "reason": "NATIVE_CARD_EVENT_SEMANTICS_UNVERIFIED",
+      "status": "UNKNOWN",
+      "values": {
+        "away": null,
+        "home": null,
+        "total": null
+      }
+    }
+  }
+}
