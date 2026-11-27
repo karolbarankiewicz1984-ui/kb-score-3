@@ -271,6 +271,7 @@ def pending_settlement_review(db, receipt):
     needs_kickoff_check = []
     missing_results = []
     immature = []
+    unverified_host = []
     for (fid, league, native, kick, captured, raw, host_published, proof_sha, home, away,
          source_chain) in pending:
         d = decision_index[fid]
@@ -291,10 +292,14 @@ def pending_settlement_review(db, receipt):
              "PENDING_FROZEN_SOURCE_INTEGRITY_FAIL")
         lead = (utc(kick) - utc(captured)).total_seconds() / 60
         need(lead > 90, "PENDING_FORECAST_FROZEN_TOO_LATE")
-        need(proof_sha == fid and host_published is not None and
-             utc(captured) <= utc(host_published) <=
-             utc(kick) - timedelta(minutes=90),
-             "PENDING_HOST_PUBLICATION_NOT_BEFORE_CUTOFF")
+        # Missing proof is a distinct pending state, never a valid forecast.
+        # An existing but contradictory proof remains a hard integrity error.
+        missing_host = host_published is None and proof_sha is None
+        if not missing_host:
+            need(proof_sha == fid and host_published is not None and
+                 utc(captured) <= utc(host_published) <=
+                 utc(kick) - timedelta(minutes=90),
+                 "PENDING_HOST_PUBLICATION_NOT_BEFORE_CUTOFF")
         reason = d["reason"]
         by_reason[reason][league] += 1
         case = {"forecast_id": fid, "league": league,
@@ -302,6 +307,11 @@ def pending_settlement_review(db, receipt):
                 "frozen_capture_utc": captured,
                 "host_publication_utc": host_published,
                 "original_capture_lead_minutes": round(lead, 2)}
+        if missing_host:
+            unverified_host.append({**case, "original_pending_reason": reason,
+                "state": "MISSING_HOST_PUBLICATION_PROOF_QUARANTINE",
+                "calibration_eligible": False, "automatic_settlement_allowed": False})
+            continue
         if reason == "KICKOFF_CHANGED_REVIEW_REQUIRED":
             revised = d.get("provider_reported_kickoff_utc")
             if revised is not None:
@@ -354,6 +364,8 @@ def pending_settlement_review(db, receipt):
                                              if k != "SETTLED_NEW")),
         "by_reason_and_league": {k: dict(sorted(v.items()))
                                 for k, v in sorted(by_reason.items())},
+        "unverified_host_publication_cases": unverified_host,
+        "unverified_host_publication_count": len(unverified_host),
         "kickoff_changed_review_cases": needs_kickoff_check,
         "provider_result_missing_cases": missing_results,
         "result_maturity_pending_cases": immature,
@@ -645,6 +657,18 @@ def self_test():
                  "SELFTEST_BAD_DELTA_WRONG_FAILURE")
         else:
             need(False, "SELFTEST_FABRICATED_DELTA_ACCEPTED")
+        # A genuinely absent LEFT JOIN proof is reported, never accepted.
+        fake.execute("DELETE FROM m0720_github_push_proofs")
+        quarantined = pending_settlement_review(fake, with_one)
+        need(quarantined["unverified_host_publication_count"] == 1
+             and not quarantined["kickoff_changed_review_cases"]
+             and quarantined["unverified_host_publication_cases"][0]["calibration_eligible"] is False
+             and quarantined["unverified_host_publication_cases"][0]["automatic_settlement_allowed"] is False
+             and quarantined["pending_reason_counts"] == {reason: 1}
+             and fake.execute("SELECT COUNT(*) FROM settlements").fetchone()[0] == 0,
+             "SELFTEST_MISSING_HOST_QUARANTINE")
+        fake.execute("INSERT INTO m0720_github_push_proofs VALUES(?,?,?)",
+                     (fid, "2026-11-19T10:02:00Z", fid))
         # Even a valid provider-reported kickoff is not independently verified.
         # A late Github host event or missing attestation must fail closed.
         for host_time, proof_sha in (("2026-11-22T22:00:00Z", fid),
@@ -684,6 +708,10 @@ def main():
                "pending_settlement_review": {
                     "frozen_not_yet_settled": report["pending_settlement_review"][
                         "frozen_not_yet_settled"],
+                    "unverified_host_publication_count": report["pending_settlement_review"][
+                        "unverified_host_publication_count"],
+                    "unverified_host_publication_cases": report["pending_settlement_review"][
+                        "unverified_host_publication_cases"],
                     "pending_reason_counts": report["pending_settlement_review"][
                         "pending_reason_counts"],
                     "by_reason_and_league": report["pending_settlement_review"][
