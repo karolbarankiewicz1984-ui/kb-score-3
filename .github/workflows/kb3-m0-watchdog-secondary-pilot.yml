@@ -94,7 +94,7 @@ jobs:
           retention-days: 30
           if-no-files-found: warn
       - name: Select backup mode only on main, reuse original M0 guard
-        if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+        if: github.ref == 'refs/heads/main' && (github.event_name == 'schedule' || github.event_name == 'workflow_dispatch')
         id: decide
         env:
           EVENT_KIND: ${{ github.event_name }}
@@ -110,9 +110,13 @@ jobs:
           else
             requested="settle"
           fi
-          python -m scripts.kb3_step16_schedule_watchdog --requested "$requested"
+          if [ "$EVENT_KIND" = "schedule" ]; then
+            python -m scripts.kb3_step16_schedule_watchdog --requested "$requested" --scheduled-fallback
+          else
+            python -m scripts.kb3_step16_schedule_watchdog --requested "$requested"
+          fi
       - name: Dispatch only existing original main-branch M0 workflow, when due
-        if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request' && steps.decide.outputs.dispatch == 'true'
+        if: github.ref == 'refs/heads/main' && (github.event_name == 'schedule' || github.event_name == 'workflow_dispatch') && steps.decide.outputs.dispatch == 'true'
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
