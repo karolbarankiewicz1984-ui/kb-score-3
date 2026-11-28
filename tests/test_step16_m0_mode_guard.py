@@ -98,4 +98,18 @@ class Step16ModeSafety(unittest.TestCase):
         self.assertIn("21 6,9,12 * * *",FORECAST_CRONS)
         self.assertIn("17 8,14,22 * * *",SETTLE_CRONS)
 
+    def test_live_checkout_refreshes_main_before_mode_and_provider(self):
+        workflow=(Path(__file__).resolve().parents[1]/
+                  ".github/workflows/kb3-step16-m0-720-eight-forward.yml").read_text()
+        live=workflow.split("  real-eighth-league-fitted-M0-shadow:",1)[1]
+        self.assertIn("cancel-in-progress: false",workflow)
+        self.assertIn("group: kb3-step16-eight-league-m0-720-research-db",workflow)
+        self.assertIn("ref: refs/heads/main",live)
+        self.assertIn("git merge --ff-only origin/main",live)
+        self.assertLess(live.index("git merge --ff-only origin/main"),
+                        live.index("python -m scripts.step16_m0_mode_guard"))
+        self.assertLess(live.index("python -m scripts.step16_m0_mode_guard"),
+                        live.index("python -m scripts.step16_m0_720_eight_run"))
+        self.assertIn("M0_RESEARCH_NOT_APPEND_ONLY_NO_REBASE",live)
+
 if __name__=="__main__":unittest.main()
