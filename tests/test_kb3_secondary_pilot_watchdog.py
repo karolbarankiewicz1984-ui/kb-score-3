@@ -90,6 +90,42 @@ class M0WatchdogTests(unittest.TestCase):
         self.assertTrue(v["will_dispatch_existing_native_workflow"])
         self.assertIn("21 6,9,12",mock_select.call_args.kwargs["cron"])
 
+    @patch("scripts.kb3_step16_schedule_watchdog.forecast_state")
+    @patch("scripts.kb3_step16_schedule_watchdog.select")
+    def test_scheduled_redundant_settle_recovers_missed_forecast(self, select, state):
+        select.side_effect=[("skip","SETTLEMENT_ALREADY_RECENT"),("forecast","MISSING_OR_NEW_INTRADAY_FORECAST")]
+        state.return_value={"attempts":[],"completed":[],"invalid":[]}
+        v=choose("settle",self.now,scheduled_fallback=True)
+        self.assertEqual(v["mode"],"forecast")
+        self.assertTrue(v["will_dispatch_existing_native_workflow"])
+        self.assertTrue(v["scheduled_forecast_fallback_used"])
+        self.assertEqual(select.call_count,2)
+
+    @patch("scripts.kb3_step16_schedule_watchdog.forecast_state")
+    @patch("scripts.kb3_step16_schedule_watchdog.select")
+    def test_scheduled_fallback_never_preempts_due_settle(self, select, state):
+        select.return_value=("settle","SETTLEMENT_DUE")
+        v=choose("settle",self.now,scheduled_fallback=True)
+        self.assertEqual(v["mode"],"settle")
+        state.assert_not_called()
+
+    @patch("scripts.kb3_step16_schedule_watchdog.forecast_state")
+    @patch("scripts.kb3_step16_schedule_watchdog.select")
+    def test_fallback_respects_attempt_and_metadata_guards(self, select, state):
+        select.return_value=("skip","SETTLEMENT_ALREADY_RECENT")
+        for value in ({"attempts":[self.now],"completed":[],"invalid":[]},
+                      {"attempts":[],"completed":[],"invalid":["bad"]}):
+            state.return_value=value
+            v=choose("settle",self.now,scheduled_fallback=True)
+            self.assertFalse(v["will_dispatch_existing_native_workflow"])
+
+    @patch("scripts.kb3_step16_schedule_watchdog.forecast_state")
+    @patch("scripts.kb3_step16_schedule_watchdog.select")
+    def test_fallback_respects_native_forecast_skip(self, select, state):
+        select.side_effect=[("skip","SETTLEMENT_ALREADY_RECENT"),("skip","FORECAST_ATTEMPT_DAILY_CAP")]
+        state.return_value={"attempts":[],"completed":[],"invalid":[]}
+        self.assertFalse(choose("settle",self.now,scheduled_fallback=True)["will_dispatch_existing_native_workflow"])
+
     def test_other_modes_rejected(self):
         with self.assertRaises(ValueError):choose("force_settle",self.now)
 
